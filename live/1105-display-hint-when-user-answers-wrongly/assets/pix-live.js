@@ -45,7 +45,7 @@ define('pix-live/adapters/challenge', ['exports', 'pix-live/adapters/application
     }
   });
 });
-define('pix-live/adapters/solution', ['exports', 'pix-live/adapters/application'], function (exports, _application) {
+define('pix-live/adapters/correction', ['exports', 'pix-live/adapters/application'], function (exports, _application) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -687,7 +687,7 @@ define('pix-live/components/comparison-window', ['exports', 'pix-live/utils/resu
 
     answer: null,
     challenge: null,
-    solution: null,
+    correction: null,
     index: null,
 
     focusNode: '.routable-modal--close-button',
@@ -1818,7 +1818,7 @@ define('pix-live/components/qcm-solution-panel', ['exports', 'pix-live/utils/lab
     challenge: null,
 
     solutionArray: Ember.computed('solution', function () {
-      var solution = this.get('solution.value');
+      var solution = this.get('solution');
       return _lodashCustom.default.isNonEmptyString(solution) ? (0, _valueAsArrayOfBoolean.default)(solution) : [];
     }),
 
@@ -1883,7 +1883,7 @@ define('pix-live/components/qcu-solution-panel', ['exports', 'pix-live/utils/lab
     challenge: null,
 
     solutionArray: Ember.computed('solution', function () {
-      var solution = this.get('solution.value');
+      var solution = this.get('solution');
       return _lodashCustom.default.isNonEmptyString(solution) ? (0, _valueAsArrayOfBoolean.default)(solution) : [];
     }),
 
@@ -1968,8 +1968,8 @@ define('pix-live/components/qroc-solution-panel', ['exports'], function (exports
       return answer;
     }),
 
-    solutionToDisplay: Ember.computed('solution.value', function () {
-      var solutionVariants = this.get('solution.value');
+    solutionToDisplay: Ember.computed('solution', function () {
+      var solutionVariants = this.get('solution');
       if (!solutionVariants) {
         return '';
       }
@@ -2004,11 +2004,11 @@ define('pix-live/components/qrocm-ind-solution-panel', ['exports', 'lodash', 'pi
 
   var QrocmIndSolutionPanel = Ember.Component.extend({
 
-    inputFields: Ember.computed('challenge.proposals', 'answer.value', 'solution.value', function () {
+    inputFields: Ember.computed('challenge.proposals', 'answer.value', 'solution', function () {
 
       var labels = (0, _labelsAsObject.default)(this.get('challenge.proposals'));
       var answers = (0, _answersAsObject.default)(this.get('answer.value'), _lodash.default.keys(labels));
-      var solutions = (0, _solutionAsObject.default)(this.get('solution.value'));
+      var solutions = (0, _solutionAsObject.default)(this.get('solution'));
       var resultDetails = (0, _resultDetailsAsObject.default)(this.get('answer.resultDetails'));
 
       var inputFields = [];
@@ -4577,7 +4577,7 @@ define('pix-live/instance-initializers/raven-setup', ['exports', 'raven', 'pix-l
     name: 'sentry-setup'
   };
 });
-define('pix-live/mirage/config', ['exports', 'pix-live/mirage/routes/get-answer', 'pix-live/mirage/routes/get-answer-by-challenge-and-assessment', 'pix-live/mirage/routes/get-assessment', 'pix-live/mirage/routes/get-assessment-solutions', 'pix-live/mirage/routes/get-user-me', 'pix-live/mirage/routes/get-challenge', 'pix-live/mirage/routes/get-challenges', 'pix-live/mirage/routes/get-course', 'pix-live/mirage/routes/get-courses', 'pix-live/mirage/routes/get-courses-of-the-week', 'pix-live/mirage/routes/get-next-challenge', 'pix-live/mirage/routes/get-organizations', 'pix-live/mirage/routes/get-snapshots', 'pix-live/mirage/routes/get-solutions', 'pix-live/mirage/routes/patch-answer', 'pix-live/mirage/routes/post-answers', 'pix-live/mirage/routes/post-assessments', 'pix-live/mirage/routes/post-authentications', 'pix-live/mirage/routes/post-certification-course', 'pix-live/mirage/routes/post-feedbacks', 'pix-live/mirage/routes/post-refresh-solution', 'ember-cli-mirage'], function (exports, _getAnswer, _getAnswerByChallengeAndAssessment, _getAssessment, _getAssessmentSolutions, _getUserMe, _getChallenge, _getChallenges, _getCourse, _getCourses, _getCoursesOfTheWeek, _getNextChallenge, _getOrganizations, _getSnapshots, _getSolutions, _patchAnswer, _postAnswers, _postAssessments, _postAuthentications, _postCertificationCourse, _postFeedbacks, _postRefreshSolution, _emberCliMirage) {
+define('pix-live/mirage/config', ['exports', 'pix-live/mirage/routes/get-answer', 'pix-live/mirage/routes/get-answer-by-challenge-and-assessment', 'pix-live/mirage/routes/get-assessment', 'pix-live/mirage/routes/get-user-me', 'pix-live/mirage/routes/get-challenge', 'pix-live/mirage/routes/get-challenges', 'pix-live/mirage/routes/get-course', 'pix-live/mirage/routes/get-courses', 'pix-live/mirage/routes/get-courses-of-the-week', 'pix-live/mirage/routes/get-next-challenge', 'pix-live/mirage/routes/get-organizations', 'pix-live/mirage/routes/get-snapshots', 'pix-live/mirage/routes/get-corrections', 'pix-live/mirage/routes/patch-answer', 'pix-live/mirage/routes/post-answers', 'pix-live/mirage/routes/post-assessments', 'pix-live/mirage/routes/post-authentications', 'pix-live/mirage/routes/post-certification-course', 'pix-live/mirage/routes/post-feedbacks', 'pix-live/mirage/routes/post-refresh-solution', 'ember-cli-mirage'], function (exports, _getAnswer, _getAnswerByChallengeAndAssessment, _getAssessment, _getUserMe, _getChallenge, _getChallenges, _getCourse, _getCourses, _getCoursesOfTheWeek, _getNextChallenge, _getOrganizations, _getSnapshots, _getCorrections, _patchAnswer, _postAnswers, _postAssessments, _postAuthentications, _postCertificationCourse, _postFeedbacks, _postRefreshSolution, _emberCliMirage) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -4606,7 +4606,6 @@ define('pix-live/mirage/config', ['exports', 'pix-live/mirage/routes/get-answer'
     this.get('/assessments/:id', _getAssessment.default);
     this.get('/assessments/:assessmentId/next/:challengeId', _getNextChallenge.default);
     this.get('/assessments/:assessmentId/next', _getNextChallenge.default);
-    this.get('/assessments/:assessmentId/solutions/:answerId', _getAssessmentSolutions.default);
 
     this.post('/answers', _postAnswers.default);
     this.get('/answers/:id', _getAnswer.default);
@@ -4629,7 +4628,7 @@ define('pix-live/mirage/config', ['exports', 'pix-live/mirage/routes/get-answer'
 
     this.get('/organizations', _getOrganizations.default);
 
-    this.get('/solutions', _getSolutions.default);
+    this.get('/corrections', _getCorrections.default);
 
     this.post('/snapshots');
     this.get('/snapshots/:id');
@@ -5157,38 +5156,6 @@ define('pix-live/mirage/data/feedbacks/ref-feedback', ['exports'], function (exp
     }
   };
 });
-define('pix-live/mirage/data/solutions/ref-qcu-solution', ['exports'], function (exports) {
-  'use strict';
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.default = {
-    data: {
-      type: 'solutions',
-      id: 'ref_solution_id',
-      attributes: {
-        value: '2'
-      }
-    }
-  };
-});
-define('pix-live/mirage/data/solutions/ref-solution', ['exports'], function (exports) {
-  'use strict';
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.default = {
-    data: {
-      type: 'solutions',
-      id: 'ref_solution_id',
-      attributes: {
-        value: '2,3'
-      }
-    }
-  };
-});
 define('pix-live/mirage/factories/area', ['exports', 'ember-cli-mirage'], function (exports, _emberCliMirage) {
   'use strict';
 
@@ -5222,6 +5189,21 @@ define('pix-live/mirage/factories/competence', ['exports', 'ember-cli-mirage'], 
     value: true
   });
   exports.default = _emberCliMirage.Factory.extend({});
+});
+define('pix-live/mirage/factories/correction', ['exports', 'ember-cli-mirage'], function (exports, _emberCliMirage) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = _emberCliMirage.Factory.extend({
+    solution: function solution() {
+      return '2';
+    },
+    hint: function hint(i) {
+      return 'Hint number ' + i;
+    }
+  });
 });
 define('pix-live/mirage/factories/course', ['exports', 'ember-cli-mirage'], function (exports, _emberCliMirage) {
   'use strict';
@@ -5272,18 +5254,6 @@ define('pix-live/mirage/factories/snapshot', ['exports', 'ember-cli-mirage'], fu
       return _emberCliMirage.faker.list.random(2, 3, 4, 8, 10, 12)();
     }
 
-  });
-});
-define('pix-live/mirage/factories/solution', ['exports', 'ember-cli-mirage'], function (exports, _emberCliMirage) {
-  'use strict';
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.default = _emberCliMirage.Factory.extend({
-    value: function value(i) {
-      return 'Solution number ' + i;
-    }
   });
 });
 define('pix-live/mirage/factories/user', ['exports', 'ember-cli-mirage'], function (exports, _emberCliMirage) {
@@ -5423,6 +5393,14 @@ define('pix-live/mirage/fixtures/competences', ['exports'], function (exports) {
   });
   exports.default = [{ id: 1, name: 'Mener une recherche d\'information', level: -1, index: '1.1', areaId: 1, courseId: 'ref_course_id' }, { id: 2, name: 'Gérer des données', level: 0, index: '1.2', areaId: 1, courseId: 'ref_timed_challenge_course_id' }, { id: 3, name: 'Traiter des données', level: 1, index: '1.3', areaId: 1 }, { id: 4, name: 'Interagir', level: 2, index: '2.1', areaId: 2 }, { id: 5, name: 'Partager et publier', level: 3, index: '2.2', areaId: 2 }, { id: 6, name: 'Collaborer', level: 4, index: '2.3', areaId: 2 }, { id: 7, name: 'Gérer sa présence en ligne', level: 5, index: '2.4', areaId: 2 }, { id: 8, name: 'Développer des documents textuels', level: -1, index: '3.1', areaId: 3, courseId: 'recNPB7dTNt5krlMA' }, { id: 9, name: 'Développer des documents multimedia', level: -1, index: '3.2', areaId: 3, courseId: 'recNPB7dTNt5krlMA', assessmentId: 2 }, { id: 10, name: 'Adapter les documents à leur finalité', level: -1, index: '3.3', areaId: 3 }, { id: 11, name: 'Programmer', level: -1, index: '3.4', areaId: 3 }, { id: 12, name: 'Sécurise environnement num', level: -1, index: '4.1', areaId: 4 }, { id: 13, name: 'Protéger les données personnelles et la vie privée', level: -1, index: '4.2', areaId: 4 }, { id: 14, name: 'Protéger la santé, le bien-être et l\'environnement', level: -1, index: '4.3', areaId: 4 }, { id: 15, name: 'Résoudre problèmes techniques', level: -1, index: '5.1', areaId: 5 }, { id: 16, name: 'Construire un environnement numérique', level: -1, index: '5.2', areaId: 5 }];
 });
+define('pix-live/mirage/fixtures/corrections', ['exports'], function (exports) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = [{ id: 'ref_correction_id', solution: '2' }, { id: 'ref_correction_id2', solution: '2,3' }];
+});
 define('pix-live/mirage/fixtures/courses', ['exports'], function (exports) {
   'use strict';
 
@@ -5468,14 +5446,6 @@ define('pix-live/mirage/fixtures/feedbacks', ['exports'], function (exports) {
     value: true
   });
   exports.default = [{ id: 'ref_feedback_id', email: 'shi@fu.me', content: 'Some content', assessment: 'assessment_id', challenge: 'challenge_id' }];
-});
-define('pix-live/mirage/fixtures/solutions', ['exports'], function (exports) {
-  'use strict';
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.default = [{ id: 'ref_solution_id', value: '2' }, { id: 'ref_solution_id2', value: '2,3' }];
 });
 define('pix-live/mirage/routes/get-answer-by-challenge-and-assessment', ['exports', 'pix-live/utils/lodash-custom', 'pix-live/mirage/data/answers/ref-qcm-answer', 'pix-live/mirage/data/answers/ref-qcu-answer', 'pix-live/mirage/data/answers/ref-qroc-answer', 'pix-live/mirage/data/answers/ref-qrocm-answer', 'pix-live/mirage/data/answers/ref-timed-answer', 'pix-live/mirage/data/answers/ref-timed-answer-bis'], function (exports, _lodashCustom, _refQcmAnswer, _refQcuAnswer, _refQrocAnswer, _refQrocmAnswer, _refTimedAnswer, _refTimedAnswerBis) {
   'use strict';
@@ -5546,18 +5516,6 @@ define('pix-live/mirage/routes/get-answer', ['exports', 'pix-live/utils/lodash-c
     }
   };
 });
-define('pix-live/mirage/routes/get-assessment-solutions', ['exports', 'pix-live/mirage/data/solutions/ref-solution', 'pix-live/mirage/data/solutions/ref-qcu-solution'], function (exports, _refSolution, _refQcuSolution) {
-  'use strict';
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-
-  exports.default = function (schema, request) {
-
-    return request.params.answerId === 'ref_answer_qcu_id' ? _refQcuSolution.default : _refSolution.default;
-  };
-});
 define('pix-live/mirage/routes/get-assessment', ['exports', 'pix-live/utils/lodash-custom', 'pix-live/mirage/data/assessments/ref-assessment', 'pix-live/mirage/data/assessments/ref-assessment-timed-challenges'], function (exports, _lodashCustom, _refAssessment, _refAssessmentTimedChallenges) {
   'use strict';
 
@@ -5620,6 +5578,17 @@ define('pix-live/mirage/routes/get-challenges', ['exports', 'pix-live/mirage/dat
     return {
       data: [_refQcmChallenge.default.data, _refQcuChallenge.default.data, _refQrocChallenge.default.data, _refQrocmChallenge.default.data, _refTimedChallenge.default.data, _refTimedChallengeBis.default.data]
     };
+  };
+});
+define("pix-live/mirage/routes/get-corrections", ["exports"], function (exports) {
+  "use strict";
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  exports.default = function (schema) {
+    return schema.corrections.all();
   };
 });
 define('pix-live/mirage/routes/get-course', ['exports', 'pix-live/utils/lodash-custom', 'pix-live/mirage/data/courses/ref-course', 'pix-live/mirage/data/courses/highlighted-course', 'pix-live/mirage/data/courses/ref-course-timed-challenges'], function (exports, _lodashCustom, _refCourse, _highlightedCourse, _refCourseTimedChallenges) {
@@ -5765,17 +5734,6 @@ define("pix-live/mirage/routes/get-snapshots", ["exports"], function (exports) {
   exports.default = function (schema, request) {
     var organizationId = request.params.id;
     return schema.snapshots.where({ organizationId: organizationId });
-  };
-});
-define("pix-live/mirage/routes/get-solutions", ["exports"], function (exports) {
-  "use strict";
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-
-  exports.default = function (schema) {
-    return schema.solutions.all();
   };
 });
 define('pix-live/mirage/routes/get-user-me', ['exports'], function (exports) {
@@ -6043,7 +6001,7 @@ define('pix-live/mirage/scenarios/default', ['exports'], function (exports) {
       type: 'CERTIFICATION'
     });
 
-    server.create('solution');
+    server.create('correction');
 
     prescriber.organization = company;
     company.user = prescriber;
@@ -6243,6 +6201,21 @@ define('pix-live/models/competence', ['exports', 'ember-data'], function (export
     status: attr('string')
   });
 });
+define('pix-live/models/correction', ['exports', 'ember-data'], function (exports, _emberData) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  var Model = _emberData.default.Model,
+      attr = _emberData.default.attr;
+  exports.default = Model.extend({
+
+    solution: attr('string'),
+    hint: attr('string')
+
+  });
+});
 define('pix-live/models/course', ['exports', 'ember-data'], function (exports, _emberData) {
   'use strict';
 
@@ -6339,20 +6312,6 @@ define('pix-live/models/snapshot', ['exports', 'ember-data'], function (exports,
     numberOfTestsFinished: Ember.computed('testsFinished', function () {
       return this.get('testsFinished') || 0;
     })
-  });
-});
-define('pix-live/models/solution', ['exports', 'ember-data'], function (exports, _emberData) {
-  'use strict';
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  var Model = _emberData.default.Model,
-      attr = _emberData.default.attr;
-  exports.default = Model.extend({
-
-    value: attr('string')
-
   });
 });
 define('pix-live/models/user', ['exports', 'ember-data'], function (exports, _emberData) {
@@ -6588,8 +6547,8 @@ define('pix-live/routes/assessments/comparison', ['exports', 'ember-routable-mod
       return Ember.RSVP.hash({
         index: index,
         answer: answer,
-        solution: store.query('solution', { answerId: answerId }).then(function (solutions) {
-          return solutions.get('firstObject');
+        correction: store.query('correction', { answerId: answerId }).then(function (corrections) {
+          return corrections.get('firstObject');
         }),
         challenge: answer.then(function (foundAnswer) {
           return store.findRecord('challenge', foundAnswer.get('challenge.id'));
@@ -7635,7 +7594,7 @@ define("pix-live/templates/assessments/comparison", ["exports"], function (expor
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "i4rGv3n+", "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"solution\",\"index\"],[[20,[\"model\",\"answer\"]],[20,[\"model\",\"challenge\"]],[20,[\"model\",\"solution\"]],[20,[\"model\",\"index\"]]]]],false],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/assessments/comparison.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "9ia04Ood", "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[20,[\"model\",\"answer\"]],[20,[\"model\",\"challenge\"]],[20,[\"model\",\"correction\"]],[20,[\"model\",\"index\"]]]]],false],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/assessments/comparison.hbs" } });
 });
 define("pix-live/templates/assessments/rating", ["exports"], function (exports) {
   "use strict";
@@ -7843,7 +7802,7 @@ define("pix-live/templates/components/comparison-window", ["exports"], function 
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "fLz73/+W", "block": "{\"symbols\":[],\"statements\":[[6,\"div\"],[9,\"class\",\"routable-modal--dialog comparison-window--dialog\"],[7],[0,\"\\n\\n  \"],[6,\"div\"],[9,\"class\",\"routable-modal--content comparison-window--content\"],[7],[0,\"\\n\\n    \"],[6,\"div\"],[9,\"class\",\"routable-modal--header comparison-window__header\"],[7],[0,\"\\n\\n\\n\"],[4,\"routable-modal-close-button\",null,[[\"class\"],[\"routable-modal--close-button\"]],{\"statements\":[[0,\"        \"],[6,\"div\"],[9,\"class\",\"close-button-container\"],[7],[0,\"\\n          \"],[6,\"div\"],[7],[0,\"fermer\"],[8],[0,\"\\n          \"],[6,\"div\"],[7],[0,\"\\n            \"],[6,\"img\"],[9,\"src\",\"/images/comparison-window/icon-close-modal.svg\"],[9,\"alt\",\"Fermer la fenêtre modale\"],[9,\"width\",\"24\"],[9,\"height\",\"24\"],[7],[8],[0,\"\\n          \"],[8],[0,\"\\n        \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"comparison-window__result-item-index\"],[7],[0,\"\\n        \"],[1,[18,\"index\"],false],[0,\"\\n      \"],[8],[0,\"\\n\\n      \"],[6,\"div\"],[9,\"class\",\"comparison-window__result-item-line\"],[7],[0,\"\\n      \"],[8],[0,\"\\n\\n      \"],[6,\"div\"],[9,\"class\",\"comparison-window__title\"],[7],[0,\"\\n        \"],[6,\"div\"],[9,\"data-toggle\",\"tooltip\"],[9,\"data-placement\",\"top\"],[10,\"title\",[26,[[20,[\"resultItem\",\"tooltip\"]]]]],[7],[0,\"\\n          \"],[6,\"img\"],[10,\"class\",[26,[\"comparison-window__result-icon comparison-window__result-icon--\",[20,[\"resultItem\",\"status\"]]]]],[10,\"src\",[18,\"resultItemIcon\"],null],[9,\"alt\",\"\"],[7],[8],[0,\"\\n        \"],[8],[0,\"\\n      \"],[8],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"comparison-window__title-text\"],[7],[1,[20,[\"resultItem\",\"title\"]],false],[8],[0,\"\\n    \"],[8],[0,\"\\n\\n    \"],[6,\"div\"],[9,\"class\",\"routable-modal--body comparison-window--body\"],[7],[0,\"\\n\\n      \"],[6,\"div\"],[9,\"class\",\"rounded-panel comparison-window__instruction\"],[7],[0,\"\\n        \"],[6,\"div\"],[9,\"class\",\"rounded-panel__row \"],[7],[0,\"\\n          \"],[1,[25,\"markdown-to-html\",null,[[\"class\",\"markdown\"],[\"challenge-statement__instruction\",[20,[\"challenge\",\"instruction\"]]]]],false],[0,\"\\n        \"],[8],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"challenge\",\"illustrationUrl\"]]],null,{\"statements\":[[0,\"          \"],[6,\"div\"],[9,\"class\",\"rounded-panel__row challenge-statement__illustration-section\"],[7],[0,\"\\n            \"],[6,\"img\"],[9,\"class\",\"challenge-statement__illustration\"],[10,\"src\",[26,[[20,[\"challenge\",\"illustrationUrl\"]]]]],[9,\"alt\",\"Illustration de l'épreuve\"],[7],[8],[0,\"\\n          \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"      \"],[8],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"isAssessmentChallengeTypeQcm\"]]],null,{\"statements\":[[0,\"        \"],[1,[25,\"qcm-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[20,[\"challenge\"]],[20,[\"answer\"]],[20,[\"solution\"]]]]],false],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"isAssessmentChallengeTypeQcu\"]]],null,{\"statements\":[[0,\"        \"],[1,[25,\"qcu-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[20,[\"challenge\"]],[20,[\"answer\"]],[20,[\"solution\"]]]]],false],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\"],[4,\"if\",[[20,[\"isAssessmentChallengeTypeQroc\"]]],null,{\"statements\":[[0,\"        \"],[6,\"div\"],[9,\"class\",\"comparison-window__corrected-answers comparison-window__corrected-answers--qroc\"],[7],[0,\"\\n          \"],[1,[25,\"qroc-solution-panel\",null,[[\"answer\",\"solution\"],[[20,[\"answer\"]],[20,[\"solution\"]]]]],false],[0,\"\\n        \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\"],[4,\"if\",[[20,[\"isAssessmentChallengeTypeQrocmInd\"]]],null,{\"statements\":[[0,\"        \"],[6,\"div\"],[9,\"class\",\"comparison-window__corrected-answers comparison-window__corrected-answers--qrocm\"],[7],[0,\"\\n          \"],[1,[25,\"qrocm-ind-solution-panel\",null,[[\"answer\",\"solution\",\"challenge\"],[[20,[\"answer\"]],[20,[\"solution\"]],[20,[\"challenge\"]]]]],false],[0,\"\\n        \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n      \"],[1,[25,\"tutorial-panel\",null,[[\"resultItemStatus\",\"hint\"],[[20,[\"resultItem\",\"status\"]],[20,[\"solution\",\"hint\"]]]]],false],[0,\"\\n    \"],[8],[0,\"\\n\\n    \"],[6,\"div\"],[9,\"class\",\"routable-modal--footer\"],[7],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"comparison-window__feedback-panel\"],[7],[0,\"\\n        \"],[1,[25,\"feedback-panel\",null,[[\"assessment\",\"challenge\",\"collapsible\"],[[20,[\"answer\",\"assessment\"]],[20,[\"challenge\"]],false]]],false],[0,\"\\n      \"],[8],[0,\"\\n    \"],[8],[0,\"\\n  \"],[8],[0,\"\\n\"],[8],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/comparison-window.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "4oWG52eg", "block": "{\"symbols\":[],\"statements\":[[6,\"div\"],[9,\"class\",\"routable-modal--dialog comparison-window--dialog\"],[7],[0,\"\\n\\n  \"],[6,\"div\"],[9,\"class\",\"routable-modal--content comparison-window--content\"],[7],[0,\"\\n\\n    \"],[6,\"div\"],[9,\"class\",\"routable-modal--header comparison-window__header\"],[7],[0,\"\\n\\n\\n\"],[4,\"routable-modal-close-button\",null,[[\"class\"],[\"routable-modal--close-button\"]],{\"statements\":[[0,\"        \"],[6,\"div\"],[9,\"class\",\"close-button-container\"],[7],[0,\"\\n          \"],[6,\"div\"],[7],[0,\"fermer\"],[8],[0,\"\\n          \"],[6,\"div\"],[7],[0,\"\\n            \"],[6,\"img\"],[9,\"src\",\"/images/comparison-window/icon-close-modal.svg\"],[9,\"alt\",\"Fermer la fenêtre modale\"],[9,\"width\",\"24\"],[9,\"height\",\"24\"],[7],[8],[0,\"\\n          \"],[8],[0,\"\\n        \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"comparison-window__result-item-index\"],[7],[0,\"\\n        \"],[1,[18,\"index\"],false],[0,\"\\n      \"],[8],[0,\"\\n\\n      \"],[6,\"div\"],[9,\"class\",\"comparison-window__result-item-line\"],[7],[0,\"\\n      \"],[8],[0,\"\\n\\n      \"],[6,\"div\"],[9,\"class\",\"comparison-window__title\"],[7],[0,\"\\n        \"],[6,\"div\"],[9,\"data-toggle\",\"tooltip\"],[9,\"data-placement\",\"top\"],[10,\"title\",[26,[[20,[\"resultItem\",\"tooltip\"]]]]],[7],[0,\"\\n          \"],[6,\"img\"],[10,\"class\",[26,[\"comparison-window__result-icon comparison-window__result-icon--\",[20,[\"resultItem\",\"status\"]]]]],[10,\"src\",[18,\"resultItemIcon\"],null],[9,\"alt\",\"\"],[7],[8],[0,\"\\n        \"],[8],[0,\"\\n      \"],[8],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"comparison-window__title-text\"],[7],[1,[20,[\"resultItem\",\"title\"]],false],[8],[0,\"\\n    \"],[8],[0,\"\\n\\n    \"],[6,\"div\"],[9,\"class\",\"routable-modal--body comparison-window--body\"],[7],[0,\"\\n\\n      \"],[6,\"div\"],[9,\"class\",\"rounded-panel comparison-window__instruction\"],[7],[0,\"\\n        \"],[6,\"div\"],[9,\"class\",\"rounded-panel__row \"],[7],[0,\"\\n          \"],[1,[25,\"markdown-to-html\",null,[[\"class\",\"markdown\"],[\"challenge-statement__instruction\",[20,[\"challenge\",\"instruction\"]]]]],false],[0,\"\\n        \"],[8],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"challenge\",\"illustrationUrl\"]]],null,{\"statements\":[[0,\"          \"],[6,\"div\"],[9,\"class\",\"rounded-panel__row challenge-statement__illustration-section\"],[7],[0,\"\\n            \"],[6,\"img\"],[9,\"class\",\"challenge-statement__illustration\"],[10,\"src\",[26,[[20,[\"challenge\",\"illustrationUrl\"]]]]],[9,\"alt\",\"Illustration de l'épreuve\"],[7],[8],[0,\"\\n          \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"      \"],[8],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"isAssessmentChallengeTypeQcm\"]]],null,{\"statements\":[[0,\"        \"],[1,[25,\"qcm-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[20,[\"challenge\"]],[20,[\"answer\"]],[20,[\"correction\",\"solution\"]]]]],false],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"isAssessmentChallengeTypeQcu\"]]],null,{\"statements\":[[0,\"        \"],[1,[25,\"qcu-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[20,[\"challenge\"]],[20,[\"answer\"]],[20,[\"correction\",\"solution\"]]]]],false],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\"],[4,\"if\",[[20,[\"isAssessmentChallengeTypeQroc\"]]],null,{\"statements\":[[0,\"        \"],[6,\"div\"],[9,\"class\",\"comparison-window__corrected-answers comparison-window__corrected-answers--qroc\"],[7],[0,\"\\n          \"],[1,[25,\"qroc-solution-panel\",null,[[\"answer\",\"solution\"],[[20,[\"answer\"]],[20,[\"correction\",\"solution\"]]]]],false],[0,\"\\n        \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\"],[4,\"if\",[[20,[\"isAssessmentChallengeTypeQrocmInd\"]]],null,{\"statements\":[[0,\"        \"],[6,\"div\"],[9,\"class\",\"comparison-window__corrected-answers comparison-window__corrected-answers--qrocm\"],[7],[0,\"\\n          \"],[1,[25,\"qrocm-ind-solution-panel\",null,[[\"answer\",\"solution\",\"challenge\"],[[20,[\"answer\"]],[20,[\"correction\",\"solution\"]],[20,[\"challenge\"]]]]],false],[0,\"\\n        \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n      \"],[1,[25,\"tutorial-panel\",null,[[\"resultItemStatus\",\"hint\"],[[20,[\"resultItem\",\"status\"]],[20,[\"correction\",\"hint\"]]]]],false],[0,\"\\n    \"],[8],[0,\"\\n\\n    \"],[6,\"div\"],[9,\"class\",\"routable-modal--footer\"],[7],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"comparison-window__feedback-panel\"],[7],[0,\"\\n        \"],[1,[25,\"feedback-panel\",null,[[\"assessment\",\"challenge\",\"collapsible\"],[[20,[\"answer\",\"assessment\"]],[20,[\"challenge\"]],false]]],false],[0,\"\\n      \"],[8],[0,\"\\n    \"],[8],[0,\"\\n  \"],[8],[0,\"\\n\"],[8],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/comparison-window.hbs" } });
 });
 define("pix-live/templates/components/competence-area-list", ["exports"], function (exports) {
   "use strict";
@@ -8478,14 +8437,6 @@ define('pix-live/tests/mirage/mirage.lint-test', [], function () {
       // test passed
     });
 
-    it('mirage/data/solutions/ref-qcu-solution.js', function () {
-      // test passed
-    });
-
-    it('mirage/data/solutions/ref-solution.js', function () {
-      // test passed
-    });
-
     it('mirage/factories/area.js', function () {
       // test passed
     });
@@ -8498,6 +8449,10 @@ define('pix-live/tests/mirage/mirage.lint-test', [], function () {
       // test passed
     });
 
+    it('mirage/factories/correction.js', function () {
+      // test passed
+    });
+
     it('mirage/factories/course.js', function () {
       // test passed
     });
@@ -8507,10 +8462,6 @@ define('pix-live/tests/mirage/mirage.lint-test', [], function () {
     });
 
     it('mirage/factories/snapshot.js', function () {
-      // test passed
-    });
-
-    it('mirage/factories/solution.js', function () {
       // test passed
     });
 
@@ -8538,6 +8489,10 @@ define('pix-live/tests/mirage/mirage.lint-test', [], function () {
       // test passed
     });
 
+    it('mirage/fixtures/corrections.js', function () {
+      // test passed
+    });
+
     it('mirage/fixtures/courses.js', function () {
       // test passed
     });
@@ -8546,19 +8501,11 @@ define('pix-live/tests/mirage/mirage.lint-test', [], function () {
       // test passed
     });
 
-    it('mirage/fixtures/solutions.js', function () {
-      // test passed
-    });
-
     it('mirage/routes/get-answer-by-challenge-and-assessment.js', function () {
       // test passed
     });
 
     it('mirage/routes/get-answer.js', function () {
-      // test passed
-    });
-
-    it('mirage/routes/get-assessment-solutions.js', function () {
       // test passed
     });
 
@@ -8571,6 +8518,10 @@ define('pix-live/tests/mirage/mirage.lint-test', [], function () {
     });
 
     it('mirage/routes/get-challenges.js', function () {
+      // test passed
+    });
+
+    it('mirage/routes/get-corrections.js', function () {
       // test passed
     });
 
@@ -8595,10 +8546,6 @@ define('pix-live/tests/mirage/mirage.lint-test', [], function () {
     });
 
     it('mirage/routes/get-snapshots.js', function () {
-      // test passed
-    });
-
-    it('mirage/routes/get-solutions.js', function () {
       // test passed
     });
 
@@ -9196,6 +9143,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"name":"pix-live","version":"1.45.0+555fc386"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"name":"pix-live","version":"1.45.0+68363461"});
 }
 //# sourceMappingURL=pix-live.map

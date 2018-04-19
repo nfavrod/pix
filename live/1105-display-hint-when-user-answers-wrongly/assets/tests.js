@@ -3151,7 +3151,7 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
-    it('adapters/solution.js', function () {
+    it('adapters/correction.js', function () {
       // test passed
     });
 
@@ -3491,6 +3491,10 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
+    it('models/correction.js', function () {
+      // test passed
+    });
+
     it('models/course.js', function () {
       // test passed
     });
@@ -3512,10 +3516,6 @@ define('pix-live/tests/app.lint-test', [], function () {
     });
 
     it('models/snapshot.js', function () {
-      // test passed
-    });
-
-    it('models/solution.js', function () {
       // test passed
     });
 
@@ -4661,7 +4661,7 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
 
       var answer = void 0;
       var challenge = void 0;
-      var solution = void 0;
+      var correction = void 0;
 
       (0, _mocha.beforeEach)(function () {
         answer = Ember.Object.create({ value: '1,2', result: 'ko' });
@@ -4669,19 +4669,19 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
           instruction: 'This is the instruction',
           proposals: '' + '- 1ere possibilite\n ' + '- 2eme possibilite\n ' + '- 3eme possibilite\n' + '- 4eme possibilite'
         });
-        solution = Ember.Object.create({ value: '2,3' });
+        correction = Ember.Object.create({ solution: '2,3' });
 
         this.set('answer', answer);
         this.set('challenge', challenge);
-        this.set('solution', solution);
+        this.set('correction', correction);
         this.set('index', '3');
       });
 
       (0, _mocha.it)('renders', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "AcsSI407",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"solution\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"solution\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
+          "id": "Dd9zQ240",
+          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"correction\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
         // then
@@ -4691,8 +4691,8 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
       (0, _mocha.it)('should render challenge result in the header', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "AcsSI407",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"solution\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"solution\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
+          "id": "Dd9zQ240",
+          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"correction\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
         // then
@@ -4702,8 +4702,8 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
       (0, _mocha.it)('should render challenge instruction', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "AcsSI407",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"solution\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"solution\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
+          "id": "Dd9zQ240",
+          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"correction\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
         // then
@@ -4713,8 +4713,8 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
       (0, _mocha.it)('should not render corrected answers when challenge has no type', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "AcsSI407",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"solution\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"solution\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
+          "id": "Dd9zQ240",
+          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"correction\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
         // then
@@ -4727,8 +4727,8 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
         this.set('challenge', challenge);
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "AcsSI407",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"solution\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"solution\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
+          "id": "Dd9zQ240",
+          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"correction\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
         // then
@@ -4738,13 +4738,13 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
       (0, _mocha.it)('should render corrected answers when challenge type is QROCM-ind', function () {
         // given
         challenge = Ember.Object.create({ type: 'QROCM-ind', proposals: '' });
-        solution = Ember.Object.create({ value: '' });
+        correction = Ember.Object.create({ solution: '' });
         this.set('challenge', challenge);
-        this.set('solution', solution);
+        this.set('correction', correction);
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "AcsSI407",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"solution\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"solution\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
+          "id": "Dd9zQ240",
+          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"correction\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
         // then
@@ -4757,8 +4757,8 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
         this.set('challenge', challenge);
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "AcsSI407",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"solution\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"solution\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
+          "id": "Dd9zQ240",
+          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"correction\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
         // then
@@ -4768,8 +4768,8 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
       (0, _mocha.it)('should render a feedback panel already opened', function () {
         //when
         this.render(Ember.HTMLBars.template({
-          "id": "AcsSI407",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"solution\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"solution\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
+          "id": "Dd9zQ240",
+          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"correction\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
         //then
@@ -4797,8 +4797,8 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
 
           // when
           this.render(Ember.HTMLBars.template({
-            "id": "AcsSI407",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"solution\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"solution\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
+            "id": "Dd9zQ240",
+            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"correction\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -4812,12 +4812,12 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
       (0, _mocha.it)('should render a tutorial panel with a hint', function () {
         // given
         this.set('answer', { result: { status: 'ko' } });
-        this.set('solution', { hint: 'Conseil : mangez des épinards.' });
+        this.set('correction', { hint: 'Conseil : mangez des épinards.' });
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "JSd4PDHG",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"solution\"],[[20,[\"answer\"]],[20,[\"solution\"]]]]],false]],\"hasEval\":false}",
+          "id": "JwDJ+hAw",
+          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"correction\"],[[20,[\"answer\"]],[20,[\"correction\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -7185,9 +7185,7 @@ define('pix-live/tests/integration/components/qcm-solution-panel-test', ['chai',
             type: 'QCM'
           });
 
-          solution = Ember.Object.create({
-            id: 'solution_id', value: '2,3'
-          });
+          solution = '2,3';
 
           answer = Ember.Object.create(correctAnswer);
         });
@@ -7405,9 +7403,7 @@ define('pix-live/tests/integration/components/qcu-solution-panel-test', ['chai',
             type: 'QCM'
           });
 
-          solution = Ember.Object.create({
-            id: 'solution_id', value: '2'
-          });
+          solution = '2';
 
           answer = Ember.Object.create(correctAnswer);
         });
@@ -7728,7 +7724,7 @@ define('pix-live/tests/integration/components/qrocm-ind-solution-panel-test', ['
       assessment: assessment,
       challenge: challenge
     });
-    var solution = Ember.Object.create({ value: 'key1:\n- rightAnswer1\nkey2:\n- rightAnswer20\n- rightAnswer21\nkey3 :\n- rightAnswer3' });
+    var solution = 'key1:\n- rightAnswer1\nkey2:\n- rightAnswer20\n-' + ' rightAnswer21\nkey3 :\n-' + ' rightAnswer3';
 
     (0, _mocha.beforeEach)(function () {
       this.set('answer', answer);
@@ -10567,7 +10563,7 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
-    it('unit/adapters/solution-test.js', function () {
+    it('unit/adapters/correction-test.js', function () {
       // test passed
     });
 
@@ -10956,12 +10952,12 @@ define('pix-live/tests/unit/adapters/application-test', ['chai', 'mocha', 'ember
     });
   });
 });
-define('pix-live/tests/unit/adapters/solution-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+define('pix-live/tests/unit/adapters/correction-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
   'use strict';
 
-  (0, _mocha.describe)('Unit | Adapters | solution', function () {
+  (0, _mocha.describe)('Unit | Adapters | correction', function () {
 
-    (0, _emberMocha.setupTest)('adapter:solution', {
+    (0, _emberMocha.setupTest)('adapter:correction', {
       needs: ['service:session']
     });
 
@@ -12752,7 +12748,6 @@ define('pix-live/tests/unit/components/qroc-solution-panel-test', ['chai', 'moch
     (0, _emberMocha.setupTest)('component:qroc-solution-panel', {});
     var rightAnswer = { result: 'ok' };
     var wrongAnswer = { result: 'ko' };
-    //const noAnswer = { result: 'aband' };
 
     (0, _mocha.describe)('#isResultOk', function () {
 
@@ -12810,9 +12805,7 @@ define('pix-live/tests/unit/components/qroc-solution-panel-test', ['chai', 'moch
 
       (0, _mocha.it)('should return the first solution if the solution has some variants', function () {
         // given
-        var solution = {
-          value: 'Reponse\nreponse\nréponse'
-        };
+        var solution = 'Reponse\nreponse\nréponse';
         var component = this.subject();
         component.set('solution', solution);
         // when
@@ -12823,9 +12816,7 @@ define('pix-live/tests/unit/components/qroc-solution-panel-test', ['chai', 'moch
 
       (0, _mocha.it)('should return the solution', function () {
         // given
-        var solution = {
-          value: 'Reponse'
-        };
+        var solution = 'Reponse';
         var component = this.subject();
         component.set('solution', solution);
         // when
@@ -12836,9 +12827,7 @@ define('pix-live/tests/unit/components/qroc-solution-panel-test', ['chai', 'moch
 
       (0, _mocha.it)('should return an empty string if the solution is null', function () {
         // given
-        var emptySolution = {
-          value: ''
-        };
+        var emptySolution = '';
         var component = this.subject();
         component.set('solution', emptySolution);
         // when
@@ -12849,9 +12838,7 @@ define('pix-live/tests/unit/components/qroc-solution-panel-test', ['chai', 'moch
 
       (0, _mocha.it)('should return an empty string if the solution is an empty String', function () {
         // given
-        var solutionNull = {
-          value: null
-        };
+        var solutionNull = null;
         var component = this.subject();
         component.set('solution', solutionNull);
         // when
@@ -12878,7 +12865,7 @@ define('pix-live/tests/unit/components/qrocm-ind-solution-panel-test', ['chai', 
       (0, _mocha.beforeEach)(function () {
         challenge = {};
         answer = {};
-        solution = {};
+        solution = '';
       });
 
       function _getComponentInputFields(context) {
@@ -12893,7 +12880,7 @@ define('pix-live/tests/unit/components/qrocm-ind-solution-panel-test', ['chai', 
         //Given
         challenge = { proposals: 'content : ${smiley1}\n\ntriste : ${smiley2}' };
         answer = { value: 'smiley1: \':)\' smiley2: \':(\'', resultDetails: 'smiley1: true\nsmiley2: true' };
-        solution = { value: 'smiley1: \n - :-)\n - :)\n - :-D\n - :D\n - :))\n\nsmiley2:\n - :-(\n - :(\n - :((' };
+        solution = 'smiley1: \n - :-)\n - :)\n - :-D\n - :D\n - :))\n\nsmiley2:\n - :-(\n - :(\n - :((';
 
         var expectedFieldsData = [{
           label: 'content : ',
@@ -12920,7 +12907,7 @@ define('pix-live/tests/unit/components/qrocm-ind-solution-panel-test', ['chai', 
         //Given
         challenge = { proposals: 'Clé USB : ${num1}\n\nCarte mémoire (SD) : ${num2}' };
         answer = { value: 'num1: \'1\' num2: \'2\'', resultDetails: 'num1: false\nnum2: false' };
-        solution = { value: 'num1: \n - 2\n\nnum2:\n - 1' };
+        solution = 'num1: \n - 2\n\nnum2:\n - 1';
         var result = [{
           label: 'Clé USB : ',
           answer: '1',
@@ -12946,7 +12933,7 @@ define('pix-live/tests/unit/components/qrocm-ind-solution-panel-test', ['chai', 
         //Given
         challenge = { proposals: 'Clé USB : ${num1}\n\nCarte mémoire (SD) : ${num2}' };
         answer = { value: 'num1: \'\' num2: \'2\'', resultDetails: 'num1: false\nnum2: false' };
-        solution = { value: 'num1: \n - 2\n\nnum2:\n - 1' };
+        solution = 'num1: \n - 2\n\nnum2:\n - 1';
 
         var result = [{
           label: 'Clé USB : ',
@@ -12976,7 +12963,7 @@ define('pix-live/tests/unit/components/qrocm-ind-solution-panel-test', ['chai', 
           value: 'num1: \'1\' num2: \'2\' num3: \'3\' num4: \'4\' num5: \'5\' num6: \'6\'',
           resultDetails: 'num1: false\nnum2: false\nnum3: false\nnum4: false\nnum5: true\nnum6: false'
         };
-        solution = { value: 'num1: \n - 2\n\nnum2:\n - 3\n - 4\n\nnum3:\n - 6\n\nnum4:\n - 1\n\nnum5:\n - 5\n\nnum6:\n - 2' };
+        solution = 'num1: \n - 2\n\nnum2:\n - 3\n - 4\n\nnum3:\n - 6\n\nnum4:\n - 1\n\nnum5:\n - 5\n\nnum6:\n - 2';
 
         var result = [{
           label: '- alain@pix.fr : ',
@@ -13027,7 +13014,7 @@ define('pix-live/tests/unit/components/qrocm-ind-solution-panel-test', ['chai', 
         // given
         challenge = { proposals: '- Combien le dossier "projet PIX" contient-il de dossiers ? ${Num1}\n\n- Combien le dossier "images" contient-il de fichiers ? ${Num2}' };
         answer = { value: 'Num1: \'2\' Num2: \'3\'', resultDetails: 'Num1: false\nNum2: false' };
-        solution = { value: 'Num1:\n - 1\n\nNum2:\n - 6' };
+        solution = 'Num1:\n - 1\n\nNum2:\n - 6';
 
         var result = [{
           label: '- Combien le dossier "projet PIX" contient-il de dossiers ? ',
@@ -13054,7 +13041,7 @@ define('pix-live/tests/unit/components/qrocm-ind-solution-panel-test', ['chai', 
         // given
         challenge = { proposals: 'Clé USB : ${num1}\n\nCarte mémoire (SD) : ${num2}' };
         answer = { value: '#ABAND#', resultDetails: 'num1: false\nnum2: false' };
-        solution = { value: 'num1: \n - 2\n\nnum2:\n - 1' };
+        solution = 'num1: \n - 2\n\nnum2:\n - 1';
 
         var result = [{
           label: 'Clé USB : ',
@@ -13085,7 +13072,7 @@ define('pix-live/tests/unit/components/qrocm-ind-solution-panel-test', ['chai', 
         // given
         challenge = { proposals: 'Clé USB : ${num1}' };
         answer = { value: 'num1: \'2\'', resultDetails: 'num1: true' };
-        solution = { value: 'num1: \n - 2' };
+        solution = 'num1: \n - 2';
 
         var result = [{
           label: 'Clé USB : ',
