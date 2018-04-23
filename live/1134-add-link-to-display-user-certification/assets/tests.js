@@ -4329,14 +4329,14 @@ define('pix-live/tests/integration/components/certifications-list-test', ['chai'
 
       var certification1 = Ember.Object.create({
         id: 1,
-        date: '14/08/2018',
+        date: '2018-02-15T15:15:52.504Z',
         status: 'completed',
         score: '123',
         certificationCenter: 'Université de Paris'
       });
       var certification2 = Ember.Object.create({
         id: 2,
-        date: '11/07/2017',
+        date: '2018-02-15T15:15:52.504Z',
         status: 'completed',
         score: '456',
         certificationCenter: 'Université de Lyon'
@@ -7089,15 +7089,6 @@ define('pix-live/tests/integration/components/no-certification-panel-test', ['ch
     });
 
     (0, _mocha.it)('renders', function () {
-      // Set any properties with this.set('myProperty', 'value');
-      // Handle any actions with this.on('myAction', function(val) { ... });
-      // Template block usage:
-      // this.render(hbs`
-      //   {{#no-certification-panel}}
-      //     template content
-      //   {{/no-certification-panel}}
-      // `);
-
       this.render(Ember.HTMLBars.template({
         "id": "/tL/48tR",
         "block": "{\"symbols\":[],\"statements\":[[1,[18,\"no-certification-panel\"],false]],\"hasEval\":false}",
@@ -10245,16 +10236,14 @@ define('pix-live/tests/integration/components/user-certifications-panel-test', [
         // given
         var certification1 = Ember.Object.create({
           id: 1,
-          date: '14/08/2018',
+          date: '2018-02-15T15:15:52.504Z',
           status: 'completed',
-          score: '123',
           certificationCenter: 'Université de Paris'
         });
         var certification2 = Ember.Object.create({
           id: 2,
-          date: '11/07/2017',
+          date: '2018-02-15T15:15:52.504Z',
           status: 'completed',
-          score: '456',
           certificationCenter: 'Université de Lyon'
         });
         var certifications = [certification1, certification2];
@@ -10491,8 +10480,8 @@ define('pix-live/tests/integration/components/user-logged-menu-test', ['chai', '
 
           return (0, _wait.default)().then(function () {
             // then
-            (0, _chai.expect)(_this8.$('.user-menu-item__account-link').text().trim()).to.equal('Mon compte');
-            (0, _chai.expect)(_this8.$('.user-menu-item__account-link').length).to.equal(1);
+            (0, _chai.expect)(_this8.$('.user-menu-item__details-account-link').text().trim()).to.equal('Mon compte');
+            (0, _chai.expect)(_this8.$('.user-menu-item__details-account-link').length).to.equal(1);
           });
         });
       });
