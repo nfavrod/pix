@@ -7328,19 +7328,21 @@ define('pix-live/routes/terms-of-service', ['exports', 'pix-live/routes/base-rou
   });
   exports.default = _baseRoute.default.extend({});
 });
-define('pix-live/routes/user-certifications', ['exports', 'ember-simple-auth/mixins/authenticated-route-mixin'], function (exports, _authenticatedRouteMixin) {
+define('pix-live/routes/user-certifications', ['exports', 'pix-live/routes/base-route', 'ember-simple-auth/mixins/authenticated-route-mixin'], function (exports, _baseRoute, _authenticatedRouteMixin) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.Route.extend(_authenticatedRouteMixin.default, {
+  exports.default = _baseRoute.default.extend(_authenticatedRouteMixin.default, {
 
     authenticationRoute: '/connexion',
     session: Ember.inject.service(),
 
     model: function model() {
       var store = this.get('store');
+
+      store.unloadAll('certification');
       return store.findAll('certification');
     },
 
@@ -9287,6 +9289,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"name":"pix-live","version":"1.47.0+b392650e"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"name":"pix-live","version":"1.47.0+0e699614"});
 }
 //# sourceMappingURL=pix-live.map

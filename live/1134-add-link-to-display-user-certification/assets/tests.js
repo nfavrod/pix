@@ -16501,11 +16501,13 @@ define('pix-live/tests/unit/routes/user-certifications-test', ['chai', 'mocha', 
 
     var route = void 0;
     var findAll = _sinon.default.stub();
+    var unloadAll = _sinon.default.stub();
 
     beforeEach(function () {
 
       this.register('service:store', Ember.Service.extend({
-        findAll: findAll
+        findAll: findAll,
+        unloadAll: unloadAll
       }));
       this.inject.service('store', { as: 'store' });
 
