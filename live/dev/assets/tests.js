@@ -3138,6 +3138,203 @@ define('pix-live/tests/acceptance/terms-of-service-page-test', ['mocha', 'pix-li
     });
   });
 });
+define('pix-live/tests/acceptance/user-certifications-test', ['mocha', 'pix-live/tests/helpers/testing', 'chai', 'pix-live/tests/helpers/start-app', 'pix-live/tests/helpers/destroy-app', 'pix-live/mirage/scenarios/default'], function (_mocha, _testing, _chai, _startApp, _destroyApp, _default) {
+  'use strict';
+
+  function _asyncToGenerator(fn) {
+    return function () {
+      var gen = fn.apply(this, arguments);
+      return new Promise(function (resolve, reject) {
+        function step(key, arg) {
+          try {
+            var info = gen[key](arg);
+            var value = info.value;
+          } catch (error) {
+            reject(error);
+            return;
+          }
+
+          if (info.done) {
+            resolve(value);
+          } else {
+            return Promise.resolve(value).then(function (value) {
+              step("next", value);
+            }, function (err) {
+              step("throw", err);
+            });
+          }
+        }
+
+        return step("next");
+      });
+    };
+  }
+
+  (0, _mocha.describe)('Acceptance | User certifications page', function () {
+    var application = void 0;
+
+    (0, _mocha.beforeEach)(function () {
+      application = (0, _startApp.default)();
+      (0, _default.default)(server);
+    });
+
+    (0, _mocha.afterEach)(function () {
+      (0, _destroyApp.default)(application);
+    });
+
+    (0, _mocha.describe)('Access to the user certifications page', function () {
+
+      (0, _mocha.it)('should not be accessible when user is not connected', _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _context.next = 2;
+                return visit('/mes-certifications');
+
+              case 2:
+
+                // then
+                (0, _chai.expect)(currentURL()).to.equal('/connexion');
+
+              case 3:
+              case 'end':
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      })));
+
+      (0, _mocha.it)('should be accessible when user is connected', _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _context2.next = 2;
+                return (0, _testing.authenticateAsSimpleUser)();
+
+              case 2:
+                _context2.next = 4;
+                return visit('/mes-certifications');
+
+              case 4:
+
+                // then
+                (0, _chai.expect)(currentURL()).to.equal('/mes-certifications');
+
+              case 5:
+              case 'end':
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this);
+      })));
+    });
+
+    (0, _mocha.describe)('Display', function () {
+
+      (0, _mocha.it)('should render the banner', _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                _context3.next = 2;
+                return (0, _testing.authenticateAsSimpleUser)();
+
+              case 2:
+                _context3.next = 4;
+                return visit('/mes-certifications');
+
+              case 4:
+
+                // then
+                findWithAssert('.navbar-header__container');
+
+              case 5:
+              case 'end':
+                return _context3.stop();
+            }
+          }
+        }, _callee3, this);
+      })));
+
+      (0, _mocha.it)('should render a title for the page', _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+        return regeneratorRuntime.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                _context4.next = 2;
+                return (0, _testing.authenticateAsSimpleUser)();
+
+              case 2:
+                _context4.next = 4;
+                return visit('/mes-certifications');
+
+              case 4:
+
+                // then
+                findWithAssert('.user-certifications-page__title');
+
+              case 5:
+              case 'end':
+                return _context4.stop();
+            }
+          }
+        }, _callee4, this);
+      })));
+
+      (0, _mocha.it)('should render the panel which contains informations about certifications of the connected user', _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+        return regeneratorRuntime.wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                _context5.next = 2;
+                return (0, _testing.authenticateAsSimpleUser)();
+
+              case 2:
+                _context5.next = 4;
+                return visit('/mes-certifications');
+
+              case 4:
+
+                // then
+                findWithAssert('.user-certifications-panel');
+
+              case 5:
+              case 'end':
+                return _context5.stop();
+            }
+          }
+        }, _callee5, this);
+      })));
+
+      (0, _mocha.it)('should render the app footer', _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+        return regeneratorRuntime.wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                _context6.next = 2;
+                return (0, _testing.authenticateAsSimpleUser)();
+
+              case 2:
+                _context6.next = 4;
+                return visit('/mes-certifications');
+
+              case 4:
+
+                // then
+                findWithAssert('.app-footer');
+
+              case 5:
+              case 'end':
+                return _context6.stop();
+            }
+          }
+        }, _callee6, this);
+      })));
+    });
+  });
+});
 define('pix-live/tests/app.lint-test', [], function () {
   'use strict';
 
@@ -3151,7 +3348,7 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
-    it('adapters/solution.js', function () {
+    it('adapters/correction.js', function () {
       // test passed
     });
 
@@ -3188,6 +3385,10 @@ define('pix-live/tests/app.lint-test', [], function () {
     });
 
     it('components/certification-results-page.js', function () {
+      // test passed
+    });
+
+    it('components/certifications-list.js', function () {
       // test passed
     });
 
@@ -3307,6 +3508,10 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
+    it('components/no-certification-panel.js', function () {
+      // test passed
+    });
+
     it('components/partners-enrollment-panel.js', function () {
       // test passed
     });
@@ -3415,6 +3620,10 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
+    it('components/user-certifications-panel.js', function () {
+      // test passed
+    });
+
     it('components/user-logged-menu.js', function () {
       // test passed
     });
@@ -3475,11 +3684,15 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
-    it('models/assessment-rating.js', function () {
+    it('models/assessment-result.js', function () {
       // test passed
     });
 
     it('models/assessment.js', function () {
+      // test passed
+    });
+
+    it('models/certification.js', function () {
       // test passed
     });
 
@@ -3488,6 +3701,10 @@ define('pix-live/tests/app.lint-test', [], function () {
     });
 
     it('models/competence.js', function () {
+      // test passed
+    });
+
+    it('models/correction.js', function () {
       // test passed
     });
 
@@ -3512,10 +3729,6 @@ define('pix-live/tests/app.lint-test', [], function () {
     });
 
     it('models/snapshot.js', function () {
-      // test passed
-    });
-
-    it('models/solution.js', function () {
       // test passed
     });
 
@@ -3636,6 +3849,10 @@ define('pix-live/tests/app.lint-test', [], function () {
     });
 
     it('routes/terms-of-service.js', function () {
+      // test passed
+    });
+
+    it('routes/user-certifications.js', function () {
       // test passed
     });
 
@@ -4087,6 +4304,57 @@ define('pix-live/tests/integration/components/certification-results-page-test', 
         // then
         (0, _chai.expect)(this.$('.warning-logout-button')).to.have.lengthOf(1);
         (0, _chai.expect)(this.$('.warning-logout-button').attr('href')).to.equal('logout');
+      });
+    });
+  });
+});
+define('pix-live/tests/integration/components/certifications-list-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+  'use strict';
+
+  (0, _mocha.describe)('Integration | Component | certifications list', function () {
+    (0, _emberMocha.setupComponentTest)('certifications-list', {
+      integration: true
+    });
+
+    (0, _mocha.it)('renders', function () {
+      this.render(Ember.HTMLBars.template({
+        "id": "nAEOGlii",
+        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"certifications-list\"],false]],\"hasEval\":false}",
+        "meta": {}
+      }));
+      (0, _chai.expect)(this.$()).to.have.length(1);
+    });
+
+    context('when there is some completed certifications', function () {
+
+      var certification1 = Ember.Object.create({
+        id: 1,
+        date: '2018-02-15T15:15:52.504Z',
+        status: 'completed',
+        score: '123',
+        certificationCenter: 'Université de Paris'
+      });
+      var certification2 = Ember.Object.create({
+        id: 2,
+        date: '2018-02-15T15:15:52.504Z',
+        status: 'completed',
+        score: '456',
+        certificationCenter: 'Université de Lyon'
+      });
+
+      (0, _mocha.it)('should render two certification items when there is 2 completed certifications', function () {
+        var completedCertifications = [certification1, certification2];
+        this.set('certifications', completedCertifications);
+
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "oTzuNFhK",
+          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"certifications-list\",null,[[\"certifications\"],[[20,[\"certifications\"]]]]],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+
+        // then
+        (0, _chai.expect)(this.$('.certifications-list__certification-item')).to.have.lengthOf(2);
       });
     });
   });
@@ -4661,7 +4929,7 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
 
       var answer = void 0;
       var challenge = void 0;
-      var solution = void 0;
+      var correction = void 0;
 
       (0, _mocha.beforeEach)(function () {
         answer = Ember.Object.create({ value: '1,2', result: 'ko' });
@@ -4669,19 +4937,19 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
           instruction: 'This is the instruction',
           proposals: '' + '- 1ere possibilite\n ' + '- 2eme possibilite\n ' + '- 3eme possibilite\n' + '- 4eme possibilite'
         });
-        solution = Ember.Object.create({ value: '2,3' });
+        correction = Ember.Object.create({ solution: '2,3' });
 
         this.set('answer', answer);
         this.set('challenge', challenge);
-        this.set('solution', solution);
+        this.set('correction', correction);
         this.set('index', '3');
       });
 
       (0, _mocha.it)('renders', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "AcsSI407",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"solution\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"solution\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
+          "id": "Dd9zQ240",
+          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"correction\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
         // then
@@ -4691,8 +4959,8 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
       (0, _mocha.it)('should render challenge result in the header', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "AcsSI407",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"solution\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"solution\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
+          "id": "Dd9zQ240",
+          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"correction\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
         // then
@@ -4702,8 +4970,8 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
       (0, _mocha.it)('should render challenge instruction', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "AcsSI407",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"solution\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"solution\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
+          "id": "Dd9zQ240",
+          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"correction\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
         // then
@@ -4713,8 +4981,8 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
       (0, _mocha.it)('should not render corrected answers when challenge has no type', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "AcsSI407",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"solution\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"solution\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
+          "id": "Dd9zQ240",
+          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"correction\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
         // then
@@ -4727,8 +4995,8 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
         this.set('challenge', challenge);
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "AcsSI407",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"solution\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"solution\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
+          "id": "Dd9zQ240",
+          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"correction\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
         // then
@@ -4738,13 +5006,13 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
       (0, _mocha.it)('should render corrected answers when challenge type is QROCM-ind', function () {
         // given
         challenge = Ember.Object.create({ type: 'QROCM-ind', proposals: '' });
-        solution = Ember.Object.create({ value: '' });
+        correction = Ember.Object.create({ solution: '' });
         this.set('challenge', challenge);
-        this.set('solution', solution);
+        this.set('correction', correction);
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "AcsSI407",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"solution\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"solution\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
+          "id": "Dd9zQ240",
+          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"correction\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
         // then
@@ -4757,8 +5025,8 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
         this.set('challenge', challenge);
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "AcsSI407",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"solution\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"solution\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
+          "id": "Dd9zQ240",
+          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"correction\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
         // then
@@ -4768,8 +5036,8 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
       (0, _mocha.it)('should render a feedback panel already opened', function () {
         //when
         this.render(Ember.HTMLBars.template({
-          "id": "AcsSI407",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"solution\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"solution\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
+          "id": "Dd9zQ240",
+          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"correction\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
         //then
@@ -4797,8 +5065,8 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
 
           // when
           this.render(Ember.HTMLBars.template({
-            "id": "AcsSI407",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"solution\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"solution\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
+            "id": "Dd9zQ240",
+            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"correction\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -4809,16 +5077,20 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
         });
       });
 
-      (0, _mocha.it)('should render a tutorial panel before feedback panel', function () {
+      (0, _mocha.it)('should render a tutorial panel with a hint', function () {
+        // given
+        this.set('answer', { result: { status: 'ko' } });
+        this.set('correction', { hint: 'Conseil : mangez des épinards.' });
+
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "fLyyRS5D",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"comparison-window\"],false]],\"hasEval\":false}",
+          "id": "JwDJ+hAw",
+          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"correction\"],[[20,[\"answer\"]],[20,[\"correction\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
         // then
-        (0, _chai.expect)(this.$('.tutorial-panel')).to.have.lengthOf(1);
+        (0, _chai.expect)(this.$('.tutorial-panel').text()).to.contain('Conseil : mangez des épinards.');
       });
     });
   });
@@ -6812,6 +7084,24 @@ define('pix-live/tests/integration/components/navbar-mobile-nav-menu-test', ['ch
     });
   });
 });
+define('pix-live/tests/integration/components/no-certification-panel-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+  'use strict';
+
+  (0, _mocha.describe)('Integration | Component | no certification panel', function () {
+    (0, _emberMocha.setupComponentTest)('no-certification-panel', {
+      integration: true
+    });
+
+    (0, _mocha.it)('renders', function () {
+      this.render(Ember.HTMLBars.template({
+        "id": "/tL/48tR",
+        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"no-certification-panel\"],false]],\"hasEval\":false}",
+        "meta": {}
+      }));
+      (0, _chai.expect)(this.$()).to.have.length(1);
+    });
+  });
+});
 define('pix-live/tests/integration/components/partners-enrollment-panel-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
   'use strict';
 
@@ -7181,9 +7471,7 @@ define('pix-live/tests/integration/components/qcm-solution-panel-test', ['chai',
             type: 'QCM'
           });
 
-          solution = Ember.Object.create({
-            id: 'solution_id', value: '2,3'
-          });
+          solution = '2,3';
 
           answer = Ember.Object.create(correctAnswer);
         });
@@ -7401,9 +7689,7 @@ define('pix-live/tests/integration/components/qcu-solution-panel-test', ['chai',
             type: 'QCM'
           });
 
-          solution = Ember.Object.create({
-            id: 'solution_id', value: '2'
-          });
+          solution = '2';
 
           answer = Ember.Object.create(correctAnswer);
         });
@@ -7724,7 +8010,7 @@ define('pix-live/tests/integration/components/qrocm-ind-solution-panel-test', ['
       assessment: assessment,
       challenge: challenge
     });
-    var solution = Ember.Object.create({ value: 'key1:\n- rightAnswer1\nkey2:\n- rightAnswer20\n- rightAnswer21\nkey3 :\n- rightAnswer3' });
+    var solution = 'key1:\n- rightAnswer1\nkey2:\n- rightAnswer20\n-' + ' rightAnswer21\nkey3 :\n-' + ' rightAnswer3';
 
     (0, _mocha.beforeEach)(function () {
       this.set('answer', answer);
@@ -9880,34 +10166,129 @@ define('pix-live/tests/integration/components/tutorial-panel-test', ['chai', 'mo
       integration: true
     });
 
-    (0, _mocha.describe)('component rendering', function () {
+    (0, _mocha.it)('should not render default message nor hint when answer is correct', function () {
+      // given
+      this.set('hint', null);
+      this.set('resultItemStatus', 'ok');
 
-      (0, _mocha.it)('should render component', function () {
+      // when
+      this.render(Ember.HTMLBars.template({
+        "id": "+3Mqi4nc",
+        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\"],[[20,[\"hint\"]],[20,[\"resultItemStatus\"]]]]],false]],\"hasEval\":false}",
+        "meta": {}
+      }));
+
+      // then
+      (0, _chai.expect)(this.$('.tutorial-panel')).to.have.lengthOf(1);
+      (0, _chai.expect)(this.$('.tutorial-panel__hint-container')).to.have.lengthOf(0);
+      (0, _chai.expect)(this.$('.tutorial-panel__default-message-container')).to.have.lengthOf(0);
+    });
+
+    (0, _mocha.it)('should render the hint when answer is not correct and hint is present', function () {
+      // given
+      this.set('hint', 'Ceçi est une astuce.');
+      this.set('resultItemStatus', 'ko');
+
+      // when
+      this.render(Ember.HTMLBars.template({
+        "id": "+3Mqi4nc",
+        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\"],[[20,[\"hint\"]],[20,[\"resultItemStatus\"]]]]],false]],\"hasEval\":false}",
+        "meta": {}
+      }));
+
+      // then
+      (0, _chai.expect)(this.$('.tutorial-panel')).to.have.lengthOf(1);
+      (0, _chai.expect)(this.$('.tutorial-panel__hint-container')).to.have.lengthOf(1);
+      (0, _chai.expect)(this.$('.tutorial-panel__hint-title')).to.have.lengthOf(1);
+      (0, _chai.expect)(this.$('.tutorial-panel__hint-picto-container')).to.have.lengthOf(1);
+      (0, _chai.expect)(this.$('.tutorial-panel__hint-picto')).to.have.lengthOf(1);
+      (0, _chai.expect)(this.$('.tutorial-panel__hint-content')).to.have.lengthOf(1);
+
+      var $contentElement = this.$('.tutorial-panel__hint-content');
+      (0, _chai.expect)($contentElement.text().trim()).to.equal('Ceçi est une astuce.');
+    });
+
+    (0, _mocha.it)('should render the default message when answer is not correct and hint is not defined', function () {
+      // given
+      this.set('hint', null);
+      this.set('resultItemStatus', 'ko');
+
+      // when
+      this.render(Ember.HTMLBars.template({
+        "id": "+3Mqi4nc",
+        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\"],[[20,[\"hint\"]],[20,[\"resultItemStatus\"]]]]],false]],\"hasEval\":false}",
+        "meta": {}
+      }));
+
+      // then
+      (0, _chai.expect)(this.$('.tutorial-panel')).to.have.lengthOf(1);
+      (0, _chai.expect)(this.$('.tutorial-panel__default-message-container')).to.have.lengthOf(1);
+      (0, _chai.expect)(this.$('.tutorial-panel__default-message-title')).to.have.lengthOf(1);
+      (0, _chai.expect)(this.$('.tutorial-panel__default-message-picto-container')).to.have.lengthOf(1);
+      (0, _chai.expect)(this.$('.tutorial-panel__default-message-picto')).to.have.lengthOf(1);
+    });
+  });
+});
+define('pix-live/tests/integration/components/user-certifications-panel-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+  'use strict';
+
+  (0, _mocha.describe)('Integration | Component | user certifications panel', function () {
+    (0, _emberMocha.setupComponentTest)('user-certifications-panel', {
+      integration: true
+    });
+
+    (0, _mocha.it)('renders', function () {
+      this.render(Ember.HTMLBars.template({
+        "id": "mUkUKjVm",
+        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"user-certifications-panel\"],false]],\"hasEval\":false}",
+        "meta": {}
+      }));
+      (0, _chai.expect)(this.$()).to.have.length(1);
+    });
+
+    context('when there is no certifications', function () {
+
+      (0, _mocha.it)('should render a panel which indicate there is no certifications', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "Vbj4AuxK",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"tutorial-panel\"],false]],\"hasEval\":false}",
+          "id": "mUkUKjVm",
+          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"user-certifications-panel\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
         // then
-        (0, _chai.expect)(this.$()).to.have.length(1);
+        (0, _chai.expect)(this.$('.user-certifications-panel__no-certification-panel')).to.have.length(1);
       });
+    });
 
-      [{ itemClassName: '.tutorial-panel' }, { itemClassName: '.tutorial-panel__box-container' }, { itemClassName: '.tutorial-panel__box-title' }, { itemClassName: '.tutorial-panel__box-picto-container' }, { itemClassName: '.tutorial-panel__box-picto' }, { itemClassName: '.tutorial-panel__separator' }].forEach(function (_ref2) {
-        var itemClassName = _ref2.itemClassName;
+    context('when there is some certifications to show', function () {
 
-        (0, _mocha.it)('should render a div with class ' + itemClassName, function () {
-          // when
-          this.render(Ember.HTMLBars.template({
-            "id": "Vbj4AuxK",
-            "block": "{\"symbols\":[],\"statements\":[[1,[18,\"tutorial-panel\"],false]],\"hasEval\":false}",
-            "meta": {}
-          }));
-
-          // then
-          (0, _chai.expect)(this.$(itemClassName)).to.have.lengthOf(1);
+      (0, _mocha.it)('should render a certifications list', function () {
+        // given
+        var certification1 = Ember.Object.create({
+          id: 1,
+          date: '2018-02-15T15:15:52.504Z',
+          status: 'completed',
+          certificationCenter: 'Université de Paris'
         });
+        var certification2 = Ember.Object.create({
+          id: 2,
+          date: '2018-02-15T15:15:52.504Z',
+          status: 'completed',
+          certificationCenter: 'Université de Lyon'
+        });
+        var certifications = [certification1, certification2];
+        this.set('certifications', certifications);
+
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "HJ+dR9Wp",
+          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"user-certifications-panel\",null,[[\"certifications\"],[[20,[\"certifications\"]]]]],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+
+        // then
+        (0, _chai.expect)(this.$('.user-certifications-panel__certifications-list')).to.have.length(1);
       });
     });
   });
@@ -9994,8 +10375,26 @@ define('pix-live/tests/integration/components/user-logged-menu-test', ['chai', '
         });
       });
 
-      (0, _mocha.it)('should hide user menu, when it was previously open and user-name is clicked one more time', function () {
+      (0, _mocha.it)('should display link to user certifications', function () {
         var _this2 = this;
+
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "ALHibUpB",
+          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"user-logged-menu\",null,[[\"_canDisplayMenu\"],[true]]],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+
+        return (0, _wait.default)().then(function () {
+          // then
+          (0, _chai.expect)(_this2.$('.logged-user-menu')).to.have.lengthOf(1);
+          (0, _chai.expect)(_this2.$('.user-menu-item__certification-link')).to.have.lengthOf(1);
+          (0, _chai.expect)(_this2.$('.user-menu-item__certification-link').text()).to.contains('MES CERTIFICATIONS');
+        });
+      });
+
+      (0, _mocha.it)('should hide user menu, when it was previously open and user-name is clicked one more time', function () {
+        var _this3 = this;
 
         // when
         this.render(Ember.HTMLBars.template({
@@ -10008,12 +10407,12 @@ define('pix-live/tests/integration/components/user-logged-menu-test', ['chai', '
 
         return (0, _wait.default)().then(function () {
           // then
-          (0, _chai.expect)(_this2.$('.logged-user-menu')).to.have.lengthOf(0);
+          (0, _chai.expect)(_this3.$('.logged-user-menu')).to.have.lengthOf(0);
         });
       });
 
       (0, _mocha.it)('should hide user menu, when it was previously open and user press key escape', function () {
-        var _this3 = this;
+        var _this4 = this;
 
         // when
         this.$('.logged-user-name').click();
@@ -10021,12 +10420,12 @@ define('pix-live/tests/integration/components/user-logged-menu-test', ['chai', '
 
         return (0, _wait.default)().then(function () {
           // then
-          (0, _chai.expect)(_this3.$('.logged-user-menu')).to.have.lengthOf(0);
+          (0, _chai.expect)(_this4.$('.logged-user-menu')).to.have.lengthOf(0);
         });
       });
 
       (0, _mocha.it)('should hide user menu, when the menu is opened then closed', function () {
-        var _this4 = this;
+        var _this5 = this;
 
         // when
         this.$('.logged-user-name').click();
@@ -10034,7 +10433,7 @@ define('pix-live/tests/integration/components/user-logged-menu-test', ['chai', '
 
         return (0, _wait.default)().then(function () {
           // then
-          (0, _chai.expect)(_this4.$('.logged-user-menu')).to.have.lengthOf(0);
+          (0, _chai.expect)(_this5.$('.logged-user-menu')).to.have.lengthOf(0);
         });
       });
 
@@ -10042,7 +10441,7 @@ define('pix-live/tests/integration/components/user-logged-menu-test', ['chai', '
 
         context('when the user is on compte page', function () {
           (0, _mocha.it)('should not render a button link to the "profile" page', function () {
-            var _this5 = this;
+            var _this6 = this;
 
             this.register('service:-routing', Ember.Service.extend({
               currentRouteName: 'compte',
@@ -10062,12 +10461,12 @@ define('pix-live/tests/integration/components/user-logged-menu-test', ['chai', '
 
             return (0, _wait.default)().then(function () {
               // then
-              (0, _chai.expect)(_this5.$('.user-menu-item__account-link').length).to.equal(0);
+              (0, _chai.expect)(_this6.$('.user-menu-item__account-link').length).to.equal(0);
             });
           });
 
           (0, _mocha.it)('should not render a button link to the "board" page', function () {
-            var _this6 = this;
+            var _this7 = this;
 
             this.register('service:-routing', Ember.Service.extend({
               currentRouteName: 'board',
@@ -10087,13 +10486,13 @@ define('pix-live/tests/integration/components/user-logged-menu-test', ['chai', '
 
             return (0, _wait.default)().then(function () {
               // then
-              (0, _chai.expect)(_this6.$('.user-menu-item__account-link').length).to.equal(0);
+              (0, _chai.expect)(_this7.$('.user-menu-item__account-link').length).to.equal(0);
             });
           });
         });
 
         (0, _mocha.it)('should render a button link to the profile when the user is not on compte page', function () {
-          var _this7 = this;
+          var _this8 = this;
 
           this.register('service:-routing', Ember.Service.extend({
             generateURL: function generateURL() {
@@ -10112,8 +10511,8 @@ define('pix-live/tests/integration/components/user-logged-menu-test', ['chai', '
 
           return (0, _wait.default)().then(function () {
             // then
-            (0, _chai.expect)(_this7.$('.user-menu-item__account-link').text().trim()).to.equal('Mon compte');
-            (0, _chai.expect)(_this7.$('.user-menu-item__account-link').length).to.equal(1);
+            (0, _chai.expect)(_this8.$('.user-menu-item__details-account-link').text().trim()).to.equal('Mon compte');
+            (0, _chai.expect)(_this8.$('.user-menu-item__details-account-link').length).to.equal(1);
           });
         });
       });
@@ -10131,7 +10530,7 @@ define('pix-live/tests/integration/components/user-logged-menu-test', ['chai', '
       });
 
       (0, _mocha.it)('should not display user information, for unlogged', function () {
-        var _this8 = this;
+        var _this9 = this;
 
         // when
         this.render(Ember.HTMLBars.template({
@@ -10142,7 +10541,7 @@ define('pix-live/tests/integration/components/user-logged-menu-test', ['chai', '
 
         // then
         return (0, _wait.default)().then(function () {
-          (0, _chai.expect)(_this8.$('.logged-user-name')).to.have.lengthOf(0);
+          (0, _chai.expect)(_this9.$('.logged-user-name')).to.have.lengthOf(0);
         });
       });
     });
@@ -10292,6 +10691,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
+    it('acceptance/user-certifications-test.js', function () {
+      // test passed
+    });
+
     it('helpers/destroy-app.js', function () {
       // test passed
     });
@@ -10321,6 +10724,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
     });
 
     it('integration/components/certification-results-page-test.js', function () {
+      // test passed
+    });
+
+    it('integration/components/certifications-list-test.js', function () {
       // test passed
     });
 
@@ -10417,6 +10824,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
     });
 
     it('integration/components/navbar-mobile-nav-menu-test.js', function () {
+      // test passed
+    });
+
+    it('integration/components/no-certification-panel-test.js', function () {
       // test passed
     });
 
@@ -10520,6 +10931,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
+    it('integration/components/user-certifications-panel-test.js', function () {
+      // test passed
+    });
+
     it('integration/components/user-logged-menu-test.js', function () {
       // test passed
     });
@@ -10532,7 +10947,7 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
-    it('unit/adapters/solution-test.js', function () {
+    it('unit/adapters/correction-test.js', function () {
       // test passed
     });
 
@@ -10648,6 +11063,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
+    it('unit/components/tutorial-panel-test.js', function () {
+      // test passed
+    });
+
     it('unit/components/user-logged-menu-test.js', function () {
       // test passed
     });
@@ -10688,7 +11107,7 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
-    it('unit/models/assessment-rating-test.js', function () {
+    it('unit/models/certification-test.js', function () {
       // test passed
     });
 
@@ -10820,6 +11239,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
+    it('unit/routes/user-certifications-test.js', function () {
+      // test passed
+    });
+
     it('unit/services/delay-test.js', function () {
       // test passed
     });
@@ -10921,12 +11344,12 @@ define('pix-live/tests/unit/adapters/application-test', ['chai', 'mocha', 'ember
     });
   });
 });
-define('pix-live/tests/unit/adapters/solution-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+define('pix-live/tests/unit/adapters/correction-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
   'use strict';
 
-  (0, _mocha.describe)('Unit | Adapters | solution', function () {
+  (0, _mocha.describe)('Unit | Adapters | correction', function () {
 
-    (0, _emberMocha.setupTest)('adapter:solution', {
+    (0, _emberMocha.setupTest)('adapter:correction', {
       needs: ['service:session']
     });
 
@@ -12717,7 +13140,6 @@ define('pix-live/tests/unit/components/qroc-solution-panel-test', ['chai', 'moch
     (0, _emberMocha.setupTest)('component:qroc-solution-panel', {});
     var rightAnswer = { result: 'ok' };
     var wrongAnswer = { result: 'ko' };
-    //const noAnswer = { result: 'aband' };
 
     (0, _mocha.describe)('#isResultOk', function () {
 
@@ -12775,9 +13197,7 @@ define('pix-live/tests/unit/components/qroc-solution-panel-test', ['chai', 'moch
 
       (0, _mocha.it)('should return the first solution if the solution has some variants', function () {
         // given
-        var solution = {
-          value: 'Reponse\nreponse\nréponse'
-        };
+        var solution = 'Reponse\nreponse\nréponse';
         var component = this.subject();
         component.set('solution', solution);
         // when
@@ -12788,9 +13208,7 @@ define('pix-live/tests/unit/components/qroc-solution-panel-test', ['chai', 'moch
 
       (0, _mocha.it)('should return the solution', function () {
         // given
-        var solution = {
-          value: 'Reponse'
-        };
+        var solution = 'Reponse';
         var component = this.subject();
         component.set('solution', solution);
         // when
@@ -12801,9 +13219,7 @@ define('pix-live/tests/unit/components/qroc-solution-panel-test', ['chai', 'moch
 
       (0, _mocha.it)('should return an empty string if the solution is null', function () {
         // given
-        var emptySolution = {
-          value: ''
-        };
+        var emptySolution = '';
         var component = this.subject();
         component.set('solution', emptySolution);
         // when
@@ -12814,9 +13230,7 @@ define('pix-live/tests/unit/components/qroc-solution-panel-test', ['chai', 'moch
 
       (0, _mocha.it)('should return an empty string if the solution is an empty String', function () {
         // given
-        var solutionNull = {
-          value: null
-        };
+        var solutionNull = null;
         var component = this.subject();
         component.set('solution', solutionNull);
         // when
@@ -12843,7 +13257,7 @@ define('pix-live/tests/unit/components/qrocm-ind-solution-panel-test', ['chai', 
       (0, _mocha.beforeEach)(function () {
         challenge = {};
         answer = {};
-        solution = {};
+        solution = '';
       });
 
       function _getComponentInputFields(context) {
@@ -12858,7 +13272,7 @@ define('pix-live/tests/unit/components/qrocm-ind-solution-panel-test', ['chai', 
         //Given
         challenge = { proposals: 'content : ${smiley1}\n\ntriste : ${smiley2}' };
         answer = { value: 'smiley1: \':)\' smiley2: \':(\'', resultDetails: 'smiley1: true\nsmiley2: true' };
-        solution = { value: 'smiley1: \n - :-)\n - :)\n - :-D\n - :D\n - :))\n\nsmiley2:\n - :-(\n - :(\n - :((' };
+        solution = 'smiley1: \n - :-)\n - :)\n - :-D\n - :D\n - :))\n\nsmiley2:\n - :-(\n - :(\n - :((';
 
         var expectedFieldsData = [{
           label: 'content : ',
@@ -12885,7 +13299,7 @@ define('pix-live/tests/unit/components/qrocm-ind-solution-panel-test', ['chai', 
         //Given
         challenge = { proposals: 'Clé USB : ${num1}\n\nCarte mémoire (SD) : ${num2}' };
         answer = { value: 'num1: \'1\' num2: \'2\'', resultDetails: 'num1: false\nnum2: false' };
-        solution = { value: 'num1: \n - 2\n\nnum2:\n - 1' };
+        solution = 'num1: \n - 2\n\nnum2:\n - 1';
         var result = [{
           label: 'Clé USB : ',
           answer: '1',
@@ -12911,7 +13325,7 @@ define('pix-live/tests/unit/components/qrocm-ind-solution-panel-test', ['chai', 
         //Given
         challenge = { proposals: 'Clé USB : ${num1}\n\nCarte mémoire (SD) : ${num2}' };
         answer = { value: 'num1: \'\' num2: \'2\'', resultDetails: 'num1: false\nnum2: false' };
-        solution = { value: 'num1: \n - 2\n\nnum2:\n - 1' };
+        solution = 'num1: \n - 2\n\nnum2:\n - 1';
 
         var result = [{
           label: 'Clé USB : ',
@@ -12941,7 +13355,7 @@ define('pix-live/tests/unit/components/qrocm-ind-solution-panel-test', ['chai', 
           value: 'num1: \'1\' num2: \'2\' num3: \'3\' num4: \'4\' num5: \'5\' num6: \'6\'',
           resultDetails: 'num1: false\nnum2: false\nnum3: false\nnum4: false\nnum5: true\nnum6: false'
         };
-        solution = { value: 'num1: \n - 2\n\nnum2:\n - 3\n - 4\n\nnum3:\n - 6\n\nnum4:\n - 1\n\nnum5:\n - 5\n\nnum6:\n - 2' };
+        solution = 'num1: \n - 2\n\nnum2:\n - 3\n - 4\n\nnum3:\n - 6\n\nnum4:\n - 1\n\nnum5:\n - 5\n\nnum6:\n - 2';
 
         var result = [{
           label: '- alain@pix.fr : ',
@@ -12992,7 +13406,7 @@ define('pix-live/tests/unit/components/qrocm-ind-solution-panel-test', ['chai', 
         // given
         challenge = { proposals: '- Combien le dossier "projet PIX" contient-il de dossiers ? ${Num1}\n\n- Combien le dossier "images" contient-il de fichiers ? ${Num2}' };
         answer = { value: 'Num1: \'2\' Num2: \'3\'', resultDetails: 'Num1: false\nNum2: false' };
-        solution = { value: 'Num1:\n - 1\n\nNum2:\n - 6' };
+        solution = 'Num1:\n - 1\n\nNum2:\n - 6';
 
         var result = [{
           label: '- Combien le dossier "projet PIX" contient-il de dossiers ? ',
@@ -13019,7 +13433,7 @@ define('pix-live/tests/unit/components/qrocm-ind-solution-panel-test', ['chai', 
         // given
         challenge = { proposals: 'Clé USB : ${num1}\n\nCarte mémoire (SD) : ${num2}' };
         answer = { value: '#ABAND#', resultDetails: 'num1: false\nnum2: false' };
-        solution = { value: 'num1: \n - 2\n\nnum2:\n - 1' };
+        solution = 'num1: \n - 2\n\nnum2:\n - 1';
 
         var result = [{
           label: 'Clé USB : ',
@@ -13050,7 +13464,7 @@ define('pix-live/tests/unit/components/qrocm-ind-solution-panel-test', ['chai', 
         // given
         challenge = { proposals: 'Clé USB : ${num1}' };
         answer = { value: 'num1: \'2\'', resultDetails: 'num1: true' };
-        solution = { value: 'num1: \n - 2' };
+        solution = 'num1: \n - 2';
 
         var result = [{
           label: 'Clé USB : ',
@@ -13618,6 +14032,107 @@ define('pix-live/tests/unit/components/timeout-jauge-test', ['chai', 'mocha', 'e
     });
   });
 });
+define('pix-live/tests/unit/components/tutorial-panel-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+  'use strict';
+
+  (0, _mocha.describe)('Unit | Component | tutorial panel', function () {
+    (0, _emberMocha.setupComponentTest)('tutorial-panel', {
+      unit: true
+    });
+
+    var component = void 0;
+
+    beforeEach(function () {
+      component = this.subject();
+    });
+
+    (0, _mocha.describe)('#shouldDisplayDefaultMessage', function () {
+
+      ['ko', 'aband', 'partially', 'timedout', 'default'].forEach(function (status) {
+        (0, _mocha.it)('should return true when resultItemStatus is "' + status + '" and hint is not defined', function () {
+          // given
+          component.set('resultItemStatus', status);
+          component.set('hint', null);
+
+          // when
+          var result = component.get('shouldDisplayDefaultMessage');
+
+          // then
+          (0, _chai.expect)(result).to.be.true;
+        });
+      });
+
+      (0, _mocha.it)('should return false when resultItemStatus is "ok" and hint is not defined', function () {
+        // given
+        component.set('resultItemStatus', 'ok');
+        component.set('hint', null);
+
+        // when
+        var result = component.get('shouldDisplayDefaultMessage');
+
+        // then
+        (0, _chai.expect)(result).to.be.false;
+      });
+
+      ['ko', 'aband', 'partially', 'timedout', 'default'].forEach(function (status) {
+        (0, _mocha.it)('should return false when resultItemStatus is "' + status + '" and hint is defined', function () {
+          // given
+          component.set('resultItemStatus', status);
+          component.set('hint', 'Un conseil...');
+
+          // when
+          var result = component.get('shouldDisplayDefaultMessage');
+
+          // then
+          (0, _chai.expect)(result).to.be.false;
+        });
+      });
+    });
+
+    (0, _mocha.describe)('#shouldDisplayHint', function () {
+
+      ['ko', 'aband', 'partially', 'timedout', 'default'].forEach(function (status) {
+        (0, _mocha.it)('should return true when resultItemStatus is "' + status + '" and hint is defined', function () {
+          // given
+          component.set('resultItemStatus', status);
+          component.set('hint', 'Un conseil...');
+
+          // when
+          var result = component.get('shouldDisplayHint');
+
+          // then
+          (0, _chai.expect)(result).to.be.true;
+        });
+      });
+
+      ['ko', 'aband', 'partially', 'timedout', 'default'].forEach(function (status) {
+        (0, _mocha.it)('should return false when resultItemStatus is "' + status + '" and hint is not defined', function () {
+          // given
+          component.set('resultItemStatus', status);
+          component.set('hint', null);
+
+          // when
+          var result = component.get('shouldDisplayHint');
+
+          // then
+          (0, _chai.expect)(result).to.be.false;
+        });
+      });
+
+      (0, _mocha.it)('should return false when resultItemStatus is "ok"', function () {
+        // given
+        component.set('resultItemStatus', 'ok');
+        component.set('hint', 'Un conseil...');
+
+        // when
+        var result = component.get('shouldDisplayHint');
+
+        // then
+        (0, _chai.expect)(result).to.be.false;
+      });
+    });
+  });
+});
 define('pix-live/tests/unit/components/user-logged-menu-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
   'use strict';
 
@@ -13966,20 +14481,19 @@ define('pix-live/tests/unit/models/area-test', ['chai', 'mocha', 'ember-mocha'],
     });
   });
 });
-define('pix-live/tests/unit/models/assessment-rating-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+define('pix-live/tests/unit/models/certification-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
   'use strict';
 
-  (0, _mocha.describe)('Unit | Model | assessment rating', function () {
-    (0, _emberMocha.setupModelTest)('assessment-rating', {
+  (0, _mocha.describe)('Unit | Model | certification', function () {
+    (0, _emberMocha.setupModelTest)('certification', {
+      // Specify the other units that are required for this test.
       needs: []
     });
 
     // Replace this with your real tests.
     (0, _mocha.it)('exists', function () {
-      // given
       var model = this.subject();
-
-      // then
+      // var store = this.store();
       (0, _chai.expect)(model).to.be.ok;
     });
   });
@@ -14743,7 +15257,7 @@ define('pix-live/tests/unit/routes/assessments/rating-test', ['chai', 'mocha', '
         route.afterModel(assessment);
 
         // then
-        _sinon.default.assert.calledWith(createRecordStub, 'assessment-rating', { assessment: assessment });
+        _sinon.default.assert.calledWith(createRecordStub, 'assessment-result', { assessment: assessment });
         _sinon.default.assert.called(assessmentRating.save);
       });
     });
@@ -16101,6 +16615,48 @@ define('pix-live/tests/unit/routes/terms-of-service-test', ['chai', 'mocha', 'em
     (0, _mocha.it)('exists', function () {
       var route = this.subject();
       (0, _chai.expect)(route).to.be.ok;
+    });
+  });
+});
+define('pix-live/tests/unit/routes/user-certifications-test', ['chai', 'mocha', 'ember-mocha', 'sinon'], function (_chai, _mocha, _emberMocha, _sinon) {
+  'use strict';
+
+  (0, _mocha.describe)('Unit | Route | user certifications', function () {
+    (0, _emberMocha.setupTest)('route:user-certifications', {
+      needs: ['service:session', 'service:current-routed-modal']
+    });
+
+    var route = void 0;
+    var findAll = _sinon.default.stub();
+    var unloadAll = _sinon.default.stub();
+
+    beforeEach(function () {
+
+      this.register('service:store', Ember.Service.extend({
+        findAll: findAll,
+        unloadAll: unloadAll
+      }));
+      this.inject.service('store', { as: 'store' });
+
+      route = this.subject();
+    });
+
+    (0, _mocha.it)('exists', function () {
+      (0, _chai.expect)(route).to.be.ok;
+    });
+
+    (0, _mocha.it)('should return connected user certifications', function () {
+      // given
+      var certifications = [Ember.Object.create({ id: 1 })];
+      findAll.resolves(certifications);
+
+      // when
+      var result = route.model();
+
+      // then
+      return result.then(function (certifications) {
+        (0, _chai.expect)(certifications[0].id).to.equal(1);
+      });
     });
   });
 });

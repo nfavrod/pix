@@ -405,6 +405,23 @@ input[type=radio]:focus:before {
 .ember-modal-overlay.translucent {
   background-color: rgba(62, 65, 73, 0.95); }
 
+.grey-hover-button {
+  border-radius: 4px;
+  border: none;
+  background: #ececec;
+  transition: background .25s ease-in-out;
+  -moz-transition: background .25s ease-in-out;
+  -webkit-transition: background .25s ease-in-out; }
+  .grey-hover-button:hover, .grey-hover-button:focus {
+    background-color: #DADADA; }
+
+.grey-hover-button__label {
+  font-family: "Lato", Arial, sans-serif;
+  font-size: 13px;
+  color: #6a6d76;
+  letter-spacing: 1px;
+  text-transform: uppercase; }
+
 /* 3rd-party */
 .routable-modal--open {
   overflow: hidden; }
@@ -526,6 +543,9 @@ button.routable-modal--close:active {
   order: 2;
   text-align: center;
   max-width: 100%; }
+  @media (min-width: 980px) {
+    .app-footer__section--marianne-logo {
+      max-width: 100%; } }
 
 .mariane-logo__item {
   display: inline-block;
@@ -897,6 +917,61 @@ button.routable-modal--close:active {
   font-size: 50px;
   font-weight: 600;
   line-height: 60px; }
+
+.certifications-list {
+  padding: 10px;
+  background-color: transparent;
+  justify-content: space-around;
+  font-size: 10px;
+  color: #3e4149;
+  font-family: "Raleway", Arial, sans-serif; }
+  @media (min-width: 768px) {
+    .certifications-list {
+      margin: 0 50px;
+      font-size: 14px; } }
+  @media (min-width: 980px) {
+    .certifications-list {
+      margin: 0 100px; } }
+
+.certifications-list__table {
+  width: 100%; }
+
+.certifications-list__table-header tr {
+  height: 20px;
+  font-weight: 700; }
+  @media (min-width: 768px) {
+    .certifications-list__table-header tr {
+      height: 30px; } }
+
+.certifications-list__table-header-cell {
+  text-align: center; }
+
+.certifications-list__table-body {
+  border-radius: 5px;
+  background-color: white;
+  box-shadow: 0 2px 6px 0 rgba(51, 51, 51, 0.1), 0 1px 3px 0 rgba(0, 0, 0, 0.08);
+  border: 1px solid #DADADA; }
+
+.certifications-list__certification-item {
+  border-bottom: 1px solid #D8D8D8;
+  height: 30px;
+  color: #888888; }
+  @media (min-width: 768px) {
+    .certifications-list__certification-item {
+      height: 60px;
+      font-size: 16px; } }
+
+.certifications-list__certification-item-cell__hourglass-img {
+  height: 8px;
+  margin-bottom: 1px; }
+  @media (min-width: 768px) {
+    .certifications-list__certification-item-cell__hourglass-img {
+      height: 12px;
+      margin-bottom: 3px; } }
+
+.certifications-list__certification-item-cell {
+  padding: 5px;
+  text-align: center; }
 
 .comparison-window {
   padding: 0 15px;
@@ -1855,6 +1930,23 @@ h1.course-banner__name {
   width: 100%;
   bottom: 0;
   height: 15px; }
+
+.no-certification-panel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  background-color: white;
+  color: #3e4149;
+  font-family: "Raleway", Arial, sans-serif;
+  font-size: 17px; }
+  @media (min-width: 768px) {
+    .no-certification-panel {
+      margin: 0 50px;
+      font-size: 20px; } }
+  @media (min-width: 980px) {
+    .no-certification-panel {
+      margin: 0 100px; } }
 
 .pix-logo {
   display: inline-block;
@@ -2854,6 +2946,10 @@ input.qcm-panel__proposal-checkbox {
     .signup-form__submit-container {
       margin: 31px auto 34px; } }
 
+.signup-form__legal-details-container {
+  padding: 10px 80px 50px 80px;
+  font-size: 11px; }
+
 .form-textfield__cgu-message--error {
   color: #f45c00;
   font-size: 12px;
@@ -3299,31 +3395,30 @@ input.qcm-panel__proposal-checkbox {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  height: 110px;
   background-color: #f2f3f4; }
-  @media (min-width: 768px) {
-    .user-menu-item {
-      height: 120px; } }
 
 .user-menu-item__details-firstname {
+  display: flex;
   font-family: "Lato", Arial, sans-serif;
   font-size: 18px;
-  height: 22px;
   letter-spacing: 1px;
   color: #3e4149;
-  text-transform: capitalize; }
+  text-transform: capitalize;
+  margin-top: 10px; }
 
 .user-menu-item__details-email {
+  display: flex;
   font-family: "Lato", Arial, sans-serif;
   letter-spacing: 0.3px;
   color: #6a6d76;
   font-size: 14px;
-  height: 17px; }
+  margin-bottom: 20px; }
 
-.user-menu-item__account-link {
-  margin-top: 14px; }
+.user-menu-item__details-account-link {
+  display: flex;
+  margin-bottom: 20px; }
 
-.user-menu-item__account-link a {
+.user-menu-item__details-account-link a {
   border-radius: 4px;
   padding: 7px 12px 8px 12px;
   background-color: #3d68ff;
@@ -3332,24 +3427,25 @@ input.qcm-panel__proposal-checkbox {
   color: #ffffff;
   text-transform: capitalize; }
 
-.user-menu__item--logout {
+.user-menu-item__certification-link {
+  background-color: white;
+  font-size: 13px;
+  line-height: 16px;
+  height: 50px; }
+
+.user-menu-item__certification-link a {
+  color: #666666;
+  font-family: "Lato", Arial, sans-serif;
+  font-size: 13px; }
+
+.user-menu-item__logout {
   display: flex;
   align-items: center;
   height: 65px; }
-  @media (min-width: 768px) {
-    .user-menu__item--logout {
-      height: 95.5px; } }
 
-.logged-user-menu__item-logout {
-  height: 16px;
-  opacity: 0.7;
-  font-family: "Lato", Arial, sans-serif;
-  font-size: 13px;
-  letter-spacing: 1px;
-  color: #6a6d76;
-  text-transform: uppercase; }
-  .logged-user-menu__item-logout:hover {
-    color: #3e4149; }
+.logout__button {
+  height: 36px;
+  width: 150px; }
 
 .index-page-patners-enrollment {
   background-image: linear-gradient(to bottom, #446eff, #133dd2); }
@@ -3708,7 +3804,7 @@ p.share-profile__organization-name {
   align-items: center;
   margin-bottom: 23px; }
 
-.tutorial-panel__box-container {
+.tutorial-panel__default-message-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -3718,7 +3814,7 @@ p.share-profile__organization-name {
   border-radius: 5px;
   padding: 36px 0 28px; }
 
-.tutorial-panel__box-title {
+.tutorial-panel__default-message-title {
   font-family: "Raleway", Arial, sans-serif;
   font-size: 17px;
   text-align: center;
@@ -3726,16 +3822,58 @@ p.share-profile__organization-name {
   font-weight: 600;
   margin-top: 10.2px; }
   @media (min-width: 980px) {
-    .tutorial-panel__box-title {
+    .tutorial-panel__default-message-title {
       font-size: 22px;
       line-height: 26px; } }
 
-.tutorial-panel__separator {
-  height: 2px;
+.tutorial-panel__hint-container-body {
+  display: flex;
+  align-items: center; }
+
+.tutorial-panel__hint-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 991px;
   width: 100%;
-  max-width: 990px;
-  border: 1px solid #D8D8D8;
-  margin-top: 23px; }
+  border-radius: 5px;
+  padding: 36px 0 28px; }
+
+.tutorial-panel__hint-title {
+  font-family: "Raleway", Arial, sans-serif;
+  font-size: 24px;
+  text-align: center;
+  color: #3e4149;
+  font-weight: 600;
+  margin-bottom: 40px;
+  position: relative;
+  z-index: 1; }
+  .tutorial-panel__hint-title:before {
+    border-top: 2px solid #dfdfdf;
+    content: "";
+    margin: 0 auto;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    z-index: -1; }
+  .tutorial-panel__hint-title span {
+    background: #f2f3f4;
+    padding: 0 15px; }
+  @media (min-width: 980px) {
+    .tutorial-panel__hint-title {
+      font-size: 22px;
+      line-height: 26px; } }
+
+.tutorial-panel__hint-content {
+  font-size: 20px; }
+
+.tutorial-panel__hint-picto-container {
+  vertical-align: middle; }
+
+.tutorial-panel__hint-picto {
+  padding: 0 20px; }
 
 .certification-results__content {
   display: flex;
@@ -5441,6 +5579,20 @@ hr.project-page__presentation-header-line {
   text-align: center;
   font-weight: bold;
   line-height: 42px; }
+
+.user-certifications-page__title {
+  display: flex;
+  justify-content: center;
+  color: #3e4149;
+  font-family: "Raleway", Arial, sans-serif;
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 33px;
+  margin-top: 40px; }
+  @media (min-width: 980px) {
+    .user-certifications-page__title {
+      justify-content: flex-start;
+      margin-left: 100px; } }
 
 body {
   font-family: "Lato", Arial, sans-serif;
