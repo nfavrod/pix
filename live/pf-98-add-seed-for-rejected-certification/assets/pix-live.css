@@ -2946,10 +2946,6 @@ input.qcm-panel__proposal-checkbox {
     .signup-form__submit-container {
       margin: 31px auto 34px; } }
 
-.signup-form__legal-details-container {
-  padding: 10px 80px 50px 80px;
-  font-size: 11px; }
-
 .form-textfield__cgu-message--error {
   color: #f45c00;
   font-size: 12px;
