@@ -6033,16 +6033,18 @@ define('pix-live/mirage/scenarios/default', ['exports'], function (exports) {
     server.create('certification', {
       id: '1',
       date: new Date('2018-02-15T15:15:52.504Z'),
-      status: 'completed',
-      score: '3789',
+      status: 'validated',
+      pixScore: '3789',
+      isPublished: true,
       certificationCenter: 'Université de Paris'
     });
 
     server.create('certification', {
       id: '2',
       date: new Date('2018-02-15T15:15:52.504Z'),
-      status: 'completed',
-      score: '3789101',
+      status: 'rejected',
+      pixScore: '6546',
+      isPublished: false,
       certificationCenter: 'Université de Lyon'
     });
 
@@ -6209,11 +6211,11 @@ define('pix-live/models/certification', ['exports', 'ember-data'], function (exp
       belongsTo = _emberData.default.belongsTo;
   exports.default = Model.extend({
     date: attr('string'),
-    status: attr('string'),
-    score: attr('string'),
     certificationCenter: attr('string'),
+    isPublished: attr('boolean'),
+    pixScore: attr('number'),
+    status: attr('string'),
     user: belongsTo('user')
-
   });
 });
 define('pix-live/models/challenge', ['exports', 'ember-data'], function (exports, _emberData) {
@@ -9266,6 +9268,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"name":"pix-live","version":"1.47.0+a8c4b872"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"name":"pix-live","version":"1.47.0+671b6ef3"});
 }
 //# sourceMappingURL=pix-live.map
