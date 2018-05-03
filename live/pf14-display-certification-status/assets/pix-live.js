@@ -2386,7 +2386,7 @@ define('pix-live/components/share-profile', ['exports'], function (exports) {
           text1: 'Vous vous apprêtez à transmettre une copie de votre profil Pix à l\'organisation :',
           text2: 'En cliquant sur le bouton « Envoyer », vous transmettrez à l\'organisation :',
           text3: 'votre ID-Pix et le code campagne',
-          text4: 'L\'organisation ne recevra les évolutions futures de votre profil que si vous l\'envoyez à nouveau.'
+          text4: 'L\'organisation ne recevra les évolutions futures de votre profil que si vous le partagez à nouveau.'
         };
       } else if (this.get('_organization.type') === 'SUP') {
         return {
@@ -2394,7 +2394,7 @@ define('pix-live/components/share-profile', ['exports'], function (exports) {
           text1: 'Vous vous apprêtez à transmettre une copie de votre profil Pix à l\'établissement :',
           text2: 'En cliquant sur le bouton « Envoyer », vous transmettrez à l\'établissement :',
           text3: 'votre numéro d\'étudiant et le code campagne',
-          text4: 'L\'établissement ne recevra les évolutions futures de votre profil que si vous l\'envoyez à nouveau.'
+          text4: 'L\'établissement ne recevra les évolutions futures de votre profil que si vous le partagez à nouveau.'
         };
       } else {
         return {
@@ -2402,7 +2402,7 @@ define('pix-live/components/share-profile', ['exports'], function (exports) {
           text1: 'Vous vous apprêtez à transmettre une copie de votre profil Pix à l\'établissement :',
           text2: 'En cliquant sur le bouton « Envoyer », vous transmettrez à l\'établissement :',
           text3: 'le code campagne',
-          text4: 'L\'établissement ne recevra les évolutions futures de votre profil que si vous l\'envoyez à nouveau.'
+          text4: 'L\'établissement ne recevra les évolutions futures de votre profil que si vous le partagez à nouveau.'
         };
       }
     }),
@@ -9293,6 +9293,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"name":"pix-live","version":"1.47.0+d0da3112"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"name":"pix-live","version":"1.47.0+42bdde3b"});
 }
 //# sourceMappingURL=pix-live.map
