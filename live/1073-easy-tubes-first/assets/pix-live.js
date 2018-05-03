@@ -45,23 +45,21 @@ define('pix-live/adapters/challenge', ['exports', 'pix-live/adapters/application
     }
   });
 });
-define('pix-live/adapters/solution', ['exports', 'pix-live/adapters/application'], function (exports, _application) {
+define('pix-live/adapters/correction', ['exports', 'pix-live/adapters/application'], function (exports, _application) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
   exports.default = _application.default.extend({
-    queryRecord: function queryRecord(store, type, query) {
-      var url = this.host + '/' + this.namespace + '/assessments/' + query.assessmentId + '/solutions/' + query.answerId;
-      return this.ajax(url, 'GET');
-    },
-
 
     // refresh cache
     refreshRecord: function refreshRecord(type, challenge) {
-      var url = this.host + '/' + this.namespace + '/challenges/' + challenge.challengeId + '/solution';
-      return this.ajax(url, 'POST');
+      var url = this.host + '/' + this.namespace + '/cache';
+      var payload = {
+        'cache-key': '\xC9preuves_' + challenge.challengeId
+      };
+      return this.ajax(url, 'DELETE', { data: payload });
     }
   });
 });
@@ -230,6 +228,16 @@ define('pix-live/components/certification-results-page', ['exports'], function (
   });
   exports.default = Ember.Component.extend({
     classNames: ['certification-results-page']
+  });
+});
+define('pix-live/components/certifications-list', ['exports'], function (exports) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = Ember.Component.extend({
+    certifications: null
   });
 });
 define('pix-live/components/challenge-actions', ['exports'], function (exports) {
@@ -692,7 +700,7 @@ define('pix-live/components/comparison-window', ['exports', 'pix-live/utils/resu
 
     answer: null,
     challenge: null,
-    solution: null,
+    correction: null,
     index: null,
 
     focusNode: '.routable-modal--close-button',
@@ -1646,6 +1654,14 @@ define('pix-live/components/navbar-mobile-menu', ['exports'], function (exports)
     }
   });
 });
+define('pix-live/components/no-certification-panel', ['exports'], function (exports) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = Ember.Component.extend({});
+});
 define('pix-live/components/partners-enrollment-panel', ['exports'], function (exports) {
   'use strict';
 
@@ -1823,7 +1839,7 @@ define('pix-live/components/qcm-solution-panel', ['exports', 'pix-live/utils/lab
     challenge: null,
 
     solutionArray: Ember.computed('solution', function () {
-      var solution = this.get('solution.value');
+      var solution = this.get('solution');
       return _lodashCustom.default.isNonEmptyString(solution) ? (0, _valueAsArrayOfBoolean.default)(solution) : [];
     }),
 
@@ -1888,7 +1904,7 @@ define('pix-live/components/qcu-solution-panel', ['exports', 'pix-live/utils/lab
     challenge: null,
 
     solutionArray: Ember.computed('solution', function () {
-      var solution = this.get('solution.value');
+      var solution = this.get('solution');
       return _lodashCustom.default.isNonEmptyString(solution) ? (0, _valueAsArrayOfBoolean.default)(solution) : [];
     }),
 
@@ -1973,8 +1989,8 @@ define('pix-live/components/qroc-solution-panel', ['exports'], function (exports
       return answer;
     }),
 
-    solutionToDisplay: Ember.computed('solution.value', function () {
-      var solutionVariants = this.get('solution.value');
+    solutionToDisplay: Ember.computed('solution', function () {
+      var solutionVariants = this.get('solution');
       if (!solutionVariants) {
         return '';
       }
@@ -2009,11 +2025,11 @@ define('pix-live/components/qrocm-ind-solution-panel', ['exports', 'lodash', 'pi
 
   var QrocmIndSolutionPanel = Ember.Component.extend({
 
-    inputFields: Ember.computed('challenge.proposals', 'answer.value', 'solution.value', function () {
+    inputFields: Ember.computed('challenge.proposals', 'answer.value', 'solution', function () {
 
       var labels = (0, _labelsAsObject.default)(this.get('challenge.proposals'));
       var answers = (0, _answersAsObject.default)(this.get('answer.value'), _lodash.default.keys(labels));
-      var solutions = (0, _solutionAsObject.default)(this.get('solution.value'));
+      var solutions = (0, _solutionAsObject.default)(this.get('solution'));
       var resultDetails = (0, _resultDetailsAsObject.default)(this.get('answer.resultDetails'));
 
       var inputFields = [];
@@ -2773,7 +2789,28 @@ define('pix-live/components/tutorial-panel', ['exports'], function (exports) {
     value: true
   });
   exports.default = Ember.Component.extend({
-    classNames: ['tutorial-panel']
+    classNames: ['tutorial-panel'],
+
+    hint: null,
+    resultItemStatus: null,
+
+    shouldDisplayDefaultMessage: Ember.computed('resultItemStatus', 'hint', function () {
+      return this.get('resultItemStatus') !== 'ok' && !this.get('hint');
+    }),
+
+    shouldDisplayHint: Ember.computed('resultItemStatus', 'hint', function () {
+      return this.get('resultItemStatus') !== 'ok' && Boolean(this.get('hint'));
+    })
+  });
+});
+define('pix-live/components/user-certifications-panel', ['exports'], function (exports) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = Ember.Component.extend({
+    certifications: null
   });
 });
 define('pix-live/components/user-logged-menu', ['exports', 'ember-keyboard'], function (exports, _emberKeyboard) {
@@ -4571,7 +4608,7 @@ define('pix-live/instance-initializers/raven-setup', ['exports', 'raven', 'pix-l
     name: 'sentry-setup'
   };
 });
-define('pix-live/mirage/config', ['exports', 'pix-live/mirage/routes/get-answer', 'pix-live/mirage/routes/get-answer-by-challenge-and-assessment', 'pix-live/mirage/routes/get-assessment', 'pix-live/mirage/routes/get-assessment-solutions', 'pix-live/mirage/routes/get-user-me', 'pix-live/mirage/routes/get-challenge', 'pix-live/mirage/routes/get-challenges', 'pix-live/mirage/routes/get-course', 'pix-live/mirage/routes/get-courses', 'pix-live/mirage/routes/get-courses-of-the-week', 'pix-live/mirage/routes/get-next-challenge', 'pix-live/mirage/routes/get-organizations', 'pix-live/mirage/routes/get-snapshots', 'pix-live/mirage/routes/patch-answer', 'pix-live/mirage/routes/post-answers', 'pix-live/mirage/routes/post-assessments', 'pix-live/mirage/routes/post-authentications', 'pix-live/mirage/routes/post-certification-course', 'pix-live/mirage/routes/post-feedbacks', 'pix-live/mirage/routes/post-refresh-solution', 'ember-cli-mirage'], function (exports, _getAnswer, _getAnswerByChallengeAndAssessment, _getAssessment, _getAssessmentSolutions, _getUserMe, _getChallenge, _getChallenges, _getCourse, _getCourses, _getCoursesOfTheWeek, _getNextChallenge, _getOrganizations, _getSnapshots, _patchAnswer, _postAnswers, _postAssessments, _postAuthentications, _postCertificationCourse, _postFeedbacks, _postRefreshSolution, _emberCliMirage) {
+define('pix-live/mirage/config', ['exports', 'pix-live/mirage/routes/get-answer', 'pix-live/mirage/routes/get-answer-by-challenge-and-assessment', 'pix-live/mirage/routes/get-assessment', 'pix-live/mirage/routes/get-user-me', 'pix-live/mirage/routes/get-challenge', 'pix-live/mirage/routes/get-challenges', 'pix-live/mirage/routes/get-course', 'pix-live/mirage/routes/get-courses', 'pix-live/mirage/routes/get-courses-of-the-week', 'pix-live/mirage/routes/get-next-challenge', 'pix-live/mirage/routes/get-organizations', 'pix-live/mirage/routes/get-snapshots', 'pix-live/mirage/routes/get-corrections', 'pix-live/mirage/routes/patch-answer', 'pix-live/mirage/routes/post-answers', 'pix-live/mirage/routes/post-assessments', 'pix-live/mirage/routes/post-authentications', 'pix-live/mirage/routes/post-certification-course', 'pix-live/mirage/routes/post-feedbacks', 'ember-cli-mirage'], function (exports, _getAnswer, _getAnswerByChallengeAndAssessment, _getAssessment, _getUserMe, _getChallenge, _getChallenges, _getCourse, _getCourses, _getCoursesOfTheWeek, _getNextChallenge, _getOrganizations, _getSnapshots, _getCorrections, _patchAnswer, _postAnswers, _postAssessments, _postAuthentications, _postCertificationCourse, _postFeedbacks, _emberCliMirage) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -4593,14 +4630,11 @@ define('pix-live/mirage/config', ['exports', 'pix-live/mirage/routes/get-answer'
     this.get('/challenges', _getChallenges.default);
     this.get('/challenges/:id', _getChallenge.default);
 
-    this.post('/challenges/:challengeId/solution', _postRefreshSolution.default);
-
     this.post('/assessments', _postAssessments.default);
     this.get('/assessments');
     this.get('/assessments/:id', _getAssessment.default);
     this.get('/assessments/:assessmentId/next/:challengeId', _getNextChallenge.default);
     this.get('/assessments/:assessmentId/next', _getNextChallenge.default);
-    this.get('/assessments/:assessmentId/solutions/:answerId', _getAssessmentSolutions.default);
 
     this.post('/answers', _postAnswers.default);
     this.get('/answers/:id', _getAnswer.default);
@@ -4615,6 +4649,8 @@ define('pix-live/mirage/config', ['exports', 'pix-live/mirage/routes/get-answer'
     this.get('/courses/:id', _getCourse.default);
     this.post('/courses', _postCertificationCourse.default);
 
+    this.get('/certifications');
+
     this.post('/authentications', _postAuthentications.default);
     this.get('/users/me', _getUserMe.default);
     this.get('/competences/:id');
@@ -4623,6 +4659,8 @@ define('pix-live/mirage/config', ['exports', 'pix-live/mirage/routes/get-answer'
 
     this.get('/organizations', _getOrganizations.default);
 
+    this.get('/corrections', _getCorrections.default);
+
     this.post('/snapshots');
     this.get('/snapshots/:id');
     this.get('/organizations/:id/snapshots', _getSnapshots.default);
@@ -4630,6 +4668,8 @@ define('pix-live/mirage/config', ['exports', 'pix-live/mirage/routes/get-answer'
     this.post('/followers');
     this.post('/users');
     this.post('/assessment-results');
+
+    this.del('/cache');
 
     this.post('/password-reset-demands', function (schema, request) {
       var attrs = JSON.parse(request.requestBody);
@@ -5149,39 +5189,15 @@ define('pix-live/mirage/data/feedbacks/ref-feedback', ['exports'], function (exp
     }
   };
 });
-define('pix-live/mirage/data/solutions/ref-qcu-solution', ['exports'], function (exports) {
-  'use strict';
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.default = {
-    data: {
-      type: 'solutions',
-      id: 'ref_solution_id',
-      attributes: {
-        value: '2'
-      }
-    }
-  };
-});
-define('pix-live/mirage/data/solutions/ref-solution', ['exports'], function (exports) {
-  'use strict';
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.default = {
-    data: {
-      type: 'solutions',
-      id: 'ref_solution_id',
-      attributes: {
-        value: '2,3'
-      }
-    }
-  };
-});
 define('pix-live/mirage/factories/area', ['exports', 'ember-cli-mirage'], function (exports, _emberCliMirage) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = _emberCliMirage.Factory.extend({});
+});
+define('pix-live/mirage/factories/certification', ['exports', 'ember-cli-mirage'], function (exports, _emberCliMirage) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -5214,6 +5230,21 @@ define('pix-live/mirage/factories/competence', ['exports', 'ember-cli-mirage'], 
     value: true
   });
   exports.default = _emberCliMirage.Factory.extend({});
+});
+define('pix-live/mirage/factories/correction', ['exports', 'ember-cli-mirage'], function (exports, _emberCliMirage) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = _emberCliMirage.Factory.extend({
+    solution: function solution() {
+      return '2';
+    },
+    hint: function hint(i) {
+      return 'Hint number ' + i;
+    }
+  });
 });
 define('pix-live/mirage/factories/course', ['exports', 'ember-cli-mirage'], function (exports, _emberCliMirage) {
   'use strict';
@@ -5403,6 +5434,14 @@ define('pix-live/mirage/fixtures/competences', ['exports'], function (exports) {
   });
   exports.default = [{ id: 1, name: 'Mener une recherche d\'information', level: -1, index: '1.1', areaId: 1, courseId: 'ref_course_id' }, { id: 2, name: 'Gérer des données', level: 0, index: '1.2', areaId: 1, courseId: 'ref_timed_challenge_course_id' }, { id: 3, name: 'Traiter des données', level: 1, index: '1.3', areaId: 1 }, { id: 4, name: 'Interagir', level: 2, index: '2.1', areaId: 2 }, { id: 5, name: 'Partager et publier', level: 3, index: '2.2', areaId: 2 }, { id: 6, name: 'Collaborer', level: 4, index: '2.3', areaId: 2 }, { id: 7, name: 'Gérer sa présence en ligne', level: 5, index: '2.4', areaId: 2 }, { id: 8, name: 'Développer des documents textuels', level: -1, index: '3.1', areaId: 3, courseId: 'recNPB7dTNt5krlMA' }, { id: 9, name: 'Développer des documents multimedia', level: -1, index: '3.2', areaId: 3, courseId: 'recNPB7dTNt5krlMA', assessmentId: 2 }, { id: 10, name: 'Adapter les documents à leur finalité', level: -1, index: '3.3', areaId: 3 }, { id: 11, name: 'Programmer', level: -1, index: '3.4', areaId: 3 }, { id: 12, name: 'Sécurise environnement num', level: -1, index: '4.1', areaId: 4 }, { id: 13, name: 'Protéger les données personnelles et la vie privée', level: -1, index: '4.2', areaId: 4 }, { id: 14, name: 'Protéger la santé, le bien-être et l\'environnement', level: -1, index: '4.3', areaId: 4 }, { id: 15, name: 'Résoudre problèmes techniques', level: -1, index: '5.1', areaId: 5 }, { id: 16, name: 'Construire un environnement numérique', level: -1, index: '5.2', areaId: 5 }];
 });
+define('pix-live/mirage/fixtures/corrections', ['exports'], function (exports) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = [{ id: 'ref_correction_id', solution: '2' }, { id: 'ref_correction_id2', solution: '2,3' }];
+});
 define('pix-live/mirage/fixtures/courses', ['exports'], function (exports) {
   'use strict';
 
@@ -5448,14 +5487,6 @@ define('pix-live/mirage/fixtures/feedbacks', ['exports'], function (exports) {
     value: true
   });
   exports.default = [{ id: 'ref_feedback_id', email: 'shi@fu.me', content: 'Some content', assessment: 'assessment_id', challenge: 'challenge_id' }];
-});
-define('pix-live/mirage/fixtures/solutions', ['exports'], function (exports) {
-  'use strict';
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.default = [{ id: 'ref_solution_id', value: '2' }, { id: 'ref_solution_id2', value: '2,3' }];
 });
 define('pix-live/mirage/routes/get-answer-by-challenge-and-assessment', ['exports', 'pix-live/utils/lodash-custom', 'pix-live/mirage/data/answers/ref-qcm-answer', 'pix-live/mirage/data/answers/ref-qcu-answer', 'pix-live/mirage/data/answers/ref-qroc-answer', 'pix-live/mirage/data/answers/ref-qrocm-answer', 'pix-live/mirage/data/answers/ref-timed-answer', 'pix-live/mirage/data/answers/ref-timed-answer-bis'], function (exports, _lodashCustom, _refQcmAnswer, _refQcuAnswer, _refQrocAnswer, _refQrocmAnswer, _refTimedAnswer, _refTimedAnswerBis) {
   'use strict';
@@ -5526,18 +5557,6 @@ define('pix-live/mirage/routes/get-answer', ['exports', 'pix-live/utils/lodash-c
     }
   };
 });
-define('pix-live/mirage/routes/get-assessment-solutions', ['exports', 'pix-live/mirage/data/solutions/ref-solution', 'pix-live/mirage/data/solutions/ref-qcu-solution'], function (exports, _refSolution, _refQcuSolution) {
-  'use strict';
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-
-  exports.default = function (schema, request) {
-
-    return request.params.answerId === 'ref_answer_qcu_id' ? _refQcuSolution.default : _refSolution.default;
-  };
-});
 define('pix-live/mirage/routes/get-assessment', ['exports', 'pix-live/utils/lodash-custom', 'pix-live/mirage/data/assessments/ref-assessment', 'pix-live/mirage/data/assessments/ref-assessment-timed-challenges'], function (exports, _lodashCustom, _refAssessment, _refAssessmentTimedChallenges) {
   'use strict';
 
@@ -5600,6 +5619,17 @@ define('pix-live/mirage/routes/get-challenges', ['exports', 'pix-live/mirage/dat
     return {
       data: [_refQcmChallenge.default.data, _refQcuChallenge.default.data, _refQrocChallenge.default.data, _refQrocmChallenge.default.data, _refTimedChallenge.default.data, _refTimedChallengeBis.default.data]
     };
+  };
+});
+define("pix-live/mirage/routes/get-corrections", ["exports"], function (exports) {
+  "use strict";
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  exports.default = function (schema) {
+    return schema.corrections.all();
   };
 });
 define('pix-live/mirage/routes/get-course', ['exports', 'pix-live/utils/lodash-custom', 'pix-live/mirage/data/courses/ref-course', 'pix-live/mirage/data/courses/highlighted-course', 'pix-live/mirage/data/courses/ref-course-timed-challenges'], function (exports, _lodashCustom, _refCourse, _highlightedCourse, _refCourseTimedChallenges) {
@@ -5934,18 +5964,6 @@ define('pix-live/mirage/routes/post-feedbacks', ['exports', 'pix-live/mirage/dat
     return _refFeedback.default;
   };
 });
-define('pix-live/mirage/routes/post-refresh-solution', ['exports'], function (exports) {
-  'use strict';
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-
-  exports.default = function () {
-
-    return 'ok';
-  };
-});
 define('pix-live/mirage/scenarios/default', ['exports'], function (exports) {
   'use strict';
 
@@ -6012,10 +6030,29 @@ define('pix-live/mirage/scenarios/default', ['exports'], function (exports) {
       type: 'CERTIFICATION'
     });
 
+    server.create('certification', {
+      id: '1',
+      date: new Date('2018-02-15T15:15:52.504Z'),
+      status: 'completed',
+      score: '3789',
+      certificationCenter: 'Université de Paris'
+    });
+
+    server.create('certification', {
+      id: '2',
+      date: new Date('2018-02-15T15:15:52.504Z'),
+      status: 'completed',
+      score: '3789101',
+      certificationCenter: 'Université de Lyon'
+    });
+
+    server.create('correction');
+
     prescriber.organization = company;
     company.user = prescriber;
 
     var snapshots = server.createList('snapshot', 3, { organization: company });
+
     company.snapshots = snapshots;
   };
 });
@@ -6161,6 +6198,24 @@ define('pix-live/models/assessment', ['exports', 'ember-data'], function (export
     return step > maxStep ? maxStep : step;
   }
 });
+define('pix-live/models/certification', ['exports', 'ember-data'], function (exports, _emberData) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  var Model = _emberData.default.Model,
+      attr = _emberData.default.attr,
+      belongsTo = _emberData.default.belongsTo;
+  exports.default = Model.extend({
+    date: attr('string'),
+    status: attr('string'),
+    score: attr('string'),
+    certificationCenter: attr('string'),
+    user: belongsTo('user')
+
+  });
+});
 define('pix-live/models/challenge', ['exports', 'ember-data'], function (exports, _emberData) {
   'use strict';
 
@@ -6207,6 +6262,21 @@ define('pix-live/models/competence', ['exports', 'ember-data'], function (export
     courseId: attr('string'),
     assessmentId: attr('string'),
     status: attr('string')
+  });
+});
+define('pix-live/models/correction', ['exports', 'ember-data'], function (exports, _emberData) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  var Model = _emberData.default.Model,
+      attr = _emberData.default.attr;
+  exports.default = Model.extend({
+
+    solution: attr('string'),
+    hint: attr('string')
+
   });
 });
 define('pix-live/models/course', ['exports', 'ember-data'], function (exports, _emberData) {
@@ -6307,20 +6377,6 @@ define('pix-live/models/snapshot', ['exports', 'ember-data'], function (exports,
     })
   });
 });
-define('pix-live/models/solution', ['exports', 'ember-data'], function (exports, _emberData) {
-  'use strict';
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  var Model = _emberData.default.Model,
-      attr = _emberData.default.attr;
-  exports.default = Model.extend({
-
-    value: attr('string')
-
-  });
-});
 define('pix-live/models/user', ['exports', 'ember-data'], function (exports, _emberData) {
   'use strict';
 
@@ -6340,6 +6396,7 @@ define('pix-live/models/user', ['exports', 'ember-data'], function (exports, _em
     competences: hasMany('competence'),
     totalPixScore: attr('number'),
     organizations: hasMany('organization'),
+    certifications: hasMany('certification'),
 
     competenceAreas: Ember.computed('competences', function () {
       return this.get('competences').then(function (competences) {
@@ -6435,6 +6492,7 @@ define('pix-live/router', ['exports', 'pix-live/config/environment'], function (
       this.route('resume', { path: '/:certification_course_id' });
       this.route('results', { path: '/:certification_number/results' });
     });
+    this.route('user-certifications', { path: 'mes-certifications' });
   });
 
   exports.default = Router;
@@ -6546,7 +6604,6 @@ define('pix-live/routes/assessments/comparison', ['exports', 'ember-routable-mod
     model: function model(params) {
       var store = this.get('store');
 
-      var assessmentId = params.assessment_id;
       var answerId = params.answer_id;
       var index = params.index;
 
@@ -6555,7 +6612,9 @@ define('pix-live/routes/assessments/comparison', ['exports', 'ember-routable-mod
       return Ember.RSVP.hash({
         index: index,
         answer: answer,
-        solution: store.queryRecord('solution', { assessmentId: assessmentId, answerId: answerId }),
+        correction: store.query('correction', { answerId: answerId }).then(function (corrections) {
+          return corrections.get('firstObject');
+        }),
         challenge: answer.then(function (foundAnswer) {
           return store.findRecord('challenge', foundAnswer.get('challenge.id'));
         })
@@ -6776,9 +6835,10 @@ define('pix-live/routes/challenge-preview', ['exports', 'pix-live/utils/lodash-c
       // creates a fake course
       var course = store.createRecord('course', { id: 'null' + _lodashCustom.default.guid(), type: 'PREVIEW', challenges: [challenge] });
       var assessment = store.createRecord('assessment', { course: course, type: course.get('type') });
-      var solutionAdapter = store.adapterFor('solution');
 
-      solutionAdapter.refreshRecord('solution', { challengeId: challenge.get('id') });
+      var correctionAdapter = store.adapterFor('correction');
+
+      correctionAdapter.refreshRecord('correction', { challengeId: challenge.get('id') });
       return assessment.save().then(function () {
         return that.transitionTo('assessments.challenge', { assessment: assessment, challenge: challenge });
       });
@@ -7254,6 +7314,31 @@ define('pix-live/routes/terms-of-service', ['exports', 'pix-live/routes/base-rou
   });
   exports.default = _baseRoute.default.extend({});
 });
+define('pix-live/routes/user-certifications', ['exports', 'pix-live/routes/base-route', 'ember-simple-auth/mixins/authenticated-route-mixin'], function (exports, _baseRoute, _authenticatedRouteMixin) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = _baseRoute.default.extend(_authenticatedRouteMixin.default, {
+
+    authenticationRoute: '/connexion',
+    session: Ember.inject.service(),
+
+    model: function model() {
+      var store = this.get('store');
+      store.unloadAll('certification');
+      return store.findAll('certification');
+    },
+
+
+    actions: {
+      error: function error() {
+        this.transitionTo('compte');
+      }
+    }
+  });
+});
 define('pix-live/services/ajax', ['exports', 'ember-ajax/services/ajax', 'pix-live/config/environment'], function (exports, _ajax, _environment) {
   'use strict';
 
@@ -7600,7 +7685,7 @@ define("pix-live/templates/assessments/comparison", ["exports"], function (expor
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "i4rGv3n+", "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"solution\",\"index\"],[[20,[\"model\",\"answer\"]],[20,[\"model\",\"challenge\"]],[20,[\"model\",\"solution\"]],[20,[\"model\",\"index\"]]]]],false],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/assessments/comparison.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "9ia04Ood", "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[20,[\"model\",\"answer\"]],[20,[\"model\",\"challenge\"]],[20,[\"model\",\"correction\"]],[20,[\"model\",\"index\"]]]]],false],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/assessments/comparison.hbs" } });
 });
 define("pix-live/templates/assessments/rating", ["exports"], function (exports) {
   "use strict";
@@ -7696,7 +7781,7 @@ define("pix-live/templates/components/app-footer", ["exports"], function (export
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "6obTXnAI", "block": "{\"symbols\":[],\"statements\":[[6,\"section\"],[9,\"class\",\"app-footer__section app-footer__section--pix-logo\"],[7],[0,\"\\n  \"],[1,[18,\"pix-logo\"],false],[0,\"\\n\"],[8],[0,\"\\n\\n\"],[6,\"section\"],[9,\"class\",\"app-footer__section app-footer__section--contact\"],[7],[0,\"\\n  \"],[6,\"a\"],[9,\"class\",\"app-footer__link-text\"],[9,\"href\",\"mailto:contact@pix.beta.gouv.fr\"],[7],[0,\"Contactez-nous\"],[8],[0,\"\\n  |\\n  \"],[6,\"a\"],[9,\"class\",\"app-footer__link-text\"],[9,\"href\",\"/mentions-legales\"],[7],[0,\"Mentions légales\"],[8],[0,\"\\n  |\\n  \"],[6,\"a\"],[9,\"class\",\"app-footer__link-text\"],[9,\"href\",\"https://github.com/1024pix/pix\"],[9,\"target\",\"_blank\"],[7],[0,\"Le code source est libre\"],[8],[0,\"\\n\"],[8],[0,\"\\n\\n\"],[6,\"section\"],[9,\"class\",\"app-footer__section app-footer__section--marianne-logo\"],[7],[0,\"\\n  \"],[6,\"div\"],[9,\"class\",\"mariane-logo-container\"],[7],[0,\"\\n    \"],[6,\"img\"],[9,\"src\",\"/images/logo-marianne-footer.jpg\"],[9,\"class\",\"app-footer__logo-marianne-img mariane-logo__item\"],[9,\"alt\",\"Un projet du Ministère de l'Education Nationale et du Ministère de l'Enseignement Supérieur de la Recherche et de l'Innovation\"],[7],[8],[0,\"\\n  \"],[8],[0,\"\\n\"],[8],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/app-footer.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "sa5EOhyP", "block": "{\"symbols\":[],\"statements\":[[6,\"section\"],[9,\"class\",\"app-footer__section app-footer__section--pix-logo\"],[7],[0,\"\\n  \"],[1,[18,\"pix-logo\"],false],[0,\"\\n\"],[8],[0,\"\\n\\n\"],[6,\"section\"],[9,\"class\",\"app-footer__section app-footer__section--contact\"],[7],[0,\"\\n  \"],[6,\"a\"],[9,\"class\",\"app-footer__link-text\"],[9,\"href\",\"mailto:contact@pix.fr\"],[7],[0,\"Contactez-nous\"],[8],[0,\"\\n  |\\n  \"],[6,\"a\"],[9,\"class\",\"app-footer__link-text\"],[9,\"href\",\"/mentions-legales\"],[7],[0,\"Mentions légales\"],[8],[0,\"\\n  |\\n  \"],[6,\"a\"],[9,\"class\",\"app-footer__link-text\"],[9,\"href\",\"https://github.com/1024pix/pix\"],[9,\"target\",\"_blank\"],[7],[0,\"Le code source est libre\"],[8],[0,\"\\n\"],[8],[0,\"\\n\\n\"],[6,\"section\"],[9,\"class\",\"app-footer__section app-footer__section--marianne-logo\"],[7],[0,\"\\n  \"],[6,\"div\"],[9,\"class\",\"mariane-logo-container\"],[7],[0,\"\\n    \"],[6,\"img\"],[9,\"src\",\"/images/logo-marianne-footer.jpg\"],[9,\"class\",\"app-footer__logo-marianne-img mariane-logo__item\"],[9,\"alt\",\"Un projet du Ministère de l'Education Nationale et du Ministère de l'Enseignement Supérieur de la Recherche et de l'Innovation\"],[7],[8],[0,\"\\n  \"],[8],[0,\"\\n\"],[8],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/app-footer.hbs" } });
 });
 define("pix-live/templates/components/beta-logo", ["exports"], function (exports) {
   "use strict";
@@ -7720,7 +7805,7 @@ define("pix-live/templates/components/certification-code-validation", ["exports"
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "994K1580", "block": "{\"symbols\":[],\"statements\":[[6,\"p\"],[9,\"class\",\"certification-course-page__order\"],[7],[0,\"\\n  Un code d'accès va vous être communiqué par le responsable de la session.\\n\"],[8],[0,\"\\n\"],[6,\"div\"],[9,\"class\",\"certification-course-page__session-code-input\"],[7],[0,\"\\n  \"],[1,[25,\"input\",null,[[\"id\",\"type\",\"value\",\"placeholder\"],[\"session-code\",\"text\",[20,[\"accessCode\"]],\"Code d'accès\"]]],false],[0,\"\\n\"],[4,\"if\",[[20,[\"displayErrorMessage\"]]],null,{\"statements\":[[0,\"    \"],[6,\"div\"],[9,\"class\",\"certification-course-page__errors\"],[7],[0,\"Ce code n'existe pas ou n'est plus valide.\"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[8],[0,\"\\n\\n\\n\"],[6,\"p\"],[9,\"class\",\"certification-course-page__cgu\"],[7],[0,\"\\n  En cliquant sur \\\"Lancer le test\\\", j’accepte que mes données d’identité, le numéro de certification et les circonstances de la passation telles que\\n  renseignées par l’examinateur soient communiquées à Pix. Pix les utilisera lors de la délibération du jury pour\\n  produire et archiver mes résultats et pour éditer mon certificat. Si cette certification m’a été prescrite par une organisation, j’accepte que Pix lui communique mes résultats.\\n  \"],[6,\"br\"],[7],[8],[0,\"\\n  Je peux exercer mes droits d’accès auprès du Correspondant Informatique et Libertés de Pix : cil.pix@beta.gouv.fr\\n\"],[8],[0,\"\\n\\n\"],[6,\"div\"],[9,\"class\",\"certification-course-page__field-button\"],[7],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"_loadingCertification\"]]],null,{\"statements\":[[0,\"    \"],[6,\"div\"],[9,\"class\",\"certification-course-page__field-button__action-validate\"],[7],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"certification-course-page__field-button__loader-bar\"],[7],[8],[0,\"\\n    \"],[8],[0,\"\\n\"]],\"parameters\":[]},{\"statements\":[[0,\"    \"],[6,\"button\"],[9,\"type\",\"submit\"],[9,\"class\",\"certification-course-page__submit_button\"],[3,\"action\",[[19,0,[]],\"submit\"]],[7],[0,\"Lancer le test\\n    \"],[8],[0,\"\\n\"]],\"parameters\":[]}],[8],[0,\"\\n\\n\\n\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/certification-code-validation.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "Ct2XcAbW", "block": "{\"symbols\":[],\"statements\":[[6,\"p\"],[9,\"class\",\"certification-course-page__order\"],[7],[0,\"\\n  Un code d'accès va vous être communiqué par le responsable de la session.\\n\"],[8],[0,\"\\n\"],[6,\"div\"],[9,\"class\",\"certification-course-page__session-code-input\"],[7],[0,\"\\n  \"],[1,[25,\"input\",null,[[\"id\",\"type\",\"value\",\"placeholder\"],[\"session-code\",\"text\",[20,[\"accessCode\"]],\"Code d'accès\"]]],false],[0,\"\\n\"],[4,\"if\",[[20,[\"displayErrorMessage\"]]],null,{\"statements\":[[0,\"    \"],[6,\"div\"],[9,\"class\",\"certification-course-page__errors\"],[7],[0,\"Ce code n'existe pas ou n'est plus valide.\"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[8],[0,\"\\n\\n\\n\"],[6,\"p\"],[9,\"class\",\"certification-course-page__cgu\"],[7],[0,\"\\n  En cliquant sur \\\"Lancer le test\\\", j’accepte que mes données d’identité, le numéro de certification et les circonstances de la passation telles que\\n  renseignées par l’examinateur soient communiquées à Pix. Pix les utilisera lors de la délibération du jury pour\\n  produire et archiver mes résultats et pour éditer mon certificat. Si cette certification m’a été prescrite par une organisation, j’accepte que Pix lui communique mes résultats.\\n  \"],[6,\"br\"],[7],[8],[0,\"\\n  Conformément à la loi « informatique et libertés », vous pouvez exercer votre droit d'accès aux données vous concernant et les faire rectifier en envoyant un mail à dpo@pix.fr.\\n\"],[8],[0,\"\\n\\n\"],[6,\"div\"],[9,\"class\",\"certification-course-page__field-button\"],[7],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"_loadingCertification\"]]],null,{\"statements\":[[0,\"    \"],[6,\"div\"],[9,\"class\",\"certification-course-page__field-button__action-validate\"],[7],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"certification-course-page__field-button__loader-bar\"],[7],[8],[0,\"\\n    \"],[8],[0,\"\\n\"]],\"parameters\":[]},{\"statements\":[[0,\"    \"],[6,\"button\"],[9,\"type\",\"submit\"],[9,\"class\",\"certification-course-page__submit_button\"],[3,\"action\",[[19,0,[]],\"submit\"]],[7],[0,\"Lancer le test\\n    \"],[8],[0,\"\\n\"]],\"parameters\":[]}],[8],[0,\"\\n\\n\\n\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/certification-code-validation.hbs" } });
 });
 define("pix-live/templates/components/certification-results-page", ["exports"], function (exports) {
   "use strict";
@@ -7729,6 +7814,14 @@ define("pix-live/templates/components/certification-results-page", ["exports"], 
     value: true
   });
   exports.default = Ember.HTMLBars.template({ "id": "EbOEA/83", "block": "{\"symbols\":[],\"statements\":[[6,\"div\"],[9,\"class\",\"certification-results__certification-banner\"],[7],[0,\"\\n  \"],[1,[25,\"certification-banner\",null,[[\"user\",\"certificationNumber\"],[[20,[\"user\"]],[20,[\"certificationNumber\"]]]]],false],[0,\"\\n\"],[8],[0,\"\\n\\n\"],[6,\"div\"],[9,\"class\",\"certification-results__content result-content\"],[7],[0,\"\\n\\n  \"],[6,\"div\"],[9,\"class\",\"result-content__panel\"],[7],[0,\"\\n    \"],[6,\"div\"],[9,\"class\",\"result-content__panel-picture\"],[7],[0,\"\\n      \"],[6,\"img\"],[10,\"src\",[26,[[18,\"rootURL\"],\"/images/flag.svg\"]]],[9,\"alt\",\"drapeau\"],[7],[8],[0,\"\\n    \"],[8],[0,\"\\n    \"],[6,\"div\"],[9,\"class\",\"result-content__panel-title\"],[7],[0,\"\\n      Vous avez terminé.\\n    \"],[8],[0,\"\\n    \"],[6,\"div\"],[9,\"class\",\"result-content__panel-description\"],[7],[0,\"\\n      Vos résultats vous seront communiqués dans les 10 jours suivant la fin de ce test par courrier électronique.\\n      Ils seront également transmis à votre établissement.\\n    \"],[8],[0,\"\\n  \"],[8],[0,\"\\n\\n  \"],[6,\"div\"],[9,\"class\",\"result-content__warning-container\"],[7],[0,\"\\n    \"],[6,\"div\"],[9,\"class\",\"result-content__warning-text\"],[7],[0,\"\\n      Si cet ordinateur n’est pas votre machine personnelle, pensez à vous déconnecter.\\n    \"],[8],[0,\"\\n\\n    \"],[6,\"div\"],[9,\"class\",\"result-content__warning-logout\"],[7],[0,\"\\n      \"],[4,\"link-to\",[\"logout\"],[[\"class\"],[\"warning-logout-button\"]],{\"statements\":[[0,\"Se déconnecter\"]],\"parameters\":[]},null],[0,\"\\n    \"],[8],[0,\"\\n  \"],[8],[0,\"\\n\"],[8]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/certification-results-page.hbs" } });
+});
+define("pix-live/templates/components/certifications-list", ["exports"], function (exports) {
+  "use strict";
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = Ember.HTMLBars.template({ "id": "syxDC153", "block": "{\"symbols\":[\"certification\"],\"statements\":[[6,\"div\"],[9,\"class\",\"certifications-list\"],[7],[0,\"\\n  \"],[6,\"table\"],[9,\"class\",\"certifications-list__table\"],[7],[0,\"\\n    \"],[6,\"thead\"],[9,\"class\",\"certifications-list__table-header\"],[7],[0,\"\\n    \"],[6,\"tr\"],[7],[0,\"\\n      \"],[6,\"td\"],[9,\"class\",\"certifications-list__table-header-cell\"],[7],[0,\"DATE\"],[8],[0,\"\\n      \"],[6,\"td\"],[9,\"class\",\"certifications-list__table-header-cell\"],[7],[0,\"STATUT\"],[8],[0,\"\\n      \"],[6,\"td\"],[9,\"class\",\"certifications-list__table-header-cell\"],[7],[0,\"CENTRE DE CERTIFICATION\"],[8],[0,\"\\n      \"],[6,\"td\"],[9,\"class\",\"certifications-list__table-header-cell\"],[7],[8],[0,\"\\n    \"],[8],[0,\"\\n    \"],[8],[0,\"\\n\\n    \"],[6,\"tbody\"],[9,\"class\",\"certifications-list__table-body\"],[7],[0,\"\\n\"],[4,\"each\",[[20,[\"certifications\"]]],null,{\"statements\":[[0,\"      \"],[6,\"tr\"],[9,\"class\",\"certifications-list__certification-item\"],[7],[0,\"\\n        \"],[6,\"td\"],[9,\"class\",\"certifications-list__certification-item-cell\"],[7],[1,[25,\"moment-format\",[[19,1,[\"date\"]],\"DD/MM/YYYY\"],[[\"allow-empty\"],[true]]],false],[8],[0,\"\\n        \"],[6,\"td\"],[9,\"class\",\"certifications-list__certification-item-cell\"],[7],[0,\"\\n          \"],[6,\"img\"],[9,\"src\",\"/images/sablier.svg\"],[9,\"alt\",\"\"],[9,\"class\",\"certifications-list__certification-item-cell__hourglass-img\"],[7],[8],[0,\"\\n          En attente du résultat\\n        \"],[8],[0,\"\\n        \"],[6,\"td\"],[9,\"class\",\"certifications-list__certification-item-cell\"],[7],[1,[19,1,[\"certificationCenter\"]],false],[8],[0,\"\\n      \"],[8],[0,\"\\n\"]],\"parameters\":[1]},null],[0,\"\\n    \"],[8],[0,\"\\n  \"],[8],[0,\"\\n\"],[8],[0,\"\\n\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/certifications-list.hbs" } });
 });
 define("pix-live/templates/components/challenge-actions", ["exports"], function (exports) {
   "use strict";
@@ -7808,7 +7901,7 @@ define("pix-live/templates/components/comparison-window", ["exports"], function 
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "3E5TOgvZ", "block": "{\"symbols\":[],\"statements\":[[6,\"div\"],[9,\"class\",\"routable-modal--dialog comparison-window--dialog\"],[7],[0,\"\\n\\n  \"],[6,\"div\"],[9,\"class\",\"routable-modal--content comparison-window--content\"],[7],[0,\"\\n\\n    \"],[6,\"div\"],[9,\"class\",\"routable-modal--header comparison-window__header\"],[7],[0,\"\\n\\n\\n\"],[4,\"routable-modal-close-button\",null,[[\"class\"],[\"routable-modal--close-button\"]],{\"statements\":[[0,\"        \"],[6,\"div\"],[9,\"class\",\"close-button-container\"],[7],[0,\"\\n          \"],[6,\"div\"],[7],[0,\"fermer\"],[8],[0,\"\\n          \"],[6,\"div\"],[7],[0,\"\\n            \"],[6,\"img\"],[9,\"src\",\"/images/comparison-window/icon-close-modal.svg\"],[9,\"alt\",\"Fermer la fenêtre modale\"],[9,\"width\",\"24\"],[9,\"height\",\"24\"],[7],[8],[0,\"\\n          \"],[8],[0,\"\\n        \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"comparison-window__result-item-index\"],[7],[0,\"\\n        \"],[1,[18,\"index\"],false],[0,\"\\n      \"],[8],[0,\"\\n\\n      \"],[6,\"div\"],[9,\"class\",\"comparison-window__result-item-line\"],[7],[0,\"\\n      \"],[8],[0,\"\\n\\n      \"],[6,\"div\"],[9,\"class\",\"comparison-window__title\"],[7],[0,\"\\n        \"],[6,\"div\"],[9,\"data-toggle\",\"tooltip\"],[9,\"data-placement\",\"top\"],[10,\"title\",[26,[[20,[\"resultItem\",\"tooltip\"]]]]],[7],[0,\"\\n          \"],[6,\"img\"],[10,\"class\",[26,[\"comparison-window__result-icon comparison-window__result-icon--\",[20,[\"resultItem\",\"status\"]]]]],[10,\"src\",[18,\"resultItemIcon\"],null],[9,\"alt\",\"\"],[7],[8],[0,\"\\n        \"],[8],[0,\"\\n      \"],[8],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"comparison-window__title-text\"],[7],[1,[20,[\"resultItem\",\"title\"]],false],[8],[0,\"\\n    \"],[8],[0,\"\\n\\n    \"],[6,\"div\"],[9,\"class\",\"routable-modal--body comparison-window--body\"],[7],[0,\"\\n\\n      \"],[6,\"div\"],[9,\"class\",\"rounded-panel comparison-window__instruction\"],[7],[0,\"\\n        \"],[6,\"div\"],[9,\"class\",\"rounded-panel__row \"],[7],[0,\"\\n          \"],[1,[25,\"markdown-to-html\",null,[[\"class\",\"markdown\"],[\"challenge-statement__instruction\",[20,[\"challenge\",\"instruction\"]]]]],false],[0,\"\\n        \"],[8],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"challenge\",\"illustrationUrl\"]]],null,{\"statements\":[[0,\"          \"],[6,\"div\"],[9,\"class\",\"rounded-panel__row challenge-statement__illustration-section\"],[7],[0,\"\\n            \"],[6,\"img\"],[9,\"class\",\"challenge-statement__illustration\"],[10,\"src\",[26,[[20,[\"challenge\",\"illustrationUrl\"]]]]],[9,\"alt\",\"Illustration de l'épreuve\"],[7],[8],[0,\"\\n          \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"      \"],[8],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"isAssessmentChallengeTypeQcm\"]]],null,{\"statements\":[[0,\"        \"],[1,[25,\"qcm-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[20,[\"challenge\"]],[20,[\"answer\"]],[20,[\"solution\"]]]]],false],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"isAssessmentChallengeTypeQcu\"]]],null,{\"statements\":[[0,\"        \"],[1,[25,\"qcu-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[20,[\"challenge\"]],[20,[\"answer\"]],[20,[\"solution\"]]]]],false],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\"],[4,\"if\",[[20,[\"isAssessmentChallengeTypeQroc\"]]],null,{\"statements\":[[0,\"        \"],[6,\"div\"],[9,\"class\",\"comparison-window__corrected-answers comparison-window__corrected-answers--qroc\"],[7],[0,\"\\n          \"],[1,[25,\"qroc-solution-panel\",null,[[\"answer\",\"solution\"],[[20,[\"answer\"]],[20,[\"solution\"]]]]],false],[0,\"\\n        \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\"],[4,\"if\",[[20,[\"isAssessmentChallengeTypeQrocmInd\"]]],null,{\"statements\":[[0,\"        \"],[6,\"div\"],[9,\"class\",\"comparison-window__corrected-answers comparison-window__corrected-answers--qrocm\"],[7],[0,\"\\n          \"],[1,[25,\"qrocm-ind-solution-panel\",null,[[\"answer\",\"solution\",\"challenge\"],[[20,[\"answer\"]],[20,[\"solution\"]],[20,[\"challenge\"]]]]],false],[0,\"\\n        \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n      \"],[1,[18,\"tutorial-panel\"],false],[0,\"\\n    \"],[8],[0,\"\\n\\n    \"],[6,\"div\"],[9,\"class\",\"routable-modal--footer\"],[7],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"comparison-window__feedback-panel\"],[7],[0,\"\\n        \"],[1,[25,\"feedback-panel\",null,[[\"assessment\",\"challenge\",\"collapsible\"],[[20,[\"answer\",\"assessment\"]],[20,[\"challenge\"]],false]]],false],[0,\"\\n      \"],[8],[0,\"\\n    \"],[8],[0,\"\\n  \"],[8],[0,\"\\n\"],[8],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/comparison-window.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "4oWG52eg", "block": "{\"symbols\":[],\"statements\":[[6,\"div\"],[9,\"class\",\"routable-modal--dialog comparison-window--dialog\"],[7],[0,\"\\n\\n  \"],[6,\"div\"],[9,\"class\",\"routable-modal--content comparison-window--content\"],[7],[0,\"\\n\\n    \"],[6,\"div\"],[9,\"class\",\"routable-modal--header comparison-window__header\"],[7],[0,\"\\n\\n\\n\"],[4,\"routable-modal-close-button\",null,[[\"class\"],[\"routable-modal--close-button\"]],{\"statements\":[[0,\"        \"],[6,\"div\"],[9,\"class\",\"close-button-container\"],[7],[0,\"\\n          \"],[6,\"div\"],[7],[0,\"fermer\"],[8],[0,\"\\n          \"],[6,\"div\"],[7],[0,\"\\n            \"],[6,\"img\"],[9,\"src\",\"/images/comparison-window/icon-close-modal.svg\"],[9,\"alt\",\"Fermer la fenêtre modale\"],[9,\"width\",\"24\"],[9,\"height\",\"24\"],[7],[8],[0,\"\\n          \"],[8],[0,\"\\n        \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"comparison-window__result-item-index\"],[7],[0,\"\\n        \"],[1,[18,\"index\"],false],[0,\"\\n      \"],[8],[0,\"\\n\\n      \"],[6,\"div\"],[9,\"class\",\"comparison-window__result-item-line\"],[7],[0,\"\\n      \"],[8],[0,\"\\n\\n      \"],[6,\"div\"],[9,\"class\",\"comparison-window__title\"],[7],[0,\"\\n        \"],[6,\"div\"],[9,\"data-toggle\",\"tooltip\"],[9,\"data-placement\",\"top\"],[10,\"title\",[26,[[20,[\"resultItem\",\"tooltip\"]]]]],[7],[0,\"\\n          \"],[6,\"img\"],[10,\"class\",[26,[\"comparison-window__result-icon comparison-window__result-icon--\",[20,[\"resultItem\",\"status\"]]]]],[10,\"src\",[18,\"resultItemIcon\"],null],[9,\"alt\",\"\"],[7],[8],[0,\"\\n        \"],[8],[0,\"\\n      \"],[8],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"comparison-window__title-text\"],[7],[1,[20,[\"resultItem\",\"title\"]],false],[8],[0,\"\\n    \"],[8],[0,\"\\n\\n    \"],[6,\"div\"],[9,\"class\",\"routable-modal--body comparison-window--body\"],[7],[0,\"\\n\\n      \"],[6,\"div\"],[9,\"class\",\"rounded-panel comparison-window__instruction\"],[7],[0,\"\\n        \"],[6,\"div\"],[9,\"class\",\"rounded-panel__row \"],[7],[0,\"\\n          \"],[1,[25,\"markdown-to-html\",null,[[\"class\",\"markdown\"],[\"challenge-statement__instruction\",[20,[\"challenge\",\"instruction\"]]]]],false],[0,\"\\n        \"],[8],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"challenge\",\"illustrationUrl\"]]],null,{\"statements\":[[0,\"          \"],[6,\"div\"],[9,\"class\",\"rounded-panel__row challenge-statement__illustration-section\"],[7],[0,\"\\n            \"],[6,\"img\"],[9,\"class\",\"challenge-statement__illustration\"],[10,\"src\",[26,[[20,[\"challenge\",\"illustrationUrl\"]]]]],[9,\"alt\",\"Illustration de l'épreuve\"],[7],[8],[0,\"\\n          \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"      \"],[8],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"isAssessmentChallengeTypeQcm\"]]],null,{\"statements\":[[0,\"        \"],[1,[25,\"qcm-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[20,[\"challenge\"]],[20,[\"answer\"]],[20,[\"correction\",\"solution\"]]]]],false],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"isAssessmentChallengeTypeQcu\"]]],null,{\"statements\":[[0,\"        \"],[1,[25,\"qcu-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[20,[\"challenge\"]],[20,[\"answer\"]],[20,[\"correction\",\"solution\"]]]]],false],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\"],[4,\"if\",[[20,[\"isAssessmentChallengeTypeQroc\"]]],null,{\"statements\":[[0,\"        \"],[6,\"div\"],[9,\"class\",\"comparison-window__corrected-answers comparison-window__corrected-answers--qroc\"],[7],[0,\"\\n          \"],[1,[25,\"qroc-solution-panel\",null,[[\"answer\",\"solution\"],[[20,[\"answer\"]],[20,[\"correction\",\"solution\"]]]]],false],[0,\"\\n        \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\"],[4,\"if\",[[20,[\"isAssessmentChallengeTypeQrocmInd\"]]],null,{\"statements\":[[0,\"        \"],[6,\"div\"],[9,\"class\",\"comparison-window__corrected-answers comparison-window__corrected-answers--qrocm\"],[7],[0,\"\\n          \"],[1,[25,\"qrocm-ind-solution-panel\",null,[[\"answer\",\"solution\",\"challenge\"],[[20,[\"answer\"]],[20,[\"correction\",\"solution\"]],[20,[\"challenge\"]]]]],false],[0,\"\\n        \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n      \"],[1,[25,\"tutorial-panel\",null,[[\"resultItemStatus\",\"hint\"],[[20,[\"resultItem\",\"status\"]],[20,[\"correction\",\"hint\"]]]]],false],[0,\"\\n    \"],[8],[0,\"\\n\\n    \"],[6,\"div\"],[9,\"class\",\"routable-modal--footer\"],[7],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"comparison-window__feedback-panel\"],[7],[0,\"\\n        \"],[1,[25,\"feedback-panel\",null,[[\"assessment\",\"challenge\",\"collapsible\"],[[20,[\"answer\",\"assessment\"]],[20,[\"challenge\"]],false]]],false],[0,\"\\n      \"],[8],[0,\"\\n    \"],[8],[0,\"\\n  \"],[8],[0,\"\\n\"],[8],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/comparison-window.hbs" } });
 });
 define("pix-live/templates/components/competence-area-list", ["exports"], function (exports) {
   "use strict";
@@ -7969,6 +8062,14 @@ define("pix-live/templates/components/navbar-mobile-menu", ["exports"], function
     value: true
   });
   exports.default = Ember.HTMLBars.template({ "id": "wkUT7VjP", "block": "{\"symbols\":[\"item\"],\"statements\":[[4,\"side-menu\",null,null,{\"statements\":[[0,\"  \"],[6,\"div\"],[9,\"class\",\"mobile-menu-header\"],[7],[0,\"\\n    \"],[6,\"div\"],[9,\"class\",\"mobile-menu-header__title\"],[7],[0,\"Menu\"],[8],[0,\"\\n    \"],[6,\"div\"],[9,\"class\",\"mobile-menu-header__close-button\"],[3,\"action\",[[19,0,[]],\"closeMenu\"]],[7],[0,\"\\n      \"],[6,\"img\"],[10,\"src\",[26,[[18,\"rootURL\"],\"/images/icons/icon-croix.svg\"]]],[9,\"alt\",\"close menu\"],[7],[8],[0,\"\\n    \"],[8],[0,\"\\n  \"],[8],[0,\"\\n\"],[4,\"each\",[[20,[\"menu\"]]],null,{\"statements\":[[0,\"    \"],[4,\"link-to\",[[19,1,[\"link\"]]],[[\"class\",\"action\",\"preventDefault\"],[[25,\"concat\",[\"mobile-menu__item\",\" \",[25,\"if\",[[19,1,[\"class\"]],[25,\"-normalize-class\",[\"item.class\",[19,1,[\"class\"]]],null]],null],\" \"],null],\"closeMenu\",false]],{\"statements\":[[0,\" \"],[1,[19,1,[\"name\"]],false]],\"parameters\":[]},null],[0,\"\\n\"]],\"parameters\":[1]},null]],\"parameters\":[]},null],[0,\"\\n\"],[1,[18,\"pix-content-backdrop\"],false],[0,\"\\n\\n\"],[4,\"side-menu-toggle\",null,null,{\"statements\":[[0,\"   \\n\"]],\"parameters\":[]},null]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/navbar-mobile-menu.hbs" } });
+});
+define("pix-live/templates/components/no-certification-panel", ["exports"], function (exports) {
+  "use strict";
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = Ember.HTMLBars.template({ "id": "IJBE2X3h", "block": "{\"symbols\":[],\"statements\":[[6,\"div\"],[9,\"class\",\"no-certification-panel\"],[7],[0,\"\\n  Vous n'avez pas encore de certification.\\n\"],[8]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/no-certification-panel.hbs" } });
 });
 define("pix-live/templates/components/partners-enrollment-panel", ["exports"], function (exports) {
   "use strict";
@@ -8184,7 +8285,7 @@ define("pix-live/templates/components/signup-form", ["exports"], function (expor
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "5Y++wQud", "block": "{\"symbols\":[],\"statements\":[[6,\"form\"],[9,\"class\",\"signup-form-container\"],[7],[0,\"\\n  \"],[6,\"div\"],[9,\"class\",\"signup-form__logo\"],[7],[0,\"\\n    \"],[1,[18,\"pix-logo\"],false],[0,\"\\n  \"],[8],[0,\"\\n\\n  \"],[6,\"div\"],[9,\"class\",\"signup-form__heading-container\"],[7],[0,\"\\n    \"],[6,\"h1\"],[9,\"class\",\"signup-form__heading\"],[7],[0,\"Inscription gratuite\"],[8],[0,\"\\n  \"],[8],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"_notificationMessage\"]]],null,{\"statements\":[[0,\"    \"],[6,\"p\"],[9,\"class\",\"signup-form__notification-message\"],[9,\"aria-live\",\"polite\"],[7],[1,[18,\"_notificationMessage\"],false],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n  \"],[6,\"div\"],[9,\"class\",\"signup-form__input-container\"],[7],[0,\"\\n    \"],[1,[25,\"form-textfield\",null,[[\"label\",\"textfieldName\",\"inputBindingValue\",\"validate\",\"validationStatus\",\"validationMessage\"],[\"Prénom\",\"firstName\",[20,[\"user\",\"firstName\"]],\"validateInput\",[20,[\"validation\",\"firstName\",\"status\"]],[20,[\"validation\",\"firstName\",\"message\"]]]]],false],[0,\"\\n  \"],[8],[0,\"\\n\\n  \"],[6,\"div\"],[9,\"class\",\"signup-form__input-container\"],[7],[0,\"\\n    \"],[1,[25,\"form-textfield\",null,[[\"label\",\"textfieldName\",\"inputBindingValue\",\"validate\",\"validationStatus\",\"validationMessage\"],[\"Nom\",\"lastName\",[20,[\"user\",\"lastName\"]],\"validateInput\",[20,[\"validation\",\"lastName\",\"status\"]],[20,[\"validation\",\"lastName\",\"message\"]]]]],false],[0,\"\\n  \"],[8],[0,\"\\n\\n  \"],[6,\"div\"],[9,\"class\",\"signup-form__input-container\"],[7],[0,\"\\n    \"],[1,[25,\"form-textfield\",null,[[\"label\",\"textfieldName\",\"validationStatus\",\"validate\",\"inputBindingValue\",\"validationMessage\"],[\"Adresse Email\",\"email\",[20,[\"validation\",\"email\",\"status\"]],\"validateInputEmail\",[20,[\"user\",\"email\"]],[20,[\"validation\",\"email\",\"message\"]]]]],false],[0,\"\\n  \"],[8],[0,\"\\n\\n  \"],[6,\"div\"],[9,\"class\",\"signup-form__input-container\"],[7],[0,\"\\n    \"],[1,[25,\"form-textfield\",null,[[\"label\",\"textfieldName\",\"validationStatus\",\"validate\",\"inputBindingValue\",\"validationMessage\"],[\"Mot de passe\",\"password\",[20,[\"validation\",\"password\",\"status\"]],\"validateInputPassword\",[20,[\"user\",\"password\"]],[20,[\"validation\",\"password\",\"message\"]]]]],false],[0,\"\\n  \"],[8],[0,\"\\n\\n  \"],[6,\"div\"],[9,\"class\",\"signup-form__cgu-container\"],[7],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"user\",\"errors\",\"cgu\"]]],null,{\"statements\":[[0,\"      \"],[6,\"div\"],[9,\"class\",\"form-textfield__cgu-message--error\"],[7],[0,\"\\n        \"],[1,[20,[\"user\",\"errors\",\"cgu\",\"firstObject\",\"message\"]],false],[0,\"\\n      \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n    \"],[6,\"label\"],[9,\"for\",\"pix-cgu\"],[9,\"class\",\"signup-form__cgu-label\"],[7],[0,\"\\n      \"],[1,[25,\"input\",null,[[\"type\",\"id\",\"checked\"],[\"checkbox\",\"pix-cgu\",[20,[\"user\",\"cgu\"]]]]],false],[0,\"\\n      \"],[6,\"span\"],[7],[0,\"J'​accepte les \"],[4,\"link-to\",[\"terms-of-service\"],[[\"class\",\"target\"],[\"signup__cgu-link\",\"_blank\"]],{\"statements\":[[0,\"\\n        conditions d'​utilisation de Pix\"]],\"parameters\":[]},null],[8],[0,\"\\n    \"],[8],[0,\"\\n  \"],[8],[0,\"\\n\\n  \"],[6,\"div\"],[9,\"class\",\"signup-form__captcha-container\"],[7],[0,\"\\n\"],[4,\"if\",[[20,[\"user\",\"errors\",\"recaptchaToken\"]]],null,{\"statements\":[[0,\"      \"],[6,\"div\"],[9,\"class\",\"signup-field__recaptcha-message--error\"],[7],[1,[20,[\"user\",\"errors\",\"recaptchaToken\",\"firstObject\",\"message\"]],false],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"    \"],[1,[25,\"g-recaptcha\",null,[[\"recaptchaToken\",\"tokenHasBeenUsed\"],[[20,[\"user\",\"recaptchaToken\"]],[20,[\"_tokenHasBeenUsed\"]]]]],false],[0,\"\\n  \"],[8],[0,\"\\n\\n  \"],[6,\"div\"],[9,\"class\",\"signup-form__submit-container\"],[7],[0,\"\\n    \"],[6,\"button\"],[9,\"class\",\"signup__submit-button\"],[3,\"action\",[[19,0,[]],\"signup\"]],[7],[0,\"Je m'inscris\"],[8],[0,\"\\n  \"],[8],[0,\"\\n\"],[8]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/signup-form.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "eIOyrx9O", "block": "{\"symbols\":[],\"statements\":[[6,\"form\"],[9,\"class\",\"signup-form-container\"],[7],[0,\"\\n  \"],[6,\"div\"],[9,\"class\",\"signup-form__logo\"],[7],[0,\"\\n    \"],[1,[18,\"pix-logo\"],false],[0,\"\\n  \"],[8],[0,\"\\n\\n  \"],[6,\"div\"],[9,\"class\",\"signup-form__heading-container\"],[7],[0,\"\\n    \"],[6,\"h1\"],[9,\"class\",\"signup-form__heading\"],[7],[0,\"Inscription gratuite\"],[8],[0,\"\\n  \"],[8],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"_notificationMessage\"]]],null,{\"statements\":[[0,\"    \"],[6,\"p\"],[9,\"class\",\"signup-form__notification-message\"],[9,\"aria-live\",\"polite\"],[7],[1,[18,\"_notificationMessage\"],false],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n  \"],[6,\"div\"],[9,\"class\",\"signup-form__input-container\"],[7],[0,\"\\n    \"],[1,[25,\"form-textfield\",null,[[\"label\",\"textfieldName\",\"inputBindingValue\",\"validate\",\"validationStatus\",\"validationMessage\"],[\"Prénom\",\"firstName\",[20,[\"user\",\"firstName\"]],\"validateInput\",[20,[\"validation\",\"firstName\",\"status\"]],[20,[\"validation\",\"firstName\",\"message\"]]]]],false],[0,\"\\n  \"],[8],[0,\"\\n\\n  \"],[6,\"div\"],[9,\"class\",\"signup-form__input-container\"],[7],[0,\"\\n    \"],[1,[25,\"form-textfield\",null,[[\"label\",\"textfieldName\",\"inputBindingValue\",\"validate\",\"validationStatus\",\"validationMessage\"],[\"Nom\",\"lastName\",[20,[\"user\",\"lastName\"]],\"validateInput\",[20,[\"validation\",\"lastName\",\"status\"]],[20,[\"validation\",\"lastName\",\"message\"]]]]],false],[0,\"\\n  \"],[8],[0,\"\\n\\n  \"],[6,\"div\"],[9,\"class\",\"signup-form__input-container\"],[7],[0,\"\\n    \"],[1,[25,\"form-textfield\",null,[[\"label\",\"textfieldName\",\"validationStatus\",\"validate\",\"inputBindingValue\",\"validationMessage\"],[\"Adresse Email\",\"email\",[20,[\"validation\",\"email\",\"status\"]],\"validateInputEmail\",[20,[\"user\",\"email\"]],[20,[\"validation\",\"email\",\"message\"]]]]],false],[0,\"\\n  \"],[8],[0,\"\\n\\n  \"],[6,\"div\"],[9,\"class\",\"signup-form__input-container\"],[7],[0,\"\\n    \"],[1,[25,\"form-textfield\",null,[[\"label\",\"textfieldName\",\"validationStatus\",\"validate\",\"inputBindingValue\",\"validationMessage\"],[\"Mot de passe\",\"password\",[20,[\"validation\",\"password\",\"status\"]],\"validateInputPassword\",[20,[\"user\",\"password\"]],[20,[\"validation\",\"password\",\"message\"]]]]],false],[0,\"\\n  \"],[8],[0,\"\\n\\n  \"],[6,\"div\"],[9,\"class\",\"signup-form__cgu-container\"],[7],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"user\",\"errors\",\"cgu\"]]],null,{\"statements\":[[0,\"      \"],[6,\"div\"],[9,\"class\",\"form-textfield__cgu-message--error\"],[7],[0,\"\\n        \"],[1,[20,[\"user\",\"errors\",\"cgu\",\"firstObject\",\"message\"]],false],[0,\"\\n      \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n    \"],[6,\"label\"],[9,\"for\",\"pix-cgu\"],[9,\"class\",\"signup-form__cgu-label\"],[7],[0,\"\\n      \"],[1,[25,\"input\",null,[[\"type\",\"id\",\"checked\"],[\"checkbox\",\"pix-cgu\",[20,[\"user\",\"cgu\"]]]]],false],[0,\"\\n      \"],[6,\"span\"],[7],[0,\"J'​accepte les \"],[4,\"link-to\",[\"terms-of-service\"],[[\"class\",\"target\"],[\"signup__cgu-link\",\"_blank\"]],{\"statements\":[[0,\"\\n        conditions d'​utilisation de Pix\"]],\"parameters\":[]},null],[8],[0,\"\\n    \"],[8],[0,\"\\n  \"],[8],[0,\"\\n\\n  \"],[6,\"div\"],[9,\"class\",\"signup-form__captcha-container\"],[7],[0,\"\\n\"],[4,\"if\",[[20,[\"user\",\"errors\",\"recaptchaToken\"]]],null,{\"statements\":[[0,\"      \"],[6,\"div\"],[9,\"class\",\"signup-field__recaptcha-message--error\"],[7],[1,[20,[\"user\",\"errors\",\"recaptchaToken\",\"firstObject\",\"message\"]],false],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"    \"],[1,[25,\"g-recaptcha\",null,[[\"recaptchaToken\",\"tokenHasBeenUsed\"],[[20,[\"user\",\"recaptchaToken\"]],[20,[\"_tokenHasBeenUsed\"]]]]],false],[0,\"\\n  \"],[8],[0,\"\\n\\n  \"],[6,\"div\"],[9,\"class\",\"signup-form__submit-container\"],[7],[0,\"\\n    \"],[6,\"button\"],[9,\"class\",\"signup__submit-button\"],[3,\"action\",[[19,0,[]],\"signup\"]],[7],[0,\"Je m'inscris\"],[8],[0,\"\\n  \"],[8],[0,\"\\n\\n  \"],[6,\"div\"],[9,\"class\",\"signup-form__legal-details-container\"],[7],[0,\"\\n    Les informations recueillies sur ce formulaire sont enregistrées dans un fichier informatisé par Pix pour permettre l'accès au service offert par Pix.\\n    Elles sont conservées pendant la durée d'utilisation du service et sont destinées à Pix exclusivement. Elles ne sont pas communiquées à des tiers.\\n    Conformément à la loi « informatique et libertés », vous pouvez exercer votre droit d'accès aux données vous concernant et les faire rectifier en envoyant un mail à dpo@pix.fr.\\n  \"],[8],[0,\"\\n\\n\"],[8]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/signup-form.hbs" } });
 });
 define("pix-live/templates/components/snapshot-list", ["exports"], function (exports) {
   "use strict";
@@ -8216,7 +8317,15 @@ define("pix-live/templates/components/tutorial-panel", ["exports"], function (ex
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "PElHhhqV", "block": "{\"symbols\":[],\"statements\":[[6,\"div\"],[9,\"class\",\"tutorial-panel__box-container\"],[7],[0,\"\\n  \"],[6,\"div\"],[9,\"class\",\"tutorial-panel__box-picto-container\"],[7],[0,\"\\n    \"],[6,\"img\"],[10,\"src\",[26,[[18,\"rootURL\"],\"/images/comparison-window/icon-tuto.svg\"]]],[9,\"alt\",\"tuto bientôt disponible\"],[9,\"class\",\"tutorial-panel__box-picto\"],[7],[8],[8],[0,\"\\n  \"],[6,\"div\"],[9,\"class\",\"tutorial-panel__box-title\"],[7],[0,\"Bientôt ici des tutoriels pour vous aider à réussir ce type d'épreuves !!\"],[8],[0,\"\\n\"],[8],[0,\"\\n\\n\"],[6,\"div\"],[9,\"class\",\"tutorial-panel__separator\"],[7],[8]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/tutorial-panel.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "1TvxF53j", "block": "{\"symbols\":[],\"statements\":[[4,\"if\",[[20,[\"shouldDisplayDefaultMessage\"]]],null,{\"statements\":[[0,\"  \"],[6,\"div\"],[9,\"class\",\"tutorial-panel__default-message-container\"],[7],[0,\"\\n    \"],[6,\"div\"],[9,\"class\",\"tutorial-panel__default-message-picto-container\"],[7],[0,\"\\n      \"],[6,\"img\"],[10,\"src\",[26,[[18,\"rootURL\"],\"/images/comparison-window/icon-tuto.svg\"]]],[9,\"alt\",\"\"],[9,\"class\",\"tutorial-panel__default-message-picto\"],[7],[8],[8],[0,\"\\n    \"],[6,\"div\"],[9,\"class\",\"tutorial-panel__default-message-title\"],[7],[0,\"Bientôt ici des tutoriels pour vous aider à réussir ce type\\n      d'épreuves !!\\n    \"],[8],[0,\"\\n  \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\"],[4,\"if\",[[20,[\"shouldDisplayHint\"]]],null,{\"statements\":[[0,\"  \"],[6,\"div\"],[9,\"class\",\"tutorial-panel__hint-container\"],[7],[0,\"\\n    \"],[6,\"header\"],[9,\"class\",\"tutorial-panel__hint-container-header\"],[7],[0,\"\\n      \"],[6,\"h3\"],[9,\"class\",\"tutorial-panel__hint-title\"],[7],[6,\"span\"],[7],[0,\"Pour réussir la prochaine fois\"],[8],[8],[0,\"\\n    \"],[8],[0,\"\\n    \"],[6,\"div\"],[9,\"class\",\"tutorial-panel__hint-container-body\"],[7],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"tutorial-panel__hint-picto-container\"],[7],[0,\"\\n        \"],[6,\"img\"],[10,\"src\",[26,[[18,\"rootURL\"],\"/images/comparison-window/icon-lampe.svg\"]]],[9,\"alt\",\"\"],[9,\"class\",\"tutorial-panel__hint-picto\"],[7],[8],[0,\"\\n      \"],[8],[0,\"\\n      \"],[1,[25,\"markdown-to-html\",null,[[\"class\",\"markdown\"],[\"tutorial-panel__hint-content\",[20,[\"hint\"]]]]],false],[0,\"\\n    \"],[8],[0,\"\\n  \"],[8],[0,\"\\n\"]],\"parameters\":[]},null]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/tutorial-panel.hbs" } });
+});
+define("pix-live/templates/components/user-certifications-panel", ["exports"], function (exports) {
+  "use strict";
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = Ember.HTMLBars.template({ "id": "HhgkzZHa", "block": "{\"symbols\":[],\"statements\":[[6,\"div\"],[9,\"class\",\"user-certifications-panel\"],[7],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"certifications\"]]],null,{\"statements\":[[0,\"    \"],[6,\"div\"],[9,\"class\",\"user-certifications-panel__certifications-list\"],[7],[0,\"\\n      \"],[1,[25,\"certifications-list\",null,[[\"certifications\"],[[20,[\"certifications\"]]]]],false],[0,\"\\n    \"],[8],[0,\"\\n\"]],\"parameters\":[]},{\"statements\":[[0,\"    \"],[6,\"div\"],[9,\"class\",\"user-certifications-panel__no-certification-panel\"],[7],[0,\"\\n      \"],[1,[18,\"no-certification-panel\"],false],[0,\"\\n    \"],[8],[0,\"\\n\"]],\"parameters\":[]}],[0,\"\\n\"],[8]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/user-certifications-panel.hbs" } });
 });
 define("pix-live/templates/components/user-logged-menu", ["exports"], function (exports) {
   "use strict";
@@ -8224,7 +8333,7 @@ define("pix-live/templates/components/user-logged-menu", ["exports"], function (
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "wodEudIu", "block": "{\"symbols\":[],\"statements\":[[4,\"if\",[[20,[\"_user\"]]],null,{\"statements\":[[0,\"  \"],[6,\"div\"],[9,\"class\",\"logged-user-name\"],[9,\"aria-haspopup\",\"true\"],[10,\"aria-expanded\",[26,[[18,\"_canDisplayMenu\"]]]],[7],[0,\"\\n    \"],[6,\"a\"],[9,\"href\",\"#\"],[9,\"class\",\"logged-user-name__link\"],[3,\"action\",[[19,0,[]],\"toggleUserMenu\"]],[7],[0,\"\\n      \"],[1,[25,\"concat\",[[20,[\"_user\",\"firstName\"]],\" \",[20,[\"_user\",\"lastName\"]]],null],false],[0,\"\\n      \"],[6,\"span\"],[9,\"class\",\"caret\"],[7],[8],[0,\"\\n    \"],[8],[0,\"\\n  \"],[8],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"_canDisplayMenu\"]]],null,{\"statements\":[[4,\"click-outside\",null,[[\"action\"],[[25,\"action\",[[19,0,[]],\"closeMenu\"],null]]],{\"statements\":[[0,\"        \"],[6,\"div\"],[9,\"class\",\"logged-user-menu\"],[7],[0,\"\\n          \"],[6,\"ul\"],[9,\"class\",\"logged-user-menu__list\"],[7],[0,\"\\n            \"],[6,\"li\"],[9,\"class\",\"logged-user-menu__item user-menu-item\"],[7],[0,\"\\n              \"],[6,\"div\"],[9,\"class\",\"user-menu-item__details-firstname\"],[7],[0,\" \"],[1,[20,[\"_user\",\"firstName\"]],false],[8],[0,\"\\n              \"],[6,\"div\"],[9,\"class\",\"user-menu-item__details-email\"],[7],[1,[20,[\"_user\",\"email\"]],false],[8],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"canDisplayLinkToProfile\"]]],null,{\"statements\":[[0,\"                \"],[6,\"div\"],[9,\"class\",\"user-menu-item__account-link\"],[7],[0,\"\\n                  \"],[4,\"link-to\",[\"index\"],null,{\"statements\":[[0,\"Mon compte\"]],\"parameters\":[]},null],[0,\"\\n                \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n            \"],[8],[0,\"\\n            \"],[6,\"li\"],[9,\"class\",\"logged-user-menu__item user-menu-item__logout\"],[7],[0,\"\\n\"],[4,\"link-to\",[\"logout\"],[[\"class\",\"tagName\"],[\"grey-hover-button logout__button\",\"button\"]],{\"statements\":[[0,\"                \"],[6,\"span\"],[9,\"class\",\"grey-hover-button__label\"],[7],[0,\"se déconnecter\"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"            \"],[8],[0,\"\\n          \"],[8],[0,\"\\n        \"],[8],[0,\"\\n\"]],\"parameters\":[]},null]],\"parameters\":[]},null]],\"parameters\":[]},null]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/user-logged-menu.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "tmPMasgQ", "block": "{\"symbols\":[],\"statements\":[[4,\"if\",[[20,[\"_user\"]]],null,{\"statements\":[[0,\"  \"],[6,\"div\"],[9,\"class\",\"logged-user-name\"],[9,\"aria-haspopup\",\"true\"],[10,\"aria-expanded\",[26,[[18,\"_canDisplayMenu\"]]]],[7],[0,\"\\n    \"],[6,\"a\"],[9,\"href\",\"#\"],[9,\"class\",\"logged-user-name__link\"],[3,\"action\",[[19,0,[]],\"toggleUserMenu\"]],[7],[0,\"\\n      \"],[1,[25,\"concat\",[[20,[\"_user\",\"firstName\"]],\" \",[20,[\"_user\",\"lastName\"]]],null],false],[0,\"\\n      \"],[6,\"span\"],[9,\"class\",\"caret\"],[7],[8],[0,\"\\n    \"],[8],[0,\"\\n  \"],[8],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"_canDisplayMenu\"]]],null,{\"statements\":[[4,\"click-outside\",null,[[\"action\"],[[25,\"action\",[[19,0,[]],\"closeMenu\"],null]]],{\"statements\":[[0,\"        \"],[6,\"div\"],[9,\"class\",\"logged-user-menu\"],[7],[0,\"\\n          \"],[6,\"ul\"],[9,\"class\",\"logged-user-menu__list\"],[7],[0,\"\\n            \"],[6,\"li\"],[9,\"class\",\"logged-user-menu__item user-menu-item\"],[7],[0,\"\\n              \"],[6,\"div\"],[9,\"class\",\"user-menu-item__details-firstname\"],[7],[0,\" \"],[1,[20,[\"_user\",\"firstName\"]],false],[8],[0,\"\\n              \"],[6,\"div\"],[9,\"class\",\"user-menu-item__details-email\"],[7],[1,[20,[\"_user\",\"email\"]],false],[8],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"canDisplayLinkToProfile\"]]],null,{\"statements\":[[0,\"                \"],[6,\"div\"],[9,\"class\",\"user-menu-item__details-account-link\"],[7],[0,\"\\n                  \"],[4,\"link-to\",[\"index\"],null,{\"statements\":[[0,\"Mon compte\"]],\"parameters\":[]},null],[0,\"\\n                \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n            \"],[8],[0,\"\\n\\n            \"],[6,\"li\"],[9,\"class\",\"logged-user-menu__item\"],[7],[0,\"\\n              \"],[6,\"div\"],[9,\"class\",\"user-menu-item__certification-link user-menu-item\"],[7],[0,\"\\n                \"],[4,\"link-to\",[\"user-certifications\"],null,{\"statements\":[[0,\"MES CERTIFICATIONS\"]],\"parameters\":[]},null],[0,\"\\n              \"],[8],[0,\"\\n            \"],[8],[0,\"\\n            \"],[6,\"li\"],[9,\"class\",\"logged-user-menu__item user-menu-item__logout\"],[7],[0,\"\\n\"],[4,\"link-to\",[\"logout\"],[[\"class\",\"tagName\"],[\"grey-hover-button logout__button\",\"button\"]],{\"statements\":[[0,\"                \"],[6,\"span\"],[9,\"class\",\"grey-hover-button__label\"],[7],[0,\"se déconnecter\"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"            \"],[8],[0,\"\\n          \"],[8],[0,\"\\n        \"],[8],[0,\"\\n\"]],\"parameters\":[]},null]],\"parameters\":[]},null]],\"parameters\":[]},null]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/user-logged-menu.hbs" } });
 });
 define("pix-live/templates/components/warning-page", ["exports"], function (exports) {
   "use strict";
@@ -8304,7 +8413,7 @@ define("pix-live/templates/legal-notices", ["exports"], function (exports) {
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "pXOtiAT1", "block": "{\"symbols\":[],\"statements\":[[6,\"div\"],[9,\"class\",\"legal-notices-page\"],[7],[0,\"\\n  \"],[1,[25,\"navbar-header\",null,[[\"class\"],[\"navbar-header--white\"]]],false],[0,\"\\n  \"],[6,\"div\"],[9,\"class\",\"rounded-panel legal-notices-page__container\"],[7],[0,\"\\n    \"],[6,\"h1\"],[9,\"class\",\"legal-notices-page__title\"],[7],[0,\"\\n      Mentions légales\\n    \"],[8],[0,\"\\n    \"],[6,\"section\"],[9,\"class\",\"legal-notices-section legal-notices-section--editor\"],[7],[0,\"\\n      \"],[6,\"h2\"],[9,\"class\",\"legal-notices-section__title\"],[7],[0,\"Éditeur\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"Groupement d’intérêt public « Pix » \"],[6,\"br\"],[7],[8],[0,\"\\n        110 rue de Grenelle \"],[6,\"br\"],[7],[8],[0,\"\\n        75007 Paris\"],[6,\"br\"],[7],[8],[0,\"\\n        tél. : 01 43 40 00 18\"],[6,\"br\"],[7],[8],[0,\"\\n      \"],[8],[0,\"\\n      \"],[6,\"br\"],[7],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"Directeur de la publication : M. Benjamin MARTEAU, Directeur\"],[8],[0,\"\\n      \"],[6,\"h3\"],[9,\"class\",\"legal-notices-section__subtitle\"],[7],[0,\"Membres du groupement d'intérêt public pix :\"],[8],[0,\"\\n      \"],[6,\"ul\"],[9,\"class\",\"legal-notices-members\"],[7],[0,\"\\n        \"],[6,\"li\"],[9,\"class\",\"legal-notices-member\"],[7],[0,\"\\n          \"],[6,\"a\"],[9,\"class\",\"legal-notices-member__link\"],[9,\"target\",\"_blank\"],[9,\"href\",\"http://www.education.gouv.fr/\"],[7],[0,\"\\n            \"],[6,\"img\"],[9,\"src\",\"/images/legal-notices/logo-MEN.jpg\"],[9,\"alt\",\"logo ministère de l'éducation nationale\"],[7],[8],[0,\"\\n          \"],[8],[0,\"\\n        \"],[8],[0,\"\\n        \"],[6,\"li\"],[9,\"class\",\"legal-notices-member\"],[7],[0,\"\\n          \"],[6,\"a\"],[9,\"class\",\"legal-notices-member__link\"],[9,\"target\",\"_blank\"],[9,\"href\",\"http://www.enseignementsup-recherche.gouv.fr/\"],[7],[0,\"\\n            \"],[6,\"img\"],[9,\"src\",\"/images/legal-notices/logo-MESRI.jpg\"],[9,\"alt\",\"logo ministère de l'enseignement supérieur, de la recherche et de l'innovation\"],[7],[8],[0,\"\\n          \"],[8],[0,\"\\n        \"],[8],[0,\"\\n      \"],[8],[0,\"\\n      \"],[6,\"ul\"],[9,\"class\",\"legal-notices-members\"],[7],[0,\"\\n        \"],[6,\"li\"],[9,\"class\",\"legal-notices-member\"],[7],[0,\"\\n          \"],[6,\"a\"],[9,\"class\",\"legal-notices-member__link\"],[9,\"target\",\"_blank\"],[9,\"href\",\"http://uoh.fr/front\"],[7],[0,\"\\n            \"],[6,\"img\"],[9,\"src\",\"/images/legal-notices/logo-UOH.jpg\"],[9,\"alt\",\"logo université ouverte humaines\"],[7],[8],[0,\"\\n          \"],[8],[0,\"\\n        \"],[8],[0,\"\\n        \"],[6,\"li\"],[9,\"class\",\"legal-notices-member\"],[7],[0,\"\\n          \"],[6,\"a\"],[9,\"class\",\"legal-notices-member__link\"],[9,\"target\",\"_blank\"],[9,\"href\",\"http://www.cned.fr/\"],[7],[0,\"\\n            \"],[6,\"img\"],[9,\"src\",\"/images/legal-notices/logo-CNED.jpg\"],[9,\"alt\",\"logo CNED\"],[7],[8],[0,\"\\n          \"],[8],[0,\"\\n        \"],[8],[0,\"\\n        \"],[6,\"li\"],[9,\"class\",\"legal-notices-member\"],[7],[0,\"\\n          \"],[6,\"a\"],[9,\"class\",\"legal-notices-member__link\"],[9,\"target\",\"_blank\"],[9,\"href\",\"http://unistra.fr/\"],[7],[0,\"\\n            \"],[6,\"img\"],[9,\"src\",\"/images/legal-notices/logo-Univ-strasbourg.jpg\"],[9,\"alt\",\"logo université strasbourg\"],[7],[8],[0,\"\\n          \"],[8],[0,\"\\n        \"],[8],[0,\"\\n      \"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"\\n        \"],[6,\"a\"],[9,\"target\",\"_blank\"],[9,\"href\",\"https://www.legifrance.gouv.fr/eli/arrete/2017/4/27/MENF1711150A/jo\"],[7],[0,\"\\n          Arrêté du 27 avril 2017 portant approbation de la convention constitutive du groupement d'intérêt\\n          public « PIX »\\n        \"],[8],[0,\"\\n      \"],[8],[0,\"\\n    \"],[8],[0,\"\\n    \"],[6,\"section\"],[9,\"class\",\"legal-notices-section legal-notices-section--personal-data\"],[7],[0,\"\\n      \"],[6,\"h2\"],[9,\"class\",\"legal-notices-section__title\"],[7],[0,\"Protection des données personnelles\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"Correspondante « informatiques et libertés » : Mme Nathalie DENOS\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"Conformément à la loi « informatiques et libertés » du 6 janvier 1978, vous bénéficiez d’un droit d’accès, de\\n        rectification et d’opposition sur les données à caractère personnel vous concernant. Vous pouvez exercer ces\\n        droits, et/ou formuler toute demande d'information relative à vos données personnelles, en contactant notre\\n        Correspondant « informatiques et libertés » :\"],[8],[0,\"\\n      \"],[6,\"ul\"],[9,\"class\",\"legal-notices-data-restriction-means\"],[7],[0,\"\\n        \"],[6,\"li\"],[9,\"class\",\"legal-notices-data-restriction-mean\"],[7],[0,\"\\n          \"],[6,\"p\"],[7],[0,\"- par voie électronique, en adressant votre demande accompagnée de la copie d'un titre d'identité, à \"],[6,\"a\"],[9,\"href\",\"mailto:cil.pix@beta.gouv.fr\"],[9,\"target\",\"_top\"],[7],[0,\"cil.pix@beta.gouv.fr\"],[8],[0,\"\\n          \"],[8],[0,\"\\n        \"],[8],[0,\"\\n        \"],[6,\"li\"],[9,\"class\",\"legal-notices-data-restriction-mean\"],[7],[0,\"\\n          \"],[6,\"p\"],[7],[0,\"\\n            - par courrier, accompagné de la copie d'un titre d'identité, à l'adresse suivante : PIX - 193 rue de Bercy - tour Gamma A - 75012 Paris\\n          \"],[8],[0,\"\\n        \"],[8],[0,\"\\n      \"],[8],[0,\"\\n    \"],[8],[0,\"\\n    \"],[6,\"section\"],[9,\"class\",\"legal-notices-section legal-notices-section--hosting\"],[7],[0,\"\\n      \"],[6,\"h2\"],[9,\"class\",\"legal-notices-section__title\"],[7],[0,\"Hébergements\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"\\n        OVH\"],[6,\"br\"],[7],[8],[0,\"\\n        2 rue Kellermann\"],[6,\"br\"],[7],[8],[0,\"\\n        59100 Roubaix\"],[6,\"br\"],[7],[8],[0,\"\\n        France\\n      \"],[8],[0,\"\\n    \"],[8],[0,\"\\n    \"],[6,\"section\"],[9,\"class\",\"legal-notices-section legal-notices-section--credits\"],[7],[0,\"\\n      \"],[6,\"h2\"],[9,\"class\",\"legal-notices-section__title\"],[7],[0,\"Crédits\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"UX / UI Design : \"],[6,\"a\"],[9,\"target\",\"_blank\"],[9,\"href\",\"http://reloaded.digital/\"],[7],[0,\"Reloaded\"],[8],[8],[0,\"\\n    \"],[8],[0,\"\\n\\n  \"],[8],[0,\"\\n\"],[8],[0,\"\\n\"],[1,[18,\"app-footer\"],false],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/legal-notices.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "Fm2zciWu", "block": "{\"symbols\":[],\"statements\":[[6,\"div\"],[9,\"class\",\"legal-notices-page\"],[7],[0,\"\\n  \"],[1,[25,\"navbar-header\",null,[[\"class\"],[\"navbar-header--white\"]]],false],[0,\"\\n  \"],[6,\"div\"],[9,\"class\",\"rounded-panel legal-notices-page__container\"],[7],[0,\"\\n    \"],[6,\"h1\"],[9,\"class\",\"legal-notices-page__title\"],[7],[0,\"\\n      Mentions légales\\n    \"],[8],[0,\"\\n    \"],[6,\"section\"],[9,\"class\",\"legal-notices-section legal-notices-section--editor\"],[7],[0,\"\\n      \"],[6,\"h2\"],[9,\"class\",\"legal-notices-section__title\"],[7],[0,\"Éditeur\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"Groupement d’intérêt public « Pix » \"],[6,\"br\"],[7],[8],[0,\"\\n        110 rue de Grenelle \"],[6,\"br\"],[7],[8],[0,\"\\n        75007 Paris\"],[6,\"br\"],[7],[8],[0,\"\\n        tél. : 01 43 40 00 18\"],[6,\"br\"],[7],[8],[0,\"\\n      \"],[8],[0,\"\\n      \"],[6,\"br\"],[7],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"Directeur de la publication : M. Benjamin MARTEAU, Directeur\"],[8],[0,\"\\n      \"],[6,\"h3\"],[9,\"class\",\"legal-notices-section__subtitle\"],[7],[0,\"Membres du groupement d'intérêt public pix :\"],[8],[0,\"\\n      \"],[6,\"ul\"],[9,\"class\",\"legal-notices-members\"],[7],[0,\"\\n        \"],[6,\"li\"],[9,\"class\",\"legal-notices-member\"],[7],[0,\"\\n          \"],[6,\"a\"],[9,\"class\",\"legal-notices-member__link\"],[9,\"target\",\"_blank\"],[9,\"href\",\"http://www.education.gouv.fr/\"],[7],[0,\"\\n            \"],[6,\"img\"],[9,\"src\",\"/images/legal-notices/logo-MEN.jpg\"],[9,\"alt\",\"logo ministère de l'éducation nationale\"],[7],[8],[0,\"\\n          \"],[8],[0,\"\\n        \"],[8],[0,\"\\n        \"],[6,\"li\"],[9,\"class\",\"legal-notices-member\"],[7],[0,\"\\n          \"],[6,\"a\"],[9,\"class\",\"legal-notices-member__link\"],[9,\"target\",\"_blank\"],[9,\"href\",\"http://www.enseignementsup-recherche.gouv.fr/\"],[7],[0,\"\\n            \"],[6,\"img\"],[9,\"src\",\"/images/legal-notices/logo-MESRI.jpg\"],[9,\"alt\",\"logo ministère de l'enseignement supérieur, de la recherche et de l'innovation\"],[7],[8],[0,\"\\n          \"],[8],[0,\"\\n        \"],[8],[0,\"\\n      \"],[8],[0,\"\\n      \"],[6,\"ul\"],[9,\"class\",\"legal-notices-members\"],[7],[0,\"\\n        \"],[6,\"li\"],[9,\"class\",\"legal-notices-member\"],[7],[0,\"\\n          \"],[6,\"a\"],[9,\"class\",\"legal-notices-member__link\"],[9,\"target\",\"_blank\"],[9,\"href\",\"http://uoh.fr/front\"],[7],[0,\"\\n            \"],[6,\"img\"],[9,\"src\",\"/images/legal-notices/logo-UOH.jpg\"],[9,\"alt\",\"logo université ouverte humaines\"],[7],[8],[0,\"\\n          \"],[8],[0,\"\\n        \"],[8],[0,\"\\n        \"],[6,\"li\"],[9,\"class\",\"legal-notices-member\"],[7],[0,\"\\n          \"],[6,\"a\"],[9,\"class\",\"legal-notices-member__link\"],[9,\"target\",\"_blank\"],[9,\"href\",\"http://www.cned.fr/\"],[7],[0,\"\\n            \"],[6,\"img\"],[9,\"src\",\"/images/legal-notices/logo-CNED.jpg\"],[9,\"alt\",\"logo CNED\"],[7],[8],[0,\"\\n          \"],[8],[0,\"\\n        \"],[8],[0,\"\\n        \"],[6,\"li\"],[9,\"class\",\"legal-notices-member\"],[7],[0,\"\\n          \"],[6,\"a\"],[9,\"class\",\"legal-notices-member__link\"],[9,\"target\",\"_blank\"],[9,\"href\",\"http://unistra.fr/\"],[7],[0,\"\\n            \"],[6,\"img\"],[9,\"src\",\"/images/legal-notices/logo-Univ-strasbourg.jpg\"],[9,\"alt\",\"logo université strasbourg\"],[7],[8],[0,\"\\n          \"],[8],[0,\"\\n        \"],[8],[0,\"\\n      \"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"\\n        \"],[6,\"a\"],[9,\"target\",\"_blank\"],[9,\"href\",\"https://www.legifrance.gouv.fr/eli/arrete/2017/4/27/MENF1711150A/jo\"],[7],[0,\"\\n          Arrêté du 27 avril 2017 portant approbation de la convention constitutive du groupement d'intérêt\\n          public « PIX »\\n        \"],[8],[0,\"\\n      \"],[8],[0,\"\\n    \"],[8],[0,\"\\n    \"],[6,\"section\"],[9,\"class\",\"legal-notices-section legal-notices-section--personal-data\"],[7],[0,\"\\n      \"],[6,\"h2\"],[9,\"class\",\"legal-notices-section__title\"],[7],[0,\"Protection des données personnelles\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"Correspondante « informatiques et libertés » : Mme Nathalie DENOS\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"Conformément à la loi « informatiques et libertés » du 6 janvier 1978, vous bénéficiez d’un droit d’accès, de\\n        rectification et d’opposition sur les données à caractère personnel vous concernant. Vous pouvez exercer ces\\n        droits, et/ou formuler toute demande d'information relative à vos données personnelles, en contactant notre\\n        Correspondant « informatiques et libertés » :\"],[8],[0,\"\\n      \"],[6,\"ul\"],[9,\"class\",\"legal-notices-data-restriction-means\"],[7],[0,\"\\n        \"],[6,\"li\"],[9,\"class\",\"legal-notices-data-restriction-mean\"],[7],[0,\"\\n          \"],[6,\"p\"],[7],[0,\"- par voie électronique, en adressant votre demande accompagnée de la copie d'un titre d'identité, à \"],[6,\"a\"],[9,\"href\",\"mailto:dpo@pix.fr\"],[9,\"target\",\"_top\"],[7],[0,\"dpo@pix.fr\"],[8],[0,\"\\n          \"],[8],[0,\"\\n        \"],[8],[0,\"\\n        \"],[6,\"li\"],[9,\"class\",\"legal-notices-data-restriction-mean\"],[7],[0,\"\\n          \"],[6,\"p\"],[7],[0,\"\\n            - par courrier, accompagné de la copie d'un titre d'identité, à l'adresse suivante : PIX - 193 rue de Bercy - tour Gamma A - 75012 Paris\\n          \"],[8],[0,\"\\n        \"],[8],[0,\"\\n      \"],[8],[0,\"\\n    \"],[8],[0,\"\\n    \"],[6,\"section\"],[9,\"class\",\"legal-notices-section legal-notices-section--hosting\"],[7],[0,\"\\n      \"],[6,\"h2\"],[9,\"class\",\"legal-notices-section__title\"],[7],[0,\"Hébergements\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"\\n        Scalingo SAS\"],[6,\"br\"],[7],[8],[0,\"\\n        15 avenue du Rhin\"],[6,\"br\"],[7],[8],[0,\"\\n        67100 Strasbourg\"],[6,\"br\"],[7],[8],[0,\"\\n        France\"],[6,\"br\"],[7],[8],[0,\"\\n        SIRET 80866548300018\\n      \"],[8],[0,\"\\n    \"],[8],[0,\"\\n    \"],[6,\"section\"],[9,\"class\",\"legal-notices-section legal-notices-section--credits\"],[7],[0,\"\\n      \"],[6,\"h2\"],[9,\"class\",\"legal-notices-section__title\"],[7],[0,\"Crédits\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"UX / UI Design : \"],[6,\"a\"],[9,\"target\",\"_blank\"],[9,\"href\",\"http://reloaded.digital/\"],[7],[0,\"Reloaded\"],[8],[8],[0,\"\\n    \"],[8],[0,\"\\n\\n  \"],[8],[0,\"\\n\"],[8],[0,\"\\n\"],[1,[18,\"app-footer\"],false],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/legal-notices.hbs" } });
 });
 define("pix-live/templates/login", ["exports"], function (exports) {
   "use strict";
@@ -8361,6 +8470,14 @@ define("pix-live/templates/terms-of-service", ["exports"], function (exports) {
     value: true
   });
   exports.default = Ember.HTMLBars.template({ "id": "nZtYCV1b", "block": "{\"symbols\":[],\"statements\":[[6,\"div\"],[9,\"class\",\"terms-of-service-page\"],[7],[0,\"\\n  \"],[1,[25,\"navbar-header\",null,[[\"class\"],[\"navbar-header--white\"]]],false],[0,\"\\n\\n  \"],[6,\"div\"],[9,\"class\",\"rounded-panel terms-of-service-page__content\"],[7],[0,\"\\n\\n    \"],[6,\"h1\"],[9,\"class\",\"terms-of-service-page__title\"],[7],[0,\"Conditions générales d'utilisation du site Pix\"],[8],[0,\"\\n    \"],[6,\"p\"],[9,\"class\",\"terms-of-service-page__subtitle\"],[7],[0,\"Toute utilisation du Site est soumise au préalable à la prise de connaissance et à l’acceptation des présentes Conditions Générales d’Utilisation.\"],[8],[0,\"\\n\\n    \"],[6,\"section\"],[9,\"class\",\"terms-of-service-section terms-of-service-section--legal-notice\"],[7],[0,\"\\n      \"],[6,\"h2\"],[9,\"class\",\"terms-of-service-section__title\"],[7],[0,\"1. Notice légale\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"Le Site est édité par Groupement d’intérêt public « Pix »\"],[8],[0,\"\\n      \"],[6,\"ul\"],[7],[0,\"\\n        \"],[6,\"li\"],[7],[0,\"SIRET : 130 023 435 00014\"],[8],[0,\"\\n        \"],[6,\"li\"],[7],[0,\"Adresse : 110 rue de Grenelle 75007 PARIS\"],[8],[0,\"\\n        \"],[6,\"li\"],[7],[0,\"Téléphone : 01 43 40 00 18\"],[8],[0,\"\\n        \"],[6,\"li\"],[7],[0,\"Email :  contact@pix.beta.gouv.fr\"],[8],[0,\"\\n      \"],[8],[0,\"\\n\\n      \"],[6,\"p\"],[7],[6,\"b\"],[7],[0,\"Directeur de publication :\"],[8],[0,\" M. Benjamin MARTEAU, Directeur du GIP Pix\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[6,\"b\"],[7],[0,\"Objet\"],[8],[8],[0,\"\\n      \"],[6,\"p\"],[7],[6,\"b\"],[7],[0,\"Pix\"],[8],[0,\" \"],[6,\"a\"],[9,\"href\",\"https://pix.beta.gouv.fr\"],[7],[0,\"https://pix.beta.gouv.fr\"],[8],[0,\" est un site visant à permettre l’évaluation et la certification des compétences numériques, et à faciliter l’accès à la formation sur ces compétences.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"Les conditions générales d’utilisation ont pour objet de définir les droits et obligations de tout Utilisateur du Site et de l’Éditeur.\"],[8],[0,\"\\n    \"],[8],[0,\"\\n\\n    \"],[6,\"section\"],[9,\"class\",\"terms-of-service-section terms-of-service-section--definitions\"],[7],[0,\"\\n      \"],[6,\"h2\"],[9,\"class\",\"terms-of-service-section__title\"],[7],[0,\"2. Définitions\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"Les termes ci-après définis ont le sens et la portée donnés dans leur définition dans le cadre de la conclusion et l’exécution des présentes Conditions Générales d’Utilisation.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"« \"],[6,\"span\"],[9,\"class\",\"terms-of-service__definition\"],[7],[0,\"Conditions Générales d’Utilisation » ou « CGU\"],[8],[0,\" » : les présentes Conditions Générales d’Utilisation, destinées à encadrer au plan contractuel l’utilisation du Site par tout Utilisateur.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"« \"],[6,\"span\"],[9,\"class\",\"terms-of-service__definition\"],[7],[0,\"Contenus informationnels\"],[8],[0,\" » : l’ensemble des textes, photographies, illustrations, à l’exception des contenus de test.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"« \"],[6,\"span\"],[9,\"class\",\"terms-of-service__definition\"],[7],[0,\"Contenus de test » ou « épreuves\"],[8],[0,\" » : les épreuves (énoncés, consignes, illustrations, documents à télécharger, etc.).\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"« \"],[6,\"span\"],[9,\"class\",\"terms-of-service__definition\"],[7],[0,\"Éditeur\"],[8],[0,\" » : désigne \"],[6,\"b\"],[7],[0,\"Groupement d’intérêt public « Pix »\"],[8],[0,\" qui édite le Site.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"« \"],[6,\"span\"],[9,\"class\",\"terms-of-service__definition\"],[7],[0,\"Hébergeur\"],[8],[0,\" » : désigne l’entreprise qui héberge les données pour le Service indiqué dans les \"],[4,\"link-to\",[\"legal-notices\"],null,{\"statements\":[[0,\"mentions légales\"]],\"parameters\":[]},null],[0,\".\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"« \"],[6,\"span\"],[9,\"class\",\"terms-of-service__definition\"],[7],[0,\"Site\"],[8],[0,\" » : le site internet Pix accessible à partir du lien \"],[6,\"a\"],[9,\"href\",\"https://pix.beta.gouv.fr\"],[7],[0,\"https://pix.beta.gouv.fr.\"],[8],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"« \"],[6,\"span\"],[9,\"class\",\"terms-of-service__definition\"],[7],[0,\"Service\"],[8],[0,\" » : le service Pix incluant le Service standard et le Service prescripteur.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"« \"],[6,\"span\"],[9,\"class\",\"terms-of-service__definition\"],[7],[0,\"Service standard\"],[8],[0,\" » : le service standard est celui qui permet à l’utilisateur de bénéficier directement de la fonction première du Site, c’est-à-dire évaluer et préparer la certification de ses propres compétences numériques et disposer d’un accès facilité à la formation permettant de les développer.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"« \"],[6,\"span\"],[9,\"class\",\"terms-of-service__definition\"],[7],[0,\"Service prescripteur\"],[8],[0,\" » : le service prescripteur est celui qui permet à un acteur d’opérer le suivi pédagogique de cohortes d’utilisateurs du Service standard.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"« \"],[6,\"span\"],[9,\"class\",\"terms-of-service__definition\"],[7],[0,\"Visiteur\"],[8],[0,\" » : tout usager du Site non doté d’un compte ou non connecté à son compte.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"« \"],[6,\"span\"],[9,\"class\",\"terms-of-service__definition\"],[7],[0,\"Utilisateur\"],[8],[0,\" » : tout usager du Site doté d’un compte et utilisant tout ou partie du Service.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"« \"],[6,\"span\"],[9,\"class\",\"terms-of-service__definition\"],[7],[0,\"Utilisateur standard\"],[8],[0,\" » : tout usager du Site doté d’un Compte standard.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"« \"],[6,\"span\"],[9,\"class\",\"terms-of-service__definition\"],[7],[0,\"Compte standard\"],[8],[0,\" » : compte utilisateur donnant accès au Service standard.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"« \"],[6,\"span\"],[9,\"class\",\"terms-of-service__definition\"],[7],[0,\"Utilisateur prescripteur\"],[8],[0,\" » : tout usager du Site doté d’un Compte prescripteur.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"« \"],[6,\"span\"],[9,\"class\",\"terms-of-service__definition\"],[7],[0,\"Compte prescripteur\"],[8],[0,\" » : compte utilisateur donnant accès au Service prescripteur.\"],[8],[0,\"\\n    \"],[8],[0,\"\\n\\n    \"],[6,\"section\"],[9,\"class\",\"terms-of-service-section terms-of-service-section--site-access\"],[7],[0,\"\\n      \"],[6,\"h2\"],[9,\"class\",\"terms-of-service-section__title\"],[7],[0,\"3. Accès au site\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"Le présent article a vocation à décrire les modalités et conditions d’accès au Site et au Service.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"Le Site est mis gratuitement à disposition de tout Visiteur et tout Utilisateur standard à partir de l’adresse \"],[6,\"a\"],[9,\"href\",\"https://pix.beta.gouv.fr\"],[7],[6,\"b\"],[7],[0,\"https://pix.beta.gouv.fr\"],[8],[8],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"Le Visiteur peut naviguer sur le Site pour la consultation des contenus informationnels d’ordre général sans nécessité de disposer d’un compte.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"Le Visiteur peut créer gratuitement un Compte standard et s’y connecter pour accéder au Service standard. Seule une personne physique peut créer un Compte standard, et elle doit en faire un usage personnel.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"Pour accéder au Service prescripteur, le Visiteur doit obligatoirement s’adresser à l'Éditeur pour obtenir un Compte prescripteur dans le cadre d’une convention établie à cette occasion, après quoi il aura accès au Service prescripteur. L’Editeur se réserve le droit discrétionnaire de ne pas donner suite aux demandes de création de Compte prescripteur. Même si l’accès au Service prescripteur fait l’objet d’une convention avec une organisation ou entité, tout Compte prescripteur est associé à au moins une personne physique.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"L'accès au Site et son utilisation par tout Utilisateur ou Visiteur sont soumis aux présentes CGU, aux lois en vigueur concernant l'utilisation d'Internet, et plus généralement au respect de toutes les lois applicables.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"La navigation au sein du Site emporte acceptation inconditionnelle des présentes CGU.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"L’accès d’un Utilisateur au Service pourra être révoqué s’il contrevient à l’une de ces dispositions.\"],[8],[0,\"\\n\\n    \"],[8],[0,\"\\n\\n    \"],[6,\"section\"],[9,\"class\",\"terms-of-service-section terms-of-service-section--headings-and-warnings\"],[7],[0,\"\\n      \"],[6,\"h2\"],[9,\"class\",\"terms-of-service-section__title\"],[7],[0,\"4. Rubriques et mises en garde associées\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"Le présent article a vocation à décrire et à émettre des mises en garde concernant les différents espaces du Site, les rubriques et les fonctionnalités associées, le cas échéant.\"],[8],[0,\"\\n\\n      \"],[6,\"h4\"],[9,\"class\",\"terms-of-service-section__subtitle\"],[7],[0,\"Mises en garde générales relatives au Site :\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"Les Utilisateurs ne peuvent utiliser le Site à d’autres fins que pour sa destination définie en objet des présentes CGU.\"],[8],[0,\"\\n\\n      \"],[6,\"h4\"],[9,\"class\",\"terms-of-service-section__subtitle\"],[7],[0,\"Mises en garde générales relatives aux contenus informationnels du Site :\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"Les Contenus informationnels du Site permettent de s’informer sur le projet Pix et sur le Service.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"Les informations formalisées et organisées dans le cadre des différentes rubriques du Site ont une vocation synthétique et ne sont en aucun cas présentées à titre exhaustif.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"Malgré le soin apporté au traitement des informations, l’Editeur décline toute responsabilité concernant les erreurs, omissions ou défauts d’actualisation portant sur les informations diffusées sur ce Site. L’Editeur ne peut être tenu responsable de l'interprétation ou de l’utilisation des Contenus informationnels diffusés par l’intermédiaire du Site, ni des conséquences.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"L’Utilisateur est seul responsable de l’utilisation des informations proposées via le Site, de toute décision prise et de toute action mise en œuvre à partir des informations contenues au sein du Site.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"L’utilisation des supports d’information accessibles dans le cadre du site se fait dans le respect des modalités d’utilisation du site, de ses contenus et de ses fonctionnalités.\"],[8],[0,\"\\n\\n      \"],[6,\"h4\"],[9,\"class\",\"terms-of-service-section__subtitle\"],[7],[0,\"Mises en garde relatives aux contenus de test du Site :\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"Les Contenus de test du Site sont soumis à un processus d'amélioration continue. L’Editeur utilise les statistiques issues du passage des tests par les Utilisateurs pour contribuer à ce processus.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"L’Editeur se réserve le droit de mettre à jour les Contenus de tests sans publicité ni préavis. L’Editeur ne pourra pas être tenu pour responsable des dommages éventuels faisant suite à ces modifications.\"],[8],[0,\"\\n\\n      \"],[6,\"div\"],[9,\"class\",\"terms-of-service-section__subsection\"],[7],[0,\"\\n        \"],[6,\"h3\"],[9,\"class\",\"terms-of-service-section__subsection-title\"],[7],[0,\"4.1. Accueil\"],[8],[0,\"\\n        \"],[6,\"p\"],[7],[0,\"Dans cet espace, le Visiteur a accès à un ensemble d’informations sur le projet et le Service.\"],[8],[0,\"\\n      \"],[8],[0,\"\\n\\n      \"],[6,\"div\"],[9,\"class\",\"terms-of-service-section__subsection\"],[7],[0,\"\\n        \"],[6,\"h3\"],[9,\"class\",\"terms-of-service-section__subsection-title\"],[7],[0,\"4.2. Ressources\"],[8],[0,\"\\n        \"],[6,\"p\"],[7],[0,\"L’Utilisateur standard a accès à des contenus de tests, vidéos, publications (actualités, informations, ...), liens vers des formations en ligne et tout autre contenu relatif aux compétences numériques.\"],[8],[0,\"\\n        \"],[6,\"p\"],[7],[0,\"L’Utilisateur standard peut utiliser ces ressources à titre personnel pour appuyer sa démarche de développement de compétences numériques.\"],[8],[0,\"\\n      \"],[8],[0,\"\\n\\n      \"],[6,\"div\"],[9,\"class\",\"terms-of-service-section__subsection\"],[7],[0,\"\\n        \"],[6,\"h3\"],[9,\"class\",\"terms-of-service-section__subsection-title\"],[7],[0,\"4.3. Abonnement à des lettres d’informations\"],[8],[0,\"\\n        \"],[6,\"p\"],[7],[0,\"L’Utilisateur peut bénéficier de lettres d’informations d’actualités, sur les différentes thématiques abordées dans le cadre du Site.\"],[8],[0,\"\\n        \"],[6,\"p\"],[7],[0,\"Les lettres d’informations sont accessibles sur inscription, laquelle nécessite de renseigner des données personnelles, dans le respect des dispositions de l’article relatif à la protection des données personnelles.\"],[8],[0,\"\\n      \"],[8],[0,\"\\n    \"],[8],[0,\"\\n\\n    \"],[6,\"section\"],[9,\"class\",\"terms-of-service-section terms-of-service-section--obligations-and-responsabilities\"],[7],[0,\"\\n      \"],[6,\"h2\"],[9,\"class\",\"terms-of-service-section__title\"],[7],[0,\"5. Obligations générales et responsabilités  des Utilisateurs ou Visisiteurs\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"De manière générale, tout Utilisateur ou Visiteur s’engage à faire du Site un usage conforme à sa destination et à respecter de manière inconditionnelle l'ensemble de la législation applicable, et notamment :\"],[8],[0,\"\\n      \"],[6,\"ul\"],[7],[0,\"\\n        \"],[6,\"li\"],[7],[0,\"le droit de la propriété intellectuelle et de la propriété industrielle ayant notamment prises sur les créations multimédias, les textes, les images de toute nature auxquels il a accès dans le cadre du Site ;\"],[8],[0,\"\\n        \"],[6,\"li\"],[7],[0,\"la loi n° 78-17 du 6 janvier 1978 relative à l'informatique, aux fichiers et aux libertés modifiée, dite loi Informatique et Libertés ;\"],[8],[0,\"\\n        \"],[6,\"li\"],[7],[0,\"le dispositif légal de protection contre la fraude informatique.\"],[8],[0,\"\\n      \"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"En conséquence, l’Utilisateur ou Visiteur s’abstient de toute action ou tentative susceptible de porter atteinte à l’intégrité du Site, à sa disponibilité, ainsi plus généralement qu’aux droits de l’Editeur et à ce titre s’interdit :\"],[8],[0,\"\\n      \"],[6,\"ul\"],[7],[0,\"\\n        \"],[6,\"li\"],[7],[0,\"de transmettre des virus, un cheval de Troie, des bombes logiques ou tout autre programme nuisible ou destructeur ;\"],[8],[0,\"\\n        \"],[6,\"li\"],[7],[0,\"d’entraver le Site par quelque moyen que ce soit ;\"],[8],[0,\"\\n        \"],[6,\"li\"],[7],[0,\"de reproduire et/ou utiliser la marque, la dénomination sociale, le logo ou tout signe distinctif et de manière générale toute donnée de quelque nature qu’elle soit, rédactionnel, graphique ou autre appartenant à l’Editeur, un de ses partenaires ou un tiers, sauf autorisation expresse de l’Editeur ;\"],[8],[0,\"\\n        \"],[6,\"li\"],[7],[0,\"de procéder ou même de tenter une intrusion au sein du Site ou du système d’information d’administration du Site, ou de modifier, totalement ou partiellement les éléments qui y sont contenus.\"],[8],[0,\"\\n      \"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"L’Utilisateur est, en tout état de cause, exclusivement responsable de l’utilisation qu’il fait du Site et de ses Contenus, et, de manière générale, de toute décision prise sur la base de ces Contenus.\"],[8],[0,\"\\n    \"],[8],[0,\"\\n\\n    \"],[6,\"section\"],[9,\"class\",\"terms-of-service-section terms-of-service-section--hypertext-links\"],[7],[0,\"\\n      \"],[6,\"h2\"],[9,\"class\",\"terms-of-service-section__title\"],[7],[0,\"6. Liens hypertexte\"],[8],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"terms-of-service-section__subsection\"],[7],[0,\"\\n        \"],[6,\"h3\"],[9,\"class\",\"terms-of-service-section__subsection-title\"],[7],[0,\"6.1. A partir du Site\"],[8],[0,\"\\n        \"],[6,\"p\"],[7],[0,\"L’Editeur n’est en aucun cas responsable du contenu des sites vers lesquels des liens sont faits.\"],[8],[0,\"\\n        \"],[6,\"p\"],[7],[0,\"Leur présence ne signifie en aucune manière que l’Editeur adhère ou valide leur contenu ou accepte une responsabilité quelconque pour le contenu ou l'utilisation de ces sites tiers.\"],[8],[0,\"\\n        \"],[6,\"p\"],[7],[0,\"Les liens sont proposés à titre strictement indicatif par l’Editeur, et utilisés par les Utilisateurs sous leur responsabilité exclusive, sans aucune démarche de certification des sites concernés de la part de l’Editeur.\"],[8],[0,\"\\n        \"],[6,\"p\"],[7],[0,\"Chaque Utilisateur accède aux sites tiers sous sa seule et entière responsabilité, y compris lorsque des liens ont été proposés à partir du Site.\"],[8],[0,\"\\n      \"],[8],[0,\"\\n\\n      \"],[6,\"div\"],[9,\"class\",\"terms-of-service-section__subsection\"],[7],[0,\"\\n        \"],[6,\"h3\"],[9,\"class\",\"terms-of-service-section__subsection-title\"],[7],[0,\"6.2. Vers le Site\"],[8],[0,\"\\n        \"],[6,\"p\"],[7],[0,\"Toute mise en œuvre d’un lien vers une page du Site correspondant à un Contenu de test requiert l’autorisation expresse et préalable de l’Editeur qui peut être sollicité à l’adresse électronique suivante : contact@pix.beta.gouv.fr.\"],[8],[0,\"\\n      \"],[8],[0,\"\\n    \"],[8],[0,\"\\n\\n    \"],[6,\"section\"],[9,\"class\",\"terms-of-service-section terms-of-service-section--intellectual-property\"],[7],[0,\"\\n      \"],[6,\"h2\"],[9,\"class\",\"terms-of-service-section__title\"],[7],[0,\"7. Propriété intellectuelle\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"La marque, l’ensemble des Contenus de test et les bases de données sont la propriété exclusive de l’Editeur et sont protégés par le Code français de la propriété intellectuelle et plus généralement par les traités et accords internationaux comportant des dispositions relatives à la protection des droits d'auteur, des producteurs de bases de données et des droits de propriété intellectuelle.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"L’ensemble des Contenus informationnels du Site peuvent être utilisés par les Visiteurs et Utilisateurs pour leur information et usage personnels, et à des fins de promotion du Site et du Service. Les contenus informationnels relatifs à la description des compétences (notamment le référentiel) sont soumis à la licence Creative Commons CC BY (l’auteur à citer est pix.beta.gouv.fr).\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"Toute autre forme d'utilisation des contenus en fraude des droits de l’Editeur constituerait une contrefaçon sanctionnée notamment par les articles L.335-2 et suivants du Code de la propriété intellectuelle français susceptible d’exposer les auteurs de ces agissements à des poursuites judiciaires civiles et pénales.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"L’Editeur se réserve le droit de prendre toutes les mesures qu'il juge adéquates afin d'empêcher ou de mettre un terme à l'atteinte à ses droits d'auteurs ou aux droits d'auteurs de tiers, sans qu'aucune responsabilité ne puisse lui être imputée en raison de ces mesures.\"],[8],[0,\"\\n    \"],[8],[0,\"\\n\\n    \"],[6,\"section\"],[9,\"class\",\"terms-of-service-section terms-of-service-section--data-protection\"],[7],[0,\"\\n      \"],[6,\"h2\"],[9,\"class\",\"terms-of-service-section__title\"],[7],[0,\"8. Protection des données\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"Des données à caractère personnel concernant l’Utilisateur (en ce compris des données relatives à l’état civil et éventuellement portant sur la vie personnelle, à l’exclusion de toute donnée de santé au sens de l’article 8 de la loi n° 78-17 du 6 janvier 1978 relative à l'informatique, aux fichiers et aux libertés modifiée, dite loi Informatique et Libertés et de l’article L.1111-8 du Code de la santé publique) sont collectées et traitées :\"],[8],[0,\"\\n      \"],[6,\"ul\"],[7],[0,\"\\n        \"],[6,\"li\"],[7],[0,\"dans le cadre de la création d’un Compte standard ou prescripteur ;\"],[8],[0,\"\\n        \"],[6,\"li\"],[7],[0,\"dans le cadre de l’utilisation du Service ;\"],[8],[0,\"\\n        \"],[6,\"li\"],[7],[0,\"dans le cadre de l’inscription à une lettre d’information.\"],[8],[0,\"\\n        \"],[6,\"li\"],[7],[0,\"dans le cadre de l’émission de commentaires (retours d’usage ou feedback utilisateur) ;\"],[8],[0,\"\\n      \"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"À ce titre, \"],[6,\"b\"],[7],[0,\"l’Editeur\"],[8],[0,\" revêt la qualité de responsable de traitement au sens de la Loi Informatique et Libertés et a procédé à une formalité de désignation d’un Correspondant Informatique et Libertés auprès de la Commission Nationale de l’Informatique et des Libertés.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"Les informations concernant les Utilisateurs sont destinées exclusivement :\"],[8],[0,\"\\n      \"],[6,\"ul\"],[7],[0,\"\\n        \"],[6,\"li\"],[7],[0,\"à leur propre usage conformément à l’objet du Site ;\"],[8],[0,\"\\n        \"],[6,\"li\"],[7],[0,\"à l’amélioration des performances du Site et du Service ;\"],[8],[0,\"\\n        \"],[6,\"li\"],[7],[0,\"à leur donner accès, de façon optionnelle et à leur discrétion, à des fonctionnalités de partage en direction de tiers ;\"],[8],[0,\"\\n        \"],[6,\"li\"],[7],[0,\"à des fins de statistiques anonymes.\"],[8],[0,\"\\n      \"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"Lorsqu’un Utilisateur standard décide du partage de données personnelles depuis son Compte standard vers un Compte prescripteur, le transfert est opéré par l’Editeur dans le cadre suivant :\"],[8],[0,\"\\n      \"],[6,\"ul\"],[7],[0,\"\\n        \"],[6,\"li\"],[7],[0,\"le tiers titulaire du Compte prescripteur s’engage à respecter la charte dressée dans la convention établie en amont lors de la création du Compte prescripteur ;\"],[8],[0,\"\\n        \"],[6,\"li\"],[7],[0,\"cette charte est  accessible à l’Utilisateur standard qui peut la consulter avant de déclencher l’opération de partage.\"],[8],[0,\"\\n      \"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"Les données personnelles sont stockées sur les bases de données de l’Editeur chez l’Hébergeur. L’Editeur s’engage à ce que les données personnelles soient stockées en France.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"La durée de conservation des données personnelles est établie de façon différenciée selon la finalité de leur collecte, et selon les principes suivants :\"],[8],[0,\"\\n      \"],[6,\"ul\"],[7],[0,\"\\n        \"],[6,\"li\"],[7],[0,\"les données personnelles nécessaires à la création d’un compte sont conservées pour la durée d’utilisation du Service ;\"],[8],[0,\"\\n        \"],[6,\"li\"],[7],[0,\"les données personnelles résultant de l’évaluation des compétences numériques de l’Utilisateur standard sont conservées pour la durée d’utilisation du Service ;\"],[8],[0,\"\\n        \"],[6,\"li\"],[7],[0,\"les données personnelles résultant de la certification des compétences numériques de l’Utilisateur standard sont conservées pour une durée cohérente avec la valeur probante du document qui les recèle.\"],[8],[0,\"\\n      \"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"Conformément à la loi Informatique et Libertés, l’Utilisateur dispose d'un droit d'accès, d’opposition,  de rectification et de suppression des données à caractère personnel le concernant.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"Pour exercer ces droits, l’Utilisateur doit contacter le Correspondant Informatique et Libertés habilité à répondre aux demandes d’exercice des droits des Utilisateurs, via l’adresse électronique suivante : cil.pix@beta.gouv.fr.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"La demande doit préciser les noms, prénom, et adresse électronique de l’Utilisateur et être accompagnée d’une copie de la pièce d’identité de l’Utilisateur, conformément à la réglementation en vigueur.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"L’Editeur met en œuvre toutes les mesures de sécurité afin de garantir la protection et la sécurité des données des Utilisateurs.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"L’Utilisateur dispose également du droit de définir des directives générales relatives à la conservation, à l'effacement et à la communication de ses données à caractère personnel après son décès qui peuvent être enregistrées auprès d'un tiers de confiance numérique certifié par la CNIL, et de directives particulières, concernant les traitements de données à caractère personnel mentionnées par ces directives, qui peuvent être enregistrées auprès de l’Editeur à l’adresse susmentionnée et qui font l’objet de son consentement spécifique à ce titre.\"],[8],[0,\"\\n    \"],[8],[0,\"\\n\\n    \"],[6,\"section\"],[9,\"class\",\"terms-of-service-section terms-of-service-section--cookies\"],[7],[0,\"\\n      \"],[6,\"h2\"],[9,\"class\",\"terms-of-service-section__title\"],[7],[0,\"9. Cookies\"],[8],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"terms-of-service-section__subsection\"],[7],[0,\"\\n        \"],[6,\"h3\"],[9,\"class\",\"terms-of-service-section__subsection-title\"],[7],[0,\"9.1. Cookies utilisés\"],[8],[0,\"\\n        \"],[6,\"p\"],[7],[0,\"Un cookie est un petit fichier alphanumérique qui est déposé dans le terminal de l’ordinateur, smartphone, tablette, mobile, etc, de l’Utilisateur, lors de sa connexion au Site.\"],[8],[0,\"\\n        \"],[6,\"p\"],[7],[0,\"Le Site n’utilise pas les Cookies pour son fonctionnement à l’exception d’un suivi statistique des visites.\"],[8],[0,\"\\n        \"],[6,\"p\"],[7],[0,\"L’Utilisateur ou Visiteur peut à tout moment désactiver l’usage des cookies dans son navigateur sans altérer le fonctionnement du Site.\"],[8],[0,\"\\n        \"],[6,\"p\"],[7],[0,\"Les informations collectées sont à l’usage exclusif de l’Editeur, et ne sont en aucun cas cédées à des tiers.\"],[8],[0,\"\\n\\n      \"],[8],[0,\"\\n\\n    \"],[8],[0,\"\\n\\n    \"],[6,\"section\"],[9,\"class\",\"terms-of-service-section terms-of-service-section--limitations-of-liability\"],[7],[0,\"\\n      \"],[6,\"h2\"],[9,\"class\",\"terms-of-service-section__title\"],[7],[0,\"10. Limitations de responsabilité\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"Autant que possible, l’Editeur intègre au sein du Site des Contenus précis et fiables mais ne fournit aucune garantie quant à leur exhaustivité et leur mise à jour. Ces contenus sont fournis à titre indicatif.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"Le Site ne saurait être tenu responsable des dommages directs ou indirects, qui pourraient résulter de l’accès au Site ou de l’utilisation et/ou de l’interprétation de ses Contenus, et de ses fonctionnalités, quelle qu’en soit la nature.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"En outre, l’Editeur décline toute responsabilité en cas de dommages subis par l’Utilisateur à raison notamment de la perte, de la détérioration ou de l’altération de fichiers ou tout autre bien à l’occasion de la connexion et/ou de la consultation et/ou de l’utilisation du Site, de ses fonctionnalités et de ses Contenus.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"S’agissant de l’accès aux supports d’information, compte tenu des aléas techniques inhérents à l’Internet, l’Editeur ne fournit aucune garantie d’accès et de continuité au Site.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"En cas d’interruption de l’accès au Site, quelle qu’en soit la cause (opération de maintenance en cours, incident sur le réseau Internet ou autre), l’Editeur s’engage à mettre en œuvre les actions nécessaires au rétablissement de l’accès au Site, dans les meilleurs délais et à la bonne information des utilisateurs ou visiteurs.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"L’Editeur fera ses meilleurs efforts pour rendre le Site accessible 24 heures sur 24 et 7 jours sur 7, mais ne saurait en aucun cas engager sa responsabilité à ce titre.\"],[8],[0,\"\\n    \"],[8],[0,\"\\n\\n    \"],[6,\"section\"],[9,\"class\",\"terms-of-service-section terms-of-service-section--security\"],[7],[0,\"\\n      \"],[6,\"h2\"],[9,\"class\",\"terms-of-service-section__title\"],[7],[0,\"11. Sécurité\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"D’une manière générale, la sécurité du Site impose aux Utilisateurs d'avertir l’Editeur à l’adresse \"],[6,\"a\"],[9,\"href\",\"mailto:contact@pix.beta.gouv.fr\"],[7],[0,\"contact@pix.beta.gouv.fr\"],[8],[0,\" de tout dysfonctionnement technique constaté et de toute anomalie découverte, telle que les intrusions.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"L’Editeur ne pourra pas être tenu pour responsable des dommages résultant des défauts de communication entre les serveurs loués chez l’Hébergeur et le dispositif utilisé pour accéder au Site.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"L’Editeur ne pourra pas être tenu pour responsable des dommages résultant des défauts des dispositifs logiciels et matériels utilisés pour accéder au Site.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"L’Editeur ne pourra être tenu pour responsable des dommages résultant de bug(s), voire de tout programme ou d'application qui serait incompatible avec l'infrastructure utilisée par l'Utilisateur, ni des dommages subis par l'Utilisateur par le fait d'une panne, interruption ou erreur, évolution, remise en état, contrôle, maintenance, problème technique, coupure du réseau internet ou des réseaux ou services liés, surcharge, négligence ou faute de tiers ou de l'Utilisateur, ainsi qu'en cas d'évènements indépendants de la volonté de l’Editeur.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"Chaque Utilisateur est responsable de la mise en œuvre au sein de son ordinateur ou de son équipement mobile une solution et des mesures de sécurité de nature à prévenir la propagation de virus.\"],[8],[0,\"\\n    \"],[8],[0,\"\\n\\n    \"],[6,\"section\"],[9,\"class\",\"terms-of-service-section terms-of-service-section--modifications\"],[7],[0,\"\\n      \"],[6,\"h2\"],[9,\"class\",\"terms-of-service-section__title\"],[7],[0,\"12. Modifications\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"L’Editeur se réserve le droit de modifier à tout moment les présentes CGU ou les règles concernant l’utilisation du Site ainsi que le Site et ses Contenus. Chaque nouvelle version des présentes CGU sera mise en ligne au sein du Site. L’Editeur s’engage à assurer la bonne information des Utilisateurs sur ces modifications. Le fait de continuer à utiliser le Site après toute modification des CGU entraîne l’acceptation des modifications des CGU.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"L’Editeur se réserve en outre le droit de faire évoluer le Site et ses Contenus. Des modifications techniques pourront intervenir sans préavis de la part de l’Editeur. L’Editeur s’engage à rendre publique chacune des modifications et améliorations techniques apportées.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"L’Editeur se réserve le droit de suspendre provisoirement ou définitivement l’accès au Site, sans délai, ni contrepartie de quelque nature que ce soit.\"],[8],[0,\"\\n    \"],[8],[0,\"\\n\\n    \"],[6,\"section\"],[9,\"class\",\"terms-of-service-section terms-of-service-section--french-law\"],[7],[0,\"\\n      \"],[6,\"h2\"],[9,\"class\",\"terms-of-service-section__title\"],[7],[0,\"13. Loi française\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"Le Site et les Contenus sont destinés à l’Utilisation de résidents français et sont créés conformément aux règles applicables en France.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"Les présentes CGU sont régies par la loi française. Les résidents étrangers acceptent expressément l’application de la loi française en visitant le Site et en utilisant tout ou partie des fonctionnalités du Site et sont informés que les autres pays peuvent avoir des réglementations différentes de la réglementation française.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"En conséquence, les Utilisateurs reconnaissent que toute information y figurant est susceptible de ne pas être complète ou compatible ou appropriée en dehors de la France.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"Tout litige relatif au Site ou en relation avec son utilisation sera soumis, à défaut de règlement amiable, aux tribunaux français.\"],[8],[0,\"\\n      \"],[6,\"p\"],[7],[0,\"Si une ou plusieurs stipulations des CGU sont tenues pour non valides ou déclarées telle en application d'une loi, d'un règlement ou à la suite d'une décision définitive d'une juridiction compétente, les autres stipulations gardent toute leur force et leur portée.\"],[8],[0,\"\\n    \"],[8],[0,\"\\n\\n\\n  \"],[8],[0,\"\\n\"],[8],[0,\"\\n\\n\"],[1,[18,\"app-footer\"],false],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/terms-of-service.hbs" } });
+});
+define("pix-live/templates/user-certifications", ["exports"], function (exports) {
+  "use strict";
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = Ember.HTMLBars.template({ "id": "Kvqa0Zdb", "block": "{\"symbols\":[],\"statements\":[[1,[25,\"navbar-header\",null,[[\"class\"],[\"navbar-header--white\"]]],false],[0,\"\\n\\n\"],[6,\"h1\"],[9,\"class\",\"user-certifications-page__title\"],[7],[0,\"Mes Certifications\"],[8],[0,\"\\n\\n\"],[1,[25,\"user-certifications-panel\",null,[[\"certifications\"],[[20,[\"model\"]]]]],false],[0,\"\\n\\n\"],[1,[18,\"app-footer\"],false]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/user-certifications.hbs" } });
 });
 define('pix-live/tests/mirage/mirage.lint-test', [], function () {
   'use strict';
@@ -8443,15 +8560,11 @@ define('pix-live/tests/mirage/mirage.lint-test', [], function () {
       // test passed
     });
 
-    it('mirage/data/solutions/ref-qcu-solution.js', function () {
-      // test passed
-    });
-
-    it('mirage/data/solutions/ref-solution.js', function () {
-      // test passed
-    });
-
     it('mirage/factories/area.js', function () {
+      // test passed
+    });
+
+    it('mirage/factories/certification.js', function () {
       // test passed
     });
 
@@ -8460,6 +8573,10 @@ define('pix-live/tests/mirage/mirage.lint-test', [], function () {
     });
 
     it('mirage/factories/competence.js', function () {
+      // test passed
+    });
+
+    it('mirage/factories/correction.js', function () {
       // test passed
     });
 
@@ -8499,6 +8616,10 @@ define('pix-live/tests/mirage/mirage.lint-test', [], function () {
       // test passed
     });
 
+    it('mirage/fixtures/corrections.js', function () {
+      // test passed
+    });
+
     it('mirage/fixtures/courses.js', function () {
       // test passed
     });
@@ -8507,19 +8628,11 @@ define('pix-live/tests/mirage/mirage.lint-test', [], function () {
       // test passed
     });
 
-    it('mirage/fixtures/solutions.js', function () {
-      // test passed
-    });
-
     it('mirage/routes/get-answer-by-challenge-and-assessment.js', function () {
       // test passed
     });
 
     it('mirage/routes/get-answer.js', function () {
-      // test passed
-    });
-
-    it('mirage/routes/get-assessment-solutions.js', function () {
       // test passed
     });
 
@@ -8532,6 +8645,10 @@ define('pix-live/tests/mirage/mirage.lint-test', [], function () {
     });
 
     it('mirage/routes/get-challenges.js', function () {
+      // test passed
+    });
+
+    it('mirage/routes/get-corrections.js', function () {
       // test passed
     });
 
@@ -8588,10 +8705,6 @@ define('pix-live/tests/mirage/mirage.lint-test', [], function () {
     });
 
     it('mirage/routes/post-feedbacks.js', function () {
-      // test passed
-    });
-
-    it('mirage/routes/post-refresh-solution.js', function () {
       // test passed
     });
 
@@ -9153,6 +9266,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"name":"pix-live","version":"1.46.0+cbe9aa1e"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"name":"pix-live","version":"1.47.0+8057c5b8"});
 }
 //# sourceMappingURL=pix-live.map
