@@ -4360,7 +4360,7 @@ define('pix-live/tests/integration/components/certifications-list-item-test', ['
 
       (0, _mocha.it)('should show en attente de résultat', function () {
         (0, _chai.expect)(this.$('img.certifications-list-item__hourglass-img')).to.have.lengthOf(1);
-        (0, _chai.expect)(this.$('tr').text()).to.include('En attente du résultat');
+        (0, _chai.expect)(this.$('.certifications-list-item').text()).to.include('En attente du résultat');
       });
     });
 
@@ -4393,7 +4393,7 @@ define('pix-live/tests/integration/components/certifications-list-item-test', ['
 
       (0, _mocha.it)('should show Certification non obtenue', function () {
         (0, _chai.expect)(this.$('img.certifications-list-item__cross-img')).to.have.lengthOf(1);
-        (0, _chai.expect)(this.$('tr').text()).to.include('Certification non obtenue');
+        (0, _chai.expect)(this.$('.certifications-list-item').text()).to.include('Certification non obtenue');
       });
     });
 
@@ -4426,7 +4426,7 @@ define('pix-live/tests/integration/components/certifications-list-item-test', ['
 
       (0, _mocha.it)('should show Certification obtenue', function () {
         (0, _chai.expect)(this.$('img.certifications-list-item__green-check-img')).to.have.lengthOf(1);
-        (0, _chai.expect)(this.$('tr').text()).to.include('Certification obtenue');
+        (0, _chai.expect)(this.$('.certifications-list-item').text()).to.include('Certification obtenue');
       });
 
       (0, _mocha.it)('should show the Pix Score', function () {
@@ -4484,7 +4484,7 @@ define('pix-live/tests/integration/components/certifications-list-test', ['chai'
         }));
 
         // then
-        (0, _chai.expect)(this.$('.certifications-list__table-body tr')).to.have.lengthOf(2);
+        (0, _chai.expect)(this.$('.certifications-list__table-body .certifications-list-item')).to.have.lengthOf(2);
       });
     });
   });
