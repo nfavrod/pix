@@ -241,9 +241,7 @@ define('pix-live/components/certifications-list-item', ['exports'], function (ex
     classNames: ['certifications-list-item'],
     classNameBindings: ['certification.isPublished:certifications-list-item__published-item:certifications-list-item__unpublished-item'],
 
-    isValidated: Ember.computed('certification', function () {
-      return this.get('certification.status') === 'validated';
-    })
+    isValidated: Ember.computed.equal('certification.status', 'validated')
   });
 });
 define('pix-live/components/certifications-list', ['exports'], function (exports) {
@@ -9292,6 +9290,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"name":"pix-live","version":"1.47.0+8ce02044"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"name":"pix-live","version":"1.47.0+e4355fc1"});
 }
 //# sourceMappingURL=pix-live.map
