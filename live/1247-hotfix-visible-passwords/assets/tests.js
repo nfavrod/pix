@@ -3388,6 +3388,10 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
+    it('components/certifications-list-item.js', function () {
+      // test passed
+    });
+
     it('components/certifications-list.js', function () {
       // test passed
     });
@@ -4308,6 +4312,130 @@ define('pix-live/tests/integration/components/certification-results-page-test', 
     });
   });
 });
+define('pix-live/tests/integration/components/certifications-list-item-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+  'use strict';
+
+  (0, _mocha.describe)('Integration | Component | certifications list item', function () {
+    (0, _emberMocha.setupComponentTest)('certifications-list-item', {
+      integration: true
+    });
+
+    var certification = void 0;
+
+    (0, _mocha.it)('renders', function () {
+      this.render(Ember.HTMLBars.template({
+        "id": "WFVlC5r9",
+        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"certifications-list-item\",null,[[\"certification\"],[[20,[\"certification\"]]]]],false]],\"hasEval\":false}",
+        "meta": {}
+      }));
+      (0, _chai.expect)(this.$()).to.have.length(1);
+    });
+
+    context('when the certification is not published', function () {
+
+      (0, _mocha.beforeEach)(function () {
+        // given
+        certification = Ember.Object.create({
+          id: 1,
+          date: '2018-02-15T15:15:52.504Z',
+          status: 'validated',
+          certificationCenter: 'Université de Paris',
+          isPublished: false,
+          pixScore: 231
+        });
+        this.set('certification', certification);
+
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "WFVlC5r9",
+          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"certifications-list-item\",null,[[\"certification\"],[[20,[\"certification\"]]]]],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+      });
+
+      // then
+      (0, _mocha.it)('should render a certifications-list-item__unpublished-item div', function () {
+        (0, _chai.expect)(this.$('.certifications-list-item__unpublished-item')).to.have.lengthOf(1);
+      });
+
+      (0, _mocha.it)('should show en attente de résultat', function () {
+        (0, _chai.expect)(this.$('img.certifications-list-item__hourglass-img')).to.have.lengthOf(1);
+        (0, _chai.expect)(this.$('.certifications-list-item').text()).to.include('En attente du résultat');
+      });
+    });
+
+    context('when the certification is published and rejected', function () {
+
+      (0, _mocha.beforeEach)(function () {
+        // given
+        certification = Ember.Object.create({
+          id: 1,
+          date: '2018-02-15T15:15:52.504Z',
+          status: 'rejected',
+          certificationCenter: 'Université de Paris',
+          isPublished: true,
+          pixScore: 231
+        });
+        this.set('certification', certification);
+
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "WFVlC5r9",
+          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"certifications-list-item\",null,[[\"certification\"],[[20,[\"certification\"]]]]],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+      });
+
+      // then
+      (0, _mocha.it)('should render a certifications-list-item__published-item div', function () {
+        (0, _chai.expect)(this.$('.certifications-list-item__published-item')).to.have.lengthOf(1);
+      });
+
+      (0, _mocha.it)('should show Certification non obtenue', function () {
+        (0, _chai.expect)(this.$('img.certifications-list-item__cross-img')).to.have.lengthOf(1);
+        (0, _chai.expect)(this.$('.certifications-list-item').text()).to.include('Certification non obtenue');
+      });
+    });
+
+    context('when the certification is published and validated', function () {
+
+      (0, _mocha.beforeEach)(function () {
+        // given
+        certification = Ember.Object.create({
+          id: 1,
+          date: '2018-02-15T15:15:52.504Z',
+          status: 'validated',
+          certificationCenter: 'Université de Paris',
+          isPublished: true,
+          pixScore: 231
+        });
+        this.set('certification', certification);
+
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "WFVlC5r9",
+          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"certifications-list-item\",null,[[\"certification\"],[[20,[\"certification\"]]]]],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+      });
+
+      // then
+      (0, _mocha.it)('should render a certifications-list-item__published-item div', function () {
+        (0, _chai.expect)(this.$('.certifications-list-item__published-item')).to.have.lengthOf(1);
+      });
+
+      (0, _mocha.it)('should show Certification obtenue', function () {
+        (0, _chai.expect)(this.$('img.certifications-list-item__green-check-img')).to.have.lengthOf(1);
+        (0, _chai.expect)(this.$('.certifications-list-item').text()).to.include('Certification obtenue');
+      });
+
+      (0, _mocha.it)('should show the Pix Score', function () {
+        (0, _chai.expect)(this.$('.certifications-list-item__pix-score')).to.have.lengthOf(1);
+        (0, _chai.expect)(this.$('.certifications-list-item__pix-score').text()).to.include('231');
+      });
+    });
+  });
+});
 define('pix-live/tests/integration/components/certifications-list-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
   'use strict';
 
@@ -4330,16 +4458,18 @@ define('pix-live/tests/integration/components/certifications-list-test', ['chai'
       var certification1 = Ember.Object.create({
         id: 1,
         date: '2018-02-15T15:15:52.504Z',
-        status: 'completed',
-        score: '123',
-        certificationCenter: 'Université de Paris'
+        status: 'validated',
+        certificationCenter: 'Université de Paris',
+        isPublished: true,
+        pixScore: 231
       });
       var certification2 = Ember.Object.create({
         id: 2,
         date: '2018-02-15T15:15:52.504Z',
-        status: 'completed',
-        score: '456',
-        certificationCenter: 'Université de Lyon'
+        status: 'rejected',
+        certificationCenter: 'Université de Lyon',
+        isPublished: true,
+        pixScore: 231
       });
 
       (0, _mocha.it)('should render two certification items when there is 2 completed certifications', function () {
@@ -4354,7 +4484,7 @@ define('pix-live/tests/integration/components/certifications-list-test', ['chai'
         }));
 
         // then
-        (0, _chai.expect)(this.$('.certifications-list__certification-item')).to.have.lengthOf(2);
+        (0, _chai.expect)(this.$('.certifications-list__table-body .certifications-list-item')).to.have.lengthOf(2);
       });
     });
   });
@@ -10725,6 +10855,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
     });
 
     it('integration/components/certification-results-page-test.js', function () {
+      // test passed
+    });
+
+    it('integration/components/certifications-list-item-test.js', function () {
       // test passed
     });
 
