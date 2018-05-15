@@ -6509,9 +6509,7 @@ define('pix-live/router', ['exports', 'pix-live/config/environment'], function (
       this.route('results', { path: '/:certification_number/results' });
     });
     this.route('user-certifications', { path: 'mes-certifications' });
-    this.route('campagnes', function () {
-      this.route('create-assessment', { path: '/:course_id' });
-    });
+    this.route('campagnes.create-assessment', { path: '/campagnes/codecampagnepix' });
   });
 
   exports.default = Router;
@@ -6763,14 +6761,14 @@ define('pix-live/routes/campagnes/create-assessment', ['exports', 'pix-live/rout
     value: true
   });
   exports.default = _baseRoute.default.extend({
-    redirect: function redirect(course) {
+    redirect: function redirect() {
       var _this = this;
 
       var store = this.get('store');
 
       var assessment = void 0;
 
-      return store.createRecord('assessment', { course: course, type: 'SMART_PLACEMENT' }).save().then(function (createdAssessment) {
+      return store.createRecord('assessment', { type: 'SMART_PLACEMENT' }).save().then(function (createdAssessment) {
         return assessment = createdAssessment;
       }).then(function () {
         return store.queryRecord('challenge', { assessmentId: assessment.get('id') });
@@ -9335,6 +9333,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"name":"pix-live","version":"1.48.0+0a1d77de"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"name":"pix-live","version":"1.48.0+23eee64b"});
 }
 //# sourceMappingURL=pix-live.map
