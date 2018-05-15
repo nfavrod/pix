@@ -9407,6 +9407,36 @@ define('pix-live/tests/integration/components/share-profile-test', ['chai', 'moc
         // then
         expectToBeOnSuccessNotificationView();
       });
+
+      (0, _mocha.it)('should limit the lenght of the campainCode to 255 characters', function () {
+        // given
+        this.set('organization', Ember.Object.create({ name: 'Pix' }));
+
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "9nF6Qqrz",
+          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"share-profile\",null,[[\"_showingModal\",\"_view\",\"_organization\"],[true,\"sharing-confirmation\",[20,[\"organization\"]]]]],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+
+        // then
+        (0, _chai.expect)(document.querySelector('.share-profile__campaign-code-input').getAttribute('maxlength')).to.equal('255');
+      });
+
+      (0, _mocha.it)('should limit the lenght of the studentCode to 255 characters', function () {
+        // given
+        this.set('organization', Ember.Object.create({ name: 'Pix', type: 'SUP' }));
+
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "9nF6Qqrz",
+          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"share-profile\",null,[[\"_showingModal\",\"_view\",\"_organization\"],[true,\"sharing-confirmation\",[20,[\"organization\"]]]]],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+
+        // then
+        (0, _chai.expect)(document.querySelector('.share-profile__student-code-input').getAttribute('maxlength')).to.equal('255');
+      });
     });
 
     (0, _mocha.describe)('Step 3 - "Success notification" view', function () {
@@ -14189,7 +14219,7 @@ define('pix-live/tests/unit/components/share-profile-test', ['chai', 'mocha', 'e
         (0, _chai.expect)(organizationLabel.text1).to.equal('Vous vous apprêtez à transmettre une copie de votre profil Pix à l\'organisation :');
         (0, _chai.expect)(organizationLabel.text2).to.equal('En cliquant sur le bouton « Envoyer », vous transmettrez à l\'organisation :');
         (0, _chai.expect)(organizationLabel.text3).to.equal('votre ID-Pix et le code campagne');
-        (0, _chai.expect)(organizationLabel.text4).to.equal('L\'organisation ne recevra les évolutions futures de votre profil que si vous le partagez à nouveau.');
+        (0, _chai.expect)(organizationLabel.text4).to.equal('L\'organisation ne recevra les évolutions futures de votre profil que si vous l\'envoyez à nouveau.');
       });
 
       (0, _mocha.it)('should return adapted ("établissement"-based) labels when organization type is SUP', function () {
@@ -14203,7 +14233,7 @@ define('pix-live/tests/unit/components/share-profile-test', ['chai', 'mocha', 'e
         (0, _chai.expect)(organizationLabel.text1).to.equal('Vous vous apprêtez à transmettre une copie de votre profil Pix à l\'établissement :');
         (0, _chai.expect)(organizationLabel.text2).to.equal('En cliquant sur le bouton « Envoyer », vous transmettrez à l\'établissement :');
         (0, _chai.expect)(organizationLabel.text3).to.equal('votre numéro d\'étudiant et le code campagne');
-        (0, _chai.expect)(organizationLabel.text4).to.equal('L\'établissement ne recevra les évolutions futures de votre profil que si vous le partagez à nouveau.');
+        (0, _chai.expect)(organizationLabel.text4).to.equal('L\'établissement ne recevra les évolutions futures de votre profil que si vous l\'envoyez à nouveau.');
       });
 
       (0, _mocha.it)('should return adapted ("établissement"-based) labels when organization type is SCO', function () {
@@ -14217,7 +14247,7 @@ define('pix-live/tests/unit/components/share-profile-test', ['chai', 'mocha', 'e
         (0, _chai.expect)(organizationLabel.text1).to.equal('Vous vous apprêtez à transmettre une copie de votre profil Pix à l\'établissement :');
         (0, _chai.expect)(organizationLabel.text2).to.equal('En cliquant sur le bouton « Envoyer », vous transmettrez à l\'établissement :');
         (0, _chai.expect)(organizationLabel.text3).to.equal('le code campagne');
-        (0, _chai.expect)(organizationLabel.text4).to.equal('L\'établissement ne recevra les évolutions futures de votre profil que si vous le partagez à nouveau.');
+        (0, _chai.expect)(organizationLabel.text4).to.equal('L\'établissement ne recevra les évolutions futures de votre profil que si vous l\'envoyez à nouveau.');
       });
     });
   });
