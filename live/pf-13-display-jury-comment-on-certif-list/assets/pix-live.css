@@ -1108,15 +1108,13 @@ button.routable-modal--close:active {
     background: none; }
 
 .certifications-list-item__has-comment .cp-is-open .certifications-list-item__cell-detail::before {
-  vertical-align: middle;
-  display: inline-flex;
   margin-left: 8px;
+  margin-bottom: 2%;
   content: url("/images/icons/icon-arrow-down.svg"); }
 
 .certifications-list-item__has-comment .cp-is-closed .certifications-list-item__cell-detail::before {
-  vertical-align: middle;
-  display: inline-flex;
   margin-left: 8px;
+  margin-bottom: 2%;
   content: url("/images/icons/icon-arrow-up.svg"); }
 
 .comparison-window {
