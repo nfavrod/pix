@@ -4315,6 +4315,35 @@ define('pix-live/tests/integration/components/certification-results-page-test', 
 define('pix-live/tests/integration/components/certifications-list-item-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
   'use strict';
 
+  function _asyncToGenerator(fn) {
+    return function () {
+      var gen = fn.apply(this, arguments);
+      return new Promise(function (resolve, reject) {
+        function step(key, arg) {
+          try {
+            var info = gen[key](arg);
+            var value = info.value;
+          } catch (error) {
+            reject(error);
+            return;
+          }
+
+          if (info.done) {
+            resolve(value);
+          } else {
+            return Promise.resolve(value).then(function (value) {
+              step("next", value);
+            }, function (err) {
+              step("throw", err);
+            });
+          }
+        }
+
+        return step("next");
+      });
+    };
+  }
+
   (0, _mocha.describe)('Integration | Component | certifications list item', function () {
     (0, _emberMocha.setupComponentTest)('certifications-list-item', {
       integration: true
@@ -4366,34 +4395,123 @@ define('pix-live/tests/integration/components/certifications-list-item-test', ['
 
     context('when the certification is published and rejected', function () {
 
-      (0, _mocha.beforeEach)(function () {
-        // given
-        certification = Ember.Object.create({
-          id: 1,
-          date: '2018-02-15T15:15:52.504Z',
-          status: 'rejected',
-          certificationCenter: 'Université de Paris',
-          isPublished: true,
-          pixScore: 231
+      context('without commentForCandidate', function () {
+        (0, _mocha.beforeEach)(function () {
+          // given
+          certification = Ember.Object.create({
+            id: 1,
+            date: '2018-02-15T15:15:52.504Z',
+            status: 'rejected',
+            certificationCenter: 'Université de Paris',
+            isPublished: true,
+            pixScore: 231,
+            commentForCandidate: null
+          });
+          this.set('certification', certification);
+
+          // when
+          this.render(Ember.HTMLBars.template({
+            "id": "WFVlC5r9",
+            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"certifications-list-item\",null,[[\"certification\"],[[20,[\"certification\"]]]]],false]],\"hasEval\":false}",
+            "meta": {}
+          }));
         });
-        this.set('certification', certification);
 
-        // when
-        this.render(Ember.HTMLBars.template({
-          "id": "WFVlC5r9",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"certifications-list-item\",null,[[\"certification\"],[[20,[\"certification\"]]]]],false]],\"hasEval\":false}",
-          "meta": {}
-        }));
+        // then
+        (0, _mocha.it)('should render a certifications-list-item__published-item div', function () {
+          (0, _chai.expect)(this.$('.certifications-list-item__published-item')).to.have.lengthOf(1);
+        });
+
+        (0, _mocha.it)('should show Certification non obtenue', function () {
+          (0, _chai.expect)(this.$('img.certifications-list-item__cross-img')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.certifications-list-item').text()).to.include('Certification non obtenue');
+        });
+
+        (0, _mocha.it)('should not show Détail in last column', function () {
+          (0, _chai.expect)(this.$('.certifications-list-item__cell-detail-button')).to.have.lengthOf(0);
+        });
+
+        (0, _mocha.it)('should not show comment for candidate panel when clicked on row', _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+          return regeneratorRuntime.wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+
+                  Ember.run(function () {
+                    return document.querySelector('.certifications-list-item__cell').click();
+                  });
+
+                  (0, _chai.expect)(this.$('.certifications-list-item__row-comment-cell')).to.have.lengthOf(0);
+
+                case 2:
+                case 'end':
+                  return _context.stop();
+              }
+            }
+          }, _callee, this);
+        })));
       });
 
-      // then
-      (0, _mocha.it)('should render a certifications-list-item__published-item div', function () {
-        (0, _chai.expect)(this.$('.certifications-list-item__published-item')).to.have.lengthOf(1);
-      });
+      context('with a commentForCandidate', function () {
 
-      (0, _mocha.it)('should show Certification non obtenue', function () {
-        (0, _chai.expect)(this.$('img.certifications-list-item__cross-img')).to.have.lengthOf(1);
-        (0, _chai.expect)(this.$('.certifications-list-item').text()).to.include('Certification non obtenue');
+        var commentForCandidate = 'Commentaire pour le candidat';
+
+        (0, _mocha.beforeEach)(function () {
+          // given
+          certification = Ember.Object.create({
+            id: 1,
+            date: '2018-02-15T15:15:52.504Z',
+            status: 'rejected',
+            certificationCenter: 'Université de Paris',
+            isPublished: true,
+            pixScore: 231,
+            commentForCandidate: commentForCandidate
+          });
+          this.set('certification', certification);
+
+          // when
+          this.render(Ember.HTMLBars.template({
+            "id": "WFVlC5r9",
+            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"certifications-list-item\",null,[[\"certification\"],[[20,[\"certification\"]]]]],false]],\"hasEval\":false}",
+            "meta": {}
+          }));
+        });
+
+        // then
+        (0, _mocha.it)('should render a certifications-list-item__published-item div', function () {
+          (0, _chai.expect)(this.$('.certifications-list-item__published-item')).to.have.lengthOf(1);
+        });
+
+        (0, _mocha.it)('should show Certification non obtenue', function () {
+          (0, _chai.expect)(this.$('img.certifications-list-item__cross-img')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.certifications-list-item').text()).to.include('Certification non obtenue');
+        });
+
+        (0, _mocha.it)('should show Détail in last column', function () {
+          (0, _chai.expect)(this.$('.certifications-list-item__cell-detail-button')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.certifications-list-item__cell-detail-button').text()).to.include('DÉTAIL');
+        });
+
+        (0, _mocha.it)('should show comment for candidate panel when clicked on row', _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+          return regeneratorRuntime.wrap(function _callee2$(_context2) {
+            while (1) {
+              switch (_context2.prev = _context2.next) {
+                case 0:
+
+                  Ember.run(function () {
+                    return document.querySelector('.certifications-list-item__cell').click();
+                  });
+
+                  (0, _chai.expect)(this.$('.certifications-list-item__row-comment-cell')).to.have.lengthOf(1);
+                  (0, _chai.expect)(this.$('.certifications-list-item__row-comment-cell').text()).to.include(commentForCandidate);
+
+                case 3:
+                case 'end':
+                  return _context2.stop();
+              }
+            }
+          }, _callee2, this);
+        })));
       });
     });
 
