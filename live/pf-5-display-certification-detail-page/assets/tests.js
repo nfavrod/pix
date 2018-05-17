@@ -3856,7 +3856,11 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
-    it('routes/user-certifications.js', function () {
+    it('routes/user-certifications/get.js', function () {
+      // test passed
+    });
+
+    it('routes/user-certifications/index.js', function () {
       // test passed
     });
 
@@ -11521,7 +11525,11 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
-    it('unit/routes/user-certifications-test.js', function () {
+    it('unit/routes/user-certifications/get-test.js', function () {
+      // test passed
+    });
+
+    it('unit/routes/user-certifications/index-test.js', function () {
       // test passed
     });
 
@@ -16900,11 +16908,65 @@ define('pix-live/tests/unit/routes/terms-of-service-test', ['chai', 'mocha', 'em
     });
   });
 });
-define('pix-live/tests/unit/routes/user-certifications-test', ['chai', 'mocha', 'ember-mocha', 'sinon'], function (_chai, _mocha, _emberMocha, _sinon) {
+define('pix-live/tests/unit/routes/user-certifications/get-test', ['sinon', 'chai', 'mocha', 'ember-mocha'], function (_sinon, _chai, _mocha, _emberMocha) {
   'use strict';
 
-  (0, _mocha.describe)('Unit | Route | user certifications', function () {
-    (0, _emberMocha.setupTest)('route:user-certifications', {
+  (0, _mocha.describe)('Unit | Route | user certifications/get', function () {
+    (0, _emberMocha.setupTest)('route:user-certifications/get', {
+      needs: ['service:session', 'service:current-routed-modal']
+    });
+
+    var route = void 0;
+    var StoreStub = void 0;
+    var findRecordStub = void 0;
+    var certificationId = 'certification_id';
+
+    beforeEach(function () {
+      // define stubs
+      findRecordStub = _sinon.default.stub();
+      StoreStub = Ember.Service.extend({
+        findRecord: findRecordStub
+      });
+
+      // manage dependency injection context
+      this.register('service:store', StoreStub);
+      this.inject.service('store', { as: 'store' });
+
+      // instance route object
+      route = this.subject();
+      route.transitionTo = _sinon.default.stub();
+    });
+
+    (0, _mocha.it)('exists', function () {
+      var route = this.subject();
+      (0, _chai.expect)(route).to.be.ok;
+    });
+
+    (0, _mocha.describe)('#model', function () {
+
+      (0, _mocha.it)('should get the certification', function () {
+        // given
+        var params = { id: certificationId };
+        var retreivedCertification = [Ember.Object.create({ id: certificationId })];
+        route.get('store').findRecord.resolves(retreivedCertification);
+
+        // when
+        var promise = route.model(params);
+
+        // then
+        return promise.then(function () {
+          _sinon.default.assert.calledOnce(findRecordStub);
+          _sinon.default.assert.calledWith(findRecordStub, 'certification', certificationId);
+        });
+      });
+    });
+  });
+});
+define('pix-live/tests/unit/routes/user-certifications/index-test', ['chai', 'mocha', 'ember-mocha', 'sinon'], function (_chai, _mocha, _emberMocha, _sinon) {
+  'use strict';
+
+  (0, _mocha.describe)('Unit | Route | user certifications/index', function () {
+    (0, _emberMocha.setupTest)('route:user-certifications/index', {
       needs: ['service:session', 'service:current-routed-modal']
     });
 
