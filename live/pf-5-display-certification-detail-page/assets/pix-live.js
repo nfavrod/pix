@@ -6062,6 +6062,9 @@ define('pix-live/mirage/scenarios/default', ['exports'], function (exports) {
     server.create('certification', {
       id: '2',
       date: new Date('2018-02-15T15:15:52.504Z'),
+      birthdate: new Date('1994-07-10'),
+      firstName: 'Jean',
+      lastName: 'Bon',
       status: 'rejected',
       pixScore: '6546',
       isPublished: false,
@@ -6230,7 +6233,10 @@ define('pix-live/models/certification', ['exports', 'ember-data'], function (exp
       attr = _emberData.default.attr,
       belongsTo = _emberData.default.belongsTo;
   exports.default = Model.extend({
-    date: attr('string'),
+    birthdate: attr('date'),
+    firstName: attr('string'),
+    lastName: attr('string'),
+    date: attr('date'),
     certificationCenter: attr('string'),
     isPublished: attr('boolean'),
     pixScore: attr('number'),
@@ -9297,6 +9303,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"name":"pix-live","version":"1.48.0+b1c86288"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"name":"pix-live","version":"1.48.0+70ed1de6"});
 }
 //# sourceMappingURL=pix-live.map
