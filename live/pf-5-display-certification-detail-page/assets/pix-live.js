@@ -7359,8 +7359,8 @@ define('pix-live/routes/user-certifications/get', ['exports', 'pix-live/routes/b
 
       return this.get('store').findRecord('certification', params.id).then(function (certification) {
 
-        if (!certification.isPublished || certification.status !== 'validated') {
-          return _this.transitionTo('mes-certifications');
+        if (!certification.get('isPublished') || certification.get('status') !== 'validated') {
+          return _this.transitionTo('/mes-certifications');
         }
 
         return certification;
@@ -9340,6 +9340,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"name":"pix-live","version":"1.48.0+6f8ef0ce"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"name":"pix-live","version":"1.48.0+2b643977"});
 }
 //# sourceMappingURL=pix-live.map

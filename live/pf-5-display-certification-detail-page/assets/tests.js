@@ -17001,7 +17001,7 @@ define('pix-live/tests/unit/routes/user-certifications/get-test', ['sinon', 'cha
         // then
         return promise.then(function () {
           _sinon.default.assert.calledOnce(route.transitionTo);
-          _sinon.default.assert.calledWith(route.transitionTo, 'mes-certifications');
+          _sinon.default.assert.calledWith(route.transitionTo, '/mes-certifications');
         });
       });
 
@@ -17024,7 +17024,7 @@ define('pix-live/tests/unit/routes/user-certifications/get-test', ['sinon', 'cha
         // then
         return promise.then(function () {
           _sinon.default.assert.calledOnce(route.transitionTo);
-          _sinon.default.assert.calledWith(route.transitionTo, 'mes-certifications');
+          _sinon.default.assert.calledWith(route.transitionTo, '/mes-certifications');
         });
       });
     });
