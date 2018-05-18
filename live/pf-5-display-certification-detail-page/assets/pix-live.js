@@ -8526,7 +8526,7 @@ define("pix-live/templates/user-certifications", ["exports"], function (exports)
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "gDBPaiTW", "block": "{\"symbols\":[],\"statements\":[[1,[25,\"navbar-header\",null,[[\"class\"],[\"navbar-header--white\"]]],false],[0,\"\\n.\\n\"],[1,[18,\"outlet\"],false],[0,\"\\n\\n\"],[1,[18,\"app-footer\"],false],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/user-certifications.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "rxf3q8O3", "block": "{\"symbols\":[],\"statements\":[[1,[25,\"navbar-header\",null,[[\"class\"],[\"navbar-header--white\"]]],false],[0,\"\\n\\n\"],[6,\"div\"],[9,\"class\",\"user-certifications-page__container\"],[7],[0,\"\\n  \"],[1,[18,\"outlet\"],false],[0,\"\\n\"],[8],[0,\"\\n\\n\"],[1,[18,\"app-footer\"],false],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/user-certifications.hbs" } });
 });
 define("pix-live/templates/user-certifications/get", ["exports"], function (exports) {
   "use strict";
@@ -8534,7 +8534,7 @@ define("pix-live/templates/user-certifications/get", ["exports"], function (expo
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "o8kcF5wI", "block": "{\"symbols\":[],\"statements\":[[6,\"h1\"],[7],[0,\"TOTO\"],[8]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/user-certifications/get.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "xHPzBoLf", "block": "{\"symbols\":[],\"statements\":[[4,\"link-to\",[\"user-certifications\"],[[\"class\"],[\"user-certifications-page-get_link-to\"]],{\"statements\":[[0,\"‹‹ Retour à la liste\"]],\"parameters\":[]},null],[0,\"\\n\"],[6,\"h1\"],[7],[0,\"TOTO\"],[8]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/user-certifications/get.hbs" } });
 });
 define("pix-live/templates/user-certifications/index", ["exports"], function (exports) {
   "use strict";
@@ -9331,6 +9331,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"name":"pix-live","version":"1.48.0+fa75ab69"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"name":"pix-live","version":"1.48.0+94631441"});
 }
 //# sourceMappingURL=pix-live.map
