@@ -312,6 +312,45 @@ define('pix-live/components/challenge-actions', ['exports'], function (exports) 
     }
   });
 });
+define('pix-live/components/challenge-embed-simulator', ['exports'], function (exports) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = Ember.Component.extend({
+
+    // Element
+    classNames: ['challenge-embed-simulator rounded-panel'],
+
+    // Data props
+    embedDocument: null,
+
+    // Actions
+    actions: {
+      launchSimulator: function launchSimulator() {
+        this.toggleProperty('_isSimulatorNotYetLaunched');
+        this._unblurSimulator();
+      },
+      reloadSimulator: function reloadSimulator() {
+        this._reloadSimulator();
+      }
+    },
+
+    // Internals
+    _isSimulatorNotYetLaunched: true,
+
+    /* This method is not tested because it would be too difficult (add an observer on a complicated stubbed DOM API element!) */
+    _reloadSimulator: function _reloadSimulator() {
+      var $simulatorIframe = this.element.getElementsByClassName('challenge-embed-simulator__iframe').item(0);
+      $simulatorIframe.src = $simulatorIframe.src;
+    },
+    _unblurSimulator: function _unblurSimulator() {
+      var $simulatorPanel = this.element.getElementsByClassName('challenge-embed-simulator__simulator').item(0);
+      $simulatorPanel.classList.remove('blurred');
+    }
+  });
+});
 define('pix-live/components/challenge-item-generic', ['exports', 'pix-live/utils/call-only-once', 'pix-live/utils/lodash-custom', 'pix-live/config/environment'], function (exports, _callOnlyOnce, _lodashCustom, _environment) {
   'use strict';
 
@@ -585,45 +624,6 @@ define('pix-live/components/challenge-item-qrocm', ['exports', 'pix-live/utils/l
   });
 
   exports.default = ChallengeItemQrocm;
-});
-define('pix-live/components/challenge-statement-embed-panel', ['exports'], function (exports) {
-  'use strict';
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.default = Ember.Component.extend({
-
-    // Element
-    classNames: ['challenge-statement-embed-panel rounded-panel'],
-
-    // Data props
-    embedDocument: null,
-
-    // Actions
-    actions: {
-      launchSimulator: function launchSimulator() {
-        this.toggleProperty('_isSimulatorNotYetLaunched');
-        this._unblurSimulator();
-      },
-      reloadSimulator: function reloadSimulator() {
-        this._reloadSimulator();
-      }
-    },
-
-    // Internals
-    _isSimulatorNotYetLaunched: true,
-
-    /* This method is not tested because it would be too difficult (add an observer on a complicated stubbed DOM API element!) */
-    _reloadSimulator: function _reloadSimulator() {
-      var $simulatorIframe = this.element.getElementsByClassName('challenge-statement-embed-panel__iframe').item(0);
-      $simulatorIframe.src = $simulatorIframe.src;
-    },
-    _unblurSimulator: function _unblurSimulator() {
-      var $simulatorPanel = this.element.getElementsByClassName('challenge-statement-embed-panel__simulator').item(0);
-      $simulatorPanel.classList.remove('blurred');
-    }
-  });
 });
 define('pix-live/components/challenge-statement', ['exports', 'pix-live/config/environment'], function (exports, _environment) {
   'use strict';
@@ -7922,6 +7922,14 @@ define("pix-live/templates/components/challenge-actions", ["exports"], function 
   });
   exports.default = Ember.HTMLBars.template({ "id": "V2DrOsqb", "block": "{\"symbols\":[],\"statements\":[[4,\"if\",[[20,[\"isValidateButtonEnable\"]]],null,{\"statements\":[[0,\"  \"],[6,\"a\"],[9,\"class\",\"challenge-actions__action challenge-actions__action-validate\"],[9,\"href\",\"#\"],[3,\"action\",[[19,0,[]],\"validateAnswer\"]],[7],[0,\"\\n    \"],[6,\"span\"],[9,\"class\",\"challenge-actions__action-validate-text\"],[7],[0,\"Je valide\"],[8],[0,\"\\n  \"],[8],[0,\"\\n\"]],\"parameters\":[]},{\"statements\":[[0,\"  \"],[6,\"div\"],[9,\"class\",\"challenge-actions__action challenge-actions__action-validate__loader\"],[7],[0,\"\\n    \"],[6,\"div\"],[9,\"class\",\"challenge-actions__action-validate__loader-bar\"],[7],[8],[0,\"\\n  \"],[8],[0,\"\\n\"]],\"parameters\":[]}],[4,\"if\",[[20,[\"isSkipButtonEnable\"]]],null,{\"statements\":[[0,\"  \"],[6,\"a\"],[9,\"class\",\"challenge-actions__action challenge-actions__action-skip\"],[9,\"href\",\"#\"],[3,\"action\",[[19,0,[]],\"skipChallenge\"]],[7],[0,\"\\n    \"],[6,\"span\"],[9,\"class\",\"challenge-actions__action-skip-text\"],[7],[0,\"Je passe\"],[8],[0,\"\\n  \"],[8],[0,\"\\n\"]],\"parameters\":[]},{\"statements\":[[0,\"  \"],[6,\"div\"],[9,\"class\",\"challenge-actions__action challenge-actions__action-skip__loader\"],[7],[0,\"\\n    \"],[6,\"div\"],[9,\"class\",\"challenge-actions__action-skip__loader-bar\"],[7],[8],[0,\"\\n  \"],[8],[0,\"\\n\"]],\"parameters\":[]}]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/challenge-actions.hbs" } });
 });
+define("pix-live/templates/components/challenge-embed-simulator", ["exports"], function (exports) {
+  "use strict";
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = Ember.HTMLBars.template({ "id": "/K+kjwJ5", "block": "{\"symbols\":[],\"statements\":[[4,\"if\",[[20,[\"_isSimulatorNotYetLaunched\"]]],null,{\"statements\":[[0,\"  \"],[6,\"div\"],[9,\"class\",\"challenge-embed-simulator__aknowledgment-overlay\"],[7],[0,\"\\n    \"],[6,\"button\"],[9,\"class\",\"challenge-embed-simulator__launch-simulator-button\"],[3,\"action\",[[19,0,[]],\"launchSimulator\"]],[7],[0,\"Je lance le simulateur\"],[8],[0,\"\\n  \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\"],[6,\"div\"],[9,\"class\",\"challenge-embed-simulator__simulator blurred\"],[7],[0,\"\\n  \"],[6,\"iframe\"],[9,\"class\",\"challenge-embed-simulator__iframe\"],[10,\"src\",[26,[[20,[\"embedDocument\",\"url\"]]]]],[10,\"alt\",[26,[[20,[\"embedDocument\",\"title\"]]]]],[10,\"height\",[26,[[20,[\"embedDocument\",\"height\"]]]]],[7],[0,\"\\n  \"],[8],[0,\"\\n  \"],[6,\"button\"],[9,\"class\",\"challenge-embed-simulator__reload-button\"],[3,\"action\",[[19,0,[]],\"reloadSimulator\"]],[7],[0,\"Recharger le simulateur\"],[8],[0,\"\\n\"],[8],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/challenge-embed-simulator.hbs" } });
+});
 define("pix-live/templates/components/challenge-item-generic", ["exports"], function (exports) {
   "use strict";
 
@@ -7970,21 +7978,13 @@ define("pix-live/templates/components/challenge-item-qrocm", ["exports"], functi
   });
   exports.default = Ember.HTMLBars.template({ "id": "Yi2c5Xrz", "block": "{\"symbols\":[],\"statements\":[[4,\"if\",[[20,[\"hasChallengeTimer\"]]],null,{\"statements\":[[4,\"unless\",[[20,[\"hasUserConfirmWarning\"]]],null,{\"statements\":[[0,\"    \"],[1,[25,\"warning-page\",null,[[\"hasUserConfirmWarning\",\"time\"],[[25,\"action\",[[19,0,[]],\"setUserConfirmation\"],null],[20,[\"challenge\",\"timer\"]]]]],false],[0,\"\\n\"]],\"parameters\":[]},null]],\"parameters\":[]},null],[0,\"\\n\"],[4,\"unless\",[[20,[\"hasChallengeTimer\"]]],null,{\"statements\":[[0,\"\\n  \"],[1,[25,\"challenge-statement\",null,[[\"challenge\",\"assessment\"],[[20,[\"challenge\"]],[20,[\"assessment\"]]]]],false],[0,\"\\n\\n  \"],[6,\"div\"],[9,\"class\",\"rounded-panel challenge-response\"],[7],[0,\"\\n    \"],[6,\"div\"],[9,\"class\",\"rounded-panel__row challenge-proposals\"],[7],[0,\"\\n      \"],[1,[25,\"qrocm-proposal\",null,[[\"proposals\",\"answersValue\",\"answerChanged\"],[[20,[\"challenge\",\"proposals\"]],[20,[\"answers\",\"_valuesAsMap\"]],[25,\"action\",[[19,0,[]],\"answerChanged\"],null]]]],false],[0,\"\\n    \"],[8],[0,\"\\n\"],[4,\"if\",[[20,[\"challenge\",\"timer\"]]],null,{\"statements\":[[4,\"if\",[[20,[\"hasUserConfirmWarning\"]]],null,{\"statements\":[[0,\"        \"],[6,\"div\"],[9,\"class\",\"rounded-panel__row timeout-jauge-wrapper\"],[7],[0,\"\\n          \"],[1,[25,\"timeout-jauge\",null,[[\"allotedTime\"],[[20,[\"challenge\",\"timer\"]]]]],false],[0,\"\\n        \"],[8],[0,\"\\n\"]],\"parameters\":[]},null]],\"parameters\":[]},null],[0,\"  \"],[8],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"errorMessage\"]]],null,{\"statements\":[[0,\"    \"],[6,\"div\"],[9,\"class\",\"alert alert-danger\"],[9,\"role\",\"alert\"],[7],[0,\"\\n      \"],[1,[18,\"errorMessage\"],false],[0,\"\\n    \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\"],[4,\"if\",[[20,[\"assessment\"]]],null,{\"statements\":[[0,\"    \"],[1,[25,\"challenge-actions\",null,[[\"challenge\",\"challengeSkipped\",\"answerValidated\"],[[20,[\"challenge\"]],[25,\"action\",[[19,0,[]],\"skipChallenge\"],null],[25,\"action\",[[19,0,[]],\"validateAnswer\"],null]]]],false],[0,\"\\n\"]],\"parameters\":[]},null]],\"parameters\":[]},null],[0,\"\\n\"],[4,\"if\",[[20,[\"canDisplayFeedbackPanel\"]]],null,{\"statements\":[[0,\"  \"],[6,\"div\"],[9,\"class\",\"challenge-item__feedback\"],[7],[0,\"\\n    \"],[1,[25,\"feedback-panel\",null,[[\"assessment\",\"challenge\"],[[20,[\"assessment\"]],[20,[\"challenge\"]]]]],false],[0,\"\\n  \"],[8],[0,\"\\n\"]],\"parameters\":[]},null]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/challenge-item-qrocm.hbs" } });
 });
-define("pix-live/templates/components/challenge-statement-embed-panel", ["exports"], function (exports) {
-  "use strict";
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.default = Ember.HTMLBars.template({ "id": "89YZ01Mu", "block": "{\"symbols\":[],\"statements\":[[4,\"if\",[[20,[\"_isSimulatorNotYetLaunched\"]]],null,{\"statements\":[[0,\"  \"],[6,\"div\"],[9,\"class\",\"challenge-statement-embed-panel__aknowledgment-overlay\"],[7],[0,\"\\n    \"],[6,\"button\"],[9,\"class\",\"challenge-statement-embed-panel__launch-simulator-button\"],[3,\"action\",[[19,0,[]],\"launchSimulator\"]],[7],[0,\"Je lance le simulateur\"],[8],[0,\"\\n  \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\"],[6,\"div\"],[9,\"class\",\"challenge-statement-embed-panel__simulator blurred\"],[7],[0,\"\\n  \"],[6,\"iframe\"],[9,\"class\",\"challenge-statement-embed-panel__iframe\"],[10,\"src\",[26,[[20,[\"embedDocument\",\"url\"]]]]],[10,\"alt\",[26,[[20,[\"embedDocument\",\"title\"]]]]],[10,\"height\",[26,[[20,[\"embedDocument\",\"height\"]]]]],[7],[0,\"\\n  \"],[8],[0,\"\\n  \"],[6,\"button\"],[9,\"class\",\"challenge-statement-embed-panel__reload-button\"],[3,\"action\",[[19,0,[]],\"reloadSimulator\"]],[7],[0,\"Recharger le simulateur\"],[8],[0,\"\\n\"],[8],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/challenge-statement-embed-panel.hbs" } });
-});
 define("pix-live/templates/components/challenge-statement", ["exports"], function (exports) {
   "use strict";
 
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "JWAp6H3G", "block": "{\"symbols\":[\"attachmentUrl\",\"index\"],\"statements\":[[2,\" TODO: Supprimer le hasntInternetAllowed \"],[0,\"\\n\"],[4,\"if\",[[20,[\"challenge\",\"hasntInternetAllowed\"]]],null,{\"statements\":[[0,\"  \"],[1,[18,\"challenge-stay\"],false],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\"],[6,\"div\"],[9,\"class\",\"rounded-panel\"],[7],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"challengeInstruction\"]]],null,{\"statements\":[[0,\"    \"],[6,\"div\"],[9,\"class\",\"rounded-panel__row challenge-statement__instruction-section\"],[7],[0,\"\\n      \"],[1,[25,\"markdown-to-html\",null,[[\"class\",\"markdown\"],[\"challenge-statement__instruction\",[20,[\"challengeInstruction\"]]]]],false],[0,\"\\n    \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\"],[4,\"if\",[[20,[\"challenge\",\"illustrationUrl\"]]],null,{\"statements\":[[0,\"    \"],[6,\"div\"],[9,\"class\",\"rounded-panel__row challenge-statement__illustration-section\"],[7],[0,\"\\n      \"],[6,\"img\"],[9,\"class\",\"challenge-statement__illustration\"],[10,\"src\",[26,[[20,[\"challenge\",\"illustrationUrl\"]]]]],[9,\"alt\",\"Illustration de l'épreuve\"],[7],[8],[0,\"\\n    \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\"],[4,\"if\",[[20,[\"challenge\",\"hasAttachment\"]]],null,{\"statements\":[[0,\"    \"],[6,\"div\"],[9,\"class\",\"rounded-panel__row challenge-statement__attachments-section\"],[7],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"challenge\",\"hasSingleAttachment\"]]],null,{\"statements\":[[0,\"        \"],[6,\"div\"],[9,\"class\",\"challenge-statement__action\"],[7],[0,\"\\n          \"],[6,\"a\"],[9,\"class\",\"challenge-statement__action-link\"],[10,\"href\",[26,[[20,[\"challenge\",\"attachments\",\"firstObject\"]]]]],[9,\"target\",\"_blank\"],[9,\"download\",\"\"],[7],[0,\"\\n            \"],[6,\"span\"],[9,\"class\",\"challenge-statement__action-label\"],[7],[0,\"Télécharger\"],[8],[0,\"\\n          \"],[8],[0,\"\\n        \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\"],[4,\"if\",[[20,[\"challenge\",\"hasMultipleAttachments\"]]],null,{\"statements\":[[0,\"        \"],[6,\"p\"],[9,\"class\",\"challenge-statement__text\"],[7],[0,\"\\n          \"],[6,\"span\"],[9,\"class\",\"challenge-statement__text-content\"],[7],[0,\"Choisissez le type de fichier que vous voulez utiliser\"],[8],[0,\"\\n        \"],[6,\"div\"],[9,\"class\",\"challenge-statement__help-icon\"],[7],[0,\"\\n          \"],[6,\"div\"],[9,\"class\",\"challenge-statement__help-tooltip\"],[7],[0,\"\\n            \"],[6,\"span\"],[9,\"class\",\"challenge-statement__help-text\"],[7],[0,\"Pix vous laisse le choix du format de fichier à télécharger. Si vous ne savez pas quelle option retenir, conservez le choix par défaut. Il correspond au format de fichier pris en charge par le plus grand nombre de logiciels.\"],[8],[0,\"\\n          \"],[8],[0,\"\\n        \"],[8],[0,\"\\n        \"],[8],[0,\"\\n        \"],[6,\"ul\"],[9,\"class\",\"challenge-statement__file-options\"],[7],[0,\"\\n\"],[4,\"each\",[[20,[\"attachmentsData\"]]],null,{\"statements\":[[0,\"            \"],[6,\"li\"],[9,\"class\",\"challenge-statement__file-option\"],[7],[0,\"\\n\\n\"],[0,\"              \"],[6,\"input\"],[9,\"type\",\"radio\"],[10,\"id\",[26,[\"attachment\",[19,2,[]]]]],[9,\"class\",\"challenge-statement__file-option_input\"],[9,\"name\",\"attachment_selector\"],[10,\"value\",[26,[[19,1,[]]]]],[10,\"onclick\",[25,\"action\",[[19,0,[]],\"selectAttachementUrl\",[19,1,[]]],null],null],[10,\"checked\",[26,[[25,\"if\",[[25,\"eq\",[[19,1,[]],[20,[\"selectedAttachmentUrl\"]]],null],\"checked\"],null]]]],[7],[8],[0,\"\\n\\n              \"],[6,\"label\"],[9,\"class\",\"label-checkbox-downloadable\"],[10,\"for\",[26,[\"attachment\",[19,2,[]]]]],[7],[0,\"\\n                \"],[6,\"span\"],[9,\"class\",\"challenge-statement__file-option-label\"],[7],[0,\"fichier .\"],[1,[25,\"extract-extension\",[[19,1,[]]],null],false],[8],[0,\"\\n              \"],[8],[0,\"\\n\\n            \"],[8],[0,\"\\n\"]],\"parameters\":[1,2]},null],[0,\"        \"],[8],[0,\"\\n        \"],[6,\"div\"],[9,\"class\",\"challenge-statement__action\"],[7],[0,\"\\n          \"],[6,\"a\"],[9,\"class\",\"challenge-statement__action-link\"],[10,\"href\",[26,[[18,\"selectedAttachmentUrl\"]]]],[9,\"target\",\"_blank\"],[9,\"download\",\"\"],[7],[0,\"\\n            \"],[6,\"span\"],[9,\"class\",\"challenge-statement__action-label\"],[7],[0,\"Télécharger\"],[8],[0,\"\\n          \"],[8],[0,\"\\n        \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"    \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\"],[8],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"challenge\",\"hasValidEmbedDocument\"]]],null,{\"statements\":[[0,\"  \"],[1,[25,\"challenge-statement-embed-panel\",null,[[\"embedDocument\"],[[20,[\"challengeEmbedDocument\"]]]]],false],[0,\"\\n\"]],\"parameters\":[]},null]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/challenge-statement.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "mdxlUAc0", "block": "{\"symbols\":[\"attachmentUrl\",\"index\"],\"statements\":[[2,\" TODO: Supprimer le hasntInternetAllowed \"],[0,\"\\n\"],[4,\"if\",[[20,[\"challenge\",\"hasntInternetAllowed\"]]],null,{\"statements\":[[0,\"  \"],[1,[18,\"challenge-stay\"],false],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\"],[6,\"div\"],[9,\"class\",\"rounded-panel\"],[7],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"challengeInstruction\"]]],null,{\"statements\":[[0,\"    \"],[6,\"div\"],[9,\"class\",\"rounded-panel__row challenge-statement__instruction-section\"],[7],[0,\"\\n      \"],[1,[25,\"markdown-to-html\",null,[[\"class\",\"markdown\"],[\"challenge-statement__instruction\",[20,[\"challengeInstruction\"]]]]],false],[0,\"\\n    \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\"],[4,\"if\",[[20,[\"challenge\",\"illustrationUrl\"]]],null,{\"statements\":[[0,\"    \"],[6,\"div\"],[9,\"class\",\"rounded-panel__row challenge-statement__illustration-section\"],[7],[0,\"\\n      \"],[6,\"img\"],[9,\"class\",\"challenge-statement__illustration\"],[10,\"src\",[26,[[20,[\"challenge\",\"illustrationUrl\"]]]]],[9,\"alt\",\"Illustration de l'épreuve\"],[7],[8],[0,\"\\n    \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\"],[4,\"if\",[[20,[\"challenge\",\"hasAttachment\"]]],null,{\"statements\":[[0,\"    \"],[6,\"div\"],[9,\"class\",\"rounded-panel__row challenge-statement__attachments-section\"],[7],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"challenge\",\"hasSingleAttachment\"]]],null,{\"statements\":[[0,\"        \"],[6,\"div\"],[9,\"class\",\"challenge-statement__action\"],[7],[0,\"\\n          \"],[6,\"a\"],[9,\"class\",\"challenge-statement__action-link\"],[10,\"href\",[26,[[20,[\"challenge\",\"attachments\",\"firstObject\"]]]]],[9,\"target\",\"_blank\"],[9,\"download\",\"\"],[7],[0,\"\\n            \"],[6,\"span\"],[9,\"class\",\"challenge-statement__action-label\"],[7],[0,\"Télécharger\"],[8],[0,\"\\n          \"],[8],[0,\"\\n        \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\"],[4,\"if\",[[20,[\"challenge\",\"hasMultipleAttachments\"]]],null,{\"statements\":[[0,\"        \"],[6,\"p\"],[9,\"class\",\"challenge-statement__text\"],[7],[0,\"\\n          \"],[6,\"span\"],[9,\"class\",\"challenge-statement__text-content\"],[7],[0,\"Choisissez le type de fichier que vous voulez utiliser\"],[8],[0,\"\\n        \"],[6,\"div\"],[9,\"class\",\"challenge-statement__help-icon\"],[7],[0,\"\\n          \"],[6,\"div\"],[9,\"class\",\"challenge-statement__help-tooltip\"],[7],[0,\"\\n            \"],[6,\"span\"],[9,\"class\",\"challenge-statement__help-text\"],[7],[0,\"Pix vous laisse le choix du format de fichier à télécharger. Si vous ne savez pas quelle option retenir, conservez le choix par défaut. Il correspond au format de fichier pris en charge par le plus grand nombre de logiciels.\"],[8],[0,\"\\n          \"],[8],[0,\"\\n        \"],[8],[0,\"\\n        \"],[8],[0,\"\\n        \"],[6,\"ul\"],[9,\"class\",\"challenge-statement__file-options\"],[7],[0,\"\\n\"],[4,\"each\",[[20,[\"attachmentsData\"]]],null,{\"statements\":[[0,\"            \"],[6,\"li\"],[9,\"class\",\"challenge-statement__file-option\"],[7],[0,\"\\n\\n\"],[0,\"              \"],[6,\"input\"],[9,\"type\",\"radio\"],[10,\"id\",[26,[\"attachment\",[19,2,[]]]]],[9,\"class\",\"challenge-statement__file-option_input\"],[9,\"name\",\"attachment_selector\"],[10,\"value\",[26,[[19,1,[]]]]],[10,\"onclick\",[25,\"action\",[[19,0,[]],\"selectAttachementUrl\",[19,1,[]]],null],null],[10,\"checked\",[26,[[25,\"if\",[[25,\"eq\",[[19,1,[]],[20,[\"selectedAttachmentUrl\"]]],null],\"checked\"],null]]]],[7],[8],[0,\"\\n\\n              \"],[6,\"label\"],[9,\"class\",\"label-checkbox-downloadable\"],[10,\"for\",[26,[\"attachment\",[19,2,[]]]]],[7],[0,\"\\n                \"],[6,\"span\"],[9,\"class\",\"challenge-statement__file-option-label\"],[7],[0,\"fichier .\"],[1,[25,\"extract-extension\",[[19,1,[]]],null],false],[8],[0,\"\\n              \"],[8],[0,\"\\n\\n            \"],[8],[0,\"\\n\"]],\"parameters\":[1,2]},null],[0,\"        \"],[8],[0,\"\\n        \"],[6,\"div\"],[9,\"class\",\"challenge-statement__action\"],[7],[0,\"\\n          \"],[6,\"a\"],[9,\"class\",\"challenge-statement__action-link\"],[10,\"href\",[26,[[18,\"selectedAttachmentUrl\"]]]],[9,\"target\",\"_blank\"],[9,\"download\",\"\"],[7],[0,\"\\n            \"],[6,\"span\"],[9,\"class\",\"challenge-statement__action-label\"],[7],[0,\"Télécharger\"],[8],[0,\"\\n          \"],[8],[0,\"\\n        \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"    \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\"],[8],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"challenge\",\"hasValidEmbedDocument\"]]],null,{\"statements\":[[0,\"  \"],[1,[25,\"challenge-embed-simulator\",null,[[\"embedDocument\"],[[20,[\"challengeEmbedDocument\"]]]]],false],[0,\"\\n\"]],\"parameters\":[]},null]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/challenge-statement.hbs" } });
 });
 define("pix-live/templates/components/challenge-stay", ["exports"], function (exports) {
   "use strict";
@@ -9365,6 +9365,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"name":"pix-live","version":"1.48.0+1450b345"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"name":"pix-live","version":"1.48.0+b7812bc8"});
 }
 //# sourceMappingURL=pix-live.map
