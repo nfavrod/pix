@@ -322,9 +322,15 @@ define('pix-live/components/challenge-embed-simulator', ['exports'], function (e
 
     // Element
     classNames: ['challenge-embed-simulator rounded-panel'],
+    attributeBindings: ['embedDocumentHeightStyle:style'],
 
     // Data props
     embedDocument: null,
+
+    // CPs
+    embedDocumentHeightStyle: Ember.computed('embedDocument.height', function () {
+      return 'height: ' + this.get('embedDocument.height') + 'px';
+    }),
 
     // Actions
     actions: {
@@ -7913,7 +7919,7 @@ define("pix-live/templates/components/challenge-embed-simulator", ["exports"], f
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "/K+kjwJ5", "block": "{\"symbols\":[],\"statements\":[[4,\"if\",[[20,[\"_isSimulatorNotYetLaunched\"]]],null,{\"statements\":[[0,\"  \"],[6,\"div\"],[9,\"class\",\"challenge-embed-simulator__aknowledgment-overlay\"],[7],[0,\"\\n    \"],[6,\"button\"],[9,\"class\",\"challenge-embed-simulator__launch-simulator-button\"],[3,\"action\",[[19,0,[]],\"launchSimulator\"]],[7],[0,\"Je lance le simulateur\"],[8],[0,\"\\n  \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\"],[6,\"div\"],[9,\"class\",\"challenge-embed-simulator__simulator blurred\"],[7],[0,\"\\n  \"],[6,\"iframe\"],[9,\"class\",\"challenge-embed-simulator__iframe\"],[10,\"src\",[26,[[20,[\"embedDocument\",\"url\"]]]]],[10,\"alt\",[26,[[20,[\"embedDocument\",\"title\"]]]]],[10,\"height\",[26,[[20,[\"embedDocument\",\"height\"]]]]],[7],[0,\"\\n  \"],[8],[0,\"\\n  \"],[6,\"button\"],[9,\"class\",\"challenge-embed-simulator__reload-button\"],[3,\"action\",[[19,0,[]],\"reloadSimulator\"]],[7],[0,\"Recharger le simulateur\"],[8],[0,\"\\n\"],[8],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/challenge-embed-simulator.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "GIYwNw4u", "block": "{\"symbols\":[],\"statements\":[[4,\"if\",[[20,[\"_isSimulatorNotYetLaunched\"]]],null,{\"statements\":[[0,\"  \"],[6,\"div\"],[9,\"class\",\"challenge-embed-simulator__aknowledgment-overlay\"],[7],[0,\"\\n    \"],[6,\"button\"],[9,\"class\",\"challenge-embed-simulator__launch-simulator-button\"],[3,\"action\",[[19,0,[]],\"launchSimulator\"]],[7],[0,\"Je lance le simulateur\"],[8],[0,\"\\n  \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\"],[6,\"div\"],[9,\"class\",\"challenge-embed-simulator__simulator blurred\"],[7],[0,\"\\n  \"],[6,\"iframe\"],[9,\"class\",\"challenge-embed-simulator__iframe\"],[10,\"src\",[26,[[20,[\"embedDocument\",\"url\"]]]]],[10,\"alt\",[26,[[20,[\"embedDocument\",\"title\"]]]]],[7],[0,\"\\n  \"],[8],[0,\"\\n  \"],[6,\"button\"],[9,\"class\",\"challenge-embed-simulator__reload-button\"],[3,\"action\",[[19,0,[]],\"reloadSimulator\"]],[7],[0,\"Recharger le simulateur\"],[8],[0,\"\\n\"],[8]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/challenge-embed-simulator.hbs" } });
 });
 define("pix-live/templates/components/challenge-item-generic", ["exports"], function (exports) {
   "use strict";
@@ -9342,6 +9348,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"name":"pix-live","version":"1.48.0+4bd279c3"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"name":"pix-live","version":"1.48.0+a153baa0"});
 }
 //# sourceMappingURL=pix-live.map
