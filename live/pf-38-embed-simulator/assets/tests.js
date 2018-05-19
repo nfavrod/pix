@@ -4834,6 +4834,41 @@ define('pix-live/tests/integration/components/challenge-embed-simulator-test', [
         (0, _chai.expect)($simulator.classList.contains('blurred')).to.be.false;
       });
     });
+
+    (0, _mocha.describe)('Embed simulator', function () {
+
+      var embedDocument = {
+        url: 'http://embed-simulator.url',
+        title: 'Embed simulator',
+        height: 200
+      };
+
+      (0, _mocha.beforeEach)(function () {
+        // given
+        this.set('embedDocument', embedDocument);
+
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "sHoTmuyI",
+          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"challenge-embed-simulator\",null,[[\"embedDocument\"],[[20,[\"embedDocument\"]]]]],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+
+        // then
+      });
+
+      (0, _mocha.it)('should have an height that is the one defined in the referential', function () {
+        (0, _chai.expect)(this.$('.challenge-embed-simulator')[0].style.cssText).to.equal('height: 200px;');
+      });
+
+      (0, _mocha.it)('should define a title attribute on the iframe element that is the one defined in the referential for field "Embed title"', function () {
+        (0, _chai.expect)(this.$('.challenge-embed-simulator__iframe')[0].title).to.equal('Embed simulator');
+      });
+
+      (0, _mocha.it)('should define a src attribute on the iframe element that is the one defined in the referential for field "Embed URL"', function () {
+        (0, _chai.expect)(this.$('.challenge-embed-simulator__iframe')[0].src).to.equal('http://embed-simulator.url/');
+      });
+    });
   });
 });
 define('pix-live/tests/integration/components/challenge-item-qmail-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
