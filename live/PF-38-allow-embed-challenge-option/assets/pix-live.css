@@ -716,6 +716,12 @@ button.routable-modal--close:active {
   font-weight: 400;
   width: 100%; }
 
+.challenge-statement-embed-panel__iframe {
+  width: 100%;
+  height: 500px;
+  /* default value if no one is defined by the challenges producers */
+  border: none; }
+
 .challenge-statement {
   /* XXX required to let "help tooltip" displaying well even if instruction section is short (1 line) */
   overflow: visible; }

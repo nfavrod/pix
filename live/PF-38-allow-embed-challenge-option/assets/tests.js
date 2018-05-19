@@ -3424,6 +3424,10 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
+    it('components/challenge-statement-embed-panel.js', function () {
+      // test passed
+    });
+
     it('components/challenge-statement.js', function () {
       // test passed
     });
@@ -4752,6 +4756,85 @@ define('pix-live/tests/integration/components/challenge-item-qmail-test', ['chai
     });
   });
 });
+define('pix-live/tests/integration/components/challenge-statement-embed-panel-test', ['chai', 'mocha', 'ember-mocha', 'sinon'], function (_chai, _mocha, _emberMocha, _sinon) {
+  'use strict';
+
+  function _asyncToGenerator(fn) {
+    return function () {
+      var gen = fn.apply(this, arguments);
+      return new Promise(function (resolve, reject) {
+        function step(key, arg) {
+          try {
+            var info = gen[key](arg);
+            var value = info.value;
+          } catch (error) {
+            reject(error);
+            return;
+          }
+
+          if (info.done) {
+            resolve(value);
+          } else {
+            return Promise.resolve(value).then(function (value) {
+              step("next", value);
+            }, function (err) {
+              step("throw", err);
+            });
+          }
+        }
+
+        return step("next");
+      });
+    };
+  }
+
+  (0, _mocha.describe)('Integration | Component | challenge statement embed panel', function () {
+    (0, _emberMocha.setupComponentTest)('challenge-statement-embed-panel', {
+      integration: true
+    });
+
+    (0, _mocha.it)('renders', function () {
+      this.render(Ember.HTMLBars.template({
+        "id": "nYiOCpBS",
+        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"challenge-statement-embed-panel\"],false]],\"hasEval\":false}",
+        "meta": {}
+      }));
+      (0, _chai.expect)(this.$()).to.have.length(1);
+    });
+
+    (0, _mocha.it)('should reload iframe when user clicked on button reload', _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+      var stubReloadIframe;
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              // given
+              stubReloadIframe = _sinon.default.stub();
+
+              this.set('stubReloadIframe', stubReloadIframe);
+              this.render(Ember.HTMLBars.template({
+                "id": "+/OWppeh",
+                "block": "{\"symbols\":[],\"statements\":[[1,[25,\"challenge-statement-embed-panel\",null,[[\"_reloadIframe\"],[[20,[\"stubReloadIframe\"]]]]],false]],\"hasEval\":false}",
+                "meta": {}
+              }));
+
+              // when
+              Ember.run(function () {
+                return document.querySelector('.challenge-statement-embed-panel__reload-button').click();
+              });
+
+              // then
+              _sinon.default.assert.calledOnce(stubReloadIframe);
+
+            case 5:
+            case 'end':
+              return _context.stop();
+          }
+        }
+      }, _callee, this);
+    })));
+  });
+});
 define('pix-live/tests/integration/components/challenge-statement-test', ['chai', 'mocha', 'ember-mocha', 'sinon'], function (_chai, _mocha, _emberMocha, _sinon) {
   'use strict';
 
@@ -5005,6 +5088,36 @@ define('pix-live/tests/integration/components/challenge-statement-test', ['chai'
           // then
           (0, _chai.expect)(this.$('.challenge-statement__help-icon')).to.have.lengthOf(1);
         });
+      });
+    });
+
+    /*
+     * Embed
+     * ------------------------------------------------
+     */
+
+    (0, _mocha.describe)('Embed section:', function () {
+
+      (0, _mocha.it)('should be displayed when the challenge has a valid Embed object', function () {
+        // given
+        addChallengeToContext(this, { hasValidEmbedDocument: true });
+
+        // when
+        renderChallengeStatement(this);
+
+        // then
+        (0, _chai.expect)(this.$('.challenge-statement-embed-panel')).to.have.lengthOf(1);
+      });
+
+      (0, _mocha.it)('should not be displayed when the challenge does not have a valid Embed object', function () {
+        // given
+        addChallengeToContext(this, { hasValidEmbedDocument: false });
+
+        // when
+        renderChallengeStatement(this);
+
+        // then
+        (0, _chai.expect)(this.$('.challenge-statement-embed-panel')).to.have.lengthOf(0);
       });
     });
   });
@@ -8946,23 +9059,6 @@ define('pix-live/tests/integration/components/scoring-panel-test', ['chai', 'moc
         (0, _chai.expect)(this.$('.scoring-panel__congrats-beta')).to.have.lengthOf(1);
       });
     });
-
-    (0, _mocha.describe)('Display the BackToHome button', function () {
-
-      (0, _mocha.beforeEach)(function () {
-        this.set('assessment', assessmentWithTrophy);
-        this.render(Ember.HTMLBars.template({
-          "id": "obxMGzIf",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"scoring-panel\",null,[[\"assessment\"],[[20,[\"assessment\"]]]]],false]],\"hasEval\":false}",
-          "meta": {}
-        }));
-      });
-
-      (0, _mocha.it)('should not have a blue border when the user clicks on its', function () {
-        // then
-        (0, _chai.expect)(this.$('.scoring-panel__index-link__element').css('outline')).to.equal('rgb(255, 255, 255) none 0px');
-      });
-    });
   });
 });
 define('pix-live/tests/integration/components/share-profile-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
@@ -10903,6 +10999,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
+    it('integration/components/challenge-statement-embed-panel-test.js', function () {
+      // test passed
+    });
+
     it('integration/components/challenge-statement-test.js', function () {
       // test passed
     });
@@ -11132,6 +11232,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
     });
 
     it('unit/components/challenge-item-qmail-test.js', function () {
+      // test passed
+    });
+
+    it('unit/components/challenge-statement-test.js', function () {
       // test passed
     });
 
@@ -11860,6 +11964,55 @@ define('pix-live/tests/unit/components/challenge-item-qmail-test', ['chai', 'moc
 
         // Then
         (0, _chai.expect)(answerValue).to.equal('#PENDING#');
+      });
+    });
+  });
+});
+define('pix-live/tests/unit/components/challenge-statement-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+  'use strict';
+
+  (0, _mocha.describe)('Unit | Component | challenge statement', function () {
+
+    (0, _emberMocha.setupTest)('component:challenge-statement', {
+      needs: ['service:mailGenerator']
+    });
+
+    (0, _mocha.describe)('[CP] #challengeEmbedDocument', function () {
+      (0, _mocha.it)('should return a JSON object with the challenge embedded document when the challenge has a valid one', function () {
+        // given
+        var component = this.subject({
+          challenge: {
+            hasValidEmbedDocument: true,
+            embedUrl: 'https://challenge-embed.url',
+            embedTitle: 'Challenge embed document title',
+            embedHeight: 300
+          }
+        });
+
+        // when
+        var challengeEmbedDocument = component.get('challengeEmbedDocument');
+
+        // then
+        (0, _chai.expect)(challengeEmbedDocument).to.deep.equal({
+          url: 'https://challenge-embed.url',
+          title: 'Challenge embed document title',
+          height: 300
+        });
+      });
+
+      (0, _mocha.it)('should return "undefined" when the challenge does not have a (valid) embedded document', function () {
+        // given
+        var component = this.subject({
+          challenge: {
+            hasValidEmbedDocument: false
+          }
+        });
+
+        // when
+        var challengeEmbedDocument = component.get('challengeEmbedDocument');
+
+        // then
+        (0, _chai.expect)(challengeEmbedDocument).to.be.undefined;
       });
     });
   });
@@ -14794,6 +14947,66 @@ define('pix-live/tests/unit/models/challenge-test', ['chai', 'mocha', 'ember-moc
           // then
           (0, _chai.expect)(hasMultipleAttachments).to.be.true;
         });
+      });
+    });
+
+    (0, _mocha.describe)('Computed property #hasValidEmbedDocument', function () {
+
+      var embedOptions = void 0;
+
+      beforeEach(function () {
+        embedOptions = {
+          embedUrl: 'http://embed.url',
+          embedTitle: 'Embed title',
+          embedHeight: '600'
+        };
+      });
+
+      (0, _mocha.it)('should be true when embed data (URL, title and height) are defined', function () {
+        // given
+        var challenge = this.subject(embedOptions);
+
+        // when
+        var hasValidEmbedDocument = challenge.get('hasValidEmbedDocument');
+
+        // then
+        (0, _chai.expect)(hasValidEmbedDocument).to.be.true;
+      });
+
+      (0, _mocha.it)('should be false when embed URL is missing', function () {
+        // given
+        delete embedOptions.embedUrl;
+        var challenge = this.subject(embedOptions);
+
+        // when
+        var hasValidEmbedDocument = challenge.get('hasValidEmbedDocument');
+
+        // then
+        (0, _chai.expect)(hasValidEmbedDocument).to.be.false;
+      });
+
+      (0, _mocha.it)('should be false when embed title is missing', function () {
+        // given
+        delete embedOptions.embedTitle;
+        var challenge = this.subject(embedOptions);
+
+        // when
+        var hasValidEmbedDocument = challenge.get('hasValidEmbedDocument');
+
+        // then
+        (0, _chai.expect)(hasValidEmbedDocument).to.be.false;
+      });
+
+      (0, _mocha.it)('should be false when embed height', function () {
+        // given
+        delete embedOptions.embedHeight;
+        var challenge = this.subject(embedOptions);
+
+        // when
+        var hasValidEmbedDocument = challenge.get('hasValidEmbedDocument');
+
+        // then
+        (0, _chai.expect)(hasValidEmbedDocument).to.be.false;
       });
     });
   });
