@@ -15105,7 +15105,7 @@ define('pix-live/tests/unit/models/challenge-test', ['chai', 'mocha', 'ember-moc
 
       beforeEach(function () {
         embedOptions = {
-          embedUrl: 'http://embed.url',
+          embedUrl: 'https://embed.url',
           embedTitle: 'Embed title',
           embedHeight: '600'
         };
@@ -15125,6 +15125,18 @@ define('pix-live/tests/unit/models/challenge-test', ['chai', 'mocha', 'ember-moc
       (0, _mocha.it)('should be false when embed URL is missing', function () {
         // given
         delete embedOptions.embedUrl;
+        var challenge = this.subject(embedOptions);
+
+        // when
+        var hasValidEmbedDocument = challenge.get('hasValidEmbedDocument');
+
+        // then
+        (0, _chai.expect)(hasValidEmbedDocument).to.be.false;
+      });
+
+      (0, _mocha.it)('should be false when embed URL is not secured (HTTPS)', function () {
+        // given
+        embedOptions.embedUrl = 'http://unsecured.url';
         var challenge = this.subject(embedOptions);
 
         // when

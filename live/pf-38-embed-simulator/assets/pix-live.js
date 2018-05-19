@@ -6309,7 +6309,8 @@ define('pix-live/models/challenge', ['exports', 'ember-data'], function (exports
     answer: belongsTo('answer'),
 
     hasValidEmbedDocument: Ember.computed('embedUrl', 'embedTitle', 'embedHeight', function () {
-      return !!this.get('embedUrl') && !!this.get('embedTitle') && !!this.get('embedHeight');
+      var embedUrl = this.get('embedUrl');
+      return !!embedUrl && !!this.get('embedTitle') && !!this.get('embedHeight') && embedUrl.toLowerCase().startsWith('https://');
     }),
     hasAttachment: Ember.computed.notEmpty('attachments'),
     hasSingleAttachment: Ember.computed.equal('attachments.length', 1),
@@ -9348,6 +9349,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"name":"pix-live","version":"1.48.0+f7e0da79"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"name":"pix-live","version":"1.48.0+46af0fac"});
 }
 //# sourceMappingURL=pix-live.map
