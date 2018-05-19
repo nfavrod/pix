@@ -4789,50 +4789,164 @@ define('pix-live/tests/integration/components/challenge-statement-embed-panel-te
   }
 
   (0, _mocha.describe)('Integration | Component | challenge statement embed panel', function () {
+
     (0, _emberMocha.setupComponentTest)('challenge-statement-embed-panel', {
       integration: true
     });
 
-    (0, _mocha.it)('renders', function () {
-      this.render(Ember.HTMLBars.template({
-        "id": "nYiOCpBS",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"challenge-statement-embed-panel\"],false]],\"hasEval\":false}",
-        "meta": {}
-      }));
-      (0, _chai.expect)(this.$()).to.have.length(1);
+    (0, _mocha.describe)('Aknowledgment overlay', function () {
+
+      (0, _mocha.it)('should be displayed when component has just been rendered', function () {
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "nYiOCpBS",
+          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"challenge-statement-embed-panel\"],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+
+        // then
+        (0, _chai.expect)(this.$('.challenge-statement-embed-panel__aknowledgment-overlay')).to.have.lengthOf(1);
+      });
+
+      (0, _mocha.it)('should contain a button to launch the simulator', function () {
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "nYiOCpBS",
+          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"challenge-statement-embed-panel\"],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+
+        // then
+        var $launchSimulatorButton = this.$('.challenge-statement-embed-panel__aknowledgment-overlay .challenge-statement-embed-panel__launch-simulator-button');
+        (0, _chai.expect)($launchSimulatorButton).to.have.lengthOf(1);
+      });
     });
 
-    (0, _mocha.it)('should reload iframe when user clicked on button reload', _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-      var stubReloadIframe;
-      return regeneratorRuntime.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              // given
-              stubReloadIframe = _sinon.default.stub();
+    (0, _mocha.describe)('Launch simulator button', function () {
 
-              this.set('stubReloadIframe', stubReloadIframe);
-              this.render(Ember.HTMLBars.template({
-                "id": "+/OWppeh",
-                "block": "{\"symbols\":[],\"statements\":[[1,[25,\"challenge-statement-embed-panel\",null,[[\"_reloadIframe\"],[[20,[\"stubReloadIframe\"]]]]],false]],\"hasEval\":false}",
-                "meta": {}
-              }));
+      (0, _mocha.it)('should have text "Je lance le simulateur"', function () {
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "nYiOCpBS",
+          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"challenge-statement-embed-panel\"],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
 
-              // when
-              Ember.run(function () {
-                return document.querySelector('.challenge-statement-embed-panel__reload-button').click();
-              });
+        // then
+        var $launchSimulatorButton = this.$('.challenge-statement-embed-panel__aknowledgment-overlay .challenge-statement-embed-panel__launch-simulator-button');
+        (0, _chai.expect)($launchSimulatorButton.text().trim()).to.equal('Je lance le simulateur');
+      });
 
-              // then
-              _sinon.default.assert.calledOnce(stubReloadIframe);
+      (0, _mocha.it)('should close the aknowledgment overlay when clicked', _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                // given
+                this.render(Ember.HTMLBars.template({
+                  "id": "nYiOCpBS",
+                  "block": "{\"symbols\":[],\"statements\":[[1,[18,\"challenge-statement-embed-panel\"],false]],\"hasEval\":false}",
+                  "meta": {}
+                }));
 
-            case 5:
-            case 'end':
-              return _context.stop();
+                // when
+                Ember.run(function () {
+                  return document.querySelector('.challenge-statement-embed-panel__launch-simulator-button').click();
+                });
+
+                // then
+                (0, _chai.expect)(this.$('.challenge-statement-embed-panel__aknowledgment-overlay')).to.have.lengthOf(0);
+
+              case 3:
+              case 'end':
+                return _context.stop();
+            }
           }
-        }
-      }, _callee, this);
-    })));
+        }, _callee, this);
+      })));
+    });
+
+    (0, _mocha.describe)('Reload simulator button', function () {
+
+      (0, _mocha.it)('should have text "Recharger le simulateur"', function () {
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "nYiOCpBS",
+          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"challenge-statement-embed-panel\"],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+
+        // then
+        var $reloadSimulatorButton = this.$('.challenge-statement-embed-panel__reload-button');
+        (0, _chai.expect)($reloadSimulatorButton.text().trim()).to.equal('Recharger le simulateur');
+      });
+
+      (0, _mocha.it)('should reload simulator when user clicked on button reload', _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+        var stubReloadSimulator;
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                // given
+                stubReloadSimulator = _sinon.default.stub();
+
+                this.set('stubReloadSimulator', stubReloadSimulator);
+                this.render(Ember.HTMLBars.template({
+                  "id": "dA/GiK6Q",
+                  "block": "{\"symbols\":[],\"statements\":[[1,[25,\"challenge-statement-embed-panel\",null,[[\"_reloadSimulator\"],[[20,[\"stubReloadSimulator\"]]]]],false]],\"hasEval\":false}",
+                  "meta": {}
+                }));
+
+                // when
+                Ember.run(function () {
+                  return document.querySelector('.challenge-statement-embed-panel__reload-button').click();
+                });
+
+                // then
+                _sinon.default.assert.calledOnce(stubReloadSimulator);
+
+              case 5:
+              case 'end':
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this);
+      })));
+    });
+
+    (0, _mocha.describe)('Blur effect on simulator panel', function () {
+
+      (0, _mocha.it)('should be active when component is first rendered', function () {
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "nYiOCpBS",
+          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"challenge-statement-embed-panel\"],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+
+        // then
+        var $simulator = this.$('.challenge-statement-embed-panel__simulator')[0];
+        (0, _chai.expect)($simulator.classList.contains('blurred')).to.be.true;
+      });
+
+      (0, _mocha.it)('should be removed when simulator was launched', function () {
+        // given
+        this.render(Ember.HTMLBars.template({
+          "id": "nYiOCpBS",
+          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"challenge-statement-embed-panel\"],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+
+        // when
+        Ember.run(function () {
+          return document.querySelector('.challenge-statement-embed-panel__launch-simulator-button').click();
+        });
+
+        // then
+        var $simulator = this.$('.challenge-statement-embed-panel__simulator')[0];
+        (0, _chai.expect)($simulator.classList.contains('blurred')).to.be.false;
+      });
+    });
   });
 });
 define('pix-live/tests/integration/components/challenge-statement-test', ['chai', 'mocha', 'ember-mocha', 'sinon'], function (_chai, _mocha, _emberMocha, _sinon) {

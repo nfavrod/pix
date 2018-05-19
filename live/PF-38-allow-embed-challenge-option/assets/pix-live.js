@@ -597,17 +597,26 @@ define('pix-live/components/challenge-statement-embed-panel', ['exports'], funct
 
     // Actions
     actions: {
-      reloadIframe: function reloadIframe() {
-        this._reloadIframe();
+      launchSimulator: function launchSimulator() {
+        this.toggleProperty('_isSimulatorNotYetLaunched');
+        this._unblurSimulator();
+      },
+      reloadSimulator: function reloadSimulator() {
+        this._reloadSimulator();
       }
     },
 
-    // Methods
+    // Internals
+    _isSimulatorNotYetLaunched: true,
 
-    /* This method is extracted in order to test action binding easily */
-    _reloadIframe: function _reloadIframe() {
-      var $iframe = this.element.getElementsByClassName('challenge-statement-embed-panel__iframe').item(0);
-      $iframe.src = $iframe.src;
+    /* This method is not tested because it would be too difficult (add an observer on a complicated stubbed DOM API element!) */
+    _reloadSimulator: function _reloadSimulator() {
+      var $simulatorIframe = this.element.getElementsByClassName('challenge-statement-embed-panel__iframe').item(0);
+      $simulatorIframe.src = $simulatorIframe.src;
+    },
+    _unblurSimulator: function _unblurSimulator() {
+      var $simulatorPanel = this.element.getElementsByClassName('challenge-statement-embed-panel__simulator').item(0);
+      $simulatorPanel.classList.remove('blurred');
     }
   });
 });
@@ -7960,7 +7969,7 @@ define("pix-live/templates/components/challenge-statement-embed-panel", ["export
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "kzZ3M2tx", "block": "{\"symbols\":[],\"statements\":[[6,\"iframe\"],[9,\"class\",\"challenge-statement-embed-panel__iframe\"],[10,\"src\",[26,[[20,[\"embedDocument\",\"url\"]]]]],[10,\"alt\",[26,[[20,[\"embedDocument\",\"title\"]]]]],[10,\"height\",[26,[[20,[\"embedDocument\",\"height\"]]]]],[7],[0,\"\\n\"],[8],[0,\"\\n\"],[6,\"button\"],[9,\"class\",\"challenge-statement-embed-panel__reload-button\"],[3,\"action\",[[19,0,[]],\"reloadIframe\"]],[7],[0,\"Recharger\"],[8],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/challenge-statement-embed-panel.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "89YZ01Mu", "block": "{\"symbols\":[],\"statements\":[[4,\"if\",[[20,[\"_isSimulatorNotYetLaunched\"]]],null,{\"statements\":[[0,\"  \"],[6,\"div\"],[9,\"class\",\"challenge-statement-embed-panel__aknowledgment-overlay\"],[7],[0,\"\\n    \"],[6,\"button\"],[9,\"class\",\"challenge-statement-embed-panel__launch-simulator-button\"],[3,\"action\",[[19,0,[]],\"launchSimulator\"]],[7],[0,\"Je lance le simulateur\"],[8],[0,\"\\n  \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\"],[6,\"div\"],[9,\"class\",\"challenge-statement-embed-panel__simulator blurred\"],[7],[0,\"\\n  \"],[6,\"iframe\"],[9,\"class\",\"challenge-statement-embed-panel__iframe\"],[10,\"src\",[26,[[20,[\"embedDocument\",\"url\"]]]]],[10,\"alt\",[26,[[20,[\"embedDocument\",\"title\"]]]]],[10,\"height\",[26,[[20,[\"embedDocument\",\"height\"]]]]],[7],[0,\"\\n  \"],[8],[0,\"\\n  \"],[6,\"button\"],[9,\"class\",\"challenge-statement-embed-panel__reload-button\"],[3,\"action\",[[19,0,[]],\"reloadSimulator\"]],[7],[0,\"Recharger le simulateur\"],[8],[0,\"\\n\"],[8],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/challenge-statement-embed-panel.hbs" } });
 });
 define("pix-live/templates/components/challenge-statement", ["exports"], function (exports) {
   "use strict";
@@ -9349,6 +9358,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"name":"pix-live","version":"1.48.0+547a1dc2"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"name":"pix-live","version":"1.48.0+d732e08a"});
 }
 //# sourceMappingURL=pix-live.map
