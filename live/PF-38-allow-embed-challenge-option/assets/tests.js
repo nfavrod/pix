@@ -1625,78 +1625,6 @@ describe('Acceptance | d1 - Valider une épreuve |', function() {
 define("pix-live/tests/acceptance/d1-epreuve-validation-test", [], function () {
   "use strict";
 });
-define('pix-live/tests/acceptance/g1-bandeau-no-internet-no-outils-test', ['mocha', 'chai', 'pix-live/tests/helpers/start-app', 'pix-live/tests/helpers/destroy-app'], function (_mocha, _chai, _startApp, _destroyApp) {
-  'use strict';
-
-  function _asyncToGenerator(fn) {
-    return function () {
-      var gen = fn.apply(this, arguments);
-      return new Promise(function (resolve, reject) {
-        function step(key, arg) {
-          try {
-            var info = gen[key](arg);
-            var value = info.value;
-          } catch (error) {
-            reject(error);
-            return;
-          }
-
-          if (info.done) {
-            resolve(value);
-          } else {
-            return Promise.resolve(value).then(function (value) {
-              step("next", value);
-            }, function (err) {
-              step("throw", err);
-            });
-          }
-        }
-
-        return step("next");
-      });
-    };
-  }
-
-  var CHALLENGE_WITHOUT_INTERNET_NOR_TOOLS_URI = '/assessments/ref_assessment_id/challenges/ref_qcu_challenge_id';
-  var CHALLENGE_ALLOWING_INTERNET_OR_TOOS_URI = '/assessments/ref_assessment_id/challenges/ref_qcm_challenge_id';
-
-  (0, _mocha.describe)('Acceptance | g1 - Afficahge du bandeau indiquant que l\'usage d\'Internet ou d\'outils est interdit | ', function () {
-
-    var application = void 0;
-
-    (0, _mocha.beforeEach)(function () {
-      application = (0, _startApp.default)();
-    });
-
-    (0, _mocha.afterEach)(function () {
-      (0, _destroyApp.default)(application);
-    });
-
-    (0, _mocha.it)('g1.1 le bandeau doit être affiché si l\'usage d\'Internet ou d\'outils est interdit dans le cadre de l\'épreuve', _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-      return regeneratorRuntime.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              _context.next = 2;
-              return visit(CHALLENGE_WITHOUT_INTERNET_NOR_TOOLS_URI);
-
-            case 2:
-              (0, _chai.expect)(Ember.$('.challenge-stay__text').text()).to.contain('Vous devez répondre à cette question sans sortir de cette page !');
-
-            case 3:
-            case 'end':
-              return _context.stop();
-          }
-        }
-      }, _callee, this);
-    })));
-
-    (0, _mocha.it)('g1.2 le bandeau ne doit pas être affiché si l\'usage d\'Internet ou d\'outils est autorisé dans le cadre de l\'épreuve', function () {
-      visit(CHALLENGE_ALLOWING_INTERNET_OR_TOOS_URI);
-      (0, _chai.expect)(Ember.$('.challenge-stay__text')).to.have.lengthOf(0);
-    });
-  });
-});
 define('pix-live/tests/acceptance/h1-timeout-jauge-test', ['mocha', 'chai', 'pix-live/tests/helpers/start-app', 'pix-live/tests/helpers/destroy-app'], function (_mocha, _chai, _startApp, _destroyApp) {
   'use strict';
 
@@ -3429,10 +3357,6 @@ define('pix-live/tests/app.lint-test', [], function () {
     });
 
     it('components/challenge-statement.js', function () {
-      // test passed
-    });
-
-    it('components/challenge-stay.js', function () {
       // test passed
     });
 
@@ -5351,40 +5275,6 @@ define('pix-live/tests/integration/components/challenge-statement-test', ['chai'
         // then
         (0, _chai.expect)(this.$('.challenge-embed-simulator')).to.have.lengthOf(0);
       });
-    });
-  });
-});
-define('pix-live/tests/integration/components/challenge-stay-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
-  'use strict';
-
-  (0, _mocha.describe)('Integration | Component | challenge stay', function () {
-
-    (0, _emberMocha.setupComponentTest)('challenge-stay', {
-      integration: true
-    });
-
-    (0, _mocha.it)('renders', function () {
-      this.render(Ember.HTMLBars.template({
-        "id": "+dJnSZnH",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"challenge-stay\"],false]],\"hasEval\":false}",
-        "meta": {}
-      }));
-      (0, _chai.expect)(this.$()).to.have.lengthOf(1);
-    });
-
-    (0, _mocha.it)('should display a warning icon with an accessible description', function () {
-      // when
-      this.render(Ember.HTMLBars.template({
-        "id": "+dJnSZnH",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"challenge-stay\"],false]],\"hasEval\":false}",
-        "meta": {}
-      }));
-
-      // then
-      var $img = this.$('.challenge-stay__icon-img');
-      (0, _chai.expect)($img).to.have.lengthOf(1);
-      (0, _chai.expect)($img.attr('src')).to.equal('/images/icon-warning.svg');
-      (0, _chai.expect)($img.attr('alt')).to.not.be.empty;
     });
   });
 });
@@ -11119,10 +11009,6 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
-    it('acceptance/g1-bandeau-no-internet-no-outils-test.js', function () {
-      // test passed
-    });
-
     it('acceptance/h1-timeout-jauge-test.js', function () {
       // test passed
     });
@@ -11236,10 +11122,6 @@ define('pix-live/tests/tests.lint-test', [], function () {
     });
 
     it('integration/components/challenge-statement-test.js', function () {
-      // test passed
-    });
-
-    it('integration/components/challenge-stay-test.js', function () {
       // test passed
     });
 
