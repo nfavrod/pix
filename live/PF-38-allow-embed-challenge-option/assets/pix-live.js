@@ -236,12 +236,17 @@ define('pix-live/components/certifications-list-item', ['exports'], function (ex
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
+  var and = Ember.computed.and,
+      not = Ember.computed.not,
+      equal = Ember.computed.equal;
   exports.default = Ember.Component.extend({
     certification: null,
     classNames: ['certifications-list-item'],
-    classNameBindings: ['certification.isPublished:certifications-list-item__published-item:certifications-list-item__unpublished-item'],
+    classNameBindings: ['certification.isPublished:certifications-list-item__published-item:certifications-list-item__unpublished-item', 'shouldDisplayComment:certifications-list-item__has-comment:certifications-list-item__no-comment'],
 
-    isValidated: Ember.computed.equal('certification.status', 'validated')
+    isValidated: equal('certification.status', 'validated'),
+    isNotValidated: not('isValidated'),
+    shouldDisplayComment: and('isNotValidated', 'certification.{isPublished,commentForCandidate}')
   });
 });
 define('pix-live/components/certifications-list', ['exports'], function (exports) {
@@ -6101,10 +6106,11 @@ define('pix-live/mirage/scenarios/default', ['exports'], function (exports) {
     server.create('certification', {
       id: '1',
       date: new Date('2018-02-15T15:15:52.504Z'),
-      status: 'validated',
+      status: 'rejected',
       pixScore: '3789',
       isPublished: true,
-      certificationCenter: 'Université de Paris'
+      certificationCenter: 'Université de Paris',
+      commentForCandidate: 'Ceci est un commentaire jury à destination du candidat.'
     });
 
     server.create('certification', {
@@ -6283,7 +6289,8 @@ define('pix-live/models/certification', ['exports', 'ember-data'], function (exp
     isPublished: attr('boolean'),
     pixScore: attr('number'),
     status: attr('string'),
-    user: belongsTo('user')
+    user: belongsTo('user'),
+    commentForCandidate: attr('string')
   });
 });
 define('pix-live/models/challenge', ['exports', 'ember-data'], function (exports, _emberData) {
@@ -7897,7 +7904,7 @@ define("pix-live/templates/components/certifications-list-item", ["exports"], fu
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "Wmp+KMzQ", "block": "{\"symbols\":[],\"statements\":[[6,\"div\"],[9,\"class\",\"certifications-list-item__cell\"],[7],[0,\"\\n  \"],[1,[25,\"moment-format\",[[20,[\"certification\",\"date\"]],\"DD/MM/YYYY\"],[[\"allow-empty\"],[true]]],false],[0,\"\\n\"],[8],[0,\"\\n\\n\"],[4,\"unless\",[[20,[\"certification\",\"isPublished\"]]],null,{\"statements\":[[0,\"  \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__cell\"],[7],[0,\"\\n    \"],[6,\"img\"],[9,\"src\",\"/images/sablier.svg\"],[9,\"alt\",\"\"],[9,\"class\",\"certifications-list-item__hourglass-img\"],[7],[8],[0,\"\\n    En attente du résultat\\n  \"],[8],[0,\"\\n  \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__cell-pix-score\"],[7],[8],[0,\"\\n\\n\"]],\"parameters\":[]},{\"statements\":[[4,\"unless\",[[20,[\"isValidated\"]]],null,{\"statements\":[[0,\"  \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__cell\"],[7],[0,\"\\n    \"],[6,\"img\"],[9,\"src\",\"/images/icons/icon-croix.svg\"],[9,\"alt\",\"\"],[9,\"class\",\"certifications-list-item__cross-img\"],[7],[8],[0,\"\\n    Certification non obtenue\\n  \"],[8],[0,\"\\n  \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__cell-pix-score\"],[7],[8],[0,\"\\n\\n\"]],\"parameters\":[]},{\"statements\":[[0,\"  \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__cell\"],[7],[0,\"\\n    \"],[6,\"img\"],[9,\"src\",\"/images/icons/icon-check-vert.svg\"],[9,\"alt\",\"\"],[9,\"class\",\"certifications-list-item__green-check-img\"],[7],[8],[0,\"\\n    Certification obtenue\\n  \"],[8],[0,\"\\n  \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__cell-pix-score\"],[7],[0,\"\\n    \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__pix-score\"],[7],[0,\"\\n      \"],[6,\"span\"],[7],[1,[20,[\"certification\",\"pixScore\"]],false],[8],[0,\"\\n    \"],[8],[0,\"\\n  \"],[8],[0,\"\\n\\n\"]],\"parameters\":[]}]],\"parameters\":[]}],[0,\"\\n\"],[6,\"div\"],[9,\"class\",\"certifications-list-item__cell-certification-center\"],[7],[0,\"\\n  \"],[1,[20,[\"certification\",\"certificationCenter\"]],false],[0,\"\\n\"],[8],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/certifications-list-item.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "9lCevkSd", "block": "{\"symbols\":[\"panel\"],\"statements\":[[4,\"cp-panel\",null,null,{\"statements\":[[4,\"component\",[[19,1,[\"toggle\"]]],[[\"class\",\"role\"],[\"certifications-list-item__row-presentation\",\"tab\"]],{\"statements\":[[0,\"    \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__cell\"],[7],[0,\"\\n      \"],[1,[25,\"moment-format\",[[20,[\"certification\",\"date\"]],\"DD/MM/YYYY\"],[[\"allow-empty\"],[true]]],false],[0,\"\\n    \"],[8],[0,\"\\n\\n\"],[4,\"unless\",[[20,[\"certification\",\"isPublished\"]]],null,{\"statements\":[[0,\"      \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__cell-double-width\"],[7],[0,\"\\n        \"],[6,\"img\"],[9,\"src\",\"/images/sablier.svg\"],[9,\"alt\",\"\"],[9,\"class\",\"certifications-list-item__hourglass-img\"],[7],[8],[0,\"\\n        En attente du résultat\\n      \"],[8],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__cell-pix-score\"],[7],[8],[0,\"\\n\\n\"]],\"parameters\":[]},{\"statements\":[[4,\"unless\",[[20,[\"isValidated\"]]],null,{\"statements\":[[0,\"      \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__cell-double-width\"],[7],[0,\"\\n        \"],[6,\"img\"],[9,\"src\",\"/images/icons/icon-croix.svg\"],[9,\"alt\",\"\"],[9,\"class\",\"certifications-list-item__cross-img\"],[7],[8],[0,\"\\n        Certification non obtenue\\n      \"],[8],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__cell-pix-score\"],[7],[8],[0,\"\\n\\n\"]],\"parameters\":[]},{\"statements\":[[0,\"      \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__cell-double-width\"],[7],[0,\"\\n        \"],[6,\"img\"],[9,\"src\",\"/images/icons/icon-check-vert.svg\"],[9,\"alt\",\"\"],[9,\"class\",\"certifications-list-item__green-check-img\"],[7],[8],[0,\"\\n        Certification obtenue\\n      \"],[8],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__cell-pix-score\"],[7],[0,\"\\n        \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__pix-score\"],[7],[0,\"\\n          \"],[6,\"span\"],[7],[1,[20,[\"certification\",\"pixScore\"]],false],[8],[0,\"\\n        \"],[8],[0,\"\\n      \"],[8],[0,\"\\n\\n    \"]],\"parameters\":[]}]],\"parameters\":[]}],[0,\"\\n    \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__cell-certification-center\"],[7],[0,\"\\n      \"],[1,[20,[\"certification\",\"certificationCenter\"]],false],[0,\"\\n    \"],[8],[0,\"\\n\\n    \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__cell-detail\"],[7],[0,\"\\n\"],[4,\"if\",[[20,[\"shouldDisplayComment\"]]],null,{\"statements\":[[0,\"        \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__cell-detail-button\"],[7],[0,\"\\n          DÉTAIL\\n        \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"    \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\"],[4,\"if\",[[20,[\"shouldDisplayComment\"]]],null,{\"statements\":[[4,\"component\",[[19,1,[\"body\"]]],[[\"class\",\"role\"],[\"certifications-list-item__row-comment\",\"tabpanel\"]],{\"statements\":[[0,\"      \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__row-comment-cell\"],[7],[0,\"\\n        \"],[1,[20,[\"certification\",\"commentForCandidate\"]],false],[0,\"\\n      \"],[8],[0,\"\\n\"]],\"parameters\":[]},null]],\"parameters\":[]},null],[0,\"\\n\"]],\"parameters\":[1]},null],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/certifications-list-item.hbs" } });
 });
 define("pix-live/templates/components/certifications-list", ["exports"], function (exports) {
   "use strict";
@@ -7905,7 +7912,7 @@ define("pix-live/templates/components/certifications-list", ["exports"], functio
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "7ApN1JGQ", "block": "{\"symbols\":[\"certification\"],\"statements\":[[6,\"div\"],[9,\"class\",\"certifications-list\"],[7],[0,\"\\n  \"],[6,\"div\"],[9,\"class\",\"certifications-list__table\"],[7],[0,\"\\n    \"],[6,\"div\"],[9,\"class\",\"certifications-list__table-header\"],[7],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"certifications-list__table-header-cell\"],[7],[0,\"DATE\"],[8],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"certifications-list__table-header-cell\"],[7],[0,\"STATUT\"],[8],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"certifications-list__table-header-cell\"],[7],[0,\"SCORE PIX\"],[8],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"certifications-list__table-header-cell-certification-center\"],[7],[0,\"CENTRE DE\\n        CERTIFICATION\"],[8],[0,\"\\n    \"],[8],[0,\"\\n\\n    \"],[6,\"tbody\"],[9,\"class\",\"certifications-list__table-body\"],[7],[0,\"\\n\"],[4,\"each\",[[20,[\"certifications\"]]],null,{\"statements\":[[0,\"      \"],[1,[25,\"certifications-list-item\",null,[[\"certification\"],[[19,1,[]]]]],false],[0,\"\\n\"]],\"parameters\":[1]},null],[0,\"    \"],[8],[0,\"\\n  \"],[8],[0,\"\\n\"],[8],[0,\"\\n\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/certifications-list.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "PpQfpFRk", "block": "{\"symbols\":[\"certification\"],\"statements\":[[6,\"div\"],[9,\"class\",\"certifications-list\"],[7],[0,\"\\n  \"],[6,\"div\"],[9,\"class\",\"certifications-list__table\"],[7],[0,\"\\n    \"],[6,\"div\"],[9,\"class\",\"certifications-list__table-header\"],[7],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"certifications-list__table-header-cell\"],[7],[0,\"DATE\"],[8],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"certifications-list__table-header-cell-double-width\"],[7],[0,\"STATUT\"],[8],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"certifications-list__table-header-cell\"],[7],[0,\"SCORE PIX\"],[8],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"certifications-list__table-header-cell-certification-center\"],[7],[0,\"CENTRE DE\\n        CERTIFICATION\"],[8],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"certifications-list__table-header-cell\"],[7],[8],[0,\"\\n    \"],[8],[0,\"\\n\\n    \"],[6,\"tbody\"],[9,\"class\",\"certifications-list__table-body\"],[9,\"role\",\"tablist\"],[7],[0,\"\\n\"],[4,\"each\",[[20,[\"certifications\"]]],null,{\"statements\":[[0,\"      \"],[1,[25,\"certifications-list-item\",null,[[\"certification\"],[[19,1,[]]]]],false],[0,\"\\n\"]],\"parameters\":[1]},null],[0,\"    \"],[8],[0,\"\\n  \"],[8],[0,\"\\n\"],[8],[0,\"\\n\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/certifications-list.hbs" } });
 });
 define("pix-live/templates/components/challenge-actions", ["exports"], function (exports) {
   "use strict";
@@ -9358,6 +9365,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"name":"pix-live","version":"1.48.0+d732e08a"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"name":"pix-live","version":"1.48.0+646316fc"});
 }
 //# sourceMappingURL=pix-live.map
