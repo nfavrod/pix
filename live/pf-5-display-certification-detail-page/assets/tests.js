@@ -4563,6 +4563,11 @@ define('pix-live/tests/integration/components/certifications-list-item-test', ['
         (0, _chai.expect)(this.$('.certifications-list-item__pix-score')).to.have.lengthOf(1);
         (0, _chai.expect)(this.$('.certifications-list-item__pix-score').text()).to.include('231');
       });
+
+      (0, _mocha.it)('should show link to certification page in last column', function () {
+        (0, _chai.expect)(this.$('.certifications-list-item__cell-detail-link')).to.have.lengthOf(1);
+        (0, _chai.expect)(this.$('.certifications-list-item__cell-detail-link').text()).to.include('RÉSULTATS');
+      });
     });
   });
 });
@@ -17048,7 +17053,7 @@ define('pix-live/tests/unit/routes/user-certifications/get-test', ['sinon', 'cha
 
       // instance route object
       route = this.subject();
-      route.transitionTo = _sinon.default.stub().resolves();
+      route.replaceWith = _sinon.default.stub().resolves();
     });
 
     (0, _mocha.it)('exists', function () {
@@ -17092,7 +17097,7 @@ define('pix-live/tests/unit/routes/user-certifications/get-test', ['sinon', 'cha
 
         // then
         return promise.then(function () {
-          (0, _chai.expect)(route.transitionTo).to.not.have.been.called;
+          (0, _chai.expect)(route.replaceWith).to.not.have.been.called;
         });
       });
 
@@ -17114,8 +17119,8 @@ define('pix-live/tests/unit/routes/user-certifications/get-test', ['sinon', 'cha
 
         // then
         return promise.then(function () {
-          _sinon.default.assert.calledOnce(route.transitionTo);
-          _sinon.default.assert.calledWith(route.transitionTo, '/mes-certifications');
+          _sinon.default.assert.calledOnce(route.replaceWith);
+          _sinon.default.assert.calledWith(route.replaceWith, '/mes-certifications');
         });
       });
 
@@ -17137,8 +17142,8 @@ define('pix-live/tests/unit/routes/user-certifications/get-test', ['sinon', 'cha
 
         // then
         return promise.then(function () {
-          _sinon.default.assert.calledOnce(route.transitionTo);
-          _sinon.default.assert.calledWith(route.transitionTo, '/mes-certifications');
+          _sinon.default.assert.calledOnce(route.replaceWith);
+          _sinon.default.assert.calledWith(route.replaceWith, '/mes-certifications');
         });
       });
     });

@@ -1097,6 +1097,11 @@ button.routable-modal--close:active {
     color: #3d68ff;
     border: none;
     background: none; }
+  .certifications-list-item__cell-detail .certifications-list-item__cell-detail-link {
+    font-size: 13px;
+    color: #3d68ff;
+    border: none;
+    background: none; }
 
 .certifications-list-item__has-comment .cp-is-open .certifications-list-item__cell-detail::before {
   margin-left: 8px;
