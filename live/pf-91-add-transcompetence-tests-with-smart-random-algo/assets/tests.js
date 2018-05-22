@@ -3780,6 +3780,10 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
+    it('routes/campaigns/create-assessment.js', function () {
+      // test passed
+    });
+
     it('routes/certifications/results.js', function () {
       // test passed
     });
