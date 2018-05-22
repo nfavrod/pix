@@ -236,12 +236,17 @@ define('pix-live/components/certifications-list-item', ['exports'], function (ex
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
+  var and = Ember.computed.and,
+      not = Ember.computed.not,
+      equal = Ember.computed.equal;
   exports.default = Ember.Component.extend({
     certification: null,
     classNames: ['certifications-list-item'],
-    classNameBindings: ['certification.isPublished:certifications-list-item__published-item:certifications-list-item__unpublished-item'],
+    classNameBindings: ['certification.isPublished:certifications-list-item__published-item:certifications-list-item__unpublished-item', 'shouldDisplayComment:certifications-list-item__has-comment:certifications-list-item__no-comment'],
 
-    isValidated: Ember.computed.equal('certification.status', 'validated')
+    isValidated: equal('certification.status', 'validated'),
+    isNotValidated: not('isValidated'),
+    shouldDisplayComment: and('isNotValidated', 'certification.{isPublished,commentForCandidate}')
   });
 });
 define('pix-live/components/certifications-list', ['exports'], function (exports) {
@@ -2383,7 +2388,7 @@ define('pix-live/components/share-profile', ['exports'], function (exports) {
           text1: 'Vous vous apprêtez à transmettre une copie de votre profil Pix à l\'organisation :',
           text2: 'En cliquant sur le bouton « Envoyer », vous transmettrez à l\'organisation :',
           text3: 'votre ID-Pix et le code campagne',
-          text4: 'L\'organisation ne recevra les évolutions futures de votre profil que si vous le partagez à nouveau.'
+          text4: 'L\'organisation ne recevra les évolutions futures de votre profil que si vous l\'envoyez à nouveau.'
         };
       } else if (this.get('_organization.type') === 'SUP') {
         return {
@@ -2391,7 +2396,7 @@ define('pix-live/components/share-profile', ['exports'], function (exports) {
           text1: 'Vous vous apprêtez à transmettre une copie de votre profil Pix à l\'établissement :',
           text2: 'En cliquant sur le bouton « Envoyer », vous transmettrez à l\'établissement :',
           text3: 'votre numéro d\'étudiant et le code campagne',
-          text4: 'L\'établissement ne recevra les évolutions futures de votre profil que si vous le partagez à nouveau.'
+          text4: 'L\'établissement ne recevra les évolutions futures de votre profil que si vous l\'envoyez à nouveau.'
         };
       } else {
         return {
@@ -2399,7 +2404,7 @@ define('pix-live/components/share-profile', ['exports'], function (exports) {
           text1: 'Vous vous apprêtez à transmettre une copie de votre profil Pix à l\'établissement :',
           text2: 'En cliquant sur le bouton « Envoyer », vous transmettrez à l\'établissement :',
           text3: 'le code campagne',
-          text4: 'L\'établissement ne recevra les évolutions futures de votre profil que si vous le partagez à nouveau.'
+          text4: 'L\'établissement ne recevra les évolutions futures de votre profil que si vous l\'envoyez à nouveau.'
         };
       }
     }),
@@ -6047,10 +6052,11 @@ define('pix-live/mirage/scenarios/default', ['exports'], function (exports) {
     server.create('certification', {
       id: '1',
       date: new Date('2018-02-15T15:15:52.504Z'),
-      status: 'validated',
+      status: 'rejected',
       pixScore: '3789',
       isPublished: true,
-      certificationCenter: 'Université de Paris'
+      certificationCenter: 'Université de Paris',
+      commentForCandidate: 'Ceci est un commentaire jury à destination du candidat.'
     });
 
     server.create('certification', {
@@ -6229,7 +6235,8 @@ define('pix-live/models/certification', ['exports', 'ember-data'], function (exp
     isPublished: attr('boolean'),
     pixScore: attr('number'),
     status: attr('string'),
-    user: belongsTo('user')
+    user: belongsTo('user'),
+    commentForCandidate: attr('string')
   });
 });
 define('pix-live/models/challenge', ['exports', 'ember-data'], function (exports, _emberData) {
@@ -6509,6 +6516,7 @@ define('pix-live/router', ['exports', 'pix-live/config/environment'], function (
       this.route('results', { path: '/:certification_number/results' });
     });
     this.route('user-certifications', { path: 'mes-certifications' });
+    this.route('campaigns.create-assessment', { path: '/campagnes/codecampagnepix' });
   });
 
   exports.default = Router;
@@ -6749,6 +6757,35 @@ define('pix-live/routes/board', ['exports', 'ember-simple-auth/mixins/authentica
         });
       }).catch(function (_) {
         _this.transitionTo('index');
+      });
+    }
+  });
+});
+define('pix-live/routes/campaigns/create-assessment', ['exports', 'pix-live/routes/base-route', 'ember-simple-auth/mixins/authenticated-route-mixin'], function (exports, _baseRoute, _authenticatedRouteMixin) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = _baseRoute.default.extend(_authenticatedRouteMixin.default, {
+    authenticationRoute: '/connexion',
+    session: Ember.inject.service(),
+
+    redirect: function redirect() {
+      var _this = this;
+
+      var store = this.get('store');
+
+      var assessment = void 0;
+
+      return store.createRecord('assessment', { type: 'SMART_PLACEMENT' }).save().then(function (createdAssessment) {
+        return assessment = createdAssessment;
+      }).then(function () {
+        return store.queryRecord('challenge', { assessmentId: assessment.get('id') });
+      }).then(function (challenge) {
+        return _this.replaceWith('assessments.challenge', { assessment: assessment, challenge: challenge });
+      }).catch(function () {
+        _this.replaceWith('logout');
       });
     }
   });
@@ -7743,6 +7780,22 @@ define("pix-live/templates/board", ["exports"], function (exports) {
   });
   exports.default = Ember.HTMLBars.template({ "id": "lU4pi4XR", "block": "{\"symbols\":[],\"statements\":[[6,\"div\"],[9,\"class\",\"board-page\"],[7],[0,\"\\n\\n  \"],[1,[25,\"navbar-header\",null,[[\"class\"],[\"navbar-header--white\"]]],false],[0,\"\\n\\n  \"],[6,\"div\"],[9,\"class\",\"board-page__header\"],[7],[0,\"\\n    \"],[6,\"div\"],[9,\"class\",\"board-page__header-organisation\"],[7],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"board-page__header-organisation__text\"],[7],[0,\"Votre Organisation\"],[8],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"board-page__header-organisation__name\"],[7],[1,[20,[\"model\",\"organization\",\"name\"]],false],[8],[0,\"\\n    \"],[8],[0,\"\\n    \"],[6,\"div\"],[9,\"class\",\"board-page__header-code\"],[7],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"board-page__header-code__title\"],[7],[0,\"Code Organisation\"],[8],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"board-page__header-code__text\"],[7],[1,[20,[\"model\",\"organization\",\"code\"]],false],[8],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"board-page__header-code__comment\"],[7],[0,\"Communiquez ce code à vos élèves, étudiants ou collaborateurs et ils\\n        pourront vous envoyer leurs profils Pix.\\n      \"],[8],[0,\"\\n    \"],[8],[0,\"\\n  \"],[8],[0,\"\\n\\n  \"],[6,\"div\"],[9,\"class\",\"board-page__profiles-title\"],[7],[0,\"Profils envoyés\\n    \"],[6,\"a\"],[9,\"class\",\"profiles-title__export-csv\"],[10,\"href\",[26,[[20,[\"model\",\"organizationSnapshotsExportUrl\"]]]]],[9,\"target\",\"_blank\"],[9,\"download\",\"\"],[7],[0,\"\\n      Exporter (.csv)\\n      \"],[6,\"img\"],[9,\"class\",\"profiles-title__export-csv-icon\"],[9,\"src\",\"/images/icons/icon-export.svg\"],[9,\"alt\",\"Exporter les profils partagés\"],[9,\"width\",\"20\"],[9,\"height\",\"20\"],[7],[8],[0,\"\\n    \"],[8],[0,\"\\n  \"],[8],[0,\"\\n\\n  \"],[1,[25,\"snapshot-list\",null,[[\"snapshots\"],[[20,[\"model\",\"snapshots\"]]]]],false],[0,\"\\n\\n  \"],[1,[18,\"app-footer\"],false],[0,\"\\n\\n\"],[8],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/board.hbs" } });
 });
+define("pix-live/templates/campaigns/create-assessment-loading", ["exports"], function (exports) {
+  "use strict";
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = Ember.HTMLBars.template({ "id": "SSBOdPpe", "block": "{\"symbols\":[],\"statements\":[[6,\"div\"],[9,\"class\",\"app-loader\"],[7],[0,\"\\n  \"],[6,\"p\"],[9,\"class\",\"app-loader__image\"],[7],[6,\"img\"],[9,\"src\",\"/images/interwind.gif\"],[7],[8],[8],[0,\"\\n  \"],[6,\"p\"],[9,\"class\",\"app-loader__text\"],[7],[0,\"\\n    Votre campagne est en cours de préparation.\\n  \"],[8],[0,\"\\n\"],[8],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/campaigns/create-assessment-loading.hbs" } });
+});
+define("pix-live/templates/campaigns/create-assessment", ["exports"], function (exports) {
+  "use strict";
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = Ember.HTMLBars.template({ "id": "1OOcXk8F", "block": "{\"symbols\":[],\"statements\":[[6,\"div\"],[9,\"class\",\"app-loader\"],[7],[0,\"\\n  \"],[6,\"p\"],[9,\"class\",\"app-loader__image\"],[7],[6,\"img\"],[9,\"src\",\"/images/interwind.gif\"],[7],[8],[8],[0,\"\\n  \"],[6,\"p\"],[9,\"class\",\"app-loader__text\"],[7],[0,\"\\n    Votre campagne est en cours de préparation.\\n  \"],[8],[0,\"\\n\"],[8],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/campaigns/create-assessment.hbs" } });
+});
 define("pix-live/templates/certifications/results", ["exports"], function (exports) {
   "use strict";
 
@@ -7837,7 +7890,7 @@ define("pix-live/templates/components/certifications-list-item", ["exports"], fu
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "Wmp+KMzQ", "block": "{\"symbols\":[],\"statements\":[[6,\"div\"],[9,\"class\",\"certifications-list-item__cell\"],[7],[0,\"\\n  \"],[1,[25,\"moment-format\",[[20,[\"certification\",\"date\"]],\"DD/MM/YYYY\"],[[\"allow-empty\"],[true]]],false],[0,\"\\n\"],[8],[0,\"\\n\\n\"],[4,\"unless\",[[20,[\"certification\",\"isPublished\"]]],null,{\"statements\":[[0,\"  \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__cell\"],[7],[0,\"\\n    \"],[6,\"img\"],[9,\"src\",\"/images/sablier.svg\"],[9,\"alt\",\"\"],[9,\"class\",\"certifications-list-item__hourglass-img\"],[7],[8],[0,\"\\n    En attente du résultat\\n  \"],[8],[0,\"\\n  \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__cell-pix-score\"],[7],[8],[0,\"\\n\\n\"]],\"parameters\":[]},{\"statements\":[[4,\"unless\",[[20,[\"isValidated\"]]],null,{\"statements\":[[0,\"  \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__cell\"],[7],[0,\"\\n    \"],[6,\"img\"],[9,\"src\",\"/images/icons/icon-croix.svg\"],[9,\"alt\",\"\"],[9,\"class\",\"certifications-list-item__cross-img\"],[7],[8],[0,\"\\n    Certification non obtenue\\n  \"],[8],[0,\"\\n  \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__cell-pix-score\"],[7],[8],[0,\"\\n\\n\"]],\"parameters\":[]},{\"statements\":[[0,\"  \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__cell\"],[7],[0,\"\\n    \"],[6,\"img\"],[9,\"src\",\"/images/icons/icon-check-vert.svg\"],[9,\"alt\",\"\"],[9,\"class\",\"certifications-list-item__green-check-img\"],[7],[8],[0,\"\\n    Certification obtenue\\n  \"],[8],[0,\"\\n  \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__cell-pix-score\"],[7],[0,\"\\n    \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__pix-score\"],[7],[0,\"\\n      \"],[6,\"span\"],[7],[1,[20,[\"certification\",\"pixScore\"]],false],[8],[0,\"\\n    \"],[8],[0,\"\\n  \"],[8],[0,\"\\n\\n\"]],\"parameters\":[]}]],\"parameters\":[]}],[0,\"\\n\"],[6,\"div\"],[9,\"class\",\"certifications-list-item__cell-certification-center\"],[7],[0,\"\\n  \"],[1,[20,[\"certification\",\"certificationCenter\"]],false],[0,\"\\n\"],[8],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/certifications-list-item.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "9lCevkSd", "block": "{\"symbols\":[\"panel\"],\"statements\":[[4,\"cp-panel\",null,null,{\"statements\":[[4,\"component\",[[19,1,[\"toggle\"]]],[[\"class\",\"role\"],[\"certifications-list-item__row-presentation\",\"tab\"]],{\"statements\":[[0,\"    \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__cell\"],[7],[0,\"\\n      \"],[1,[25,\"moment-format\",[[20,[\"certification\",\"date\"]],\"DD/MM/YYYY\"],[[\"allow-empty\"],[true]]],false],[0,\"\\n    \"],[8],[0,\"\\n\\n\"],[4,\"unless\",[[20,[\"certification\",\"isPublished\"]]],null,{\"statements\":[[0,\"      \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__cell-double-width\"],[7],[0,\"\\n        \"],[6,\"img\"],[9,\"src\",\"/images/sablier.svg\"],[9,\"alt\",\"\"],[9,\"class\",\"certifications-list-item__hourglass-img\"],[7],[8],[0,\"\\n        En attente du résultat\\n      \"],[8],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__cell-pix-score\"],[7],[8],[0,\"\\n\\n\"]],\"parameters\":[]},{\"statements\":[[4,\"unless\",[[20,[\"isValidated\"]]],null,{\"statements\":[[0,\"      \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__cell-double-width\"],[7],[0,\"\\n        \"],[6,\"img\"],[9,\"src\",\"/images/icons/icon-croix.svg\"],[9,\"alt\",\"\"],[9,\"class\",\"certifications-list-item__cross-img\"],[7],[8],[0,\"\\n        Certification non obtenue\\n      \"],[8],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__cell-pix-score\"],[7],[8],[0,\"\\n\\n\"]],\"parameters\":[]},{\"statements\":[[0,\"      \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__cell-double-width\"],[7],[0,\"\\n        \"],[6,\"img\"],[9,\"src\",\"/images/icons/icon-check-vert.svg\"],[9,\"alt\",\"\"],[9,\"class\",\"certifications-list-item__green-check-img\"],[7],[8],[0,\"\\n        Certification obtenue\\n      \"],[8],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__cell-pix-score\"],[7],[0,\"\\n        \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__pix-score\"],[7],[0,\"\\n          \"],[6,\"span\"],[7],[1,[20,[\"certification\",\"pixScore\"]],false],[8],[0,\"\\n        \"],[8],[0,\"\\n      \"],[8],[0,\"\\n\\n    \"]],\"parameters\":[]}]],\"parameters\":[]}],[0,\"\\n    \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__cell-certification-center\"],[7],[0,\"\\n      \"],[1,[20,[\"certification\",\"certificationCenter\"]],false],[0,\"\\n    \"],[8],[0,\"\\n\\n    \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__cell-detail\"],[7],[0,\"\\n\"],[4,\"if\",[[20,[\"shouldDisplayComment\"]]],null,{\"statements\":[[0,\"        \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__cell-detail-button\"],[7],[0,\"\\n          DÉTAIL\\n        \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"    \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\"],[4,\"if\",[[20,[\"shouldDisplayComment\"]]],null,{\"statements\":[[4,\"component\",[[19,1,[\"body\"]]],[[\"class\",\"role\"],[\"certifications-list-item__row-comment\",\"tabpanel\"]],{\"statements\":[[0,\"      \"],[6,\"div\"],[9,\"class\",\"certifications-list-item__row-comment-cell\"],[7],[0,\"\\n        \"],[1,[20,[\"certification\",\"commentForCandidate\"]],false],[0,\"\\n      \"],[8],[0,\"\\n\"]],\"parameters\":[]},null]],\"parameters\":[]},null],[0,\"\\n\"]],\"parameters\":[1]},null],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/certifications-list-item.hbs" } });
 });
 define("pix-live/templates/components/certifications-list", ["exports"], function (exports) {
   "use strict";
@@ -7845,7 +7898,7 @@ define("pix-live/templates/components/certifications-list", ["exports"], functio
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "7ApN1JGQ", "block": "{\"symbols\":[\"certification\"],\"statements\":[[6,\"div\"],[9,\"class\",\"certifications-list\"],[7],[0,\"\\n  \"],[6,\"div\"],[9,\"class\",\"certifications-list__table\"],[7],[0,\"\\n    \"],[6,\"div\"],[9,\"class\",\"certifications-list__table-header\"],[7],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"certifications-list__table-header-cell\"],[7],[0,\"DATE\"],[8],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"certifications-list__table-header-cell\"],[7],[0,\"STATUT\"],[8],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"certifications-list__table-header-cell\"],[7],[0,\"SCORE PIX\"],[8],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"certifications-list__table-header-cell-certification-center\"],[7],[0,\"CENTRE DE\\n        CERTIFICATION\"],[8],[0,\"\\n    \"],[8],[0,\"\\n\\n    \"],[6,\"tbody\"],[9,\"class\",\"certifications-list__table-body\"],[7],[0,\"\\n\"],[4,\"each\",[[20,[\"certifications\"]]],null,{\"statements\":[[0,\"      \"],[1,[25,\"certifications-list-item\",null,[[\"certification\"],[[19,1,[]]]]],false],[0,\"\\n\"]],\"parameters\":[1]},null],[0,\"    \"],[8],[0,\"\\n  \"],[8],[0,\"\\n\"],[8],[0,\"\\n\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/certifications-list.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "PpQfpFRk", "block": "{\"symbols\":[\"certification\"],\"statements\":[[6,\"div\"],[9,\"class\",\"certifications-list\"],[7],[0,\"\\n  \"],[6,\"div\"],[9,\"class\",\"certifications-list__table\"],[7],[0,\"\\n    \"],[6,\"div\"],[9,\"class\",\"certifications-list__table-header\"],[7],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"certifications-list__table-header-cell\"],[7],[0,\"DATE\"],[8],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"certifications-list__table-header-cell-double-width\"],[7],[0,\"STATUT\"],[8],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"certifications-list__table-header-cell\"],[7],[0,\"SCORE PIX\"],[8],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"certifications-list__table-header-cell-certification-center\"],[7],[0,\"CENTRE DE\\n        CERTIFICATION\"],[8],[0,\"\\n      \"],[6,\"div\"],[9,\"class\",\"certifications-list__table-header-cell\"],[7],[8],[0,\"\\n    \"],[8],[0,\"\\n\\n    \"],[6,\"tbody\"],[9,\"class\",\"certifications-list__table-body\"],[9,\"role\",\"tablist\"],[7],[0,\"\\n\"],[4,\"each\",[[20,[\"certifications\"]]],null,{\"statements\":[[0,\"      \"],[1,[25,\"certifications-list-item\",null,[[\"certification\"],[[19,1,[]]]]],false],[0,\"\\n\"]],\"parameters\":[1]},null],[0,\"    \"],[8],[0,\"\\n  \"],[8],[0,\"\\n\"],[8],[0,\"\\n\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/certifications-list.hbs" } });
 });
 define("pix-live/templates/components/challenge-actions", ["exports"], function (exports) {
   "use strict";
@@ -8277,7 +8330,7 @@ define("pix-live/templates/components/share-profile", ["exports"], function (exp
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "oPRTbF60", "block": "{\"symbols\":[\"&default\"],\"statements\":[[6,\"button\"],[9,\"class\",\"share-profile__share-button\"],[3,\"action\",[[19,0,[]],\"openModal\"]],[7],[0,\"\\n  Envoyer \"],[6,\"span\"],[9,\"class\",\"sr-only\"],[7],[0,\"mon profil\"],[8],[0,\"\\n  \"],[6,\"img\"],[9,\"class\",\"share-profile__share-button-image\"],[9,\"src\",\"/images/icon-partager.svg\"],[9,\"alt\",\"\"],[7],[8],[0,\"\\n\"],[8],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"_showingModal\"]]],null,{\"statements\":[[4,\"pix-modale\",null,[[\"containerClass\",\"onClose\"],[\"share-profile__modal\",\"closeModal\"]],{\"statements\":[[0,\"\\n    \"],[6,\"div\"],[9,\"class\",\"pix-modal__container\"],[7],[0,\"\\n\\n      \"],[6,\"a\"],[9,\"href\",\"#\"],[9,\"class\",\"pix-modal__close-link\"],[3,\"action\",[[19,0,[]],\"closeModal\"]],[7],[0,\"Fermer\\n        \"],[6,\"img\"],[9,\"src\",\"/images/comparison-window/icon-close-modal.svg\"],[9,\"alt\",\"Fermer la fenêtre modale\"],[9,\"width\",\"24\"],[9,\"height\",\"24\"],[7],[8],[0,\"\\n      \"],[8],[0,\"\\n\\n      \"],[6,\"h1\"],[7],[0,\"Envoi de votre profil\"],[8],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"stepOrganizationCodeEntry\"]]],null,{\"statements\":[[0,\"\\n        \"],[6,\"section\"],[9,\"class\",\"pix-modal__body share-profile__section share-profile__section--organization-code-entry\"],[7],[0,\"\\n          \"],[6,\"div\"],[9,\"class\",\"share-profile__row\"],[7],[0,\"\\n            \"],[6,\"p\"],[7],[0,\"Veuillez saisir le code correspondant à votre organisation (collège, lycée, université, école, entreprise).\"],[8],[0,\"\\n\\n            \"],[1,[25,\"input\",null,[[\"class\",\"id\",\"placeholder\",\"focus-in\",\"focus-out\",\"value\",\"enter\"],[\"pix-modal__input share-profile__organization-code-input\",\"code\",[20,[\"_placeholder\"]],\"focusInOrganizationCodeInput\",\"focusOutOrganizationCodeInput\",[20,[\"_code\"]],\"findOrganizationAndGoToSharingConfirmationView\"]]],false],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"_organizationNotFound\"]]],null,{\"statements\":[[0,\"              \"],[6,\"p\"],[9,\"class\",\"share-profile__form-error\"],[7],[0,\"Ce code ne correspond à aucune organisation.\"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"          \"],[8],[0,\"\\n\\n          \"],[6,\"div\"],[9,\"class\",\"share-profile__share-modal-buttons\"],[7],[0,\"\\n            \"],[6,\"button\"],[9,\"class\",\"pix-modal__button pix-modal__button--primary share-profile__continue-button\"],[3,\"action\",[[19,0,[]],\"findOrganizationAndGoToSharingConfirmationView\"]],[7],[0,\"Continuer\"],[8],[0,\"\\n            \"],[6,\"button\"],[9,\"class\",\"pix-modal__button pix-modal__button--secondary share-profile__cancel-button\"],[3,\"action\",[[19,0,[]],\"closeModal\"]],[7],[0,\"Annuler\"],[8],[0,\"\\n          \"],[8],[0,\"\\n\\n\\n        \"],[8],[0,\"\\n\\n\"]],\"parameters\":[]},{\"statements\":[[4,\"if\",[[20,[\"stepProfileSharingConfirmation\"]]],null,{\"statements\":[[0,\"\\n        \"],[6,\"section\"],[9,\"class\",\"pix-modal__body share-profile__section share-profile__section--sharing-confirmation\"],[7],[0,\"\\n          \"],[6,\"div\"],[9,\"class\",\"share-profile__row share-profile__row--organization-name\"],[7],[0,\"\\n            \"],[6,\"p\"],[7],[1,[20,[\"organizationLabels\",\"text1\"]],false],[8],[0,\"\\n            \"],[6,\"p\"],[9,\"class\",\"share-profile__organization-name\"],[7],[1,[20,[\"_organization\",\"name\"]],false],[8],[0,\"\\n          \"],[8],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"isOrganizationHasTypeSupOrPro\"]]],null,{\"statements\":[[0,\"            \"],[6,\"div\"],[9,\"class\",\"share-profile__row share-profile__row--student-code\"],[7],[0,\"\\n              \"],[6,\"p\"],[7],[1,[20,[\"organizationLabels\",\"personalCode\"]],false],[8],[0,\"\\n              \"],[1,[25,\"input\",null,[[\"class\",\"value\"],[\"pix-modal__input share-profile__student-code-input\",[20,[\"_studentCode\"]]]]],false],[0,\"\\n            \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n          \"],[6,\"div\"],[9,\"class\",\"share-profile__row share-profile__row--campaign-code\"],[7],[0,\"\\n            \"],[6,\"p\"],[7],[0,\"Précisez le code campagne s'il vous a été fourni :\"],[8],[0,\"\\n            \"],[1,[25,\"input\",null,[[\"class\",\"value\"],[\"pix-modal__input share-profile__campaign-code-input\",[20,[\"_campaignCode\"]]]]],false],[0,\"\\n          \"],[8],[0,\"\\n\\n          \"],[6,\"div\"],[9,\"class\",\"share-profile__row share-profile__row--disclaimer\"],[7],[0,\"\\n            \"],[6,\"p\"],[7],[1,[20,[\"organizationLabels\",\"text2\"]],false],[8],[0,\"\\n            \"],[6,\"ul\"],[9,\"class\",\"pix-modal__list\"],[7],[0,\"\\n              \"],[6,\"li\"],[9,\"class\",\"pix-modal__list-item\"],[7],[0,\"› votre nom et prénom\"],[8],[0,\"\\n              \"],[6,\"li\"],[9,\"class\",\"pix-modal__list-item\"],[7],[0,\"› l'état actuel de votre profil\"],[8],[0,\"\\n              \"],[6,\"li\"],[9,\"class\",\"pix-modal__list-item\"],[7],[0,\"› \"],[1,[20,[\"organizationLabels\",\"text3\"]],false],[8],[0,\"\\n            \"],[8],[0,\"\\n            \"],[6,\"p\"],[7],[1,[20,[\"organizationLabels\",\"text4\"]],false],[8],[0,\"\\n          \"],[8],[0,\"\\n\\n          \"],[6,\"div\"],[9,\"class\",\"share-profile__share-modal-buttons\"],[7],[0,\"\\n            \"],[6,\"button\"],[9,\"class\",\"pix-modal__button pix-modal__button--primary share-profile__confirm-button\"],[3,\"action\",[[19,0,[]],\"shareSnapshotAndGoToSuccessNotificationView\"]],[7],[0,\"Envoyer\"],[8],[0,\"\\n            \"],[6,\"button\"],[9,\"class\",\"pix-modal__button pix-modal__button--secondary share-profile__cancel-button\"],[3,\"action\",[[19,0,[]],\"cancelSharingAndGoBackToOrganizationCodeEntryView\"]],[7],[0,\"Annuler\"],[8],[0,\"\\n          \"],[8],[0,\"\\n\\n        \"],[8],[0,\"\\n\\n\"]],\"parameters\":[]},{\"statements\":[[0,\"\\n        \"],[6,\"section\"],[9,\"class\",\"pix-modal__body share-profile__section share-profile__section--success-notification\"],[7],[0,\"\\n          \"],[6,\"div\"],[9,\"class\",\"share-profile__row\"],[7],[0,\"\\n            \"],[6,\"p\"],[9,\"class\",\"share-profile__statement\"],[7],[0,\"Votre profil a été envoyé avec succès.\"],[8],[0,\"\\n          \"],[8],[0,\"\\n          \"],[6,\"button\"],[9,\"class\",\"pix-modal__button pix-modal__button--primary share-profile__close-button\"],[3,\"action\",[[19,0,[]],\"closeModal\"]],[7],[0,\"Fermer\"],[8],[0,\"\\n        \"],[8],[0,\"\\n\\n      \"]],\"parameters\":[]}]],\"parameters\":[]}],[0,\"\\n    \"],[8],[0,\"\\n\\n\"]],\"parameters\":[]},null]],\"parameters\":[]},null],[0,\"\\n\\n\"],[11,1],[0,\"\\n\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/share-profile.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "KBOgxgFg", "block": "{\"symbols\":[\"&default\"],\"statements\":[[6,\"button\"],[9,\"class\",\"share-profile__share-button\"],[3,\"action\",[[19,0,[]],\"openModal\"]],[7],[0,\"\\n  Envoyer \"],[6,\"span\"],[9,\"class\",\"sr-only\"],[7],[0,\"mon profil\"],[8],[0,\"\\n  \"],[6,\"img\"],[9,\"class\",\"share-profile__share-button-image\"],[9,\"src\",\"/images/icon-partager.svg\"],[9,\"alt\",\"\"],[7],[8],[0,\"\\n\"],[8],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"_showingModal\"]]],null,{\"statements\":[[4,\"pix-modale\",null,[[\"containerClass\",\"onClose\"],[\"share-profile__modal\",\"closeModal\"]],{\"statements\":[[0,\"\\n    \"],[6,\"div\"],[9,\"class\",\"pix-modal__container\"],[7],[0,\"\\n\\n      \"],[6,\"a\"],[9,\"href\",\"#\"],[9,\"class\",\"pix-modal__close-link\"],[3,\"action\",[[19,0,[]],\"closeModal\"]],[7],[0,\"Fermer\\n        \"],[6,\"img\"],[9,\"src\",\"/images/comparison-window/icon-close-modal.svg\"],[9,\"alt\",\"Fermer la fenêtre modale\"],[9,\"width\",\"24\"],[9,\"height\",\"24\"],[7],[8],[0,\"\\n      \"],[8],[0,\"\\n\\n      \"],[6,\"h1\"],[7],[0,\"Envoi de votre profil\"],[8],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"stepOrganizationCodeEntry\"]]],null,{\"statements\":[[0,\"\\n        \"],[6,\"section\"],[9,\"class\",\"pix-modal__body share-profile__section share-profile__section--organization-code-entry\"],[7],[0,\"\\n          \"],[6,\"div\"],[9,\"class\",\"share-profile__row\"],[7],[0,\"\\n            \"],[6,\"p\"],[7],[0,\"Veuillez saisir le code correspondant à votre organisation (collège, lycée, université, école, entreprise).\"],[8],[0,\"\\n\\n            \"],[1,[25,\"input\",null,[[\"class\",\"id\",\"placeholder\",\"focus-in\",\"focus-out\",\"value\",\"enter\"],[\"pix-modal__input share-profile__organization-code-input\",\"code\",[20,[\"_placeholder\"]],\"focusInOrganizationCodeInput\",\"focusOutOrganizationCodeInput\",[20,[\"_code\"]],\"findOrganizationAndGoToSharingConfirmationView\"]]],false],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"_organizationNotFound\"]]],null,{\"statements\":[[0,\"              \"],[6,\"p\"],[9,\"class\",\"share-profile__form-error\"],[7],[0,\"Ce code ne correspond à aucune organisation.\"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"          \"],[8],[0,\"\\n\\n          \"],[6,\"div\"],[9,\"class\",\"share-profile__share-modal-buttons\"],[7],[0,\"\\n            \"],[6,\"button\"],[9,\"class\",\"pix-modal__button pix-modal__button--primary share-profile__continue-button\"],[3,\"action\",[[19,0,[]],\"findOrganizationAndGoToSharingConfirmationView\"]],[7],[0,\"Continuer\"],[8],[0,\"\\n            \"],[6,\"button\"],[9,\"class\",\"pix-modal__button pix-modal__button--secondary share-profile__cancel-button\"],[3,\"action\",[[19,0,[]],\"closeModal\"]],[7],[0,\"Annuler\"],[8],[0,\"\\n          \"],[8],[0,\"\\n\\n\\n        \"],[8],[0,\"\\n\\n\"]],\"parameters\":[]},{\"statements\":[[4,\"if\",[[20,[\"stepProfileSharingConfirmation\"]]],null,{\"statements\":[[0,\"\\n        \"],[6,\"section\"],[9,\"class\",\"pix-modal__body share-profile__section share-profile__section--sharing-confirmation\"],[7],[0,\"\\n          \"],[6,\"div\"],[9,\"class\",\"share-profile__row share-profile__row--organization-name\"],[7],[0,\"\\n            \"],[6,\"p\"],[7],[1,[20,[\"organizationLabels\",\"text1\"]],false],[8],[0,\"\\n            \"],[6,\"p\"],[9,\"class\",\"share-profile__organization-name\"],[7],[1,[20,[\"_organization\",\"name\"]],false],[8],[0,\"\\n          \"],[8],[0,\"\\n\\n\"],[4,\"if\",[[20,[\"isOrganizationHasTypeSupOrPro\"]]],null,{\"statements\":[[0,\"            \"],[6,\"div\"],[9,\"class\",\"share-profile__row share-profile__row--student-code\"],[7],[0,\"\\n              \"],[6,\"p\"],[7],[1,[20,[\"organizationLabels\",\"personalCode\"]],false],[8],[0,\"\\n              \"],[1,[25,\"input\",null,[[\"class\",\"value\",\"maxlength\"],[\"pix-modal__input share-profile__student-code-input\",[20,[\"_studentCode\"]],255]]],false],[0,\"\\n            \"],[8],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n          \"],[6,\"div\"],[9,\"class\",\"share-profile__row share-profile__row--campaign-code\"],[7],[0,\"\\n            \"],[6,\"p\"],[7],[0,\"Précisez le code campagne s'il vous a été fourni :\"],[8],[0,\"\\n            \"],[1,[25,\"input\",null,[[\"class\",\"value\",\"maxlength\"],[\"pix-modal__input share-profile__campaign-code-input\",[20,[\"_campaignCode\"]],255]]],false],[0,\"\\n          \"],[8],[0,\"\\n\\n          \"],[6,\"div\"],[9,\"class\",\"share-profile__row share-profile__row--disclaimer\"],[7],[0,\"\\n            \"],[6,\"p\"],[7],[1,[20,[\"organizationLabels\",\"text2\"]],false],[8],[0,\"\\n            \"],[6,\"ul\"],[9,\"class\",\"pix-modal__list\"],[7],[0,\"\\n              \"],[6,\"li\"],[9,\"class\",\"pix-modal__list-item\"],[7],[0,\"› votre nom et prénom\"],[8],[0,\"\\n              \"],[6,\"li\"],[9,\"class\",\"pix-modal__list-item\"],[7],[0,\"› l'état actuel de votre profil\"],[8],[0,\"\\n              \"],[6,\"li\"],[9,\"class\",\"pix-modal__list-item\"],[7],[0,\"› \"],[1,[20,[\"organizationLabels\",\"text3\"]],false],[8],[0,\"\\n            \"],[8],[0,\"\\n            \"],[6,\"p\"],[7],[1,[20,[\"organizationLabels\",\"text4\"]],false],[8],[0,\"\\n          \"],[8],[0,\"\\n\\n          \"],[6,\"div\"],[9,\"class\",\"share-profile__share-modal-buttons\"],[7],[0,\"\\n            \"],[6,\"button\"],[9,\"class\",\"pix-modal__button pix-modal__button--primary share-profile__confirm-button\"],[3,\"action\",[[19,0,[]],\"shareSnapshotAndGoToSuccessNotificationView\"]],[7],[0,\"Envoyer\"],[8],[0,\"\\n            \"],[6,\"button\"],[9,\"class\",\"pix-modal__button pix-modal__button--secondary share-profile__cancel-button\"],[3,\"action\",[[19,0,[]],\"cancelSharingAndGoBackToOrganizationCodeEntryView\"]],[7],[0,\"Annuler\"],[8],[0,\"\\n          \"],[8],[0,\"\\n\\n        \"],[8],[0,\"\\n\\n\"]],\"parameters\":[]},{\"statements\":[[0,\"\\n        \"],[6,\"section\"],[9,\"class\",\"pix-modal__body share-profile__section share-profile__section--success-notification\"],[7],[0,\"\\n          \"],[6,\"div\"],[9,\"class\",\"share-profile__row\"],[7],[0,\"\\n            \"],[6,\"p\"],[9,\"class\",\"share-profile__statement\"],[7],[0,\"Votre profil a été envoyé avec succès.\"],[8],[0,\"\\n          \"],[8],[0,\"\\n          \"],[6,\"button\"],[9,\"class\",\"pix-modal__button pix-modal__button--primary share-profile__close-button\"],[3,\"action\",[[19,0,[]],\"closeModal\"]],[7],[0,\"Fermer\"],[8],[0,\"\\n        \"],[8],[0,\"\\n\\n      \"]],\"parameters\":[]}]],\"parameters\":[]}],[0,\"\\n    \"],[8],[0,\"\\n\\n\"]],\"parameters\":[]},null]],\"parameters\":[]},null],[0,\"\\n\\n\"],[11,1],[0,\"\\n\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/share-profile.hbs" } });
 });
 define("pix-live/templates/components/side-menu-toggle", ["exports"], function (exports) {
   "use strict";
@@ -9290,6 +9343,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"name":"pix-live","version":"1.48.0+390e1449"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"name":"pix-live","version":"1.48.0+31ba45d4"});
 }
 //# sourceMappingURL=pix-live.map
