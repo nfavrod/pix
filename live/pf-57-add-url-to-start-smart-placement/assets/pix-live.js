@@ -6754,13 +6754,16 @@ define('pix-live/routes/board', ['exports', 'ember-simple-auth/mixins/authentica
     }
   });
 });
-define('pix-live/routes/campaigns/create-assessment', ['exports', 'pix-live/routes/base-route'], function (exports, _baseRoute) {
+define('pix-live/routes/campaigns/create-assessment', ['exports', 'pix-live/routes/base-route', 'ember-simple-auth/mixins/authenticated-route-mixin'], function (exports, _baseRoute, _authenticatedRouteMixin) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = _baseRoute.default.extend({
+  exports.default = _baseRoute.default.extend(_authenticatedRouteMixin.default, {
+    authenticationRoute: '/connexion',
+    session: Ember.inject.service(),
+
     redirect: function redirect() {
       var _this = this;
 
@@ -9333,6 +9336,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"name":"pix-live","version":"1.48.0+11d39055"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"name":"pix-live","version":"1.48.0+a7a8e985"});
 }
 //# sourceMappingURL=pix-live.map
