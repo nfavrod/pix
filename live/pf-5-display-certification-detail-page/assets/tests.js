@@ -3624,6 +3624,10 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
+    it('components/user-certifications-detail-header.js', function () {
+      // test passed
+    });
+
     it('components/user-certifications-panel.js', function () {
       // test passed
     });
@@ -10511,6 +10515,107 @@ define('pix-live/tests/integration/components/tutorial-panel-test', ['chai', 'mo
     });
   });
 });
+define('pix-live/tests/integration/components/user-certifications-detail-header-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+  'use strict';
+
+  (0, _mocha.describe)('Integration | Component | user certifications detail header', function () {
+    (0, _emberMocha.setupComponentTest)('user-certifications-detail-header', {
+      integration: true
+    });
+
+    var certification = void 0;
+
+    (0, _mocha.it)('renders', function () {
+      this.render(Ember.HTMLBars.template({
+        "id": "cCCETgrR",
+        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"user-certifications-detail-header\",null,[[\"certification\"],[[20,[\"certification\"]]]]],false]],\"hasEval\":false}",
+        "meta": {}
+      }));
+      (0, _chai.expect)(this.$()).to.have.length(1);
+    });
+
+    context('when certification is complete', function () {
+
+      beforeEach(function () {
+        // given
+        certification = Ember.Object.create({
+          id: 1,
+          birthdate: new Date('2000-01-22T15:15:52.504Z'),
+          firstName: 'Jean',
+          lastName: 'Bon',
+          date: new Date('2018-02-15T15:15:52.504Z'),
+          certificationCenter: 'Université de Lyon',
+          isPublished: true,
+          pixScore: 654,
+          status: 'validated',
+          commentForCandidate: 'Comment for candidate'
+        });
+        this.set('certification', certification);
+
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "cCCETgrR",
+          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"user-certifications-detail-header\",null,[[\"certification\"],[[20,[\"certification\"]]]]],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+      });
+
+      // then
+      (0, _mocha.it)('should show the certification icon', function () {
+        (0, _chai.expect)(this.$('.user-certifications-detail-header__icon')).to.have.lengthOf(1);
+      });
+
+      (0, _mocha.it)('should show the certification date', function () {
+        (0, _chai.expect)(this.$('.user-certifications-detail-header__data-box')).to.have.lengthOf(1);
+        (0, _chai.expect)(this.$('.user-certifications-detail-header__data-box').text()).to.include('15 février 2018');
+      });
+
+      (0, _mocha.it)('should show the certification user full name', function () {
+        (0, _chai.expect)(this.$('.user-certifications-detail-header__data-box').text()).to.include('Jean Bon');
+      });
+
+      (0, _mocha.it)('should show the certification user birthdate', function () {
+        (0, _chai.expect)(this.$('.user-certifications-detail-header__data-box').text()).to.include('Né le 22 janvier 2000');
+      });
+
+      (0, _mocha.it)('should show the certification center', function () {
+        (0, _chai.expect)(this.$('.user-certifications-detail-header__data-box').text()).to.include('Université de Lyon');
+      });
+    });
+
+    context('when certification is not complete', function () {
+
+      beforeEach(function () {
+        // given
+        certification = Ember.Object.create({
+          id: 1,
+          birthdate: null,
+          firstName: null,
+          lastName: null,
+          date: new Date('2018-02-15T15:15:52.504Z'),
+          certificationCenter: null,
+          isPublished: true,
+          pixScore: 654,
+          status: 'validated',
+          commentForCandidate: 'Comment for candidate'
+        });
+        this.set('certification', certification);
+
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "cCCETgrR",
+          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"user-certifications-detail-header\",null,[[\"certification\"],[[20,[\"certification\"]]]]],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+      });
+
+      // then
+      (0, _mocha.it)('should not show the certification date not the name not the birthdate not the certification center', function () {
+        (0, _chai.expect)(this.$('.user-certifications-detail-header__data-box p')).to.have.lengthOf(1);
+      });
+    });
+  });
+});
 define('pix-live/tests/integration/components/user-certifications-panel-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
   'use strict';
 
@@ -11214,6 +11319,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
     });
 
     it('integration/components/tutorial-panel-test.js', function () {
+      // test passed
+    });
+
+    it('integration/components/user-certifications-detail-header-test.js', function () {
       // test passed
     });
 

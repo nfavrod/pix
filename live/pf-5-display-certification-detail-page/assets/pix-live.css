@@ -3582,6 +3582,38 @@ input.qcm-panel__proposal-checkbox {
   height: 36px;
   width: 150px; }
 
+.user-certifications-detail-header {
+  font-family: Lato;
+  display: flex;
+  flex-flow: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding-top: 5rem; }
+  @media (min-width: 980px) {
+    .user-certifications-detail-header {
+      justify-content: flex-start; } }
+
+.user-certifications-detail-header__data-box {
+  padding-left: 3.2rem;
+  color: #3e4149;
+  font-size: 1.8rem;
+  line-height: 2rem; }
+  .user-certifications-detail-header__data-box p {
+    margin-bottom: 0rem;
+    padding-bottom: 0.5rem; }
+
+.user-certifications-detail-header__data-box-title {
+  line-height: 2.4rem;
+  font-size: 2rem;
+  font-weight: normal;
+  padding-bottom: 0.6rem; }
+
+.user-certifications-detail-header__data-box-title-big {
+  font-family: Raleway;
+  line-height: 3.2rem;
+  font-size: 2.8rem;
+  font-weight: bold; }
+
 .index-page-patners-enrollment {
   background-image: linear-gradient(to bottom, #446eff, #133dd2); }
 
@@ -5716,7 +5748,7 @@ hr.project-page__presentation-header-line {
   line-height: 42px; }
 
 .user-certifications-page__container {
-  width: 1200px;
+  max-width: 1200px;
   min-height: 500px;
   margin: 0 auto;
   margin-bottom: 40px; }
