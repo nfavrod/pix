@@ -4550,8 +4550,8 @@ define('pix-live/tests/integration/components/certifications-list-item-test', ['
       });
 
       // then
-      (0, _mocha.it)('should render a certifications-list-item__published-item div', function () {
-        (0, _chai.expect)(this.$('.certifications-list-item__published-item')).to.have.lengthOf(1);
+      (0, _mocha.it)('should render certifications-list-item__published-item with a link inside', function () {
+        (0, _chai.expect)(this.$('.certifications-list-item__published-item a')).to.have.lengthOf(1);
       });
 
       (0, _mocha.it)('should show Certification obtenue', function () {
@@ -10581,15 +10581,15 @@ define('pix-live/tests/integration/components/user-certifications-detail-header-
       });
 
       (0, _mocha.it)('should show the certification user full name', function () {
-        (0, _chai.expect)(this.$('.user-certifications-detail-header__data-box').text()).to.include('Jean Bon');
+        (0, _chai.expect)(this.$('.user-certifications-detail-header__data-box').text()).to.include('Nom : Jean Bon');
       });
 
       (0, _mocha.it)('should show the certification user birthdate', function () {
-        (0, _chai.expect)(this.$('.user-certifications-detail-header__data-box').text()).to.include('Né le 22 janvier 2000');
+        (0, _chai.expect)(this.$('.user-certifications-detail-header__data-box').text()).to.include('Date de naissance : 22' + ' janvier 2000');
       });
 
       (0, _mocha.it)('should show the certification center', function () {
-        (0, _chai.expect)(this.$('.user-certifications-detail-header__data-box').text()).to.include('Université de Lyon');
+        (0, _chai.expect)(this.$('.user-certifications-detail-header__data-box').text()).to.include('Centre de' + ' certification : Université de Lyon');
       });
     });
 

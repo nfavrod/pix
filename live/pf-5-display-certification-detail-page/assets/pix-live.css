@@ -1022,10 +1022,15 @@ button.routable-modal--close:active {
       width: 12px;
       margin-bottom: 3px; } }
 
-.certifications-list-item__has-comment:hover {
-  background-color: #f2f3f4; }
+.certifications-list-item__clickable a {
+  color: inherit;
+  text-decoration: none; }
 
-.certifications-list-item__no-comment a {
+.certifications-list-item__clickable:hover {
+  background-color: #f2f3f4;
+  color: inherit; }
+
+.certifications-list-item__not-clickable a {
   cursor: default; }
 
 .certifications-list-item__row-presentation {
@@ -3617,7 +3622,7 @@ input.qcm-panel__proposal-checkbox {
   font-family: Raleway;
   line-height: 3.2rem;
   font-size: 2.8rem;
-  font-weight: bold; }
+  font-weight: 600; }
 
 .index-page-patners-enrollment {
   background-image: linear-gradient(to bottom, #446eff, #133dd2); }
