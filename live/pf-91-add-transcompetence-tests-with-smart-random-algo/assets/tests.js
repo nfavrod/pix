@@ -9985,15 +9985,16 @@ define('pix-live/tests/integration/components/signup-form-test', ['chai', 'mocha
           // given
           var userWithCguNotAccepted = Ember.Object.create({
             cgu: false,
-            errors: {
+            errors: Ember.ArrayProxy.create({
               content: [{
                 attribute: 'cgu',
                 message: UNCHECKED_CHECKBOX_CGU_ERROR
               }],
               cgu: [{
+                attribute: 'cgu',
                 message: UNCHECKED_CHECKBOX_CGU_ERROR
               }]
-            },
+            }),
             save: function save() {
               return new Ember.RSVP.reject();
             }
@@ -10019,12 +10020,12 @@ define('pix-live/tests/integration/components/signup-form-test', ['chai', 'mocha
           var _this6 = this;
 
           var userThatThrowAnErrorDuringSaving = Ember.Object.create({
-            errors: {
+            errors: Ember.ArrayProxy.create({
               content: [{
                 attribute: 'email',
                 message: 'An error concerning the email thrown by the API'
               }]
-            },
+            }),
             save: function save() {
               return new Ember.RSVP.reject();
             }
@@ -10053,7 +10054,7 @@ define('pix-live/tests/integration/components/signup-form-test', ['chai', 'mocha
           var userWithCaptchaNotValid = Ember.Object.create({
             cgu: true,
             recaptchaToken: null,
-            errors: {
+            errors: Ember.ArrayProxy.create({
               content: [{
                 attribute: 'recaptchaToken',
                 message: UNCHECKED_CHECKBOX_RECAPTCHA_ERROR
@@ -10061,7 +10062,7 @@ define('pix-live/tests/integration/components/signup-form-test', ['chai', 'mocha
               recaptchaToken: [{
                 message: UNCHECKED_CHECKBOX_RECAPTCHA_ERROR
               }]
-            },
+            }),
             save: function save() {
               return new Ember.RSVP.reject();
             }
