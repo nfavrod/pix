@@ -10602,7 +10602,7 @@ define('pix-live/tests/integration/components/user-certifications-detail-header-
           birthdate: null,
           firstName: null,
           lastName: null,
-          date: new Date('2018-02-15T15:15:52.504Z'),
+          date: null,
           certificationCenter: null,
           isPublished: true,
           pixScore: 654,
@@ -10620,8 +10620,20 @@ define('pix-live/tests/integration/components/user-certifications-detail-header-
       });
 
       // then
-      (0, _mocha.it)('should not show the certification date not the name not the birthdate not the certification center', function () {
-        (0, _chai.expect)(this.$('.user-certifications-detail-header__data-box p')).to.have.lengthOf(1);
+      (0, _mocha.it)('should not show the certification date', function () {
+        (0, _chai.expect)(this.$('.user-certifications-detail-header__data-box').text()).to.not.include('obtenue le');
+      });
+
+      (0, _mocha.it)('should not  show the certification user full name', function () {
+        (0, _chai.expect)(this.$('.user-certifications-detail-header__data-box').text()).to.not.include('Nom :');
+      });
+
+      (0, _mocha.it)('should not  show the certification user birthdate', function () {
+        (0, _chai.expect)(this.$('.user-certifications-detail-header__data-box').text()).to.not.include('Date de naissance :');
+      });
+
+      (0, _mocha.it)('should not show the certification center', function () {
+        (0, _chai.expect)(this.$('.user-certifications-detail-header__data-box').text()).to.not.include('Centre de' + ' certification :');
       });
     });
   });
