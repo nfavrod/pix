@@ -919,7 +919,6 @@ button.routable-modal--close:active {
   line-height: 60px; }
 
 .certifications-list {
-  padding: 10px;
   background-color: transparent;
   justify-content: space-around;
   font-size: 10px;
@@ -927,11 +926,7 @@ button.routable-modal--close:active {
   font-family: "Raleway", Arial, sans-serif; }
   @media (min-width: 768px) {
     .certifications-list {
-      margin: 0 50px;
       font-size: 14px; } }
-  @media (min-width: 980px) {
-    .certifications-list {
-      margin: 0 100px; } }
 
 .certifications-list__table {
   display: flex;
@@ -969,7 +964,6 @@ button.routable-modal--close:active {
   box-shadow: 0 2px 6px 0 rgba(51, 51, 51, 0.1), 0 1px 3px 0 rgba(0, 0, 0, 0.08); }
 
 .certifications-list {
-  padding: 10px;
   background-color: transparent;
   justify-content: space-around;
   font-size: 10px;
@@ -977,11 +971,7 @@ button.routable-modal--close:active {
   font-family: "Raleway", Arial, sans-serif; }
   @media (min-width: 768px) {
     .certifications-list {
-      margin: 0 50px;
       font-size: 14px; } }
-  @media (min-width: 980px) {
-    .certifications-list {
-      margin: 0 100px; } }
 
 .certifications-list__table {
   display: flex;
@@ -1032,10 +1022,15 @@ button.routable-modal--close:active {
       width: 12px;
       margin-bottom: 3px; } }
 
-.certifications-list-item__has-comment:hover {
-  background-color: #f2f3f4; }
+.certifications-list-item__clickable a {
+  color: inherit;
+  text-decoration: none; }
 
-.certifications-list-item__no-comment a {
+.certifications-list-item__clickable:hover {
+  background-color: #f2f3f4;
+  color: inherit; }
+
+.certifications-list-item__not-clickable a {
   cursor: default; }
 
 .certifications-list-item__row-presentation {
@@ -1107,13 +1102,18 @@ button.routable-modal--close:active {
     color: #3d68ff;
     border: none;
     background: none; }
+  .certifications-list-item__cell-detail .certifications-list-item__cell-detail-link {
+    font-size: 13px;
+    color: #3d68ff;
+    border: none;
+    background: none; }
 
-.certifications-list-item__has-comment .cp-is-open .certifications-list-item__cell-detail::before {
+.certifications-list-item__clickable .cp-is-open .certifications-list-item__cell-detail::before {
   margin-left: 8px;
   margin-bottom: 2%;
   content: url("/images/icons/icon-arrow-down.svg"); }
 
-.certifications-list-item__has-comment .cp-is-closed .certifications-list-item__cell-detail::before {
+.certifications-list-item__clickable .cp-is-closed .certifications-list-item__cell-detail::before {
   margin-left: 8px;
   margin-bottom: 2%;
   content: url("/images/icons/icon-arrow-up.svg"); }
@@ -3592,6 +3592,38 @@ input.qcm-panel__proposal-checkbox {
   height: 36px;
   width: 150px; }
 
+.user-certifications-detail-header {
+  font-family: "Lato", Arial, sans-serif;
+  display: flex;
+  flex-flow: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding-top: 5rem; }
+  @media (min-width: 980px) {
+    .user-certifications-detail-header {
+      justify-content: flex-start; } }
+
+.user-certifications-detail-header__data-box {
+  padding-left: 3.2rem;
+  color: #3e4149;
+  font-size: 1.8rem;
+  line-height: 2rem; }
+  .user-certifications-detail-header__data-box p {
+    margin-bottom: 0rem;
+    padding-bottom: 0.5rem; }
+
+.user-certifications-detail-header__data-box-title {
+  line-height: 2.4rem;
+  font-size: 2rem;
+  font-weight: normal;
+  padding-bottom: 0.6rem; }
+
+.user-certifications-detail-header__data-box-title-big {
+  font-family: "Raleway", Arial, sans-serif;
+  line-height: 3.2rem;
+  font-size: 2.8rem;
+  font-weight: 600; }
+
 .index-page-patners-enrollment {
   background-image: linear-gradient(to bottom, #446eff, #133dd2); }
 
@@ -5725,6 +5757,12 @@ hr.project-page__presentation-header-line {
   font-weight: bold;
   line-height: 42px; }
 
+.user-certifications-page__container {
+  max-width: 1200px;
+  min-height: 500px;
+  margin: 0 auto;
+  margin-bottom: 40px; }
+
 .user-certifications-page__title {
   display: flex;
   justify-content: center;
@@ -5733,11 +5771,16 @@ hr.project-page__presentation-header-line {
   font-size: 28px;
   font-weight: 500;
   line-height: 33px;
-  margin-top: 40px; }
+  padding-top: 60px;
+  padding-bottom: 40px;
+  margin: 0; }
   @media (min-width: 980px) {
     .user-certifications-page__title {
-      justify-content: flex-start;
-      margin-left: 100px; } }
+      justify-content: flex-start; } }
+
+.user-certifications-page-get_link-to {
+  display: flex;
+  padding-top: 1rem; }
 
 .assessment-challenge__continue-wrapper {
   text-align: center; }
