@@ -2971,6 +2971,33 @@ define('pix-live/components/warning-page', ['exports', 'pix-live/utils/lodash-cu
     }
   });
 });
+define('pix-live/controllers/assessments/checkpoint', ['exports'], function (exports) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = Ember.Controller.extend({
+
+    queryParams: ['finalCheckpoint'],
+    finalCheckpoint: false,
+
+    buttonText: Ember.computed('finalCheckpoint', function () {
+      return this.get('finalCheckpoint') ? 'Voir mes résultats' : 'Je continue';
+    }),
+
+    actions: {
+      resumeAssessment: function resumeAssessment(assessment) {
+        if (this.get('finalCheckpoint')) {
+          return this.transitionToRoute('assessments.rating', assessment);
+        } else {
+          return this.transitionToRoute('assessments.resume', assessment);
+        }
+      }
+    }
+
+  });
+});
 define('pix-live/controllers/certification-course', ['exports'], function (exports) {
   'use strict';
 
@@ -6524,6 +6551,7 @@ define('pix-live/router', ['exports', 'pix-live/config/environment'], function (
     });
   }
 
+  /* eslint-disable max-statements */
   Router.map(function () {
     this.route('index', { path: '/' });
     this.route('placement-tests');
@@ -6541,7 +6569,11 @@ define('pix-live/router', ['exports', 'pix-live/config/environment'], function (
     this.route('assessments.comparison', { path: '/assessments/:assessment_id/results/compare/:answer_id/:index' });
     this.route('assessments.rating', { path: '/assessments/:assessment_id/rating' });
     this.route('assessments.checkpoint', { path: '/assessments/:assessment_id/checkpoint' });
-
+    /*
+      this.route('assessments', { path: '/assessments/:assessment_id' }, function() {
+        this.route('checkpoint');
+      });
+    */
     this.route('login', { path: '/connexion' });
     this.route('logout', { path: '/deconnexion' });
     this.route('board');
@@ -6661,7 +6693,9 @@ define('pix-live/routes/assessments/challenge', ['exports', 'pix-live/routes/bas
           _this2.transitionTo('assessments.challenge', { assessment: assessment, challenge: nextChallenge });
         }).catch(function () {
           if (assessment.get('hasCheckpoints')) {
-            return _this2.transitionTo('assessments.checkpoint', assessment.get('id'));
+            return _this2.transitionTo('assessments.checkpoint', assessment, {
+              queryParams: { finalCheckpoint: true }
+            });
           }
 
           _this2.transitionTo('assessments.rating', assessment.get('id'));
@@ -6680,9 +6714,6 @@ define('pix-live/routes/assessments/checkpoint', ['exports'], function (exports)
   exports.default = Ember.Route.extend({
 
     actions: {
-      resumeAssessment: function resumeAssessment(assessment) {
-        this.transitionTo('assessments.resume', assessment.get('id'));
-      },
       openComparison: function openComparison(assessment_id, answer_id, index) {
         this.transitionTo('assessments.comparison', assessment_id, answer_id, index);
       }
@@ -6760,10 +6791,6 @@ define('pix-live/routes/assessments/resume', ['exports', 'pix-live/routes/base-r
     value: true
   });
   exports.default = _baseRoute.default.extend({
-    model: function model(params) {
-      var assessmentId = params.assessment_id;
-      return this.get('store').findRecord('assessment', assessmentId);
-    },
     afterModel: function afterModel(assessment) {
       var _this = this;
 
@@ -7826,7 +7853,7 @@ define("pix-live/templates/assessments/checkpoint", ["exports"], function (expor
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "B0w9l33P", "block": "{\"symbols\":[\"answer\",\"index\"],\"statements\":[[6,\"div\"],[9,\"class\",\"assessment-challenge\"],[7],[0,\"\\n\\n  \"],[6,\"div\"],[9,\"class\",\"assessment-challenge__course-banner\"],[7],[0,\"\\n      \"],[1,[25,\"course-banner\",null,[[\"course\",\"withHomeLink\"],[[20,[\"model\",\"course\"]],true]]],false],[0,\"\\n  \"],[8],[0,\"\\n\\n  \"],[6,\"div\"],[9,\"class\",\"assessment-challenge__content\"],[7],[0,\"\\n    \"],[6,\"h1\"],[7],[0,\"Vos réponses :\"],[8],[0,\"\\n    \"],[6,\"div\"],[9,\"class\",\"assessment-results__list\"],[7],[0,\"\\n\"],[4,\"each\",[[20,[\"model\",\"answersSinceLastCheckpoints\"]]],null,{\"statements\":[[0,\"        \"],[1,[25,\"result-item\",null,[[\"answer\",\"index\",\"openComparison\",\"a11y-focus-id\"],[[19,1,[]],[19,2,[]],\"openComparison\",[25,\"concat\",[\"open-comparison_\",[25,\"add\",[[19,2,[]],1],null]],null]]]],false],[0,\"\\n\"]],\"parameters\":[1,2]},null],[0,\"    \"],[8],[0,\"\\n\\n    \"],[6,\"div\"],[9,\"class\",\"assessment-challenge__continue-wrapper\"],[7],[0,\"\\n      \"],[6,\"button\"],[9,\"class\",\"assessment-checkpoint__continue-button\"],[3,\"action\",[[19,0,[]],\"resumeAssessment\",[20,[\"model\"]]]],[7],[0,\"\\n        Je continue\\n        \"],[6,\"img\"],[10,\"src\",[26,[[18,\"rootURL\"],\"/images/button-continue/button-continue-next.png\"]]],[10,\"srcset\",[26,[\"\\n           \",[18,\"rootURL\"],\"/images/button-continue/button-continue-next@2x.png 2x,\\n\\t\\t\\t\\t\\t \",[18,\"rootURL\"],\"/images/button-continue/button-continue-next@3x.png 3x\"]]],[9,\"alt\",\"\"],[9,\"class\",\"assessment-checkpoint__continue-button__image\"],[7],[8],[0,\"\\n\\n      \"],[8],[0,\"\\n    \"],[8],[0,\"\\n  \"],[8],[0,\"\\n\"],[8],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/assessments/checkpoint.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "nO4uMJHU", "block": "{\"symbols\":[\"answer\",\"index\"],\"statements\":[[6,\"div\"],[9,\"class\",\"assessment-challenge\"],[7],[0,\"\\n\\n  \"],[6,\"div\"],[9,\"class\",\"assessment-challenge__course-banner\"],[7],[0,\"\\n      \"],[1,[25,\"course-banner\",null,[[\"course\",\"withHomeLink\"],[[20,[\"model\",\"course\"]],true]]],false],[0,\"\\n  \"],[8],[0,\"\\n\\n  \"],[6,\"div\"],[9,\"class\",\"assessment-challenge__content\"],[7],[0,\"\\n    \"],[6,\"h1\"],[7],[0,\"Vos réponses :\"],[8],[0,\"\\n    \"],[6,\"div\"],[9,\"class\",\"assessment-results__list\"],[7],[0,\"\\n\"],[4,\"each\",[[20,[\"model\",\"answersSinceLastCheckpoints\"]]],null,{\"statements\":[[0,\"        \"],[1,[25,\"result-item\",null,[[\"answer\",\"index\",\"openComparison\",\"a11y-focus-id\"],[[19,1,[]],[19,2,[]],\"openComparison\",[25,\"concat\",[\"open-comparison_\",[25,\"add\",[[19,2,[]],1],null]],null]]]],false],[0,\"\\n\"]],\"parameters\":[1,2]},null],[0,\"    \"],[8],[0,\"\\n\\n    \"],[6,\"div\"],[9,\"class\",\"assessment-challenge__continue-wrapper\"],[7],[0,\"\\n      \"],[6,\"button\"],[9,\"class\",\"assessment-checkpoint__continue-button\"],[3,\"action\",[[19,0,[]],\"resumeAssessment\",[20,[\"model\"]]]],[7],[0,\"\\n\\n        \"],[1,[18,\"buttonText\"],false],[0,\"\\n\\n        \"],[6,\"img\"],[10,\"src\",[26,[[18,\"rootURL\"],\"/images/button-continue/button-continue-next.png\"]]],[10,\"srcset\",[26,[\"\\n           \",[18,\"rootURL\"],\"/images/button-continue/button-continue-next@2x.png 2x,\\n\\t\\t\\t\\t\\t \",[18,\"rootURL\"],\"/images/button-continue/button-continue-next@3x.png 3x\"]]],[9,\"alt\",\"\"],[9,\"class\",\"assessment-checkpoint__continue-button__image\"],[7],[8],[0,\"\\n\\n      \"],[8],[0,\"\\n    \"],[8],[0,\"\\n  \"],[8],[0,\"\\n\"],[8],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/assessments/checkpoint.hbs" } });
 });
 define("pix-live/templates/assessments/comparison", ["exports"], function (exports) {
   "use strict";
@@ -9463,6 +9490,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.48.0+173a327c"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.48.0+ff812cec"});
 }
 //# sourceMappingURL=pix-live.map
