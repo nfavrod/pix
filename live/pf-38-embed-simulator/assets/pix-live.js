@@ -348,8 +348,13 @@ define('pix-live/components/challenge-embed-simulator', ['exports'], function (e
 
     /* This method is not tested because it would be too difficult (add an observer on a complicated stubbed DOM API element!) */
     _reloadSimulator: function _reloadSimulator() {
-      var $simulatorIframe = this.element.getElementsByClassName('challenge-embed-simulator__iframe').item(0);
-      $simulatorIframe.src = $simulatorIframe.src;
+      var iframe = this.element.getElementsByClassName('challenge-embed-simulator__iframe').item(0);
+      var tmpSrc = iframe.src;
+      iframe.onload = function () {
+        iframe.onload = '';
+        iframe.src = tmpSrc;
+      };
+      iframe.src = '';
     },
     _unblurSimulator: function _unblurSimulator() {
       var $simulatorPanel = this.element.getElementsByClassName('challenge-embed-simulator__simulator').item(0);
@@ -9349,6 +9354,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"name":"pix-live","version":"1.48.0+46af0fac"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"name":"pix-live","version":"1.48.0+ac51d0ab"});
 }
 //# sourceMappingURL=pix-live.map
