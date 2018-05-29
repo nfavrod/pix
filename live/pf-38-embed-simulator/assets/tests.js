@@ -4721,7 +4721,7 @@ define('pix-live/tests/integration/components/challenge-embed-simulator-test', [
 
         // then
         var $launchSimulatorButton = this.$('.challenge-embed-simulator__aknowledgment-overlay .challenge-embed-simulator__launch-simulator-button');
-        (0, _chai.expect)($launchSimulatorButton.text().trim()).to.equal('Je lance le simulateur');
+        (0, _chai.expect)($launchSimulatorButton.text().trim()).to.equal('Je lance l’application');
       });
 
       (0, _mocha.it)('should close the aknowledgment overlay when clicked', _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
@@ -4765,7 +4765,7 @@ define('pix-live/tests/integration/components/challenge-embed-simulator-test', [
 
         // then
         var $reloadSimulatorButton = this.$('.challenge-embed-simulator__reload-button');
-        (0, _chai.expect)($reloadSimulatorButton.text().trim()).to.equal('Recharger le simulateur');
+        (0, _chai.expect)($reloadSimulatorButton.text().trim()).to.equal('Recharger l’application');
       });
 
       (0, _mocha.it)('should reload simulator when user clicked on button reload', _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
