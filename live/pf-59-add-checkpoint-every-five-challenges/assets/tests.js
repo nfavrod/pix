@@ -14990,9 +14990,9 @@ define('pix-live/tests/unit/models/assessment-test', ['chai', 'mocha', 'ember-mo
       (0, _chai.expect)(model).to.be.ok;
     });
 
-    (0, _mocha.describe)('Computed property #hasAttachment', function () {
+    (0, _mocha.describe)('Computed property #hasCheckpoints', function () {
 
-      (0, _mocha.it)('Should be true when challenge has at least one attachment file', function () {
+      (0, _mocha.it)('Should be true when challenge is a SMART_PLACEMENT', function () {
         var _this = this;
 
         Ember.run(function () {
@@ -15008,7 +15008,7 @@ define('pix-live/tests/unit/models/assessment-test', ['chai', 'mocha', 'ember-mo
         });
       });
 
-      (0, _mocha.it)('Should be false when assessment has multiple attachment files', function () {
+      (0, _mocha.it)('Should be true when challenge is NOT a SMART_PLACEMENT', function () {
         var _this2 = this;
 
         Ember.run(function () {

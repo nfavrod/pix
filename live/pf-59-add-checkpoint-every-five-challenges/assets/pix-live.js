@@ -2254,7 +2254,6 @@ define('pix-live/components/result-item', ['exports', 'pix-live/utils/result-ico
         var index = this.get('index') + 1;
 
         this.sendAction('openComparison', assessmentId, answerId, index);
-        //this.transitionTo('assessments.comparison', assessmentId, answerId, index);
       }
     }
   });
@@ -6256,9 +6255,9 @@ define('pix-live/models/assessment', ['exports', 'ember-data', 'pix-live/config/
     answersSinceLastCheckpoints: Ember.computed('answers.[]', function () {
 
       var howManyAnswersSinceTheLastCheckpoint = this.get('answers.length') % _environment.default.APP.NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT;
-      var sliceAnsersFrom = howManyAnswersSinceTheLastCheckpoint === 0 ? -_environment.default.APP.NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT : -howManyAnswersSinceTheLastCheckpoint;
+      var sliceAnswersFrom = howManyAnswersSinceTheLastCheckpoint === 0 ? -_environment.default.APP.NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT : -howManyAnswersSinceTheLastCheckpoint;
 
-      return this.get('answers').slice(sliceAnsersFrom);
+      return this.get('answers').slice(sliceAnswersFrom);
     }),
 
     result: belongsTo('assessment-result'),
@@ -6569,11 +6568,6 @@ define('pix-live/router', ['exports', 'pix-live/config/environment'], function (
     this.route('assessments.comparison', { path: '/assessments/:assessment_id/results/compare/:answer_id/:index' });
     this.route('assessments.rating', { path: '/assessments/:assessment_id/rating' });
     this.route('assessments.checkpoint', { path: '/assessments/:assessment_id/checkpoint' });
-    /*
-      this.route('assessments', { path: '/assessments/:assessment_id' }, function() {
-        this.route('checkpoint');
-      });
-    */
     this.route('login', { path: '/connexion' });
     this.route('logout', { path: '/deconnexion' });
     this.route('board');
@@ -9490,6 +9484,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.48.0+ff812cec"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.48.0+d3de46f3"});
 }
 //# sourceMappingURL=pix-live.map
