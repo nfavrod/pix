@@ -516,7 +516,7 @@ define('pix-live/tests/acceptance/b2-epreuve-qcm-test', ['mocha', 'chai', 'pix-l
       });
     });
 
-    (0, _mocha.it)('b2.11 L\'alerte n\'est pas affichée si l\'utilisateur valide sans avoir coché de réponse puis coche sur une réponse', _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+    (0, _mocha.it)('b2.11 L’alerte n’est pas affichée si l’utilisateur valide sans avoir coché de réponse puis coche sur une réponse', _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
       var $alert;
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
@@ -3640,6 +3640,10 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
+    it('controllers/assessments/checkpoint.js', function () {
+      // test passed
+    });
+
     it('controllers/certification-course.js', function () {
       // test passed
     });
@@ -3757,6 +3761,10 @@ define('pix-live/tests/app.lint-test', [], function () {
     });
 
     it('routes/assessments/challenge.js', function () {
+      // test passed
+    });
+
+    it('routes/assessments/checkpoint.js', function () {
       // test passed
     });
 
@@ -11492,6 +11500,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
+    it('unit/controllers/assessments/checkpoint-test.js', function () {
+      // test passed
+    });
+
     it('unit/helpers/convert-to-html-test.js', function () {
       // test passed
     });
@@ -11521,6 +11533,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
     });
 
     it('unit/models/area-test.js', function () {
+      // test passed
+    });
+
+    it('unit/models/assessment-test.js', function () {
       // test passed
     });
 
@@ -14782,6 +14798,64 @@ define('pix-live/tests/unit/components/warning-time-page-test', ['chai', 'mocha'
     });
   });
 });
+define('pix-live/tests/unit/controllers/assessments/checkpoint-test', ['chai', 'mocha', 'ember-mocha', 'sinon'], function (_chai, _mocha, _emberMocha, _sinon) {
+  'use strict';
+
+  (0, _mocha.describe)('Unit | Controller | Assessments | Checkpoint', function () {
+    (0, _emberMocha.setupTest)('controller:assessments/checkpoint', {
+      needs: ['service:current-routed-modal']
+    });
+
+    (0, _mocha.describe)('#finalCheckpoint', function () {
+      (0, _mocha.it)('should equal false by default', function () {
+        // when
+        var controller = this.subject();
+
+        // then
+        (0, _chai.expect)(controller.get('finalCheckpoint')).to.be.false;
+      });
+    });
+
+    (0, _mocha.describe)('#resumeAssessment', function () {
+      var controller = void 0;
+
+      beforeEach(function () {
+        controller = this.subject();
+        controller.transitionToRoute = _sinon.default.stub();
+      });
+
+      context('when there a more challenge', function () {
+        (0, _mocha.it)('should redirect to next challenge', function () {
+          // given
+          var assessment = Ember.Object.create({ id: 12, answers: [] });
+          controller.set('finalCheckpoint', false);
+
+          // when
+          controller.actions.resumeAssessment.call(controller, assessment);
+
+          // then
+          _sinon.default.assert.calledOnce(controller.transitionToRoute);
+          _sinon.default.assert.calledWith(controller.transitionToRoute, 'assessments.resume', assessment);
+        });
+      });
+
+      context('when it is the final checkpoint', function () {
+        (0, _mocha.it)('should redirect to the rating phase', function () {
+          // given
+          var assessment = Ember.Object.create({ id: 12, answers: [] });
+          controller.set('finalCheckpoint', true);
+
+          // when
+          controller.actions.resumeAssessment.call(controller, assessment);
+
+          // then
+          _sinon.default.assert.calledOnce(controller.transitionToRoute);
+          _sinon.default.assert.calledWith(controller.transitionToRoute, 'assessments.rating', assessment);
+        });
+      });
+    });
+  });
+});
 define('pix-live/tests/unit/helpers/convert-to-html-test', ['chai', 'mocha', 'pix-live/helpers/convert-to-html'], function (_chai, _mocha, _convertToHtml) {
   'use strict';
 
@@ -14919,6 +14993,145 @@ define('pix-live/tests/unit/models/area-test', ['chai', 'mocha', 'ember-mocha'],
     (0, _mocha.it)('exists', function () {
       var model = this.subject();
       (0, _chai.expect)(model).to.be.ok;
+    });
+  });
+});
+define('pix-live/tests/unit/models/assessment-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+  'use strict';
+
+  (0, _mocha.describe)('Unit | Model | Assessment', function () {
+
+    (0, _emberMocha.setupModelTest)('assessment', {
+      needs: ['model:course', 'model:answer']
+    });
+
+    (0, _mocha.it)('exists', function () {
+      var model = this.subject();
+      (0, _chai.expect)(model).to.be.ok;
+    });
+
+    (0, _mocha.describe)('Computed property #hasCheckpoints', function () {
+
+      (0, _mocha.it)('Should be true when challenge is a SMART_PLACEMENT', function () {
+        var _this = this;
+
+        Ember.run(function () {
+          // given
+          var store = _this.store();
+          var assessment = store.createRecord('assessment', { type: 'SMART_PLACEMENT' });
+
+          // when
+          var hasCheckpoints = assessment.get('hasCheckpoints');
+
+          // then
+          (0, _chai.expect)(hasCheckpoints).to.be.true;
+        });
+      });
+
+      (0, _mocha.it)('Should be true when challenge is NOT a SMART_PLACEMENT', function () {
+        var _this2 = this;
+
+        Ember.run(function () {
+          // given
+          var store = _this2.store();
+          var assessment = store.createRecord('assessment', { type: 'DEMO' });
+
+          // when
+          var hasCheckpoints = assessment.get('hasCheckpoints');
+
+          // then
+          (0, _chai.expect)(hasCheckpoints).to.be.false;
+        });
+      });
+    });
+
+    (0, _mocha.describe)('Computed property #answersSinceLastCheckpoints', function () {
+
+      (0, _mocha.it)('should be an array', function () {
+        var _this3 = this;
+
+        Ember.run(function () {
+          // given
+          var store = _this3.store();
+          var assessment = store.createRecord('assessment', { type: 'SMART_PLACEMENT' });
+
+          // when
+          var answersSinceLastCheckpoints = assessment.get('answersSinceLastCheckpoints');
+
+          // then
+          (0, _chai.expect)(answersSinceLastCheckpoints).to.deep.equal([]);
+        });
+      });
+
+      (0, _mocha.it)('should return answers', function () {
+        var _this4 = this;
+
+        Ember.run(function () {
+          // given
+          var store = _this4.store();
+          var answer = store.createRecord('answer', {});
+          var assessment = store.createRecord('assessment', { type: 'SMART_PLACEMENT', answers: [answer] });
+
+          // when
+          var answersSinceLastCheckpoints = assessment.get('answersSinceLastCheckpoints');
+
+          // then
+          (0, _chai.expect)(answersSinceLastCheckpoints).to.deep.equal([answer]);
+        });
+      });
+
+      (0, _mocha.it)('should only return the last answers', function () {
+        var _this5 = this;
+
+        Ember.run(function () {
+          // given
+          var store = _this5.store();
+          var answer1 = store.createRecord('answer', {});
+          var answer2 = store.createRecord('answer', {});
+          var answer3 = store.createRecord('answer', {});
+          var answer4 = store.createRecord('answer', {});
+          var answer5 = store.createRecord('answer', {});
+          var answer6 = store.createRecord('answer', {});
+          var answer7 = store.createRecord('answer', {});
+          var assessment = store.createRecord('assessment', {
+            type: 'SMART_PLACEMENT', answers: [answer1, answer2, answer3, answer4, answer5, answer6, answer7]
+          });
+
+          // when
+          var answersSinceLastCheckpoints = assessment.get('answersSinceLastCheckpoints');
+
+          // then
+          (0, _chai.expect)(answersSinceLastCheckpoints).to.deep.equal([answer6, answer7]);
+        });
+      });
+
+      (0, _mocha.it)('should only return the last 5 answers', function () {
+        var _this6 = this;
+
+        Ember.run(function () {
+          // given
+          var store = _this6.store();
+          var answer1 = store.createRecord('answer', {});
+          var answer2 = store.createRecord('answer', {});
+          var answer3 = store.createRecord('answer', {});
+          var answer4 = store.createRecord('answer', {});
+          var answer5 = store.createRecord('answer', {});
+          var answer6 = store.createRecord('answer', {});
+          var answer7 = store.createRecord('answer', {});
+          var answer8 = store.createRecord('answer', {});
+          var answer9 = store.createRecord('answer', {});
+          var answer10 = store.createRecord('answer', {});
+          var assessment = store.createRecord('assessment', {
+            type: 'SMART_PLACEMENT', answers: [answer1, answer2, answer3, answer4, answer5, answer6, answer7, answer8, answer9, answer10]
+          });
+
+          // when
+          var answersSinceLastCheckpoints = assessment.get('answersSinceLastCheckpoints');
+
+          // then
+          (0, _chai.expect)(answersSinceLastCheckpoints).to.deep.equal([answer6, answer7, answer8, answer9, answer10]);
+        });
+      });
     });
   });
 });
@@ -15409,6 +15622,7 @@ define('pix-live/tests/unit/routes/assessments/challenge-test', ['chai', 'mocha'
       }
     };
     var userId = 'user_id';
+
     beforeEach(function () {
       // define stubs
       createRecordStub = _sinon.default.stub();
@@ -15460,7 +15674,10 @@ define('pix-live/tests/unit/routes/assessments/challenge-test', ['chai', 'mocha'
         // then
         return promise.then(function () {
           _sinon.default.assert.calledOnce(queryRecordStub);
-          _sinon.default.assert.calledWith(queryRecordStub, 'answer', { assessment: model.assessment.id, challenge: model.challenge.id });
+          _sinon.default.assert.calledWith(queryRecordStub, 'answer', {
+            assessment: model.assessment.id,
+            challenge: model.challenge.id
+          });
         });
       });
 
@@ -15582,10 +15799,52 @@ define('pix-live/tests/unit/routes/assessments/challenge-test', ['chai', 'mocha'
         });
       });
 
-      context('when the next challenge exists', function () {
-        (0, _mocha.it)('should redirect to the challenge view', function () {
+      context('when the assessessment is DEMO, PLACEMENT, CERTIFICATION or PREVIEW', function () {
+        context('when the next challenge exists', function () {
+          (0, _mocha.it)('should redirect to the challenge view', function () {
+            // given
+            var assessment = Ember.Object.create({ answers: [answerToChallengeOne] });
+            createRecordStub.returns(answerToChallengeOne);
+            queryRecordStub.resolves(nextChallenge);
+
+            // when
+            var promise = route.actions.saveAnswerAndNavigate.call(route, challengeOne, assessment, answerValue, answerTimeout, answerElapsedTime);
+
+            // then
+            return promise.then(function () {
+              _sinon.default.assert.callOrder(answerToChallengeOne.save, route.transitionTo);
+              _sinon.default.assert.calledWith(route.transitionTo, 'assessments.challenge', {
+                assessment: assessment,
+                challenge: nextChallenge
+              });
+            });
+          });
+        });
+
+        context('when there is no next challenge to answer', function () {
+          (0, _mocha.it)('should redirect to the assessment rating page', function () {
+            // given
+            var assessment = Ember.Object.create({ answers: [answerToChallengeOne] });
+            createRecordStub.returns(answerToChallengeOne);
+            queryRecordStub.rejects();
+
+            // when
+            var promise = route.actions.saveAnswerAndNavigate.call(route, challengeOne, assessment, answerValue, answerTimeout, answerElapsedTime);
+
+            // then
+            return promise.then(function () {
+              _sinon.default.assert.callOrder(answerToChallengeOne.save, route.transitionTo);
+              _sinon.default.assert.calledWith(route.transitionTo, 'assessments.rating', assessment.get('id'));
+            });
+          });
+        });
+
+        (0, _mocha.it)('should ignore checkpoint when the assessment is not a SMART_PLACEMENT', function () {
           // given
-          var assessment = Ember.Object.create({ answers: [answerToChallengeOne] });
+          var challengeTwo = Ember.Object.create({ id: 'recChallengeTwo', hasCheckpoints: false });
+          var listOfAnswers = [answerToChallengeOne, Ember.Object.create({ challenge: challengeTwo }), Ember.Object.create({ challenge: challengeTwo }), Ember.Object.create({ challenge: challengeTwo }), Ember.Object.create({ challenge: challengeTwo })];
+
+          var assessment = Ember.Object.create({ type: 'SMART_PLACEMENT', answers: listOfAnswers });
           createRecordStub.returns(answerToChallengeOne);
           queryRecordStub.resolves(nextChallenge);
 
@@ -15595,18 +15854,56 @@ define('pix-live/tests/unit/routes/assessments/challenge-test', ['chai', 'mocha'
           // then
           return promise.then(function () {
             _sinon.default.assert.callOrder(answerToChallengeOne.save, route.transitionTo);
-            _sinon.default.assert.calledWith(route.transitionTo, 'assessments.challenge', {
-              assessment: assessment,
-              challenge: nextChallenge
-            });
+            _sinon.default.assert.calledOnce(route.transitionTo);
+            _sinon.default.assert.calledWith(route.transitionTo, 'assessments.challenge');
           });
         });
       });
 
-      context('when there is no next challenge to answer', function () {
-        (0, _mocha.it)('should redirect to the assessment rating page', function () {
+      context('when the assessment is a SMART_PLACEMENT', function () {
+        (0, _mocha.it)('should redirect to the checkpoint view after 5 answers', function () {
           // given
-          var assessment = Ember.Object.create({ answers: [answerToChallengeOne] });
+          var challengeTwo = Ember.Object.create({ id: 'recChallengeTwo' });
+          var listOfAnswers = [answerToChallengeOne, Ember.Object.create({ challenge: challengeTwo }), Ember.Object.create({ challenge: challengeTwo }), Ember.Object.create({ challenge: challengeTwo }), Ember.Object.create({ challenge: challengeTwo })];
+
+          var assessment = Ember.Object.create({ id: 154, type: 'SMART_PLACEMENT', answers: listOfAnswers, hasCheckpoints: true });
+          createRecordStub.returns(answerToChallengeOne);
+          queryRecordStub.resolves(nextChallenge);
+
+          // when
+          var promise = route.actions.saveAnswerAndNavigate.call(route, challengeOne, assessment, answerValue, answerTimeout, answerElapsedTime);
+
+          // then
+          return promise.then(function () {
+            _sinon.default.assert.callOrder(answerToChallengeOne.save, route.transitionTo);
+            _sinon.default.assert.calledOnce(route.transitionTo);
+            _sinon.default.assert.calledWith(route.transitionTo, 'assessments.checkpoint', 154);
+          });
+        });
+
+        (0, _mocha.it)('should redirect to the next challenge', function () {
+          // given
+          var challengeTwo = Ember.Object.create({ id: 'recChallengeTwo' });
+          var listOfAnswers = [answerToChallengeOne, Ember.Object.create({ challenge: challengeTwo }), Ember.Object.create({ challenge: challengeTwo }), Ember.Object.create({ challenge: challengeTwo }), Ember.Object.create({ challenge: challengeTwo }), Ember.Object.create({ challenge: challengeTwo })];
+
+          var assessment = Ember.Object.create({ id: 154, type: 'SMART_PLACEMENT', answers: listOfAnswers, hasCheckpoints: true });
+          createRecordStub.returns(answerToChallengeOne);
+          queryRecordStub.resolves(nextChallenge);
+
+          // when
+          var promise = route.actions.saveAnswerAndNavigate.call(route, challengeOne, assessment, answerValue, answerTimeout, answerElapsedTime);
+
+          // then
+          return promise.then(function () {
+            _sinon.default.assert.callOrder(answerToChallengeOne.save, route.transitionTo);
+            _sinon.default.assert.calledOnce(route.transitionTo);
+            _sinon.default.assert.calledWith(route.transitionTo, 'assessments.challenge');
+          });
+        });
+
+        (0, _mocha.it)('should redirect to checkpoint before the rating on the last serie of 5', function () {
+          // given
+          var assessment = Ember.Object.create({ id: 947, answers: [answerToChallengeOne], hasCheckpoints: true });
           createRecordStub.returns(answerToChallengeOne);
           queryRecordStub.rejects();
 
@@ -15616,7 +15913,10 @@ define('pix-live/tests/unit/routes/assessments/challenge-test', ['chai', 'mocha'
           // then
           return promise.then(function () {
             _sinon.default.assert.callOrder(answerToChallengeOne.save, route.transitionTo);
-            _sinon.default.assert.calledWith(route.transitionTo, 'assessments.rating', assessment.get('id'));
+            _sinon.default.assert.calledOnce(route.transitionTo);
+            _sinon.default.assert.calledWith(route.transitionTo, 'assessments.checkpoint', assessment, {
+              queryParams: { finalCheckpoint: true }
+            });
           });
         });
       });
@@ -15784,24 +16084,6 @@ define('pix-live/tests/unit/routes/assessments/resume-test', ['chai', 'mocha', '
     (0, _mocha.it)('exists', function () {
       var route = this.subject();
       (0, _chai.expect)(route).to.be.ok;
-    });
-
-    (0, _mocha.describe)('#model', function () {
-
-      (0, _mocha.it)('should fetch an assessment', function () {
-        // given
-        var params = { assessment_id: 123 };
-        route.get('store').findRecord.resolves();
-
-        // when
-        var promise = route.model(params);
-
-        // then
-        return promise.then(function () {
-          _sinon.default.assert.calledOnce(findRecordStub);
-          _sinon.default.assert.calledWith(findRecordStub, 'assessment', 123);
-        });
-      });
     });
 
     (0, _mocha.describe)('#afterModel', function () {
