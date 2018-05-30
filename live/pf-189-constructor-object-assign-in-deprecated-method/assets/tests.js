@@ -12515,11 +12515,31 @@ define('pix-live/tests/unit/components/competence-level-progress-bar-test', ['ch
 
     (0, _mocha.describe)('#Computed Properties behaviors: ', function () {
 
-      (0, _mocha.describe)('#hasLevel', function () {
+      (0, _mocha.describe)('#limitedLevel', function () {
 
-        [{ level: 1, expectedValue: true }, { level: 0, expectedValue: true }, { level: -1, expectedValue: false }, { level: undefined, expectedValue: false }].forEach(function (_ref) {
+        [{ level: 8, expectedValue: 5 }, { level: 7, expectedValue: 5 }, { level: 6, expectedValue: 5 }, { level: 5, expectedValue: 5 }, { level: 4, expectedValue: 4 }, { level: 3, expectedValue: 3 }, { level: 2, expectedValue: 2 }, { level: 1, expectedValue: 1 }, { level: 0, expectedValue: 0 }, { level: -1, expectedValue: -1 }].forEach(function (_ref) {
           var level = _ref.level,
               expectedValue = _ref.expectedValue;
+
+
+          (0, _mocha.it)('should return ' + expectedValue + ' when the level of the competence is ' + level, function () {
+            // given
+            var component = this.subject();
+
+            // when
+            component.set('level', level);
+
+            // then
+            (0, _chai.expect)(component.get('limitedLevel')).to.equal(expectedValue);
+          });
+        });
+      });
+
+      (0, _mocha.describe)('#hasLevel', function () {
+
+        [{ level: 1, expectedValue: true }, { level: 0, expectedValue: true }, { level: -1, expectedValue: false }, { level: undefined, expectedValue: false }].forEach(function (_ref2) {
+          var level = _ref2.level,
+              expectedValue = _ref2.expectedValue;
 
 
           (0, _mocha.it)('should return ' + expectedValue + ' when the level of the competence is ' + level, function () {
@@ -12536,9 +12556,9 @@ define('pix-live/tests/unit/components/competence-level-progress-bar-test', ['ch
       });
 
       (0, _mocha.describe)('#widthOfProgressBar', function () {
-        [{ level: 1, expectedValue: 'width : 12.5%' }, { level: 2, expectedValue: 'width : 25%' }, { level: 0, expectedValue: 'width : 24px' }, { level: 3, expectedValue: 'width : 37.5%' }, { level: 4, expectedValue: 'width : 50%' }, { level: 5, expectedValue: 'width : 62.5%' }].forEach(function (_ref2) {
-          var level = _ref2.level,
-              expectedValue = _ref2.expectedValue;
+        [{ level: 1, expectedValue: 'width : 12.5%' }, { level: 2, expectedValue: 'width : 25%' }, { level: 0, expectedValue: 'width : 24px' }, { level: 3, expectedValue: 'width : 37.5%' }, { level: 4, expectedValue: 'width : 50%' }, { level: 5, expectedValue: 'width : 62.5%' }, { level: 6, expectedValue: 'width : 62.5%' }, { level: 7, expectedValue: 'width : 62.5%' }, { level: 8, expectedValue: 'width : 62.5%' }].forEach(function (_ref3) {
+          var level = _ref3.level,
+              expectedValue = _ref3.expectedValue;
 
 
           (0, _mocha.it)('should return ' + expectedValue + ' when the level is ' + level, function () {
@@ -12555,9 +12575,9 @@ define('pix-live/tests/unit/components/competence-level-progress-bar-test', ['ch
       });
 
       (0, _mocha.describe)('#canUserStartCourse', function () {
-        [{ level: null, expected: true }, { level: undefined, expected: true }, { level: -1, expected: true }, { level: 1, expected: false }, { level: 0, expected: false }].forEach(function (_ref3) {
-          var level = _ref3.level,
-              expected = _ref3.expected;
+        [{ level: null, expected: true }, { level: undefined, expected: true }, { level: -1, expected: true }, { level: 1, expected: false }, { level: 0, expected: false }].forEach(function (_ref4) {
+          var level = _ref4.level,
+              expected = _ref4.expected;
 
           (0, _mocha.it)('should return ' + expected + ', when there is associated course and level is ' + level, function () {
             // given
@@ -12572,8 +12592,8 @@ define('pix-live/tests/unit/components/competence-level-progress-bar-test', ['ch
           });
         });
 
-        [{ courseId: null }, { courseId: undefined }, { courseId: '' }, { courseId: 0 }].forEach(function (_ref4) {
-          var courseId = _ref4.courseId;
+        [{ courseId: null }, { courseId: undefined }, { courseId: '' }, { courseId: 0 }].forEach(function (_ref5) {
+          var courseId = _ref5.courseId;
 
 
           (0, _mocha.it)('should return false, when there is no associated course', function () {
