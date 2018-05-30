@@ -15158,7 +15158,7 @@ define('pix-live/tests/unit/models/challenge-test', ['chai', 'mocha', 'ember-moc
         (0, _chai.expect)(hasValidEmbedDocument).to.be.false;
       });
 
-      (0, _mocha.it)('should be false when embed height', function () {
+      (0, _mocha.it)('should be false when embed height is missing', function () {
         // given
         delete embedOptions.embedHeight;
         var challenge = this.subject(embedOptions);
