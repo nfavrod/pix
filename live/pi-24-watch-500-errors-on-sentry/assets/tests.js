@@ -3624,6 +3624,10 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
+    it('components/user-certifications-detail-header.js', function () {
+      // test passed
+    });
+
     it('components/user-certifications-panel.js', function () {
       // test passed
     });
@@ -3780,6 +3784,10 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
+    it('routes/campaigns/create-assessment.js', function () {
+      // test passed
+    });
+
     it('routes/certifications/results.js', function () {
       // test passed
     });
@@ -3856,7 +3864,11 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
-    it('routes/user-certifications.js', function () {
+    it('routes/user-certifications/get.js', function () {
+      // test passed
+    });
+
+    it('routes/user-certifications/index.js', function () {
       // test passed
     });
 
@@ -4315,6 +4327,35 @@ define('pix-live/tests/integration/components/certification-results-page-test', 
 define('pix-live/tests/integration/components/certifications-list-item-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
   'use strict';
 
+  function _asyncToGenerator(fn) {
+    return function () {
+      var gen = fn.apply(this, arguments);
+      return new Promise(function (resolve, reject) {
+        function step(key, arg) {
+          try {
+            var info = gen[key](arg);
+            var value = info.value;
+          } catch (error) {
+            reject(error);
+            return;
+          }
+
+          if (info.done) {
+            resolve(value);
+          } else {
+            return Promise.resolve(value).then(function (value) {
+              step("next", value);
+            }, function (err) {
+              step("throw", err);
+            });
+          }
+        }
+
+        return step("next");
+      });
+    };
+  }
+
   (0, _mocha.describe)('Integration | Component | certifications list item', function () {
     (0, _emberMocha.setupComponentTest)('certifications-list-item', {
       integration: true
@@ -4366,34 +4407,123 @@ define('pix-live/tests/integration/components/certifications-list-item-test', ['
 
     context('when the certification is published and rejected', function () {
 
-      (0, _mocha.beforeEach)(function () {
-        // given
-        certification = Ember.Object.create({
-          id: 1,
-          date: '2018-02-15T15:15:52.504Z',
-          status: 'rejected',
-          certificationCenter: 'Université de Paris',
-          isPublished: true,
-          pixScore: 231
+      context('without commentForCandidate', function () {
+        (0, _mocha.beforeEach)(function () {
+          // given
+          certification = Ember.Object.create({
+            id: 1,
+            date: '2018-02-15T15:15:52.504Z',
+            status: 'rejected',
+            certificationCenter: 'Université de Paris',
+            isPublished: true,
+            pixScore: 231,
+            commentForCandidate: null
+          });
+          this.set('certification', certification);
+
+          // when
+          this.render(Ember.HTMLBars.template({
+            "id": "WFVlC5r9",
+            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"certifications-list-item\",null,[[\"certification\"],[[20,[\"certification\"]]]]],false]],\"hasEval\":false}",
+            "meta": {}
+          }));
         });
-        this.set('certification', certification);
 
-        // when
-        this.render(Ember.HTMLBars.template({
-          "id": "WFVlC5r9",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"certifications-list-item\",null,[[\"certification\"],[[20,[\"certification\"]]]]],false]],\"hasEval\":false}",
-          "meta": {}
-        }));
+        // then
+        (0, _mocha.it)('should render a certifications-list-item__published-item div', function () {
+          (0, _chai.expect)(this.$('.certifications-list-item__published-item')).to.have.lengthOf(1);
+        });
+
+        (0, _mocha.it)('should show Certification non obtenue', function () {
+          (0, _chai.expect)(this.$('img.certifications-list-item__cross-img')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.certifications-list-item').text()).to.include('Certification non obtenue');
+        });
+
+        (0, _mocha.it)('should not show Détail in last column', function () {
+          (0, _chai.expect)(this.$('.certifications-list-item__cell-detail-button')).to.have.lengthOf(0);
+        });
+
+        (0, _mocha.it)('should not show comment for candidate panel when clicked on row', _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+          return regeneratorRuntime.wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+
+                  Ember.run(function () {
+                    return document.querySelector('.certifications-list-item__cell').click();
+                  });
+
+                  (0, _chai.expect)(this.$('.certifications-list-item__row-comment-cell')).to.have.lengthOf(0);
+
+                case 2:
+                case 'end':
+                  return _context.stop();
+              }
+            }
+          }, _callee, this);
+        })));
       });
 
-      // then
-      (0, _mocha.it)('should render a certifications-list-item__published-item div', function () {
-        (0, _chai.expect)(this.$('.certifications-list-item__published-item')).to.have.lengthOf(1);
-      });
+      context('with a commentForCandidate', function () {
 
-      (0, _mocha.it)('should show Certification non obtenue', function () {
-        (0, _chai.expect)(this.$('img.certifications-list-item__cross-img')).to.have.lengthOf(1);
-        (0, _chai.expect)(this.$('.certifications-list-item').text()).to.include('Certification non obtenue');
+        var commentForCandidate = 'Commentaire pour le candidat';
+
+        (0, _mocha.beforeEach)(function () {
+          // given
+          certification = Ember.Object.create({
+            id: 1,
+            date: '2018-02-15T15:15:52.504Z',
+            status: 'rejected',
+            certificationCenter: 'Université de Paris',
+            isPublished: true,
+            pixScore: 231,
+            commentForCandidate: commentForCandidate
+          });
+          this.set('certification', certification);
+
+          // when
+          this.render(Ember.HTMLBars.template({
+            "id": "WFVlC5r9",
+            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"certifications-list-item\",null,[[\"certification\"],[[20,[\"certification\"]]]]],false]],\"hasEval\":false}",
+            "meta": {}
+          }));
+        });
+
+        // then
+        (0, _mocha.it)('should render a certifications-list-item__published-item div', function () {
+          (0, _chai.expect)(this.$('.certifications-list-item__published-item')).to.have.lengthOf(1);
+        });
+
+        (0, _mocha.it)('should show Certification non obtenue', function () {
+          (0, _chai.expect)(this.$('img.certifications-list-item__cross-img')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.certifications-list-item').text()).to.include('Certification non obtenue');
+        });
+
+        (0, _mocha.it)('should show Détail in last column', function () {
+          (0, _chai.expect)(this.$('.certifications-list-item__cell-detail-button')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.certifications-list-item__cell-detail-button').text()).to.include('DÉTAIL');
+        });
+
+        (0, _mocha.it)('should show comment for candidate panel when clicked on row', _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+          return regeneratorRuntime.wrap(function _callee2$(_context2) {
+            while (1) {
+              switch (_context2.prev = _context2.next) {
+                case 0:
+
+                  Ember.run(function () {
+                    return document.querySelector('.certifications-list-item__cell').click();
+                  });
+
+                  (0, _chai.expect)(this.$('.certifications-list-item__row-comment-cell')).to.have.lengthOf(1);
+                  (0, _chai.expect)(this.$('.certifications-list-item__row-comment-cell').text()).to.include(commentForCandidate);
+
+                case 3:
+                case 'end':
+                  return _context2.stop();
+              }
+            }
+          }, _callee2, this);
+        })));
       });
     });
 
@@ -4420,8 +4550,8 @@ define('pix-live/tests/integration/components/certifications-list-item-test', ['
       });
 
       // then
-      (0, _mocha.it)('should render a certifications-list-item__published-item div', function () {
-        (0, _chai.expect)(this.$('.certifications-list-item__published-item')).to.have.lengthOf(1);
+      (0, _mocha.it)('should render certifications-list-item__published-item with a link inside', function () {
+        (0, _chai.expect)(this.$('.certifications-list-item__published-item a')).to.have.lengthOf(1);
       });
 
       (0, _mocha.it)('should show Certification obtenue', function () {
@@ -4432,6 +4562,11 @@ define('pix-live/tests/integration/components/certifications-list-item-test', ['
       (0, _mocha.it)('should show the Pix Score', function () {
         (0, _chai.expect)(this.$('.certifications-list-item__pix-score')).to.have.lengthOf(1);
         (0, _chai.expect)(this.$('.certifications-list-item__pix-score').text()).to.include('231');
+      });
+
+      (0, _mocha.it)('should show link to certification page in last column', function () {
+        (0, _chai.expect)(this.$('.certifications-list-item__cell-detail-link')).to.have.lengthOf(1);
+        (0, _chai.expect)(this.$('.certifications-list-item__cell-detail-link').text()).to.include('RÉSULTATS');
       });
     });
   });
@@ -9863,15 +9998,16 @@ define('pix-live/tests/integration/components/signup-form-test', ['chai', 'mocha
           // given
           var userWithCguNotAccepted = Ember.Object.create({
             cgu: false,
-            errors: {
+            errors: Ember.ArrayProxy.create({
               content: [{
                 attribute: 'cgu',
                 message: UNCHECKED_CHECKBOX_CGU_ERROR
               }],
               cgu: [{
+                attribute: 'cgu',
                 message: UNCHECKED_CHECKBOX_CGU_ERROR
               }]
-            },
+            }),
             save: function save() {
               return new Ember.RSVP.reject();
             }
@@ -9897,12 +10033,12 @@ define('pix-live/tests/integration/components/signup-form-test', ['chai', 'mocha
           var _this6 = this;
 
           var userThatThrowAnErrorDuringSaving = Ember.Object.create({
-            errors: {
+            errors: Ember.ArrayProxy.create({
               content: [{
                 attribute: 'email',
                 message: 'An error concerning the email thrown by the API'
               }]
-            },
+            }),
             save: function save() {
               return new Ember.RSVP.reject();
             }
@@ -9931,7 +10067,7 @@ define('pix-live/tests/integration/components/signup-form-test', ['chai', 'mocha
           var userWithCaptchaNotValid = Ember.Object.create({
             cgu: true,
             recaptchaToken: null,
-            errors: {
+            errors: Ember.ArrayProxy.create({
               content: [{
                 attribute: 'recaptchaToken',
                 message: UNCHECKED_CHECKBOX_RECAPTCHA_ERROR
@@ -9939,7 +10075,7 @@ define('pix-live/tests/integration/components/signup-form-test', ['chai', 'mocha
               recaptchaToken: [{
                 message: UNCHECKED_CHECKBOX_RECAPTCHA_ERROR
               }]
-            },
+            }),
             save: function save() {
               return new Ember.RSVP.reject();
             }
@@ -10386,6 +10522,119 @@ define('pix-live/tests/integration/components/tutorial-panel-test', ['chai', 'mo
       (0, _chai.expect)(this.$('.tutorial-panel__default-message-title')).to.have.lengthOf(1);
       (0, _chai.expect)(this.$('.tutorial-panel__default-message-picto-container')).to.have.lengthOf(1);
       (0, _chai.expect)(this.$('.tutorial-panel__default-message-picto')).to.have.lengthOf(1);
+    });
+  });
+});
+define('pix-live/tests/integration/components/user-certifications-detail-header-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+  'use strict';
+
+  (0, _mocha.describe)('Integration | Component | user certifications detail header', function () {
+    (0, _emberMocha.setupComponentTest)('user-certifications-detail-header', {
+      integration: true
+    });
+
+    var certification = void 0;
+
+    (0, _mocha.it)('renders', function () {
+      this.render(Ember.HTMLBars.template({
+        "id": "cCCETgrR",
+        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"user-certifications-detail-header\",null,[[\"certification\"],[[20,[\"certification\"]]]]],false]],\"hasEval\":false}",
+        "meta": {}
+      }));
+      (0, _chai.expect)(this.$()).to.have.length(1);
+    });
+
+    context('when certification is complete', function () {
+
+      beforeEach(function () {
+        // given
+        certification = Ember.Object.create({
+          id: 1,
+          birthdate: new Date('2000-01-22T15:15:52.504Z'),
+          firstName: 'Jean',
+          lastName: 'Bon',
+          date: new Date('2018-02-15T15:15:52.504Z'),
+          certificationCenter: 'Université de Lyon',
+          isPublished: true,
+          pixScore: 654,
+          status: 'validated',
+          commentForCandidate: 'Comment for candidate'
+        });
+        this.set('certification', certification);
+
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "cCCETgrR",
+          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"user-certifications-detail-header\",null,[[\"certification\"],[[20,[\"certification\"]]]]],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+      });
+
+      // then
+      (0, _mocha.it)('should show the certification icon', function () {
+        (0, _chai.expect)(this.$('.user-certifications-detail-header__icon')).to.have.lengthOf(1);
+      });
+
+      (0, _mocha.it)('should show the certification date', function () {
+        (0, _chai.expect)(this.$('.user-certifications-detail-header__data-box')).to.have.lengthOf(1);
+        (0, _chai.expect)(this.$('.user-certifications-detail-header__data-box').text()).to.include('15 février 2018');
+      });
+
+      (0, _mocha.it)('should show the certification user full name', function () {
+        (0, _chai.expect)(this.$('.user-certifications-detail-header__data-box').text()).to.include('Nom : Jean Bon');
+      });
+
+      (0, _mocha.it)('should show the certification user birthdate', function () {
+        (0, _chai.expect)(this.$('.user-certifications-detail-header__data-box').text()).to.include('Date de naissance : 22' + ' janvier 2000');
+      });
+
+      (0, _mocha.it)('should show the certification center', function () {
+        (0, _chai.expect)(this.$('.user-certifications-detail-header__data-box').text()).to.include('Centre de' + ' certification : Université de Lyon');
+      });
+    });
+
+    context('when certification is not complete', function () {
+
+      beforeEach(function () {
+        // given
+        certification = Ember.Object.create({
+          id: 1,
+          birthdate: null,
+          firstName: null,
+          lastName: null,
+          date: null,
+          certificationCenter: null,
+          isPublished: true,
+          pixScore: 654,
+          status: 'validated',
+          commentForCandidate: 'Comment for candidate'
+        });
+        this.set('certification', certification);
+
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "cCCETgrR",
+          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"user-certifications-detail-header\",null,[[\"certification\"],[[20,[\"certification\"]]]]],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+      });
+
+      // then
+      (0, _mocha.it)('should not show the certification date', function () {
+        (0, _chai.expect)(this.$('.user-certifications-detail-header__data-box').text()).to.not.include('obtenue le');
+      });
+
+      (0, _mocha.it)('should not  show the certification user full name', function () {
+        (0, _chai.expect)(this.$('.user-certifications-detail-header__data-box').text()).to.not.include('Nom :');
+      });
+
+      (0, _mocha.it)('should not  show the certification user birthdate', function () {
+        (0, _chai.expect)(this.$('.user-certifications-detail-header__data-box').text()).to.not.include('Date de naissance :');
+      });
+
+      (0, _mocha.it)('should not show the certification center', function () {
+        (0, _chai.expect)(this.$('.user-certifications-detail-header__data-box').text()).to.not.include('Centre de' + ' certification :');
+      });
     });
   });
 });
@@ -11095,6 +11344,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
+    it('integration/components/user-certifications-detail-header-test.js', function () {
+      // test passed
+    });
+
     it('integration/components/user-certifications-panel-test.js', function () {
       // test passed
     });
@@ -11403,7 +11656,11 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
-    it('unit/routes/user-certifications-test.js', function () {
+    it('unit/routes/user-certifications/get-test.js', function () {
+      // test passed
+    });
+
+    it('unit/routes/user-certifications/index-test.js', function () {
       // test passed
     });
 
@@ -16782,11 +17039,133 @@ define('pix-live/tests/unit/routes/terms-of-service-test', ['chai', 'mocha', 'em
     });
   });
 });
-define('pix-live/tests/unit/routes/user-certifications-test', ['chai', 'mocha', 'ember-mocha', 'sinon'], function (_chai, _mocha, _emberMocha, _sinon) {
+define('pix-live/tests/unit/routes/user-certifications/get-test', ['sinon', 'chai', 'mocha', 'ember-mocha'], function (_sinon, _chai, _mocha, _emberMocha) {
   'use strict';
 
-  (0, _mocha.describe)('Unit | Route | user certifications', function () {
-    (0, _emberMocha.setupTest)('route:user-certifications', {
+  (0, _mocha.describe)('Unit | Route | user certifications/get', function () {
+    (0, _emberMocha.setupTest)('route:user-certifications/get', {
+      needs: ['service:session', 'service:current-routed-modal']
+    });
+
+    var route = void 0;
+    var StoreStub = void 0;
+    var findRecordStub = void 0;
+    var certificationId = 'certification_id';
+
+    beforeEach(function () {
+      // define stubs
+      findRecordStub = _sinon.default.stub();
+      StoreStub = Ember.Service.extend({
+        findRecord: findRecordStub
+      });
+
+      // manage dependency injection context
+      this.register('service:store', StoreStub);
+      this.inject.service('store', { as: 'store' });
+
+      // instance route object
+      route = this.subject();
+      route.replaceWith = _sinon.default.stub().resolves();
+    });
+
+    (0, _mocha.it)('exists', function () {
+      var route = this.subject();
+      (0, _chai.expect)(route).to.be.ok;
+    });
+
+    (0, _mocha.describe)('#model', function () {
+
+      (0, _mocha.it)('should get the certification', function () {
+        // given
+        var params = { id: certificationId };
+        var retreivedCertification = [Ember.Object.create({ id: certificationId })];
+        route.get('store').findRecord.resolves(retreivedCertification);
+
+        // when
+        var promise = route.model(params);
+
+        // then
+        return promise.then(function () {
+          _sinon.default.assert.calledOnce(findRecordStub);
+          _sinon.default.assert.calledWith(findRecordStub, 'certification', certificationId);
+        });
+      });
+
+      (0, _mocha.it)('should not return to /mes-certifications when the certification is published and validated', function () {
+        // given
+        var params = { id: certificationId };
+        var retreivedCertification = Ember.Object.create({
+          id: 2,
+          date: '2018-02-15T15:15:52.504Z',
+          status: 'validated',
+          certificationCenter: 'Université de Lyon',
+          isPublished: true,
+          pixScore: 231
+        });
+        route.get('store').findRecord.resolves(retreivedCertification);
+
+        // when
+        var promise = route.model(params);
+
+        // then
+        return promise.then(function () {
+          (0, _chai.expect)(route.replaceWith).to.not.have.been.called;
+        });
+      });
+
+      (0, _mocha.it)('should return to /mes-certifications when the certification is not published', function () {
+        // given
+        var params = { id: certificationId };
+        var retreivedCertification = Ember.Object.create({
+          id: 2,
+          date: '2018-02-15T15:15:52.504Z',
+          status: 'validated',
+          certificationCenter: 'Université de Lyon',
+          isPublished: false,
+          pixScore: 231
+        });
+        route.get('store').findRecord.resolves(retreivedCertification);
+
+        // when
+        var promise = route.model(params);
+
+        // then
+        return promise.then(function () {
+          _sinon.default.assert.calledOnce(route.replaceWith);
+          _sinon.default.assert.calledWith(route.replaceWith, '/mes-certifications');
+        });
+      });
+
+      (0, _mocha.it)('should return to /mes-certifications when the certification is not validated', function () {
+        // given
+        var params = { id: certificationId };
+        var retreivedCertification = Ember.Object.create({
+          id: 3,
+          date: '2018-02-15T15:15:52.504Z',
+          status: 'rejected',
+          certificationCenter: 'Université de Lyon',
+          isPublished: true,
+          pixScore: 231
+        });
+        route.get('store').findRecord.resolves(retreivedCertification);
+
+        // when
+        var promise = route.model(params);
+
+        // then
+        return promise.then(function () {
+          _sinon.default.assert.calledOnce(route.replaceWith);
+          _sinon.default.assert.calledWith(route.replaceWith, '/mes-certifications');
+        });
+      });
+    });
+  });
+});
+define('pix-live/tests/unit/routes/user-certifications/index-test', ['chai', 'mocha', 'ember-mocha', 'sinon'], function (_chai, _mocha, _emberMocha, _sinon) {
+  'use strict';
+
+  (0, _mocha.describe)('Unit | Route | user certifications/index', function () {
+    (0, _emberMocha.setupTest)('route:user-certifications/index', {
       needs: ['service:session', 'service:current-routed-modal']
     });
 
