@@ -3624,7 +3624,19 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
+    it('components/user-certifications-detail-competence.js', function () {
+      // test passed
+    });
+
+    it('components/user-certifications-detail-domain.js', function () {
+      // test passed
+    });
+
     it('components/user-certifications-detail-header.js', function () {
+      // test passed
+    });
+
+    it('components/user-certifications-detail-list-competences.js', function () {
       // test passed
     });
 
