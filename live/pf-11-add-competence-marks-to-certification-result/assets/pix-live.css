@@ -5782,6 +5782,25 @@ hr.project-page__presentation-header-line {
   display: flex;
   padding-top: 1rem; }
 
+.assessment-challenge__continue-wrapper {
+  text-align: center; }
+
+.assessment-checkpoint__continue-button {
+  background-color: #3d68ff;
+  border: none;
+  border-radius: 5px;
+  text-transform: uppercase;
+  padding: 16px 70px;
+  color: #ffffff;
+  box-shadow: 0 2px 6px 0 rgba(12, 22, 58, 0.11), 0 1px 3px 0 rgba(0, 0, 0, 0.08); }
+
+.assessment-checkpoint__continue-button:hover, .assessment-checkpoint__continue-button:focus {
+  background-color: #2861CF; }
+
+.assessment-checkpoint__continue-button__image {
+  vertical-align: sub;
+  margin-left: 10px; }
+
 body {
   font-family: "Lato", Arial, sans-serif;
   background-color: #f2f3f4; }
