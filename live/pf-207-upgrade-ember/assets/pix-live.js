@@ -7557,18 +7557,17 @@ define('pix-live/services/delay', ['exports', 'pix-live/config/environment'], fu
     }
   });
 });
-define('pix-live/services/dependency-checker', ['exports', 'pix-live/config/environment'], function (exports, _environment) {
+define('pix-live/services/dependency-checker', ['exports', 'ember-collapsible-panel/services/dependency-checker'], function (exports, _dependencyChecker) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.Service.extend({
-
-    hasLiquidFire: Ember.computed('', function () {
-      return _environment.default['ember-collapsible-panel'].hasLiquidFire;
-    })
-
+  Object.defineProperty(exports, 'default', {
+    enumerable: true,
+    get: function () {
+      return _dependencyChecker.default;
+    }
   });
 });
 define('pix-live/services/google-recaptcha', ['exports', 'pix-live/config/environment'], function (exports, _environment) {
@@ -9435,6 +9434,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.49.3+870c46e5"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.49.3+b52abf43"});
 }
 //# sourceMappingURL=pix-live.map
