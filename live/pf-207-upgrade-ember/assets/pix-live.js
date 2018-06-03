@@ -7546,7 +7546,7 @@ define('pix-live/services/delay', ['exports', 'pix-live/config/environment'], fu
   exports.default = Ember.Service.extend({
     ms: function ms(_ms) {
       /* istanbul ignore if  */
-      if (_environment.default.EmberENV.useDelay) {
+      if (_environment.default.APP.useDelay) {
         //unreachable by tests
         return new Ember.RSVP.Promise(function (resolve) {
           setTimeout(resolve, _ms);
@@ -8933,7 +8933,7 @@ define('pix-live/utils/call-only-once', ['exports', 'pix-live/config/environment
   });
   exports.default = callOnlyOnce;
   function callOnlyOnce(targetFunction) {
-    if (_environment.default.EmberENV.useDelay) {
+    if (_environment.default.APP.useDelay) {
       return _lodashCustom.default.throttle(targetFunction, 1000, { leading: true, trailing: false });
     } else {
       return targetFunction;
@@ -9434,6 +9434,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.49.3+b52abf43"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.49.3+662eb312"});
 }
 //# sourceMappingURL=pix-live.map
