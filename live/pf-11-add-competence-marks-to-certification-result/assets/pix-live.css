@@ -716,6 +716,63 @@ button.routable-modal--close:active {
   font-weight: 400;
   width: 100%; }
 
+.challenge-embed-simulator {
+  position: relative; }
+
+.challenge-embed-simulator__aknowledgment-overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.55);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; }
+
+.challenge-embed-simulator__launch-simulator-button {
+  background-color: #3D68FF;
+  color: #ffffff;
+  box-shadow: 0 2px 6px 0 rgba(12, 22, 58, 0.11), 0 1px 3px 0 rgba(0, 0, 0, 0.08);
+  border: none;
+  border-radius: 5px;
+  font-family: Lato, Arial, sans-serif;
+  font-size: 15px;
+  font-weight: bold;
+  text-align: center;
+  text-transform: uppercase;
+  height: 56px;
+  padding: 0 36px; }
+
+.challenge-embed-simulator__simulator {
+  height: 100%; }
+  .challenge-embed-simulator__simulator.blurred {
+    filter: blur(5px); }
+
+.challenge-embed-simulator__iframe {
+  position: relative;
+  border: none;
+  width: 100%;
+  height: 100%; }
+
+.challenge-embed-simulator__reload-button {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 6px 0 rgba(12, 22, 58, 0.11), 0 1px 3px 0 rgba(0, 0, 0, 0.08);
+  border-radius: 5px;
+  font-family: Lato, Arial, sans-serif;
+  font-size: 15px;
+  font-weight: bold;
+  text-align: center;
+  height: 46px;
+  padding: 0 36px; }
+
 .challenge-statement {
   /* XXX required to let "help tooltip" displaying well even if instruction section is short (1 line) */
   overflow: visible; }
@@ -859,27 +916,6 @@ button.routable-modal--close:active {
   font-size: 16px;
   font-weight: 900;
   text-transform: uppercase; }
-
-.challenge-stay__container {
-  width: 100%;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  background-color: #ffbe00;
-  border-radius: 5px;
-  margin-bottom: 11px;
-  padding-left: 20px; }
-
-.challenge-stay__icon {
-  display: flex; }
-
-.challenge-stay__text {
-  padding-left: 15px;
-  font-size: 12px;
-  font-weight: 700; }
-  @media (min-width: 768px) {
-    .challenge-stay__text {
-      font-size: 16px; } }
 
 .certification-banner {
   display: flex;
@@ -3623,6 +3659,83 @@ input.qcm-panel__proposal-checkbox {
   line-height: 3.2rem;
   font-size: 2.8rem;
   font-weight: 600; }
+
+.user-certifications-detail-profile {
+  width: 95%;
+  margin-top: 30px; }
+  @media (min-width: 980px) {
+    .user-certifications-detail-profile {
+      width: 60%;
+      justify-content: flex-start; } }
+
+.user-certifications-detail-area {
+  width: 100%;
+  background-color: #ffffff;
+  margin: 10px;
+  padding: 3px 3px 25px 3px; }
+  @media (min-width: 980px) {
+    .user-certifications-detail-area {
+      justify-content: flex-start; } }
+
+.user-certifications-detail-area__box-name {
+  width: 100%;
+  background-color: #e6e6e6;
+  color: #3e4149;
+  font-family: "Raleway", Arial, sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  line-height: 21px;
+  padding: 19px 0px 19px 36px;
+  text-transform: uppercase; }
+  @media (min-width: 980px) {
+    .user-certifications-detail-area__box-name {
+      height: 59px; } }
+
+.user-certifications-detail-competence {
+  height: 50px;
+  margin-top: 20px;
+  padding-left: 36px;
+  padding-right: 36px;
+  width: 100%; }
+  @media (min-width: 980px) {
+    .user-certifications-detail-competence {
+      justify-content: flex-start; } }
+
+.user-certifications-detail-competence__box-name {
+  color: #3e4149;
+  font-family: "Lato", Arial, sans-serif;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+  line-height: 19px; }
+
+.user-certifications-detail-competence__box-level {
+  height: 25px;
+  float: right;
+  width: 25px;
+  float: right;
+  text-align: center;
+  color: #3e4149;
+  font-family: "Lato", Arial, sans-serif;
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 24px; }
+
+.user-certifications-detail-competence__levels-bar-block {
+  margin-top: 10px;
+  display: block; }
+
+.user-certifications-detail-competence__level-bar {
+  margin: 2px;
+  float: left;
+  width: 10.5%;
+  height: 5px; }
+
+.user-certifications-detail-competence__validate-level {
+  background: #ffbe00; }
+
+.user-certifications-detail-competence__not-validate-level {
+  background: #D8D8D8; }
 
 .index-page-patners-enrollment {
   background-image: linear-gradient(to bottom, #446eff, #133dd2); }

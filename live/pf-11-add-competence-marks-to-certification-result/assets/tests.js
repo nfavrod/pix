@@ -1625,78 +1625,6 @@ describe('Acceptance | d1 - Valider une épreuve |', function() {
 define("pix-live/tests/acceptance/d1-epreuve-validation-test", [], function () {
   "use strict";
 });
-define('pix-live/tests/acceptance/g1-bandeau-no-internet-no-outils-test', ['mocha', 'chai', 'pix-live/tests/helpers/start-app', 'pix-live/tests/helpers/destroy-app'], function (_mocha, _chai, _startApp, _destroyApp) {
-  'use strict';
-
-  function _asyncToGenerator(fn) {
-    return function () {
-      var gen = fn.apply(this, arguments);
-      return new Promise(function (resolve, reject) {
-        function step(key, arg) {
-          try {
-            var info = gen[key](arg);
-            var value = info.value;
-          } catch (error) {
-            reject(error);
-            return;
-          }
-
-          if (info.done) {
-            resolve(value);
-          } else {
-            return Promise.resolve(value).then(function (value) {
-              step("next", value);
-            }, function (err) {
-              step("throw", err);
-            });
-          }
-        }
-
-        return step("next");
-      });
-    };
-  }
-
-  var CHALLENGE_WITHOUT_INTERNET_NOR_TOOLS_URI = '/assessments/ref_assessment_id/challenges/ref_qcu_challenge_id';
-  var CHALLENGE_ALLOWING_INTERNET_OR_TOOS_URI = '/assessments/ref_assessment_id/challenges/ref_qcm_challenge_id';
-
-  (0, _mocha.describe)('Acceptance | g1 - Afficahge du bandeau indiquant que l\'usage d\'Internet ou d\'outils est interdit | ', function () {
-
-    var application = void 0;
-
-    (0, _mocha.beforeEach)(function () {
-      application = (0, _startApp.default)();
-    });
-
-    (0, _mocha.afterEach)(function () {
-      (0, _destroyApp.default)(application);
-    });
-
-    (0, _mocha.it)('g1.1 le bandeau doit être affiché si l\'usage d\'Internet ou d\'outils est interdit dans le cadre de l\'épreuve', _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-      return regeneratorRuntime.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              _context.next = 2;
-              return visit(CHALLENGE_WITHOUT_INTERNET_NOR_TOOLS_URI);
-
-            case 2:
-              (0, _chai.expect)(Ember.$('.challenge-stay__text').text()).to.contain('Vous devez répondre à cette question sans sortir de cette page !');
-
-            case 3:
-            case 'end':
-              return _context.stop();
-          }
-        }
-      }, _callee, this);
-    })));
-
-    (0, _mocha.it)('g1.2 le bandeau ne doit pas être affiché si l\'usage d\'Internet ou d\'outils est autorisé dans le cadre de l\'épreuve', function () {
-      visit(CHALLENGE_ALLOWING_INTERNET_OR_TOOS_URI);
-      (0, _chai.expect)(Ember.$('.challenge-stay__text')).to.have.lengthOf(0);
-    });
-  });
-});
 define('pix-live/tests/acceptance/h1-timeout-jauge-test', ['mocha', 'chai', 'pix-live/tests/helpers/start-app', 'pix-live/tests/helpers/destroy-app'], function (_mocha, _chai, _startApp, _destroyApp) {
   'use strict';
 
@@ -3400,6 +3328,10 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
+    it('components/challenge-embed-simulator.js', function () {
+      // test passed
+    });
+
     it('components/challenge-item-generic.js', function () {
       // test passed
     });
@@ -3425,10 +3357,6 @@ define('pix-live/tests/app.lint-test', [], function () {
     });
 
     it('components/challenge-statement.js', function () {
-      // test passed
-    });
-
-    it('components/challenge-stay.js', function () {
       // test passed
     });
 
@@ -3624,11 +3552,11 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
-    it('components/user-certifications-detail-competence.js', function () {
+    it('components/user-certifications-detail-area.js', function () {
       // test passed
     });
 
-    it('components/user-certifications-detail-domain.js', function () {
+    it('components/user-certifications-detail-competence.js', function () {
       // test passed
     });
 
@@ -3636,7 +3564,7 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
-    it('components/user-certifications-detail-list-competences.js', function () {
+    it('components/user-certifications-detail-profile.js', function () {
       // test passed
     });
 
@@ -4752,6 +4680,234 @@ define('pix-live/tests/integration/components/challenge-actions-test', ['chai', 
     });
   });
 });
+define('pix-live/tests/integration/components/challenge-embed-simulator-test', ['chai', 'mocha', 'ember-mocha', 'sinon'], function (_chai, _mocha, _emberMocha, _sinon) {
+  'use strict';
+
+  function _asyncToGenerator(fn) {
+    return function () {
+      var gen = fn.apply(this, arguments);
+      return new Promise(function (resolve, reject) {
+        function step(key, arg) {
+          try {
+            var info = gen[key](arg);
+            var value = info.value;
+          } catch (error) {
+            reject(error);
+            return;
+          }
+
+          if (info.done) {
+            resolve(value);
+          } else {
+            return Promise.resolve(value).then(function (value) {
+              step("next", value);
+            }, function (err) {
+              step("throw", err);
+            });
+          }
+        }
+
+        return step("next");
+      });
+    };
+  }
+
+  (0, _mocha.describe)('Integration | Component | challenge embed simulator', function () {
+
+    (0, _emberMocha.setupComponentTest)('challenge-embed-simulator', {
+      integration: true
+    });
+
+    (0, _mocha.describe)('Aknowledgment overlay', function () {
+
+      (0, _mocha.it)('should be displayed when component has just been rendered', function () {
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "MAVropgo",
+          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"challenge-embed-simulator\"],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+
+        // then
+        (0, _chai.expect)(this.$('.challenge-embed-simulator__aknowledgment-overlay')).to.have.lengthOf(1);
+      });
+
+      (0, _mocha.it)('should contain a button to launch the simulator', function () {
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "MAVropgo",
+          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"challenge-embed-simulator\"],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+
+        // then
+        var $launchSimulatorButton = this.$('.challenge-embed-simulator__aknowledgment-overlay .challenge-embed-simulator__launch-simulator-button');
+        (0, _chai.expect)($launchSimulatorButton).to.have.lengthOf(1);
+      });
+    });
+
+    (0, _mocha.describe)('Launch simulator button', function () {
+
+      (0, _mocha.it)('should have text "Je lance le simulateur"', function () {
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "MAVropgo",
+          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"challenge-embed-simulator\"],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+
+        // then
+        var $launchSimulatorButton = this.$('.challenge-embed-simulator__aknowledgment-overlay .challenge-embed-simulator__launch-simulator-button');
+        (0, _chai.expect)($launchSimulatorButton.text().trim()).to.equal('Je lance l’application');
+      });
+
+      (0, _mocha.it)('should close the aknowledgment overlay when clicked', _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                // given
+                this.render(Ember.HTMLBars.template({
+                  "id": "MAVropgo",
+                  "block": "{\"symbols\":[],\"statements\":[[1,[18,\"challenge-embed-simulator\"],false]],\"hasEval\":false}",
+                  "meta": {}
+                }));
+
+                // when
+                Ember.run(function () {
+                  return document.querySelector('.challenge-embed-simulator__launch-simulator-button').click();
+                });
+
+                // then
+                (0, _chai.expect)(this.$('.challenge-embed-simulator__aknowledgment-overlay')).to.have.lengthOf(0);
+
+              case 3:
+              case 'end':
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      })));
+    });
+
+    (0, _mocha.describe)('Reload simulator button', function () {
+
+      (0, _mocha.it)('should have text "Recharger le simulateur"', function () {
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "MAVropgo",
+          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"challenge-embed-simulator\"],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+
+        // then
+        var $reloadSimulatorButton = this.$('.challenge-embed-simulator__reload-button');
+        (0, _chai.expect)($reloadSimulatorButton.text().trim()).to.equal('Recharger l’application');
+      });
+
+      (0, _mocha.it)('should reload simulator when user clicked on button reload', _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+        var stubReloadSimulator;
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                // given
+                stubReloadSimulator = _sinon.default.stub();
+
+                this.set('stubReloadSimulator', stubReloadSimulator);
+                this.render(Ember.HTMLBars.template({
+                  "id": "7oXhQ+wW",
+                  "block": "{\"symbols\":[],\"statements\":[[1,[25,\"challenge-embed-simulator\",null,[[\"_reloadSimulator\"],[[20,[\"stubReloadSimulator\"]]]]],false]],\"hasEval\":false}",
+                  "meta": {}
+                }));
+
+                // when
+                Ember.run(function () {
+                  return document.querySelector('.challenge-embed-simulator__reload-button').click();
+                });
+
+                // then
+                _sinon.default.assert.calledOnce(stubReloadSimulator);
+
+              case 5:
+              case 'end':
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this);
+      })));
+    });
+
+    (0, _mocha.describe)('Blur effect on simulator panel', function () {
+
+      (0, _mocha.it)('should be active when component is first rendered', function () {
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "MAVropgo",
+          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"challenge-embed-simulator\"],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+
+        // then
+        var $simulator = this.$('.challenge-embed-simulator__simulator')[0];
+        (0, _chai.expect)($simulator.classList.contains('blurred')).to.be.true;
+      });
+
+      (0, _mocha.it)('should be removed when simulator was launched', function () {
+        // given
+        this.render(Ember.HTMLBars.template({
+          "id": "MAVropgo",
+          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"challenge-embed-simulator\"],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+
+        // when
+        Ember.run(function () {
+          return document.querySelector('.challenge-embed-simulator__launch-simulator-button').click();
+        });
+
+        // then
+        var $simulator = this.$('.challenge-embed-simulator__simulator')[0];
+        (0, _chai.expect)($simulator.classList.contains('blurred')).to.be.false;
+      });
+    });
+
+    (0, _mocha.describe)('Embed simulator', function () {
+
+      var embedDocument = {
+        url: 'http://embed-simulator.url',
+        title: 'Embed simulator',
+        height: 200
+      };
+
+      (0, _mocha.beforeEach)(function () {
+        // given
+        this.set('embedDocument', embedDocument);
+
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "sHoTmuyI",
+          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"challenge-embed-simulator\",null,[[\"embedDocument\"],[[20,[\"embedDocument\"]]]]],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+
+        // then
+      });
+
+      (0, _mocha.it)('should have an height that is the one defined in the referential', function () {
+        (0, _chai.expect)(this.$('.challenge-embed-simulator')[0].style.cssText).to.equal('height: 200px;');
+      });
+
+      (0, _mocha.it)('should define a title attribute on the iframe element that is the one defined in the referential for field "Embed title"', function () {
+        (0, _chai.expect)(this.$('.challenge-embed-simulator__iframe')[0].title).to.equal('Embed simulator');
+      });
+
+      (0, _mocha.it)('should define a src attribute on the iframe element that is the one defined in the referential for field "Embed URL"', function () {
+        (0, _chai.expect)(this.$('.challenge-embed-simulator__iframe')[0].src).to.equal('http://embed-simulator.url/');
+      });
+    });
+  });
+});
 define('pix-live/tests/integration/components/challenge-item-qmail-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
   'use strict';
 
@@ -5162,39 +5318,35 @@ define('pix-live/tests/integration/components/challenge-statement-test', ['chai'
         });
       });
     });
-  });
-});
-define('pix-live/tests/integration/components/challenge-stay-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
-  'use strict';
 
-  (0, _mocha.describe)('Integration | Component | challenge stay', function () {
+    /*
+     * Embed simulator
+     * ------------------------------------------------
+     */
 
-    (0, _emberMocha.setupComponentTest)('challenge-stay', {
-      integration: true
-    });
+    (0, _mocha.describe)('Embed simulator section:', function () {
 
-    (0, _mocha.it)('renders', function () {
-      this.render(Ember.HTMLBars.template({
-        "id": "+dJnSZnH",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"challenge-stay\"],false]],\"hasEval\":false}",
-        "meta": {}
-      }));
-      (0, _chai.expect)(this.$()).to.have.lengthOf(1);
-    });
+      (0, _mocha.it)('should be displayed when the challenge has a valid Embed object', function () {
+        // given
+        addChallengeToContext(this, { hasValidEmbedDocument: true });
 
-    (0, _mocha.it)('should display a warning icon with an accessible description', function () {
-      // when
-      this.render(Ember.HTMLBars.template({
-        "id": "+dJnSZnH",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"challenge-stay\"],false]],\"hasEval\":false}",
-        "meta": {}
-      }));
+        // when
+        renderChallengeStatement(this);
 
-      // then
-      var $img = this.$('.challenge-stay__icon-img');
-      (0, _chai.expect)($img).to.have.lengthOf(1);
-      (0, _chai.expect)($img.attr('src')).to.equal('/images/icon-warning.svg');
-      (0, _chai.expect)($img.attr('alt')).to.not.be.empty;
+        // then
+        (0, _chai.expect)(this.$('.challenge-embed-simulator')).to.have.lengthOf(1);
+      });
+
+      (0, _mocha.it)('should not be displayed when the challenge does not have a valid Embed object', function () {
+        // given
+        addChallengeToContext(this, { hasValidEmbedDocument: false });
+
+        // when
+        renderChallengeStatement(this);
+
+        // then
+        (0, _chai.expect)(this.$('.challenge-embed-simulator')).to.have.lengthOf(0);
+      });
     });
   });
 });
@@ -9101,23 +9253,6 @@ define('pix-live/tests/integration/components/scoring-panel-test', ['chai', 'moc
         (0, _chai.expect)(this.$('.scoring-panel__congrats-beta')).to.have.lengthOf(1);
       });
     });
-
-    (0, _mocha.describe)('Display the BackToHome button', function () {
-
-      (0, _mocha.beforeEach)(function () {
-        this.set('assessment', assessmentWithTrophy);
-        this.render(Ember.HTMLBars.template({
-          "id": "obxMGzIf",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"scoring-panel\",null,[[\"assessment\"],[[20,[\"assessment\"]]]]],false]],\"hasEval\":false}",
-          "meta": {}
-        }));
-      });
-
-      (0, _mocha.it)('should not have a blue border when the user clicks on its', function () {
-        // then
-        (0, _chai.expect)(this.$('.scoring-panel__index-link__element').css('outline')).to.equal('rgb(255, 255, 255) none 0px');
-      });
-    });
   });
 });
 define('pix-live/tests/integration/components/share-profile-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
@@ -10545,6 +10680,233 @@ define('pix-live/tests/integration/components/tutorial-panel-test', ['chai', 'mo
     });
   });
 });
+define('pix-live/tests/integration/components/user-certifications-detail-area-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+  'use strict';
+
+  (0, _mocha.describe)('Integration | Component | user certifications detail area', function () {
+    (0, _emberMocha.setupComponentTest)('user-certifications-detail-area', {
+      integration: true
+    });
+
+    var area = void 0;
+
+    (0, _mocha.it)('renders', function () {
+      this.render(Ember.HTMLBars.template({
+        "id": "L+WViod0",
+        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"user-certifications-detail-area\",null,[[\"area\"],[[20,[\"area\"]]]]],false]],\"hasEval\":false}",
+        "meta": {}
+      }));
+      (0, _chai.expect)(this.$()).to.have.length(1);
+    });
+
+    context('when has a list of competences', function () {
+
+      beforeEach(function () {
+        // given
+        area = {
+          'area-name': 'Information et données',
+          'area-index': '1',
+          'competences': [{
+            'competenceName': 'Mener une recherche et une veille d’information',
+            'competenceIndex': '1.1',
+            'level': 5
+          }, {
+            'competenceName': 'Gérer des données',
+            'competenceIndex': '1.2',
+            'level': -1
+          }, {
+            'competenceName': 'Traiter des données',
+            'competenceIndex': '1.3',
+            'level': 3
+          }]
+        };
+        this.set('area', area);
+
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "L+WViod0",
+          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"user-certifications-detail-area\",null,[[\"area\"],[[20,[\"area\"]]]]],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+      });
+
+      // then
+      (0, _mocha.it)('should show the name of area', function () {
+        // given
+        var divOfName = '.user-certifications-detail-area__box-name';
+
+        // then
+        (0, _chai.expect)(this.$(divOfName).text()).to.include(area['area-name']);
+      });
+
+      (0, _mocha.it)('should include one competences detail per competence', function () {
+        // given
+        var divOfCompetence = '.user-certifications-detail-competence';
+
+        // then
+        (0, _chai.expect)(this.$(divOfCompetence)).to.have.lengthOf(area.competences.length);
+      });
+    });
+  });
+});
+define('pix-live/tests/integration/components/user-certifications-detail-competence-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+  'use strict';
+
+  (0, _mocha.describe)('Integration | Component | user certifications detail competence', function () {
+    (0, _emberMocha.setupComponentTest)('user-certifications-detail-competence', {
+      integration: true
+    });
+
+    var competence = void 0;
+
+    (0, _mocha.it)('renders', function () {
+      this.render(Ember.HTMLBars.template({
+        "id": "T59rOXfq",
+        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"user-certifications-detail-competence\",null,[[\"competence\"],[[20,[\"competence\"]]]]],false]],\"hasEval\":false}",
+        "meta": {}
+      }));
+      (0, _chai.expect)(this.$()).to.have.length(1);
+    });
+
+    context('when competence has level -1', function () {
+
+      beforeEach(function () {
+        // given
+        competence = {
+          'competenceName': 'Mener une recherche et une veille d’information',
+          'competenceIndex': '1.1',
+          'level': -1
+        };
+        this.set('competence', competence);
+
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "T59rOXfq",
+          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"user-certifications-detail-competence\",null,[[\"competence\"],[[20,[\"competence\"]]]]],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+      });
+
+      // then
+      (0, _mocha.it)('should show the name of competence', function () {
+        // given
+        var divOfName = '.user-certifications-detail-competence__box-name';
+
+        // then
+        (0, _chai.expect)(this.$(divOfName).text()).to.include(competence.competenceName);
+      });
+
+      (0, _mocha.it)('should not show the level of competence', function () {
+        // given
+        var divOfLevel = '.user-certifications-detail-competence__box-level';
+
+        // then
+        (0, _chai.expect)(this.$(divOfLevel)).to.have.lengthOf(0);
+      });
+
+      (0, _mocha.it)('should show all level bar in grey', function () {
+        // given
+        var divOfBarUnvalidatedLevel = '.user-certifications-detail-competence__not-validate-level';
+
+        // then
+        (0, _chai.expect)(this.$(divOfBarUnvalidatedLevel)).to.have.lengthOf(8);
+      });
+    });
+
+    context('when competence has level 0', function () {
+
+      beforeEach(function () {
+        // given
+        competence = {
+          'competenceName': 'Mener une recherche et une veille d’information',
+          'competenceIndex': '1.1',
+          'level': 0
+        };
+        this.set('competence', competence);
+
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "T59rOXfq",
+          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"user-certifications-detail-competence\",null,[[\"competence\"],[[20,[\"competence\"]]]]],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+      });
+
+      // then
+      (0, _mocha.it)('should show the name of competence', function () {
+        // given
+        var divOfName = '.user-certifications-detail-competence__box-name';
+
+        // then
+        (0, _chai.expect)(this.$(divOfName).text()).to.include(competence.competenceName);
+      });
+
+      (0, _mocha.it)('should not show the level of competence', function () {
+        // given
+        var divOfLevel = '.user-certifications-detail-competence__box-level';
+
+        // then
+        (0, _chai.expect)(this.$(divOfLevel)).to.have.lengthOf(0);
+      });
+
+      (0, _mocha.it)('should show all level bar in grey', function () {
+        // given
+        var divOfBarUnvalidatedLevel = '.user-certifications-detail-competence__not-validate-level';
+
+        // then
+        (0, _chai.expect)(this.$(divOfBarUnvalidatedLevel)).to.have.lengthOf(8);
+      });
+    });
+
+    context('when competence has level 5', function () {
+
+      beforeEach(function () {
+        // given
+        competence = {
+          'competenceName': 'Mener une recherche et une veille d’information',
+          'competenceIndex': '1.1',
+          'level': 5
+        };
+        this.set('competence', competence);
+
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "T59rOXfq",
+          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"user-certifications-detail-competence\",null,[[\"competence\"],[[20,[\"competence\"]]]]],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+      });
+
+      // then
+      (0, _mocha.it)('should show the name of competence', function () {
+        // given
+        var divOfName = '.user-certifications-detail-competence__box-name';
+
+        // then
+        (0, _chai.expect)(this.$(divOfName).text()).to.include(competence.competenceName);
+      });
+
+      (0, _mocha.it)('should show the level of competence', function () {
+        // given
+        var divOfLevel = '.user-certifications-detail-competence__box-level';
+
+        // then
+        (0, _chai.expect)(this.$(divOfLevel)).to.have.lengthOf(1);
+        (0, _chai.expect)(this.$(divOfLevel).text()).to.include(competence.level);
+      });
+
+      (0, _mocha.it)('should show 5 level bar in yellow and 3 in grey', function () {
+        // given
+        var divOfBarValidatedLevel = '.user-certifications-detail-competence__validate-level';
+        var divOfBarUnvalidatedLevel = '.user-certifications-detail-competence__not-validate-level';
+
+        // then
+        (0, _chai.expect)(this.$(divOfBarValidatedLevel)).to.have.lengthOf(5);
+        (0, _chai.expect)(this.$(divOfBarUnvalidatedLevel)).to.have.lengthOf(3);
+      });
+    });
+  });
+});
 define('pix-live/tests/integration/components/user-certifications-detail-header-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
   'use strict';
 
@@ -10654,6 +11016,61 @@ define('pix-live/tests/integration/components/user-certifications-detail-header-
 
       (0, _mocha.it)('should not show the certification center', function () {
         (0, _chai.expect)(this.$('.user-certifications-detail-header__data-box').text()).to.not.include('Centre de' + ' certification :');
+      });
+    });
+  });
+});
+define('pix-live/tests/integration/components/user-certifications-detail-profile-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+  'use strict';
+
+  (0, _mocha.describe)('Integration | Component | user certifications detail profile', function () {
+    (0, _emberMocha.setupComponentTest)('user-certifications-detail-profile', {
+      integration: true
+    });
+
+    var certification = void 0;
+
+    (0, _mocha.it)('renders', function () {
+      this.render(Ember.HTMLBars.template({
+        "id": "N9PGw8GT",
+        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"user-certifications-detail-profile\",null,[[\"profile\"],[[20,[\"profile\"]]]]],false]],\"hasEval\":false}",
+        "meta": {}
+      }));
+      (0, _chai.expect)(this.$()).to.have.length(1);
+    });
+
+    context('when are has a list of competences', function () {
+
+      beforeEach(function () {
+        // given
+        certification = {
+          certifiedProfile: [{
+            'area-name': 'Information et données',
+            'area-index': '1'
+          }, {
+            'area-name': 'Communication et collaboration',
+            'area-index': '2'
+          }, {
+            'area-name': 'Création de contenu',
+            'area-index': '3'
+          }]
+        };
+        this.set('certification', certification);
+
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "UCI8wldj",
+          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"user-certifications-detail-profile\",null,[[\"certification\"],[[20,[\"certification\"]]]]],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+      });
+
+      (0, _mocha.it)('should include one area detail per area', function () {
+        // given
+        var divOfArea = '.user-certifications-detail-area';
+
+        // then
+        (0, _chai.expect)(this.$(divOfArea)).to.have.lengthOf(certification.certifiedProfile.length);
       });
     });
   });
@@ -11060,10 +11477,6 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
-    it('acceptance/g1-bandeau-no-internet-no-outils-test.js', function () {
-      // test passed
-    });
-
     it('acceptance/h1-timeout-jauge-test.js', function () {
       // test passed
     });
@@ -11168,15 +11581,15 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
+    it('integration/components/challenge-embed-simulator-test.js', function () {
+      // test passed
+    });
+
     it('integration/components/challenge-item-qmail-test.js', function () {
       // test passed
     });
 
     it('integration/components/challenge-statement-test.js', function () {
-      // test passed
-    });
-
-    it('integration/components/challenge-stay-test.js', function () {
       // test passed
     });
 
@@ -11364,7 +11777,19 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
+    it('integration/components/user-certifications-detail-area-test.js', function () {
+      // test passed
+    });
+
+    it('integration/components/user-certifications-detail-competence-test.js', function () {
+      // test passed
+    });
+
     it('integration/components/user-certifications-detail-header-test.js', function () {
+      // test passed
+    });
+
+    it('integration/components/user-certifications-detail-profile-test.js', function () {
       // test passed
     });
 
@@ -11405,6 +11830,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
     });
 
     it('unit/components/challenge-item-qmail-test.js', function () {
+      // test passed
+    });
+
+    it('unit/components/challenge-statement-test.js', function () {
       // test passed
     });
 
@@ -12145,6 +12574,55 @@ define('pix-live/tests/unit/components/challenge-item-qmail-test', ['chai', 'moc
 
         // Then
         (0, _chai.expect)(answerValue).to.equal('#PENDING#');
+      });
+    });
+  });
+});
+define('pix-live/tests/unit/components/challenge-statement-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+  'use strict';
+
+  (0, _mocha.describe)('Unit | Component | challenge statement', function () {
+
+    (0, _emberMocha.setupTest)('component:challenge-statement', {
+      needs: ['service:mailGenerator']
+    });
+
+    (0, _mocha.describe)('[CP] #challengeEmbedDocument', function () {
+      (0, _mocha.it)('should return a JSON object with the challenge embedded document when the challenge has a valid one', function () {
+        // given
+        var component = this.subject({
+          challenge: {
+            hasValidEmbedDocument: true,
+            embedUrl: 'https://challenge-embed.url',
+            embedTitle: 'Challenge embed document title',
+            embedHeight: 300
+          }
+        });
+
+        // when
+        var challengeEmbedDocument = component.get('challengeEmbedDocument');
+
+        // then
+        (0, _chai.expect)(challengeEmbedDocument).to.deep.equal({
+          url: 'https://challenge-embed.url',
+          title: 'Challenge embed document title',
+          height: 300
+        });
+      });
+
+      (0, _mocha.it)('should return "undefined" when the challenge does not have a (valid) embedded document', function () {
+        // given
+        var component = this.subject({
+          challenge: {
+            hasValidEmbedDocument: false
+          }
+        });
+
+        // when
+        var challengeEmbedDocument = component.get('challengeEmbedDocument');
+
+        // then
+        (0, _chai.expect)(challengeEmbedDocument).to.be.undefined;
       });
     });
   });
@@ -15296,6 +15774,78 @@ define('pix-live/tests/unit/models/challenge-test', ['chai', 'mocha', 'ember-moc
           // then
           (0, _chai.expect)(hasMultipleAttachments).to.be.true;
         });
+      });
+    });
+
+    (0, _mocha.describe)('Computed property #hasValidEmbedDocument', function () {
+
+      var embedOptions = void 0;
+
+      beforeEach(function () {
+        embedOptions = {
+          embedUrl: 'https://embed.url',
+          embedTitle: 'Embed title',
+          embedHeight: '600'
+        };
+      });
+
+      (0, _mocha.it)('should be true when embed data (URL, title and height) are defined', function () {
+        // given
+        var challenge = this.subject(embedOptions);
+
+        // when
+        var hasValidEmbedDocument = challenge.get('hasValidEmbedDocument');
+
+        // then
+        (0, _chai.expect)(hasValidEmbedDocument).to.be.true;
+      });
+
+      (0, _mocha.it)('should be false when embed URL is missing', function () {
+        // given
+        delete embedOptions.embedUrl;
+        var challenge = this.subject(embedOptions);
+
+        // when
+        var hasValidEmbedDocument = challenge.get('hasValidEmbedDocument');
+
+        // then
+        (0, _chai.expect)(hasValidEmbedDocument).to.be.false;
+      });
+
+      (0, _mocha.it)('should be false when embed URL is not secured (HTTPS)', function () {
+        // given
+        embedOptions.embedUrl = 'http://unsecured.url';
+        var challenge = this.subject(embedOptions);
+
+        // when
+        var hasValidEmbedDocument = challenge.get('hasValidEmbedDocument');
+
+        // then
+        (0, _chai.expect)(hasValidEmbedDocument).to.be.false;
+      });
+
+      (0, _mocha.it)('should be false when embed title is missing', function () {
+        // given
+        delete embedOptions.embedTitle;
+        var challenge = this.subject(embedOptions);
+
+        // when
+        var hasValidEmbedDocument = challenge.get('hasValidEmbedDocument');
+
+        // then
+        (0, _chai.expect)(hasValidEmbedDocument).to.be.false;
+      });
+
+      (0, _mocha.it)('should be false when embed height is missing', function () {
+        // given
+        delete embedOptions.embedHeight;
+        var challenge = this.subject(embedOptions);
+
+        // when
+        var hasValidEmbedDocument = challenge.get('hasValidEmbedDocument');
+
+        // then
+        (0, _chai.expect)(hasValidEmbedDocument).to.be.false;
       });
     });
   });
