@@ -3668,7 +3668,10 @@ input.qcm-panel__proposal-checkbox {
   display: flex;
   flex-wrap: wrap;
   flex-direct: column;
-  padding-top: 5rem; }
+  color: #3e4149;
+  font-family: "Lato", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 22px; }
   @media (min-width: 980px) {
     .user-certifications-detail-result {
       width: 30%; } }
@@ -3716,10 +3719,6 @@ input.qcm-panel__proposal-checkbox {
   background: black; }
 
 .user-certifications-detail-result__text-pix-certified {
-  color: #3E4149;
-  font-family: Lato;
-  font-size: 16px;
-  line-height: 22px;
   margin-left: 20px; }
 
 .user-certifications-detail-result__title-comment-jury {
@@ -3728,12 +3727,6 @@ input.qcm-panel__proposal-checkbox {
   font-size: 14px;
   font-weight: 500;
   line-height: 16px; }
-
-.user-certifications-detail-result__comment-jury {
-  color: #3E4149;
-  font-family: Lato;
-  font-size: 16px;
-  line-height: 22px; }
 
 .index-page-patners-enrollment {
   background-image: linear-gradient(to bottom, #446eff, #133dd2); }
