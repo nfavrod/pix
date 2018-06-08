@@ -15180,7 +15180,7 @@ define('pix-live/tests/unit/models/area-test', ['chai', 'mocha', 'ember-mocha'],
     });
   });
 });
-define('pix-live/tests/unit/models/assessment-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+define('pix-live/tests/unit/models/assessment-test', ['chai', 'mocha', 'ember-mocha', 'lodash'], function (_chai, _mocha, _emberMocha, _lodash) {
   'use strict';
 
   var SMART_PLACEMENT_TYPE = 'SMART_PLACEMENT';
@@ -15362,7 +15362,9 @@ define('pix-live/tests/unit/models/assessment-test', ['chai', 'mocha', 'ember-mo
           Ember.run(function () {
             // given
             var store = _this9.store();
-            var answers = [store.createRecord('answer', {}), store.createRecord('answer', {})];
+            var answers = _lodash.default.times(2, function () {
+              return store.createRecord('answer', {});
+            });
             var assessment = store.createRecord('assessment', { answers: answers });
 
             // when
@@ -15372,17 +15374,36 @@ define('pix-live/tests/unit/models/assessment-test', ['chai', 'mocha', 'ember-mo
             (0, _chai.expect)(result).to.have.property('currentStep', 3);
           });
         });
+
+        (0, _mocha.it)('should reset to 1 at the 5th answer when the type is SMART_PLACEMENT', function () {
+          var _this10 = this;
+
+          Ember.run(function () {
+            // given
+            var store = _this10.store();
+            var answers = _lodash.default.times(5, function () {
+              return store.createRecord('answer');
+            });
+            var assessment = store.createRecord('assessment', { answers: answers, type: SMART_PLACEMENT_TYPE });
+
+            // when
+            var result = assessment.get('progress');
+
+            // then
+            (0, _chai.expect)(result).to.have.property('currentStep', 1);
+          });
+        });
       });
 
       (0, _mocha.describe)('#maxStep property', function () {
 
         context('when not in SMART_PLACEMENT', function () {
           (0, _mocha.it)('should equal the number of challenges of the course', function () {
-            var _this10 = this;
+            var _this11 = this;
 
             Ember.run(function () {
               // given
-              var store = _this10.store();
+              var store = _this11.store();
               var course = store.createRecord('course', { nbChallenges: 12 });
               var assessment = store.createRecord('assessment', { course: course });
 
@@ -15397,11 +15418,11 @@ define('pix-live/tests/unit/models/assessment-test', ['chai', 'mocha', 'ember-mo
 
         context('when in SMART_PLACEMENT', function () {
           (0, _mocha.it)('should always equal 5', function () {
-            var _this11 = this;
+            var _this12 = this;
 
             Ember.run(function () {
               // given
-              var store = _this11.store();
+              var store = _this12.store();
               var assessment = store.createRecord('assessment', { type: SMART_PLACEMENT_TYPE });
 
               // when
@@ -15416,14 +15437,15 @@ define('pix-live/tests/unit/models/assessment-test', ['chai', 'mocha', 'ember-mo
 
       (0, _mocha.describe)('#stepPercentage property', function () {
         (0, _mocha.it)('should be the completion percentage of the two other properties', function () {
-          var _this12 = this;
+          var _this13 = this;
 
           Ember.run(function () {
             // given
-            var store = _this12.store();
-            var course = store.createRecord('course', { nbChallenges: 5 });
+            var nbChallenges = 5;
+            var store = _this13.store();
+            var course = store.createRecord('course', { nbChallenges: nbChallenges });
             var assessment = store.createRecord('assessment', { course: course });
-            var expectedCompletionPercentage = 1 / 5 * 100; // 20%
+            var expectedCompletionPercentage = 1 / nbChallenges * 100;
 
             // when
             var result = assessment.get('progress');

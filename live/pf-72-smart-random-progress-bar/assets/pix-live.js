@@ -6294,54 +6294,68 @@ define('pix-live/models/assessment', ['exports', 'ember-data', 'pix-live/config/
       Model = _emberData.default.Model,
       belongsTo = _emberData.default.belongsTo,
       hasMany = _emberData.default.hasMany;
+
+
+  var CHECKPOINTS_MAX_STEP = _environment.default.APP.NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT;
+
   exports.default = Model.extend({
 
-    course: belongsTo('course', { inverse: null }),
     answers: hasMany('answer'),
+    course: belongsTo('course', { inverse: null }),
+    certificationNumber: attr('string'),
+    estimatedLevel: attr('number'),
+    firstChallenge: Ember.computed.alias('course.challenges.firstObject'),
+    hasCheckpoints: Ember.computed.equal('type', 'SMART_PLACEMENT'),
+    isCertification: Ember.computed.equal('type', 'CERTIFICATION'),
+    pixScore: attr('number'),
+    result: belongsTo('assessment-result'),
+    type: attr('string'),
     userName: attr('string'),
     userEmail: attr('string'),
-    firstChallenge: Ember.computed.alias('course.challenges.firstObject'),
-    estimatedLevel: attr('number'),
-    pixScore: attr('number'),
-    type: attr('string'),
-    certificationNumber: attr('string'),
-    isCertification: Ember.computed.equal('type', 'CERTIFICATION'),
 
-    hasCheckpoints: Ember.computed.equal('type', 'SMART_PLACEMENT'),
     answersSinceLastCheckpoints: Ember.computed('answers.[]', function () {
 
-      var howManyAnswersSinceTheLastCheckpoint = this.get('answers.length') % _environment.default.APP.NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT;
-      var sliceAnswersFrom = howManyAnswersSinceTheLastCheckpoint === 0 ? -_environment.default.APP.NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT : -howManyAnswersSinceTheLastCheckpoint;
+      var howManyAnswersSinceTheLastCheckpoint = this.get('howManyAnswersSinceTheLastCheckpoint');
+      var sliceAnswersFrom = howManyAnswersSinceTheLastCheckpoint === 0 ? -CHECKPOINTS_MAX_STEP : -howManyAnswersSinceTheLastCheckpoint;
 
       return this.get('answers').slice(sliceAnswersFrom);
     }),
 
-    result: belongsTo('assessment-result'),
+    howManyAnswersSinceTheLastCheckpoint: Ember.computed('answers.[]', function () {
+      return this.get('answers.length') % CHECKPOINTS_MAX_STEP;
+    }),
 
     progress: Ember.computed('answers', 'course', function () {
 
       var maxStep = void 0;
-      if (this.get('type') === 'SMART_PLACEMENT') {
-        maxStep = 5;
+      if (this.get('hasCheckpoints')) {
+        maxStep = CHECKPOINTS_MAX_STEP;
       } else {
         maxStep = this.get('course.nbChallenges');
       }
 
       var answersCount = this.get('answers.length');
-      var currentStep = _getCurrentStep(answersCount, maxStep);
+      var currentStep = this._getCurrentStep(answersCount, maxStep);
       var stepPercentage = currentStep / maxStep * 100;
 
       return { currentStep: currentStep, maxStep: maxStep, stepPercentage: stepPercentage };
-    })
+    }),
 
+    _getCurrentStep: function _getCurrentStep() {
+      var answersCount = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+      var maxStep = arguments[1];
+
+      var step = answersCount + 1;
+
+      if (this.get('hasCheckpoints')) {
+        return 1 + this.get('howManyAnswersSinceTheLastCheckpoint');
+      } else if (maxStep == null) {
+        return step;
+      } else {
+        return Math.min(step, maxStep);
+      }
+    }
   });
-
-
-  function _getCurrentStep(answersCount, maxStep) {
-    var step = answersCount + 1;
-
-    return step > maxStep ? maxStep : step;
-  }
 });
 define('pix-live/models/certification', ['exports', 'ember-data'], function (exports, _emberData) {
   'use strict';
@@ -9553,6 +9567,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.50.0+4834c6df"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.50.0+cf1dca2b"});
 }
 //# sourceMappingURL=pix-live.map
