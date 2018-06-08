@@ -3,82 +3,88 @@
 (function() {
 /*!
  * @overview  Ember - JavaScript Application Framework
- * @copyright Copyright 2011-2017 Tilde Inc. and contributors
+ * @copyright Copyright 2011-2018 Tilde Inc. and contributors
  *            Portions Copyright 2006-2011 Strobe Inc.
  *            Portions Copyright 2008-2011 Apple Inc. All rights reserved.
  * @license   Licensed under MIT license
  *            See https://raw.github.com/emberjs/ember.js/master/LICENSE
- * @version   2.18.0
+ * @version   3.2.0
  */
 
-/*global process */
+/*globals process */
 var enifed, requireModule, Ember;
-var mainContext = this; // Used in ember-environment/lib/global.js
+
+// Used in ember-environment/lib/global.js
+mainContext = this; // eslint-disable-line no-undef
 
 (function() {
-    function missingModule(name, referrerName) {
-      if (referrerName) {
-        throw new Error('Could not find module ' + name + ' required by: ' + referrerName);
-      } else {
-        throw new Error('Could not find module ' + name);
-      }
+  function missingModule(name, referrerName) {
+    if (referrerName) {
+      throw new Error('Could not find module ' + name + ' required by: ' + referrerName);
+    } else {
+      throw new Error('Could not find module ' + name);
+    }
+  }
+
+  function internalRequire(_name, referrerName) {
+    var name = _name;
+    var mod = registry[name];
+
+    if (!mod) {
+      name = name + '/index';
+      mod = registry[name];
     }
 
-    function internalRequire(_name, referrerName) {
-      var name = _name;
-      var mod = registry[name];
+    var exports = seen[name];
 
-      if (!mod) {
-        name = name + '/index';
-        mod = registry[name];
-      }
-
-      var exports = seen[name];
-
-      if (exports !== undefined) {
-        return exports;
-      }
-
-      exports = seen[name] = {};
-
-      if (!mod) {
-        missingModule(_name, referrerName);
-      }
-
-      var deps = mod.deps;
-      var callback = mod.callback;
-      var reified = new Array(deps.length);
-
-      for (var i = 0; i < deps.length; i++) {
-        if (deps[i] === 'exports') {
-          reified[i] = exports;
-        } else if (deps[i] === 'require') {
-          reified[i] = requireModule;
-        } else {
-          reified[i] = internalRequire(deps[i], name);
-        }
-      }
-
-      callback.apply(this, reified);
-
+    if (exports !== undefined) {
       return exports;
     }
 
-  var isNode = typeof window === 'undefined' &&
-    typeof process !== 'undefined' && {}.toString.call(process) === '[object process]';
+    exports = seen[name] = {};
+
+    if (!mod) {
+      missingModule(_name, referrerName);
+    }
+
+    var deps = mod.deps;
+    var callback = mod.callback;
+    var reified = new Array(deps.length);
+
+    for (var i = 0; i < deps.length; i++) {
+      if (deps[i] === 'exports') {
+        reified[i] = exports;
+      } else if (deps[i] === 'require') {
+        reified[i] = requireModule;
+      } else {
+        reified[i] = internalRequire(deps[i], name);
+      }
+    }
+
+    callback.apply(this, reified);
+
+    return exports;
+  }
+
+  var isNode =
+    typeof window === 'undefined' &&
+    typeof process !== 'undefined' &&
+    {}.toString.call(process) === '[object process]';
 
   if (!isNode) {
     Ember = this.Ember = this.Ember || {};
   }
 
-  if (typeof Ember === 'undefined') { Ember = {}; }
+  if (typeof Ember === 'undefined') {
+    Ember = {};
+  }
 
   if (typeof Ember.__loader === 'undefined') {
     var registry = {};
     var seen = {};
 
     enifed = function(name, deps, callback) {
-      var value = { };
+      var value = {};
 
       if (!callback) {
         value.deps = [];
@@ -107,7 +113,7 @@ var mainContext = this; // Used in ember-environment/lib/global.js
     Ember.__loader = {
       define: enifed,
       require: requireModule,
-      registry: registry
+      registry: registry,
     };
   } else {
     enifed = Ember.__loader.define;
@@ -188,345 +194,7 @@ enifed('ember-babel', ['exports'], function (exports) {
 
   var slice = exports.slice = Array.prototype.slice;
 });
-enifed('ember-debug/deprecate', ['exports', 'ember-debug/error', 'ember-console', 'ember-environment', 'ember-debug/handlers'], function (exports, _error, _emberConsole, _emberEnvironment, _handlers) {
-  'use strict';
-
-  exports.missingOptionsUntilDeprecation = exports.missingOptionsIdDeprecation = exports.missingOptionsDeprecation = exports.registerHandler = undefined;
-
-  /**
-   @module @ember/debug
-   @public
-  */
-  /**
-    Allows for runtime registration of handler functions that override the default deprecation behavior.
-    Deprecations are invoked by calls to [Ember.deprecate](https://emberjs.com/api/classes/Ember.html#method_deprecate).
-    The following example demonstrates its usage by registering a handler that throws an error if the
-    message contains the word "should", otherwise defers to the default handler.
-  
-    ```javascript
-    Ember.Debug.registerDeprecationHandler((message, options, next) => {
-      if (message.indexOf('should') !== -1) {
-        throw new Error(`Deprecation message with should: ${message}`);
-      } else {
-        // defer to whatever handler was registered before this one
-        next(message, options);
-      }
-    });
-    ```
-  
-    The handler function takes the following arguments:
-  
-    <ul>
-      <li> <code>message</code> - The message received from the deprecation call.</li>
-      <li> <code>options</code> - An object passed in with the deprecation call containing additional information including:</li>
-        <ul>
-          <li> <code>id</code> - An id of the deprecation in the form of <code>package-name.specific-deprecation</code>.</li>
-          <li> <code>until</code> - The Ember version number the feature and deprecation will be removed in.</li>
-        </ul>
-      <li> <code>next</code> - A function that calls into the previously registered handler.</li>
-    </ul>
-  
-    @public
-    @static
-    @method registerDeprecationHandler
-    @for @ember/debug
-    @param handler {Function} A function to handle deprecation calls.
-    @since 2.1.0
-  */
-  var registerHandler = function () {}; /*global __fail__*/
-
-  var missingOptionsDeprecation = void 0,
-      missingOptionsIdDeprecation = void 0,
-      missingOptionsUntilDeprecation = void 0,
-      deprecate = void 0;
-
-  if (true) {
-    exports.registerHandler = registerHandler = function registerHandler(handler) {
-      (0, _handlers.registerHandler)('deprecate', handler);
-    };
-
-    var formatMessage = function formatMessage(_message, options) {
-      var message = _message;
-
-      if (options && options.id) {
-        message = message + (' [deprecation id: ' + options.id + ']');
-      }
-
-      if (options && options.url) {
-        message += ' See ' + options.url + ' for more details.';
-      }
-
-      return message;
-    };
-
-    registerHandler(function logDeprecationToConsole(message, options) {
-      var updatedMessage = formatMessage(message, options);
-
-      _emberConsole.default.warn('DEPRECATION: ' + updatedMessage);
-    });
-
-    var captureErrorForStack = void 0;
-
-    if (new Error().stack) {
-      captureErrorForStack = function () {
-        return new Error();
-      };
-    } else {
-      captureErrorForStack = function () {
-        try {
-          __fail__.fail();
-        } catch (e) {
-          return e;
-        }
-      };
-    }
-
-    registerHandler(function logDeprecationStackTrace(message, options, next) {
-      if (_emberEnvironment.ENV.LOG_STACKTRACE_ON_DEPRECATION) {
-        var stackStr = '';
-        var error = captureErrorForStack();
-        var stack = void 0;
-
-        if (error.stack) {
-          if (error['arguments']) {
-            // Chrome
-            stack = error.stack.replace(/^\s+at\s+/gm, '').replace(/^([^\(]+?)([\n$])/gm, '{anonymous}($1)$2').replace(/^Object.<anonymous>\s*\(([^\)]+)\)/gm, '{anonymous}($1)').split('\n');
-            stack.shift();
-          } else {
-            // Firefox
-            stack = error.stack.replace(/(?:\n@:0)?\s+$/m, '').replace(/^\(/gm, '{anonymous}(').split('\n');
-          }
-
-          stackStr = '\n    ' + stack.slice(2).join('\n    ');
-        }
-
-        var updatedMessage = formatMessage(message, options);
-
-        _emberConsole.default.warn('DEPRECATION: ' + updatedMessage + stackStr);
-      } else {
-        next.apply(undefined, arguments);
-      }
-    });
-
-    registerHandler(function raiseOnDeprecation(message, options, next) {
-      if (_emberEnvironment.ENV.RAISE_ON_DEPRECATION) {
-        var updatedMessage = formatMessage(message);
-
-        throw new _error.default(updatedMessage);
-      } else {
-        next.apply(undefined, arguments);
-      }
-    });
-
-    exports.missingOptionsDeprecation = missingOptionsDeprecation = 'When calling `Ember.deprecate` you ' + 'must provide an `options` hash as the third parameter.  ' + '`options` should include `id` and `until` properties.';
-    exports.missingOptionsIdDeprecation = missingOptionsIdDeprecation = 'When calling `Ember.deprecate` you must provide `id` in options.';
-    exports.missingOptionsUntilDeprecation = missingOptionsUntilDeprecation = 'When calling `Ember.deprecate` you must provide `until` in options.';
-    /**
-     @module @ember/application
-     @public
-     */
-    /**
-      Display a deprecation warning with the provided message and a stack trace
-      (Chrome and Firefox only).
-       * In a production build, this method is defined as an empty function (NOP).
-      Uses of this method in Ember itself are stripped from the ember.prod.js build.
-       @method deprecate
-      @for @ember/application/deprecations
-      @param {String} message A description of the deprecation.
-      @param {Boolean} test A boolean. If falsy, the deprecation will be displayed.
-      @param {Object} options
-      @param {String} options.id A unique id for this deprecation. The id can be
-        used by Ember debugging tools to change the behavior (raise, log or silence)
-        for that specific deprecation. The id should be namespaced by dots, e.g.
-        "view.helper.select".
-      @param {string} options.until The version of Ember when this deprecation
-        warning will be removed.
-      @param {String} [options.url] An optional url to the transition guide on the
-        emberjs.com website.
-      @static
-      @public
-      @since 1.0.0
-    */
-    deprecate = function deprecate(message, test, options) {
-      if (!options || !options.id && !options.until) {
-        deprecate(missingOptionsDeprecation, false, {
-          id: 'ember-debug.deprecate-options-missing',
-          until: '3.0.0',
-          url: 'https://emberjs.com/deprecations/v2.x/#toc_ember-debug-function-options'
-        });
-      }
-
-      if (options && !options.id) {
-        deprecate(missingOptionsIdDeprecation, false, {
-          id: 'ember-debug.deprecate-id-missing',
-          until: '3.0.0',
-          url: 'https://emberjs.com/deprecations/v2.x/#toc_ember-debug-function-options'
-        });
-      }
-
-      if (options && !options.until) {
-        deprecate(missingOptionsUntilDeprecation, options && options.until, {
-          id: 'ember-debug.deprecate-until-missing',
-          until: '3.0.0',
-          url: 'https://emberjs.com/deprecations/v2.x/#toc_ember-debug-function-options'
-        });
-      }
-
-      _handlers.invoke.apply(undefined, ['deprecate'].concat(Array.prototype.slice.call(arguments)));
-    };
-  }
-
-  exports.default = deprecate;
-  exports.registerHandler = registerHandler;
-  exports.missingOptionsDeprecation = missingOptionsDeprecation;
-  exports.missingOptionsIdDeprecation = missingOptionsIdDeprecation;
-  exports.missingOptionsUntilDeprecation = missingOptionsUntilDeprecation;
-});
-enifed("ember-debug/error", ["exports", "ember-babel"], function (exports, _emberBabel) {
-  "use strict";
-
-  /**
-   @module @ember/error
-  */
-  function ExtendBuiltin(klass) {
-    function ExtendableBuiltin() {
-      klass.apply(this, arguments);
-    }
-
-    ExtendableBuiltin.prototype = Object.create(klass.prototype);
-    ExtendableBuiltin.prototype.constructor = ExtendableBuiltin;
-    return ExtendableBuiltin;
-  }
-
-  /**
-    A subclass of the JavaScript Error object for use in Ember.
-  
-    @class EmberError
-    @extends Error
-    @constructor
-    @public
-  */
-
-  var EmberError = function (_ExtendBuiltin) {
-    (0, _emberBabel.inherits)(EmberError, _ExtendBuiltin);
-
-    function EmberError(message) {
-      (0, _emberBabel.classCallCheck)(this, EmberError);
-
-      var _this = (0, _emberBabel.possibleConstructorReturn)(this, _ExtendBuiltin.call(this));
-
-      if (!(_this instanceof EmberError)) {
-        var _ret;
-
-        return _ret = new EmberError(message), (0, _emberBabel.possibleConstructorReturn)(_this, _ret);
-      }
-
-      var error = Error.call(_this, message);
-      _this.stack = error.stack;
-      _this.description = error.description;
-      _this.fileName = error.fileName;
-      _this.lineNumber = error.lineNumber;
-      _this.message = error.message;
-      _this.name = error.name;
-      _this.number = error.number;
-      _this.code = error.code;
-      return _this;
-    }
-
-    return EmberError;
-  }(ExtendBuiltin(Error));
-
-  exports.default = EmberError;
-});
-enifed('ember-debug/features', ['exports', 'ember-environment', 'ember/features'], function (exports, _emberEnvironment, _features) {
-  'use strict';
-
-  exports.default = isEnabled;
-  var FEATURES = _features.FEATURES;
-
-
-  /**
-   @module ember
-  */
-
-  /**
-    The hash of enabled Canary features. Add to this, any canary features
-    before creating your application.
-  
-    Alternatively (and recommended), you can also define `EmberENV.FEATURES`
-    if you need to enable features flagged at runtime.
-  
-    @class FEATURES
-    @namespace Ember
-    @static
-    @since 1.1.0
-    @public
-  */
-
-  // Auto-generated
-
-  /**
-    Determine whether the specified `feature` is enabled. Used by Ember's
-    build tools to exclude experimental features from beta/stable builds.
-  
-    You can define the following configuration options:
-  
-    * `EmberENV.ENABLE_OPTIONAL_FEATURES` - enable any features that have not been explicitly
-      enabled/disabled.
-  
-    @method isEnabled
-    @param {String} feature The feature to check
-    @return {Boolean}
-    @for Ember.FEATURES
-    @since 1.1.0
-    @public
-  */
-  function isEnabled(feature) {
-    var featureValue = FEATURES[feature];
-
-    if (featureValue === true || featureValue === false || featureValue === undefined) {
-      return featureValue;
-    } else if (_emberEnvironment.ENV.ENABLE_OPTIONAL_FEATURES) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-});
-enifed('ember-debug/handlers', ['exports'], function (exports) {
-  'use strict';
-
-  var HANDLERS = exports.HANDLERS = {};
-
-  var registerHandler = function () {};
-  var invoke = function () {};
-
-  if (true) {
-    exports.registerHandler = registerHandler = function registerHandler(type, callback) {
-      var nextHandler = HANDLERS[type] || function () {};
-
-      HANDLERS[type] = function (message, options) {
-        callback(message, options, nextHandler);
-      };
-    };
-
-    exports.invoke = invoke = function invoke(type, message, test, options) {
-      if (test) {
-        return;
-      }
-
-      var handlerForType = HANDLERS[type];
-
-      if (handlerForType) {
-        handlerForType(message, options);
-      }
-    };
-  }
-
-  exports.registerHandler = registerHandler;
-  exports.invoke = invoke;
-});
-enifed('ember-debug/index', ['exports', 'ember-debug/warn', 'ember-debug/deprecate', 'ember-debug/features', 'ember-debug/error', 'ember-debug/testing', 'ember-environment', 'ember-console', 'ember/features'], function (exports, _warn2, _deprecate2, _features, _error, _testing, _emberEnvironment, _emberConsole, _features2) {
+enifed('ember-debug/index', ['exports', 'ember-debug/lib/warn', 'ember-debug/lib/deprecate', 'ember-debug/lib/features', 'ember-debug/lib/error', 'ember-debug/lib/testing', 'ember-environment', 'ember/features'], function (exports, _warn2, _deprecate2, _features, _error, _testing, _emberEnvironment, _features2) {
   'use strict';
 
   exports._warnIfUsingStrippedFeatureFlags = exports.getDebugFunction = exports.setDebugFunction = exports.deprecateFunc = exports.runInDebug = exports.debugFreeze = exports.debugSeal = exports.deprecate = exports.debug = exports.warn = exports.info = exports.assert = exports.setTesting = exports.isTesting = exports.Error = exports.isFeatureEnabled = exports.registerDeprecationHandler = exports.registerWarnHandler = undefined;
@@ -642,22 +310,29 @@ enifed('ember-debug/index', ['exports', 'ember-debug/warn', 'ember-debug/depreca
 
   if (true) {
     /**
-      Define an assertion that will throw an exception if the condition is not met.
-       * In a production build, this method is defined as an empty function (NOP).
-      Uses of this method in Ember itself are stripped from the ember.prod.js build.
+      Verify that a certain expectation is met, or throw a exception otherwise.
+       This is useful for communicating assumptions in the code to other human
+      readers as well as catching bugs that accidentally violates these
+      expectations.
+       Assertions are removed from production builds, so they can be freely added
+      for documentation and debugging purposes without worries of incuring any
+      performance penalty. However, because of that, they should not be used for
+      checks that could reasonably fail during normal usage. Furthermore, care
+      should be taken to avoid accidentally relying on side-effects produced from
+      evaluating the condition itself, since the code will not run in production.
        ```javascript
       import { assert } from '@ember/debug';
        // Test for truthiness
-      assert('Must pass a valid object', obj);
+      assert('Must pass a string', typeof str === 'string');
        // Fail unconditionally
       assert('This code path should never be run');
       ```
        @method assert
       @static
       @for @ember/debug
-      @param {String} desc A description of the assertion. This will become
-        the text of the Error thrown if the assertion fails.
-      @param {Boolean} test Must be truthy for the assertion to pass. If
+      @param {String} description Describes the expectation. This will become the
+        text of the Error thrown if the assertion fails.
+      @param {Boolean} condition Must be truthy for the assertion to pass. If
         falsy, an exception will be thrown.
       @public
       @since 1.0.0
@@ -670,8 +345,9 @@ enifed('ember-debug/index', ['exports', 'ember-debug/warn', 'ember-debug/depreca
 
     /**
       Display a debug notice.
-       * In a production build, this method is defined as an empty function (NOP).
-      Uses of this method in Ember itself are stripped from the ember.prod.js build.
+       Calls to this function are removed from production builds, so they can be
+      freely added for documentation and debugging purposes without worries of
+      incuring any performance penalty.
        ```javascript
       import { debug } from '@ember/debug';
        debug('I\'m a debug notice!');
@@ -683,18 +359,27 @@ enifed('ember-debug/index', ['exports', 'ember-debug/warn', 'ember-debug/depreca
       @public
     */
     setDebugFunction('debug', function debug(message) {
-      _emberConsole.default.debug('DEBUG: ' + message);
+      /* eslint-disable no-console */
+      if (console.debug) {
+        console.debug('DEBUG: ' + message);
+      } else {
+        console.log('DEBUG: ' + message);
+      }
+      /* eslint-ensable no-console */
     });
 
     /**
       Display an info notice.
-       * In a production build, this method is defined as an empty function (NOP).
-      Uses of this method in Ember itself are stripped from the ember.prod.js build.
+       Calls to this function are removed from production builds, so they can be
+      freely added for documentation and debugging purposes without worries of
+      incuring any performance penalty.
        @method info
       @private
     */
     setDebugFunction('info', function info() {
-      _emberConsole.default.info.apply(undefined, arguments);
+      var _console;
+
+      (_console = console).info.apply(_console, arguments); /* eslint-disable-line no-console */
     });
 
     /**
@@ -706,15 +391,18 @@ enifed('ember-debug/index', ['exports', 'ember-debug/warn', 'ember-debug/depreca
       Alias an old, deprecated method with its new counterpart.
        Display a deprecation warning with the provided message and a stack trace
       (Chrome and Firefox only) when the assigned method is called.
-       * In a production build, this method is defined as an empty function (NOP).
+       Calls to this function are removed from production builds, so they can be
+      freely added for documentation and debugging purposes without worries of
+      incuring any performance penalty.
        ```javascript
-      Ember.oldMethod = Ember.deprecateFunc('Please use the new, updated method', Ember.newMethod);
+      import { deprecateFunc } from '@ember/application/deprecations';
+       Ember.oldMethod = deprecateFunc('Please use the new, updated method', options, Ember.newMethod);
       ```
        @method deprecateFunc
       @static
       @for @ember/application/deprecations
       @param {String} message A description of the deprecation.
-      @param {Object} [options] The options object for Ember.deprecate.
+      @param {Object} [options] The options object for `deprecate`.
       @param {Function} func The new function called to replace its deprecated counterpart.
       @return {Function} A new function that wraps the original function with a deprecation warning
       @private
@@ -750,8 +438,9 @@ enifed('ember-debug/index', ['exports', 'ember-debug/warn', 'ember-debug/depreca
     */
     /**
       Run a function meant for debugging.
-       * In a production build, this method is defined as an empty function (NOP).
-      Uses of this method in Ember itself are stripped from the ember.prod.js build.
+       Calls to this function are removed from production builds, so they can be
+      freely added for documentation and debugging purposes without worries of
+      incuring any performance penalty.
        ```javascript
       import Component from '@ember/component';
       import { runInDebug } from '@ember/debug';
@@ -859,7 +548,352 @@ enifed('ember-debug/index', ['exports', 'ember-debug/warn', 'ember-debug/depreca
   exports.getDebugFunction = getDebugFunction;
   exports._warnIfUsingStrippedFeatureFlags = _warnIfUsingStrippedFeatureFlags;
 });
-enifed("ember-debug/testing", ["exports"], function (exports) {
+enifed('ember-debug/lib/deprecate', ['exports', 'ember-debug/lib/error', 'ember-environment', 'ember-debug/index', 'ember-debug/lib/handlers'], function (exports, _error, _emberEnvironment, _index, _handlers) {
+  'use strict';
+
+  exports.missingOptionsUntilDeprecation = exports.missingOptionsIdDeprecation = exports.missingOptionsDeprecation = exports.registerHandler = undefined;
+
+  /**
+   @module @ember/debug
+   @public
+  */
+  /**
+    Allows for runtime registration of handler functions that override the default deprecation behavior.
+    Deprecations are invoked by calls to [@ember/application/deprecations/deprecate](https://emberjs.com/api/ember/release/classes/@ember%2Fapplication%2Fdeprecations/methods/deprecate?anchor=deprecate).
+    The following example demonstrates its usage by registering a handler that throws an error if the
+    message contains the word "should", otherwise defers to the default handler.
+  
+    ```javascript
+    import { registerDeprecationHandler } from '@ember/debug';
+  
+    registerDeprecationHandler((message, options, next) => {
+      if (message.indexOf('should') !== -1) {
+        throw new Error(`Deprecation message with should: ${message}`);
+      } else {
+        // defer to whatever handler was registered before this one
+        next(message, options);
+      }
+    });
+    ```
+  
+    The handler function takes the following arguments:
+  
+    <ul>
+      <li> <code>message</code> - The message received from the deprecation call.</li>
+      <li> <code>options</code> - An object passed in with the deprecation call containing additional information including:</li>
+        <ul>
+          <li> <code>id</code> - An id of the deprecation in the form of <code>package-name.specific-deprecation</code>.</li>
+          <li> <code>until</code> - The Ember version number the feature and deprecation will be removed in.</li>
+        </ul>
+      <li> <code>next</code> - A function that calls into the previously registered handler.</li>
+    </ul>
+  
+    @public
+    @static
+    @method registerDeprecationHandler
+    @for @ember/debug
+    @param handler {Function} A function to handle deprecation calls.
+    @since 2.1.0
+  */
+  var registerHandler = function () {}; /*global __fail__*/
+
+  var missingOptionsDeprecation = void 0,
+      missingOptionsIdDeprecation = void 0,
+      missingOptionsUntilDeprecation = void 0,
+      deprecate = void 0;
+
+  if (true) {
+    exports.registerHandler = registerHandler = function registerHandler(handler) {
+      (0, _handlers.registerHandler)('deprecate', handler);
+    };
+
+    var formatMessage = function formatMessage(_message, options) {
+      var message = _message;
+
+      if (options && options.id) {
+        message = message + (' [deprecation id: ' + options.id + ']');
+      }
+
+      if (options && options.url) {
+        message += ' See ' + options.url + ' for more details.';
+      }
+
+      return message;
+    };
+
+    registerHandler(function logDeprecationToConsole(message, options) {
+      var updatedMessage = formatMessage(message, options);
+      console.warn('DEPRECATION: ' + updatedMessage); // eslint-disable-line no-console
+    });
+
+    var captureErrorForStack = void 0;
+
+    if (new Error().stack) {
+      captureErrorForStack = function () {
+        return new Error();
+      };
+    } else {
+      captureErrorForStack = function () {
+        try {
+          __fail__.fail();
+        } catch (e) {
+          return e;
+        }
+      };
+    }
+
+    registerHandler(function logDeprecationStackTrace(message, options, next) {
+      if (_emberEnvironment.ENV.LOG_STACKTRACE_ON_DEPRECATION) {
+        var stackStr = '';
+        var error = captureErrorForStack();
+        var stack = void 0;
+
+        if (error.stack) {
+          if (error['arguments']) {
+            // Chrome
+            stack = error.stack.replace(/^\s+at\s+/gm, '').replace(/^([^\(]+?)([\n$])/gm, '{anonymous}($1)$2').replace(/^Object.<anonymous>\s*\(([^\)]+)\)/gm, '{anonymous}($1)').split('\n');
+            stack.shift();
+          } else {
+            // Firefox
+            stack = error.stack.replace(/(?:\n@:0)?\s+$/m, '').replace(/^\(/gm, '{anonymous}(').split('\n');
+          }
+
+          stackStr = '\n    ' + stack.slice(2).join('\n    ');
+        }
+
+        var updatedMessage = formatMessage(message, options);
+
+        console.warn('DEPRECATION: ' + updatedMessage + stackStr); // eslint-disable-line no-console
+      } else {
+        next.apply(undefined, arguments);
+      }
+    });
+
+    registerHandler(function raiseOnDeprecation(message, options, next) {
+      if (_emberEnvironment.ENV.RAISE_ON_DEPRECATION) {
+        var updatedMessage = formatMessage(message);
+
+        throw new _error.default(updatedMessage);
+      } else {
+        next.apply(undefined, arguments);
+      }
+    });
+
+    exports.missingOptionsDeprecation = missingOptionsDeprecation = 'When calling `deprecate` you ' + 'must provide an `options` hash as the third parameter.  ' + '`options` should include `id` and `until` properties.';
+    exports.missingOptionsIdDeprecation = missingOptionsIdDeprecation = 'When calling `deprecate` you must provide `id` in options.';
+    exports.missingOptionsUntilDeprecation = missingOptionsUntilDeprecation = 'When calling `deprecate` you must provide `until` in options.';
+    /**
+     @module @ember/application
+     @public
+     */
+    /**
+      Display a deprecation warning with the provided message and a stack trace
+      (Chrome and Firefox only).
+       * In a production build, this method is defined as an empty function (NOP).
+      Uses of this method in Ember itself are stripped from the ember.prod.js build.
+       @method deprecate
+      @for @ember/application/deprecations
+      @param {String} message A description of the deprecation.
+      @param {Boolean} test A boolean. If falsy, the deprecation will be displayed.
+      @param {Object} options
+      @param {String} options.id A unique id for this deprecation. The id can be
+        used by Ember debugging tools to change the behavior (raise, log or silence)
+        for that specific deprecation. The id should be namespaced by dots, e.g.
+        "view.helper.select".
+      @param {string} options.until The version of Ember when this deprecation
+        warning will be removed.
+      @param {String} [options.url] An optional url to the transition guide on the
+        emberjs.com website.
+      @static
+      @public
+      @since 1.0.0
+    */
+    deprecate = function deprecate(message, test, options) {
+      if (_emberEnvironment.ENV._ENABLE_DEPRECATION_OPTIONS_SUPPORT !== true) {
+        (0, _index.assert)(missingOptionsDeprecation, options && (options.id || options.until));
+        (0, _index.assert)(missingOptionsIdDeprecation, options.id);
+        (0, _index.assert)(missingOptionsUntilDeprecation, options.until);
+      }
+
+      if ((!options || !options.id && !options.until) && _emberEnvironment.ENV._ENABLE_DEPRECATION_OPTIONS_SUPPORT === true) {
+        deprecate(missingOptionsDeprecation, false, {
+          id: 'ember-debug.deprecate-options-missing',
+          until: '3.0.0',
+          url: 'https://emberjs.com/deprecations/v2.x/#toc_ember-debug-function-options'
+        });
+      }
+
+      if (options && !options.id && _emberEnvironment.ENV._ENABLE_DEPRECATION_OPTIONS_SUPPORT === true) {
+        deprecate(missingOptionsIdDeprecation, false, {
+          id: 'ember-debug.deprecate-id-missing',
+          until: '3.0.0',
+          url: 'https://emberjs.com/deprecations/v2.x/#toc_ember-debug-function-options'
+        });
+      }
+
+      if (options && !options.until && _emberEnvironment.ENV._ENABLE_DEPRECATION_OPTIONS_SUPPORT === true) {
+        deprecate(missingOptionsUntilDeprecation, options && options.until, {
+          id: 'ember-debug.deprecate-until-missing',
+          until: '3.0.0',
+          url: 'https://emberjs.com/deprecations/v2.x/#toc_ember-debug-function-options'
+        });
+      }
+
+      _handlers.invoke.apply(undefined, ['deprecate'].concat(Array.prototype.slice.call(arguments)));
+    };
+  }
+
+  exports.default = deprecate;
+  exports.registerHandler = registerHandler;
+  exports.missingOptionsDeprecation = missingOptionsDeprecation;
+  exports.missingOptionsIdDeprecation = missingOptionsIdDeprecation;
+  exports.missingOptionsUntilDeprecation = missingOptionsUntilDeprecation;
+});
+enifed("ember-debug/lib/error", ["exports", "ember-babel"], function (exports, _emberBabel) {
+  "use strict";
+
+  /**
+   @module @ember/error
+  */
+  function ExtendBuiltin(klass) {
+    function ExtendableBuiltin() {
+      klass.apply(this, arguments);
+    }
+
+    ExtendableBuiltin.prototype = Object.create(klass.prototype);
+    ExtendableBuiltin.prototype.constructor = ExtendableBuiltin;
+    return ExtendableBuiltin;
+  }
+
+  /**
+    A subclass of the JavaScript Error object for use in Ember.
+  
+    @class EmberError
+    @extends Error
+    @constructor
+    @public
+  */
+
+  var EmberError = function (_ExtendBuiltin) {
+    (0, _emberBabel.inherits)(EmberError, _ExtendBuiltin);
+
+    function EmberError(message) {
+      (0, _emberBabel.classCallCheck)(this, EmberError);
+
+      var _this = (0, _emberBabel.possibleConstructorReturn)(this, _ExtendBuiltin.call(this));
+
+      if (!(_this instanceof EmberError)) {
+        var _ret;
+
+        return _ret = new EmberError(message), (0, _emberBabel.possibleConstructorReturn)(_this, _ret);
+      }
+
+      var error = Error.call(_this, message);
+      _this.stack = error.stack;
+      _this.description = error.description;
+      _this.fileName = error.fileName;
+      _this.lineNumber = error.lineNumber;
+      _this.message = error.message;
+      _this.name = error.name;
+      _this.number = error.number;
+      _this.code = error.code;
+      return _this;
+    }
+
+    return EmberError;
+  }(ExtendBuiltin(Error));
+
+  exports.default = EmberError;
+});
+enifed('ember-debug/lib/features', ['exports', 'ember-environment', 'ember/features'], function (exports, _emberEnvironment, _features) {
+  'use strict';
+
+  exports.default = isEnabled;
+  var FEATURES = _features.FEATURES;
+
+
+  /**
+   @module ember
+  */
+
+  /**
+    The hash of enabled Canary features. Add to this, any canary features
+    before creating your application.
+  
+    Alternatively (and recommended), you can also define `EmberENV.FEATURES`
+    if you need to enable features flagged at runtime.
+  
+    @class FEATURES
+    @namespace Ember
+    @static
+    @since 1.1.0
+    @public
+  */
+
+  // Auto-generated
+
+  /**
+    Determine whether the specified `feature` is enabled. Used by Ember's
+    build tools to exclude experimental features from beta/stable builds.
+  
+    You can define the following configuration options:
+  
+    * `EmberENV.ENABLE_OPTIONAL_FEATURES` - enable any features that have not been explicitly
+      enabled/disabled.
+  
+    @method isEnabled
+    @param {String} feature The feature to check
+    @return {Boolean}
+    @for Ember.FEATURES
+    @since 1.1.0
+    @public
+  */
+  function isEnabled(feature) {
+    var featureValue = FEATURES[feature];
+
+    if (featureValue === true || featureValue === false || featureValue === undefined) {
+      return featureValue;
+    } else if (_emberEnvironment.ENV.ENABLE_OPTIONAL_FEATURES) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+});
+enifed('ember-debug/lib/handlers', ['exports'], function (exports) {
+  'use strict';
+
+  var HANDLERS = exports.HANDLERS = {};
+
+  var registerHandler = function () {};
+  var invoke = function () {};
+
+  if (true) {
+    exports.registerHandler = registerHandler = function registerHandler(type, callback) {
+      var nextHandler = HANDLERS[type] || function () {};
+
+      HANDLERS[type] = function (message, options) {
+        callback(message, options, nextHandler);
+      };
+    };
+
+    exports.invoke = invoke = function invoke(type, message, test, options) {
+      if (test) {
+        return;
+      }
+
+      var handlerForType = HANDLERS[type];
+
+      if (handlerForType) {
+        handlerForType(message, options);
+      }
+    };
+  }
+
+  exports.registerHandler = registerHandler;
+  exports.invoke = invoke;
+});
+enifed("ember-debug/lib/testing", ["exports"], function (exports) {
   "use strict";
 
   exports.isTesting = isTesting;
@@ -874,7 +908,7 @@ enifed("ember-debug/testing", ["exports"], function (exports) {
     testing = !!value;
   }
 });
-enifed('ember-debug/warn', ['exports', 'ember-console', 'ember-debug/deprecate', 'ember-debug/handlers'], function (exports, _emberConsole, _deprecate, _handlers) {
+enifed('ember-debug/lib/warn', ['exports', 'ember-environment', 'ember-debug/lib/deprecate', 'ember-debug/index', 'ember-debug/lib/handlers'], function (exports, _emberEnvironment, _deprecate, _index, _handlers) {
   'use strict';
 
   exports.missingOptionsDeprecation = exports.missingOptionsIdDeprecation = exports.registerHandler = undefined;
@@ -892,7 +926,7 @@ enifed('ember-debug/warn', ['exports', 'ember-console', 'ember-debug/deprecate',
   if (true) {
     /**
       Allows for runtime registration of handler functions that override the default warning behavior.
-      Warnings are invoked by calls made to [warn](https://emberjs.com/api/classes/Ember.html#method_warn).
+      Warnings are invoked by calls made to [@ember/debug/warn](https://emberjs.com/api/ember/release/classes/@ember%2Fdebug/methods/warn?anchor=warn).
       The following example demonstrates its usage by registering a handler that does nothing overriding Ember's
       default warning behavior.
        ```javascript
@@ -920,11 +954,13 @@ enifed('ember-debug/warn', ['exports', 'ember-console', 'ember-debug/deprecate',
       (0, _handlers.registerHandler)('warn', handler);
     };
 
-    registerHandler(function logWarning(message, options) {
-      _emberConsole.default.warn('WARNING: ' + message);
-      if ('trace' in _emberConsole.default) {
-        _emberConsole.default.trace();
+    registerHandler(function logWarning(message) {
+      /* eslint-disable no-console */
+      console.warn('WARNING: ' + message);
+      if (console.trace) {
+        console.trace();
       }
+      /* eslint-enable no-console */
     });
 
     exports.missingOptionsDeprecation = missingOptionsDeprecation = 'When calling `warn` you ' + 'must provide an `options` hash as the third parameter.  ' + '`options` should include an `id` property.';
@@ -952,7 +988,13 @@ enifed('ember-debug/warn', ['exports', 'ember-console', 'ember-debug/deprecate',
         options = test;
         test = false;
       }
-      if (!options) {
+
+      if (_emberEnvironment.ENV._ENABLE_WARN_OPTIONS_SUPPORT !== true) {
+        (0, _index.assert)(missingOptionsDeprecation, options);
+        (0, _index.assert)(missingOptionsIdDeprecation, options && options.id);
+      }
+
+      if (!options && _emberEnvironment.ENV._ENABLE_WARN_OPTIONS_SUPPORT === true) {
         (0, _deprecate.default)(missingOptionsDeprecation, false, {
           id: 'ember-debug.warn-options-missing',
           until: '3.0.0',
@@ -960,7 +1002,7 @@ enifed('ember-debug/warn', ['exports', 'ember-console', 'ember-debug/deprecate',
         });
       }
 
-      if (options && !options.id) {
+      if (options && !options.id && _emberEnvironment.ENV._ENABLE_WARN_OPTIONS_SUPPORT === true) {
         (0, _deprecate.default)(missingOptionsIdDeprecation, false, {
           id: 'ember-debug.warn-id-missing',
           until: '3.0.0',
@@ -977,7 +1019,36 @@ enifed('ember-debug/warn', ['exports', 'ember-console', 'ember-debug/deprecate',
   exports.missingOptionsIdDeprecation = missingOptionsIdDeprecation;
   exports.missingOptionsDeprecation = missingOptionsDeprecation;
 });
-enifed('ember-testing/adapters/adapter', ['exports', 'ember-runtime'], function (exports, _emberRuntime) {
+enifed('ember-testing/index', ['exports', 'ember-testing/lib/test', 'ember-testing/lib/adapters/adapter', 'ember-testing/lib/setup_for_testing', 'ember-testing/lib/adapters/qunit', 'ember-testing/lib/support', 'ember-testing/lib/ext/application', 'ember-testing/lib/ext/rsvp', 'ember-testing/lib/helpers', 'ember-testing/lib/initializers'], function (exports, _test, _adapter, _setup_for_testing, _qunit) {
+  'use strict';
+
+  exports.QUnitAdapter = exports.setupForTesting = exports.Adapter = exports.Test = undefined;
+  Object.defineProperty(exports, 'Test', {
+    enumerable: true,
+    get: function () {
+      return _test.default;
+    }
+  });
+  Object.defineProperty(exports, 'Adapter', {
+    enumerable: true,
+    get: function () {
+      return _adapter.default;
+    }
+  });
+  Object.defineProperty(exports, 'setupForTesting', {
+    enumerable: true,
+    get: function () {
+      return _setup_for_testing.default;
+    }
+  });
+  Object.defineProperty(exports, 'QUnitAdapter', {
+    enumerable: true,
+    get: function () {
+      return _qunit.default;
+    }
+  });
+});
+enifed('ember-testing/lib/adapters/adapter', ['exports', 'ember-runtime'], function (exports, _emberRuntime) {
   'use strict';
 
   function K() {
@@ -992,7 +1063,7 @@ enifed('ember-testing/adapters/adapter', ['exports', 'ember-runtime'], function 
     The primary purpose of this class is to create hooks that can be implemented
     by an adapter for various test frameworks.
   
-    @class Adapter
+    @class TestAdapter
     @public
   */
   exports.default = _emberRuntime.Object.extend({
@@ -1031,22 +1102,41 @@ enifed('ember-testing/adapters/adapter', ['exports', 'ember-runtime'], function 
     }
   });
 });
-enifed('ember-testing/adapters/qunit', ['exports', 'ember-utils', 'ember-testing/adapters/adapter'], function (exports, _emberUtils, _adapter) {
+enifed('ember-testing/lib/adapters/qunit', ['exports', 'ember-utils', 'ember-testing/lib/adapters/adapter'], function (exports, _emberUtils, _adapter) {
   'use strict';
 
   exports.default = _adapter.default.extend({
+    init: function () {
+      this.doneCallbacks = [];
+    },
     asyncStart: function () {
-      QUnit.stop();
+      if (typeof QUnit.stop === 'function') {
+        // very old QUnit version
+        QUnit.stop();
+      } else {
+        this.doneCallbacks.push(QUnit.config.current ? QUnit.config.current.assert.async() : null);
+      }
     },
     asyncEnd: function () {
-      QUnit.start();
+      // checking for QUnit.stop here (even though we _need_ QUnit.start) because
+      // QUnit.start() still exists in QUnit 2.x (it just throws an error when calling
+      // inside a test context)
+      if (typeof QUnit.stop === 'function') {
+        QUnit.start();
+      } else {
+        var done = this.doneCallbacks.pop();
+        // This can be null if asyncStart() was called outside of a test
+        if (done) {
+          done();
+        }
+      }
     },
     exception: function (error) {
-      ok(false, (0, _emberUtils.inspect)(error));
+      QUnit.config.current.assert.ok(false, (0, _emberUtils.inspect)(error));
     }
   });
 });
-enifed('ember-testing/events', ['exports', 'ember-views', 'ember-metal'], function (exports, _emberViews, _emberMetal) {
+enifed('ember-testing/lib/events', ['exports', 'ember-metal', 'ember-utils', 'ember-testing/lib/helpers/-is-form-control'], function (exports, _emberMetal, _emberUtils, _isFormControl) {
   'use strict';
 
   exports.focus = focus;
@@ -1061,19 +1151,25 @@ enifed('ember-testing/events', ['exports', 'ember-views', 'ember-metal'], functi
     if (!el) {
       return;
     }
-    var $el = (0, _emberViews.jQuery)(el);
-    if ($el.is(':input, [contenteditable=true]')) {
-      var type = $el.prop('type');
+    if (el.isContentEditable || (0, _isFormControl.default)(el)) {
+      var type = el.getAttribute('type');
       if (type !== 'checkbox' && type !== 'radio' && type !== 'hidden') {
         (0, _emberMetal.run)(null, function () {
-          // Firefox does not trigger the `focusin` event if the window
-          // does not have focus. If the document doesn't have focus just
-          // use trigger('focusin') instead.
+          var browserIsNotFocused = document.hasFocus && !document.hasFocus();
 
-          if (!document.hasFocus || document.hasFocus()) {
-            el.focus();
-          } else {
-            $el.trigger('focusin');
+          // makes `document.activeElement` be `element`. If the browser is focused, it also fires a focus event
+          el.focus();
+
+          // Firefox does not trigger the `focusin` event if the window
+          // does not have focus. If the document does not have focus then
+          // fire `focusin` event as well.
+          if (browserIsNotFocused) {
+            // if the browser is not focused the previous `el.focus()` didn't fire an event, so we simulate it
+            fireEvent(el, 'focus', {
+              bubbles: false
+            });
+
+            fireEvent(el, 'focusin');
           }
         });
       }
@@ -1099,7 +1195,7 @@ enifed('ember-testing/events', ['exports', 'ember-views', 'ember-metal'], functi
         clientX: x,
         clientY: y
       };
-      event = buildMouseEvent(type, _emberViews.jQuery.extend(simulatedCoordinates, options));
+      event = buildMouseEvent(type, (0, _emberUtils.assign)(simulatedCoordinates, options));
     } else {
       event = buildBasicEvent(type, options);
     }
@@ -1110,8 +1206,16 @@ enifed('ember-testing/events', ['exports', 'ember-views', 'ember-metal'], functi
     var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
     var event = document.createEvent('Events');
-    event.initEvent(type, true, true);
-    _emberViews.jQuery.extend(event, options);
+
+    // Event.bubbles is read only
+    var bubbles = options.bubbles !== undefined ? options.bubbles : true;
+    var cancelable = options.cancelable !== undefined ? options.cancelable : true;
+
+    delete options.bubbles;
+    delete options.cancelable;
+
+    event.initEvent(type, bubbles, cancelable);
+    (0, _emberUtils.assign)(event, options);
     return event;
   }
 
@@ -1121,7 +1225,7 @@ enifed('ember-testing/events', ['exports', 'ember-views', 'ember-metal'], functi
     var event = void 0;
     try {
       event = document.createEvent('MouseEvents');
-      var eventOpts = _emberViews.jQuery.extend({}, DEFAULT_EVENT_OPTIONS, options);
+      var eventOpts = (0, _emberUtils.assign)({}, DEFAULT_EVENT_OPTIONS, options);
       event.initMouseEvent(type, eventOpts.canBubble, eventOpts.cancelable, window, eventOpts.detail, eventOpts.screenX, eventOpts.screenY, eventOpts.clientX, eventOpts.clientY, eventOpts.ctrlKey, eventOpts.altKey, eventOpts.shiftKey, eventOpts.metaKey, eventOpts.button, eventOpts.relatedTarget);
     } catch (e) {
       event = buildBasicEvent(type, options);
@@ -1135,7 +1239,7 @@ enifed('ember-testing/events', ['exports', 'ember-views', 'ember-metal'], functi
     var event = void 0;
     try {
       event = document.createEvent('KeyEvents');
-      var eventOpts = _emberViews.jQuery.extend({}, DEFAULT_EVENT_OPTIONS, options);
+      var eventOpts = (0, _emberUtils.assign)({}, DEFAULT_EVENT_OPTIONS, options);
       event.initKeyEvent(type, eventOpts.canBubble, eventOpts.cancelable, window, eventOpts.ctrlKey, eventOpts.altKey, eventOpts.shiftKey, eventOpts.metaKey, eventOpts.keyCode, eventOpts.charCode);
     } catch (e) {
       event = buildBasicEvent(type, options);
@@ -1143,13 +1247,13 @@ enifed('ember-testing/events', ['exports', 'ember-views', 'ember-metal'], functi
     return event;
   }
 });
-enifed('ember-testing/ext/application', ['ember-application', 'ember-testing/setup_for_testing', 'ember-testing/test/helpers', 'ember-testing/test/promise', 'ember-testing/test/run', 'ember-testing/test/on_inject_helpers', 'ember-testing/test/adapter'], function (_emberApplication, _setup_for_testing, _helpers, _promise, _run, _on_inject_helpers, _adapter) {
+enifed('ember-testing/lib/ext/application', ['ember-application', 'ember-testing/lib/setup_for_testing', 'ember-testing/lib/test/helpers', 'ember-testing/lib/test/promise', 'ember-testing/lib/test/run', 'ember-testing/lib/test/on_inject_helpers', 'ember-testing/lib/test/adapter'], function (_emberApplication, _setup_for_testing, _helpers, _promise, _run, _on_inject_helpers, _adapter) {
   'use strict';
 
   _emberApplication.Application.reopen({
     /**
      This property contains the testing helpers for the current application. These
-     are created once you call `injectTestHelpers` on your `Ember.Application`
+     are created once you call `injectTestHelpers` on your `Application`
      instance. The included helpers are also available on the `window` object by
      default, but can be used from this object on the individual application also.
        @property testHelpers
@@ -1295,19 +1399,19 @@ enifed('ember-testing/ext/application', ['ember-application', 'ember-testing/set
     };
   }
 });
-enifed('ember-testing/ext/rsvp', ['exports', 'ember-runtime', 'ember-metal', 'ember-debug', 'ember-testing/test/adapter'], function (exports, _emberRuntime, _emberMetal, _emberDebug, _adapter) {
+enifed('ember-testing/lib/ext/rsvp', ['exports', 'ember-runtime', 'ember-metal', 'ember-debug', 'ember-testing/lib/test/adapter'], function (exports, _emberRuntime, _emberMetal, _emberDebug, _adapter) {
   'use strict';
 
   _emberRuntime.RSVP.configure('async', function (callback, promise) {
     // if schedule will cause autorun, we need to inform adapter
-    if ((0, _emberDebug.isTesting)() && !_emberMetal.run.backburner.currentInstance) {
+    if ((0, _emberDebug.isTesting)() && !_emberMetal.backburner.currentInstance) {
       (0, _adapter.asyncStart)();
-      _emberMetal.run.backburner.schedule('actions', function () {
+      _emberMetal.backburner.schedule('actions', function () {
         (0, _adapter.asyncEnd)();
         callback(promise);
       });
     } else {
-      _emberMetal.run.backburner.schedule('actions', function () {
+      _emberMetal.backburner.schedule('actions', function () {
         return callback(promise);
       });
     }
@@ -1315,7 +1419,7 @@ enifed('ember-testing/ext/rsvp', ['exports', 'ember-runtime', 'ember-metal', 'em
 
   exports.default = _emberRuntime.RSVP;
 });
-enifed('ember-testing/helpers', ['ember-testing/test/helpers', 'ember-testing/helpers/and_then', 'ember-testing/helpers/click', 'ember-testing/helpers/current_path', 'ember-testing/helpers/current_route_name', 'ember-testing/helpers/current_url', 'ember-testing/helpers/fill_in', 'ember-testing/helpers/find', 'ember-testing/helpers/find_with_assert', 'ember-testing/helpers/key_event', 'ember-testing/helpers/pause_test', 'ember-testing/helpers/trigger_event', 'ember-testing/helpers/visit', 'ember-testing/helpers/wait'], function (_helpers, _and_then, _click, _current_path, _current_route_name, _current_url, _fill_in, _find, _find_with_assert, _key_event, _pause_test, _trigger_event, _visit, _wait) {
+enifed('ember-testing/lib/helpers', ['ember-testing/lib/test/helpers', 'ember-testing/lib/helpers/and_then', 'ember-testing/lib/helpers/click', 'ember-testing/lib/helpers/current_path', 'ember-testing/lib/helpers/current_route_name', 'ember-testing/lib/helpers/current_url', 'ember-testing/lib/helpers/fill_in', 'ember-testing/lib/helpers/find', 'ember-testing/lib/helpers/find_with_assert', 'ember-testing/lib/helpers/key_event', 'ember-testing/lib/helpers/pause_test', 'ember-testing/lib/helpers/trigger_event', 'ember-testing/lib/helpers/visit', 'ember-testing/lib/helpers/wait'], function (_helpers, _and_then, _click, _current_path, _current_route_name, _current_url, _fill_in, _find, _find_with_assert, _key_event, _pause_test, _trigger_event, _visit, _wait) {
   'use strict';
 
   (0, _helpers.registerAsyncHelper)('visit', _visit.default);
@@ -1334,7 +1438,30 @@ enifed('ember-testing/helpers', ['ember-testing/test/helpers', 'ember-testing/he
   (0, _helpers.registerHelper)('currentURL', _current_url.default);
   (0, _helpers.registerHelper)('resumeTest', _pause_test.resumeTest);
 });
-enifed("ember-testing/helpers/and_then", ["exports"], function (exports) {
+enifed('ember-testing/lib/helpers/-is-form-control', ['exports'], function (exports) {
+  'use strict';
+
+  exports.default = isFormControl;
+  var FORM_CONTROL_TAGS = ['INPUT', 'BUTTON', 'SELECT', 'TEXTAREA'];
+
+  /**
+    @private
+    @param {Element} element the element to check
+    @returns {boolean} `true` when the element is a form control, `false` otherwise
+  */
+  function isFormControl(element) {
+    var tagName = element.tagName,
+        type = element.type;
+
+
+    if (type === 'hidden') {
+      return false;
+    }
+
+    return FORM_CONTROL_TAGS.indexOf(tagName) > -1;
+  }
+});
+enifed("ember-testing/lib/helpers/and_then", ["exports"], function (exports) {
   "use strict";
 
   exports.default = andThen;
@@ -1342,7 +1469,7 @@ enifed("ember-testing/helpers/and_then", ["exports"], function (exports) {
     return app.testHelpers.wait(callback(app));
   }
 });
-enifed('ember-testing/helpers/click', ['exports', 'ember-testing/events'], function (exports, _events) {
+enifed('ember-testing/lib/helpers/click', ['exports', 'ember-testing/lib/events'], function (exports, _events) {
   'use strict';
 
   exports.default = click;
@@ -1382,7 +1509,7 @@ enifed('ember-testing/helpers/click', ['exports', 'ember-testing/events'], funct
     @module ember
     */
 });
-enifed('ember-testing/helpers/current_path', ['exports', 'ember-metal'], function (exports, _emberMetal) {
+enifed('ember-testing/lib/helpers/current_path', ['exports', 'ember-metal'], function (exports, _emberMetal) {
   'use strict';
 
   exports.default = currentPath;
@@ -1413,7 +1540,7 @@ enifed('ember-testing/helpers/current_path', ['exports', 'ember-metal'], functio
     @module ember
     */
 });
-enifed('ember-testing/helpers/current_route_name', ['exports', 'ember-metal'], function (exports, _emberMetal) {
+enifed('ember-testing/lib/helpers/current_route_name', ['exports', 'ember-metal'], function (exports, _emberMetal) {
   'use strict';
 
   exports.default = currentRouteName;
@@ -1442,7 +1569,7 @@ enifed('ember-testing/helpers/current_route_name', ['exports', 'ember-metal'], f
     @module ember
     */
 });
-enifed('ember-testing/helpers/current_url', ['exports', 'ember-metal'], function (exports, _emberMetal) {
+enifed('ember-testing/lib/helpers/current_url', ['exports', 'ember-metal'], function (exports, _emberMetal) {
   'use strict';
 
   exports.default = currentURL;
@@ -1473,7 +1600,7 @@ enifed('ember-testing/helpers/current_url', ['exports', 'ember-metal'], function
     @module ember
     */
 });
-enifed('ember-testing/helpers/fill_in', ['exports', 'ember-testing/events'], function (exports, _events) {
+enifed('ember-testing/lib/helpers/fill_in', ['exports', 'ember-testing/lib/events', 'ember-testing/lib/helpers/-is-form-control'], function (exports, _events, _isFormControl) {
   'use strict';
 
   exports.default = fillIn;
@@ -1497,6 +1624,9 @@ enifed('ember-testing/helpers/fill_in', ['exports', 'ember-testing/events'], fun
     @return {RSVP.Promise<undefined>}
     @public
   */
+  /**
+  @module ember
+  */
   function fillIn(app, selector, contextOrText, text) {
     var $el = void 0,
         el = void 0,
@@ -1510,16 +1640,19 @@ enifed('ember-testing/helpers/fill_in', ['exports', 'ember-testing/events'], fun
     el = $el[0];
     (0, _events.focus)(el);
 
-    $el.eq(0).val(text);
+    if ((0, _isFormControl.default)(el)) {
+      el.value = text;
+    } else {
+      el.innerHTML = text;
+    }
+
     (0, _events.fireEvent)(el, 'input');
     (0, _events.fireEvent)(el, 'change');
 
     return app.testHelpers.wait();
-  } /**
-    @module ember
-    */
+  }
 });
-enifed('ember-testing/helpers/find', ['exports', 'ember-metal'], function (exports, _emberMetal) {
+enifed('ember-testing/lib/helpers/find', ['exports', 'ember-metal', 'ember-debug', 'ember-views'], function (exports, _emberMetal, _emberDebug, _emberViews) {
   'use strict';
 
   exports.default = find;
@@ -1542,13 +1675,16 @@ enifed('ember-testing/helpers/find', ['exports', 'ember-metal'], function (expor
     ```
   
     @method find
-    @param {String} selector jQuery string selector for element lookup
+    @param {String} selector jQuery selector for element lookup
     @param {String} [context] (optional) jQuery selector that will limit the selector
                               argument to find only within the context's children
-    @return {Object} jQuery object representing the results of the query
+    @return {Object} DOM element representing the results of the query
     @public
   */
   function find(app, selector, context) {
+    if (_emberViews.jQueryDisabled) {
+      (true && !(false) && (0, _emberDebug.assert)('If jQuery is disabled, please import and use helpers from @ember/test-helpers [https://github.com/emberjs/ember-test-helpers]. Note: `find` is not an available helper.'));
+    }
     var $el = void 0;
     context = context || (0, _emberMetal.get)(app, 'rootElement');
     $el = app.$(selector, context);
@@ -1557,7 +1693,7 @@ enifed('ember-testing/helpers/find', ['exports', 'ember-metal'], function (expor
     @module ember
     */
 });
-enifed('ember-testing/helpers/find_with_assert', ['exports'], function (exports) {
+enifed('ember-testing/lib/helpers/find_with_assert', ['exports'], function (exports) {
   'use strict';
 
   exports.default = findWithAssert;
@@ -1585,7 +1721,7 @@ enifed('ember-testing/helpers/find_with_assert', ['exports'], function (exports)
     @param {String} [context] (optional) jQuery selector that will limit the
     selector argument to find only within the context's children
     @return {Object} jQuery object representing the results of the query
-    @throws {Error} throws error if jQuery object returned has a length of 0
+    @throws {Error} throws error if object returned has a length of 0
     @public
   */
   function findWithAssert(app, selector, context) {
@@ -1596,7 +1732,7 @@ enifed('ember-testing/helpers/find_with_assert', ['exports'], function (exports)
     return $el;
   }
 });
-enifed("ember-testing/helpers/key_event", ["exports"], function (exports) {
+enifed("ember-testing/lib/helpers/key_event", ["exports"], function (exports) {
   "use strict";
 
   exports.default = keyEvent;
@@ -1632,16 +1768,20 @@ enifed("ember-testing/helpers/key_event", ["exports"], function (exports) {
       type = typeOrKeyCode;
     }
 
-    return app.testHelpers.triggerEvent(selector, context, type, { keyCode: keyCode, which: keyCode });
+    return app.testHelpers.triggerEvent(selector, context, type, {
+      keyCode: keyCode,
+      which: keyCode
+    });
   }
 });
-enifed('ember-testing/helpers/pause_test', ['exports', 'ember-runtime', 'ember-console', 'ember-debug'], function (exports, _emberRuntime, _emberConsole, _emberDebug) {
+enifed('ember-testing/lib/helpers/pause_test', ['exports', 'ember-runtime', 'ember-debug'], function (exports, _emberRuntime, _emberDebug) {
   'use strict';
 
   exports.resumeTest = resumeTest;
   exports.pauseTest = pauseTest;
-
-
+  /**
+  @module ember
+  */
   var resume = void 0;
 
   /**
@@ -1650,9 +1790,6 @@ enifed('ember-testing/helpers/pause_test', ['exports', 'ember-runtime', 'ember-c
    @method resumeTest
    @return {void}
    @public
-  */
-  /**
-  @module ember
   */
   function resumeTest() {
     (true && !(resume) && (0, _emberDebug.assert)('Testing has not been paused. There is nothing to resume.', resume));
@@ -1699,14 +1836,14 @@ enifed('ember-testing/helpers/pause_test', ['exports', 'ember-runtime', 'ember-c
    @public
   */
   function pauseTest() {
-    _emberConsole.default.info('Testing paused. Use `resumeTest()` to continue.');
+    (0, _emberDebug.info)('Testing paused. Use `resumeTest()` to continue.');
 
     return new _emberRuntime.RSVP.Promise(function (resolve) {
       resume = resolve;
     }, 'TestAdapter paused promise');
   }
 });
-enifed('ember-testing/helpers/trigger_event', ['exports', 'ember-testing/events'], function (exports, _events) {
+enifed('ember-testing/lib/helpers/trigger_event', ['exports', 'ember-testing/lib/events'], function (exports, _events) {
   'use strict';
 
   exports.default = triggerEvent;
@@ -1774,7 +1911,7 @@ enifed('ember-testing/helpers/trigger_event', ['exports', 'ember-testing/events'
     @module ember
     */
 });
-enifed('ember-testing/helpers/visit', ['exports', 'ember-metal'], function (exports, _emberMetal) {
+enifed('ember-testing/lib/helpers/visit', ['exports', 'ember-metal'], function (exports, _emberMetal) {
   'use strict';
 
   exports.default = visit;
@@ -1823,7 +1960,7 @@ enifed('ember-testing/helpers/visit', ['exports', 'ember-metal'], function (expo
     @module ember
     */
 });
-enifed('ember-testing/helpers/wait', ['exports', 'ember-testing/test/waiters', 'ember-runtime', 'ember-metal', 'ember-testing/test/pending_requests'], function (exports, _waiters, _emberRuntime, _emberMetal, _pending_requests) {
+enifed('ember-testing/lib/helpers/wait', ['exports', 'ember-testing/lib/test/waiters', 'ember-runtime', 'ember-metal', 'ember-testing/lib/test/pending_requests'], function (exports, _waiters, _emberRuntime, _emberMetal, _pending_requests) {
   'use strict';
 
   exports.default = wait;
@@ -1843,7 +1980,9 @@ enifed('ember-testing/helpers/wait', ['exports', 'ember-testing/test/waiters', '
     Example:
   
     ```javascript
-    Ember.Test.registerAsyncHelper('loginUser', function(app, username, password) {
+    import { registerAsyncHelper } from '@ember/test';
+  
+    registerAsyncHelper('loginUser', function(app, username, password) {
       visit('secured/path/here')
         .fillIn('#username', username)
         .fillIn('#password', password)
@@ -1878,7 +2017,7 @@ enifed('ember-testing/helpers/wait', ['exports', 'ember-testing/test/waiters', '
         }
 
         // 3. If there are scheduled timers or we are inside of a run loop, keep polling
-        if (_emberMetal.run.hasScheduledTimers() || _emberMetal.run.currentRunLoop) {
+        if ((0, _emberMetal.hasScheduledTimers)() || (0, _emberMetal.getCurrentRunLoop)()) {
           return;
         }
 
@@ -1895,36 +2034,7 @@ enifed('ember-testing/helpers/wait', ['exports', 'ember-testing/test/waiters', '
     });
   }
 });
-enifed('ember-testing/index', ['exports', 'ember-testing/test', 'ember-testing/adapters/adapter', 'ember-testing/setup_for_testing', 'ember-testing/adapters/qunit', 'ember-testing/support', 'ember-testing/ext/application', 'ember-testing/ext/rsvp', 'ember-testing/helpers', 'ember-testing/initializers'], function (exports, _test, _adapter, _setup_for_testing, _qunit) {
-  'use strict';
-
-  exports.QUnitAdapter = exports.setupForTesting = exports.Adapter = exports.Test = undefined;
-  Object.defineProperty(exports, 'Test', {
-    enumerable: true,
-    get: function () {
-      return _test.default;
-    }
-  });
-  Object.defineProperty(exports, 'Adapter', {
-    enumerable: true,
-    get: function () {
-      return _adapter.default;
-    }
-  });
-  Object.defineProperty(exports, 'setupForTesting', {
-    enumerable: true,
-    get: function () {
-      return _setup_for_testing.default;
-    }
-  });
-  Object.defineProperty(exports, 'QUnitAdapter', {
-    enumerable: true,
-    get: function () {
-      return _qunit.default;
-    }
-  });
-});
-enifed('ember-testing/initializers', ['ember-runtime'], function (_emberRuntime) {
+enifed('ember-testing/lib/initializers', ['ember-runtime'], function (_emberRuntime) {
   'use strict';
 
   var name = 'deferReadiness in `testing` mode';
@@ -1943,7 +2053,7 @@ enifed('ember-testing/initializers', ['ember-runtime'], function (_emberRuntime)
     }
   });
 });
-enifed('ember-testing/setup_for_testing', ['exports', 'ember-debug', 'ember-views', 'ember-testing/test/adapter', 'ember-testing/test/pending_requests', 'ember-testing/adapters/adapter', 'ember-testing/adapters/qunit'], function (exports, _emberDebug, _emberViews, _adapter, _pending_requests, _adapter2, _qunit) {
+enifed('ember-testing/lib/setup_for_testing', ['exports', 'ember-debug', 'ember-views', 'ember-testing/lib/test/adapter', 'ember-testing/lib/test/pending_requests', 'ember-testing/lib/adapters/adapter', 'ember-testing/lib/adapters/qunit'], function (exports, _emberDebug, _emberViews, _adapter, _pending_requests, _adapter2, _qunit) {
   'use strict';
 
   exports.default = setupForTesting;
@@ -1983,7 +2093,7 @@ enifed('ember-testing/setup_for_testing', ['exports', 'ember-debug', 'ember-view
     }
   }
 });
-enifed('ember-testing/support', ['ember-debug', 'ember-views', 'ember-environment'], function (_emberDebug, _emberViews, _emberEnvironment) {
+enifed('ember-testing/lib/support', ['ember-debug', 'ember-views', 'ember-environment'], function (_emberDebug, _emberViews, _emberEnvironment) {
   'use strict';
 
   /**
@@ -2005,7 +2115,7 @@ enifed('ember-testing/support', ['ember-debug', 'ember-views', 'ember-environmen
     $(input).attr('type', 'checkbox').css({ position: 'absolute', left: '-1000px', top: '-1000px' }).appendTo('body').on('click', handler).trigger('click').remove();
   }
 
-  if (_emberEnvironment.environment.hasDOM && typeof $ === 'function') {
+  if (_emberEnvironment.environment.hasDOM && !_emberViews.jQueryDisabled) {
     $(function () {
       /*
         Determine whether a checkbox checked using jQuery's "click" method will have
@@ -2018,7 +2128,7 @@ enifed('ember-testing/support', ['ember-debug', 'ember-views', 'ember-environmen
         if (!this.checked && !$.event.special.click) {
           $.event.special.click = {
             trigger: function () {
-              if ($.nodeName(this, 'input') && this.type === 'checkbox' && this.click) {
+              if (this.nodeName === 'INPUT' && this.type === 'checkbox' && this.click) {
                 this.click();
                 return false;
               }
@@ -2029,12 +2139,14 @@ enifed('ember-testing/support', ['ember-debug', 'ember-views', 'ember-environmen
 
       // Try again to verify that the patch took effect or blow up.
       testCheckboxClick(function () {
-        (true && (0, _emberDebug.warn)('clicked checkboxes should be checked! the jQuery patch didn\'t work', this.checked, { id: 'ember-testing.test-checkbox-click' }));
+        (true && (0, _emberDebug.warn)("clicked checkboxes should be checked! the jQuery patch didn't work", this.checked, {
+          id: 'ember-testing.test-checkbox-click'
+        }));
       });
     });
   }
 });
-enifed('ember-testing/test', ['exports', 'ember-testing/test/helpers', 'ember-testing/test/on_inject_helpers', 'ember-testing/test/promise', 'ember-testing/test/waiters', 'ember-testing/test/adapter'], function (exports, _helpers, _on_inject_helpers, _promise, _waiters, _adapter) {
+enifed('ember-testing/lib/test', ['exports', 'ember-testing/lib/test/helpers', 'ember-testing/lib/test/on_inject_helpers', 'ember-testing/lib/test/promise', 'ember-testing/lib/test/waiters', 'ember-testing/lib/test/adapter'], function (exports, _helpers, _on_inject_helpers, _promise, _waiters, _adapter) {
   'use strict';
 
   /**
@@ -2100,7 +2212,7 @@ enifed('ember-testing/test', ['exports', 'ember-testing/test/helpers', 'ember-te
 
   exports.default = Test;
 });
-enifed('ember-testing/test/adapter', ['exports', 'ember-console', 'ember-metal'], function (exports, _emberConsole, _emberMetal) {
+enifed('ember-testing/lib/test/adapter', ['exports', 'ember-metal'], function (exports, _emberMetal) {
   'use strict';
 
   exports.getAdapter = getAdapter;
@@ -2137,10 +2249,11 @@ enifed('ember-testing/test/adapter', ['exports', 'ember-console', 'ember-metal']
 
   function adapterDispatch(error) {
     adapter.exception(error);
-    _emberConsole.default.error(error.stack);
+
+    console.error(error.stack); // eslint-disable-line no-console
   }
 });
-enifed('ember-testing/test/helpers', ['exports', 'ember-testing/test/promise'], function (exports, _promise) {
+enifed('ember-testing/lib/test/helpers', ['exports', 'ember-testing/lib/test/promise'], function (exports, _promise) {
   'use strict';
 
   exports.helpers = undefined;
@@ -2162,8 +2275,11 @@ enifed('ember-testing/test/helpers', ['exports', 'ember-testing/test/promise'], 
     For example:
   
     ```javascript
-    Ember.Test.registerHelper('boot', function(app) {
-      Ember.run(app, app.advanceReadiness);
+    import { registerHelper } from '@ember/test';
+    import { run } from '@ember/runloop';
+  
+    registerHelper('boot', function(app) {
+      run(app, app.advanceReadiness);
     });
     ```
   
@@ -2171,7 +2287,9 @@ enifed('ember-testing/test/helpers', ['exports', 'ember-testing/test/promise'], 
     called with `app` as the first parameter.
   
     ```javascript
-    App = Ember.Application.create();
+    import Application from '@ember/application';
+  
+    App = Application.create();
     App.injectTestHelpers();
     boot();
     ```
@@ -2201,8 +2319,11 @@ enifed('ember-testing/test/helpers', ['exports', 'ember-testing/test/promise'], 
     For example:
   
     ```javascript
-    Ember.Test.registerAsyncHelper('boot', function(app) {
-      Ember.run(app, app.advanceReadiness);
+    import { registerAsyncHelper } from '@ember/test';
+    import { run } from '@ember/runloop';
+  
+    registerAsyncHelper('boot', function(app) {
+      run(app, app.advanceReadiness);
     });
     ```
   
@@ -2214,7 +2335,9 @@ enifed('ember-testing/test/helpers', ['exports', 'ember-testing/test/promise'], 
     For example:
   
     ```javascript
-    Ember.Test.registerAsyncHelper('deletePost', function(app, postId) {
+    import { registerAsyncHelper } from '@ember/test';
+  
+    registerAsyncHelper('deletePost', function(app, postId) {
       click('.delete-' + postId);
     });
   
@@ -2245,7 +2368,9 @@ enifed('ember-testing/test/helpers', ['exports', 'ember-testing/test/promise'], 
     Example:
   
     ```javascript
-    Ember.Test.unregisterHelper('wait');
+    import { unregisterHelper } from '@ember/test';
+  
+    unregisterHelper('wait');
     ```
   
     @public
@@ -2259,7 +2384,7 @@ enifed('ember-testing/test/helpers', ['exports', 'ember-testing/test/promise'], 
     delete _promise.default.prototype[name];
   }
 });
-enifed("ember-testing/test/on_inject_helpers", ["exports"], function (exports) {
+enifed("ember-testing/lib/test/on_inject_helpers", ["exports"], function (exports) {
   "use strict";
 
   exports.onInjectHelpers = onInjectHelpers;
@@ -2275,12 +2400,14 @@ enifed("ember-testing/test/on_inject_helpers", ["exports"], function (exports) {
     Example:
   
     ```javascript
+    import $ from 'jquery';
+  
     Ember.Test.onInjectHelpers(function() {
-      Ember.$(document).ajaxSend(function() {
+      $(document).ajaxSend(function() {
         Test.pendingRequests++;
       });
   
-      Ember.$(document).ajaxComplete(function() {
+      $(document).ajaxComplete(function() {
         Test.pendingRequests--;
       });
     });
@@ -2301,7 +2428,7 @@ enifed("ember-testing/test/on_inject_helpers", ["exports"], function (exports) {
     }
   }
 });
-enifed("ember-testing/test/pending_requests", ["exports"], function (exports) {
+enifed("ember-testing/lib/test/pending_requests", ["exports"], function (exports) {
   "use strict";
 
   exports.pendingRequests = pendingRequests;
@@ -2323,15 +2450,17 @@ enifed("ember-testing/test/pending_requests", ["exports"], function (exports) {
   }
 
   function decrementPendingRequests(_, xhr) {
-    for (var i = 0; i < requests.length; i++) {
-      if (xhr === requests[i]) {
-        requests.splice(i, 1);
-        break;
+    setTimeout(function () {
+      for (var i = 0; i < requests.length; i++) {
+        if (xhr === requests[i]) {
+          requests.splice(i, 1);
+          break;
+        }
       }
-    }
+    }, 0);
   }
 });
-enifed('ember-testing/test/promise', ['exports', 'ember-babel', 'ember-runtime', 'ember-testing/test/run'], function (exports, _emberBabel, _emberRuntime, _run) {
+enifed('ember-testing/lib/test/promise', ['exports', 'ember-babel', 'ember-runtime', 'ember-testing/lib/test/run'], function (exports, _emberBabel, _emberRuntime, _run) {
   'use strict';
 
   exports.promise = promise;
@@ -2439,26 +2568,24 @@ enifed('ember-testing/test/promise', ['exports', 'ember-babel', 'ember-runtime',
     }
   }
 });
-enifed('ember-testing/test/run', ['exports', 'ember-metal'], function (exports, _emberMetal) {
+enifed('ember-testing/lib/test/run', ['exports', 'ember-metal'], function (exports, _emberMetal) {
   'use strict';
 
   exports.default = run;
   function run(fn) {
-    if (!_emberMetal.run.currentRunLoop) {
+    if (!(0, _emberMetal.getCurrentRunLoop)()) {
       return (0, _emberMetal.run)(fn);
     } else {
       return fn();
     }
   }
 });
-enifed('ember-testing/test/waiters', ['exports', 'ember-debug'], function (exports, _emberDebug) {
-  'use strict';
+enifed("ember-testing/lib/test/waiters", ["exports"], function (exports) {
+  "use strict";
 
   exports.registerWaiter = registerWaiter;
   exports.unregisterWaiter = unregisterWaiter;
   exports.checkWaiters = checkWaiters;
-
-
   /**
    @module @ember/test
   */
@@ -2476,8 +2603,10 @@ enifed('ember-testing/test/waiters', ['exports', 'ember-debug'], function (expor
      For example:
   
      ```javascript
-     Ember.Test.registerWaiter(function() {
-       return myPendingTransactions() == 0;
+     import { registerWaiter } from '@ember/test';
+  
+     registerWaiter(function() {
+       return myPendingTransactions() === 0;
      });
      ```
      The `context` argument allows you to optionally specify the `this`
@@ -2486,7 +2615,9 @@ enifed('ember-testing/test/waiters', ['exports', 'ember-debug'], function (expor
      For example:
   
      ```javascript
-     Ember.Test.registerWaiter(MyDB, MyDB.hasPendingTransactions);
+     import { registerWaiter } from '@ember/test';
+  
+     registerWaiter(MyDB, MyDB.hasPendingTransactions);
      ```
   
      @public
@@ -2573,7 +2704,7 @@ enifed('ember-testing/test/waiters', ['exports', 'ember-debug'], function (expor
     return -1;
   }
 });
-/*global enifed */
+/*global enifed, module */
 enifed('node-module', ['exports'], function(_exports) {
   var IS_NODE = typeof module === 'object' && typeof module.require === 'function';
   if (IS_NODE) {
@@ -2586,6 +2717,7 @@ enifed('node-module', ['exports'], function(_exports) {
     _exports.IS_NODE = IS_NODE;
   }
 });
+
 var testing = requireModule('ember-testing');
 Ember.Test = testing.Test;
 Ember.Test.Adapter = testing.Adapter;
@@ -2593,6 +2725,6565 @@ Ember.Test.QUnitAdapter = testing.QUnitAdapter;
 Ember.setupForTesting = testing.setupForTesting;
 }());
 
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.chai = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+module.exports = require('./lib/chai');
+
+},{"./lib/chai":2}],2:[function(require,module,exports){
+/*!
+ * chai
+ * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+var used = []
+  , exports = module.exports = {};
+
+/*!
+ * Chai version
+ */
+
+exports.version = '3.5.0';
+
+/*!
+ * Assertion Error
+ */
+
+exports.AssertionError = require('assertion-error');
+
+/*!
+ * Utils for plugins (not exported)
+ */
+
+var util = require('./chai/utils');
+
+/**
+ * # .use(function)
+ *
+ * Provides a way to extend the internals of Chai
+ *
+ * @param {Function}
+ * @returns {this} for chaining
+ * @api public
+ */
+
+exports.use = function (fn) {
+  if (!~used.indexOf(fn)) {
+    fn(this, util);
+    used.push(fn);
+  }
+
+  return this;
+};
+
+/*!
+ * Utility Functions
+ */
+
+exports.util = util;
+
+/*!
+ * Configuration
+ */
+
+var config = require('./chai/config');
+exports.config = config;
+
+/*!
+ * Primary `Assertion` prototype
+ */
+
+var assertion = require('./chai/assertion');
+exports.use(assertion);
+
+/*!
+ * Core Assertions
+ */
+
+var core = require('./chai/core/assertions');
+exports.use(core);
+
+/*!
+ * Expect interface
+ */
+
+var expect = require('./chai/interface/expect');
+exports.use(expect);
+
+/*!
+ * Should interface
+ */
+
+var should = require('./chai/interface/should');
+exports.use(should);
+
+/*!
+ * Assert interface
+ */
+
+var assert = require('./chai/interface/assert');
+exports.use(assert);
+
+},{"./chai/assertion":3,"./chai/config":4,"./chai/core/assertions":5,"./chai/interface/assert":6,"./chai/interface/expect":7,"./chai/interface/should":8,"./chai/utils":22,"assertion-error":30}],3:[function(require,module,exports){
+/*!
+ * chai
+ * http://chaijs.com
+ * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+var config = require('./config');
+
+module.exports = function (_chai, util) {
+  /*!
+   * Module dependencies.
+   */
+
+  var AssertionError = _chai.AssertionError
+    , flag = util.flag;
+
+  /*!
+   * Module export.
+   */
+
+  _chai.Assertion = Assertion;
+
+  /*!
+   * Assertion Constructor
+   *
+   * Creates object for chaining.
+   *
+   * @api private
+   */
+
+  function Assertion (obj, msg, stack) {
+    flag(this, 'ssfi', stack || arguments.callee);
+    flag(this, 'object', obj);
+    flag(this, 'message', msg);
+  }
+
+  Object.defineProperty(Assertion, 'includeStack', {
+    get: function() {
+      console.warn('Assertion.includeStack is deprecated, use chai.config.includeStack instead.');
+      return config.includeStack;
+    },
+    set: function(value) {
+      console.warn('Assertion.includeStack is deprecated, use chai.config.includeStack instead.');
+      config.includeStack = value;
+    }
+  });
+
+  Object.defineProperty(Assertion, 'showDiff', {
+    get: function() {
+      console.warn('Assertion.showDiff is deprecated, use chai.config.showDiff instead.');
+      return config.showDiff;
+    },
+    set: function(value) {
+      console.warn('Assertion.showDiff is deprecated, use chai.config.showDiff instead.');
+      config.showDiff = value;
+    }
+  });
+
+  Assertion.addProperty = function (name, fn) {
+    util.addProperty(this.prototype, name, fn);
+  };
+
+  Assertion.addMethod = function (name, fn) {
+    util.addMethod(this.prototype, name, fn);
+  };
+
+  Assertion.addChainableMethod = function (name, fn, chainingBehavior) {
+    util.addChainableMethod(this.prototype, name, fn, chainingBehavior);
+  };
+
+  Assertion.overwriteProperty = function (name, fn) {
+    util.overwriteProperty(this.prototype, name, fn);
+  };
+
+  Assertion.overwriteMethod = function (name, fn) {
+    util.overwriteMethod(this.prototype, name, fn);
+  };
+
+  Assertion.overwriteChainableMethod = function (name, fn, chainingBehavior) {
+    util.overwriteChainableMethod(this.prototype, name, fn, chainingBehavior);
+  };
+
+  /**
+   * ### .assert(expression, message, negateMessage, expected, actual, showDiff)
+   *
+   * Executes an expression and check expectations. Throws AssertionError for reporting if test doesn't pass.
+   *
+   * @name assert
+   * @param {Philosophical} expression to be tested
+   * @param {String|Function} message or function that returns message to display if expression fails
+   * @param {String|Function} negatedMessage or function that returns negatedMessage to display if negated expression fails
+   * @param {Mixed} expected value (remember to check for negation)
+   * @param {Mixed} actual (optional) will default to `this.obj`
+   * @param {Boolean} showDiff (optional) when set to `true`, assert will display a diff in addition to the message if expression fails
+   * @api private
+   */
+
+  Assertion.prototype.assert = function (expr, msg, negateMsg, expected, _actual, showDiff) {
+    var ok = util.test(this, arguments);
+    if (true !== showDiff) showDiff = false;
+    if (true !== config.showDiff) showDiff = false;
+
+    if (!ok) {
+      var msg = util.getMessage(this, arguments)
+        , actual = util.getActual(this, arguments);
+      throw new AssertionError(msg, {
+          actual: actual
+        , expected: expected
+        , showDiff: showDiff
+      }, (config.includeStack) ? this.assert : flag(this, 'ssfi'));
+    }
+  };
+
+  /*!
+   * ### ._obj
+   *
+   * Quick reference to stored `actual` value for plugin developers.
+   *
+   * @api private
+   */
+
+  Object.defineProperty(Assertion.prototype, '_obj',
+    { get: function () {
+        return flag(this, 'object');
+      }
+    , set: function (val) {
+        flag(this, 'object', val);
+      }
+  });
+};
+
+},{"./config":4}],4:[function(require,module,exports){
+module.exports = {
+
+  /**
+   * ### config.includeStack
+   *
+   * User configurable property, influences whether stack trace
+   * is included in Assertion error message. Default of false
+   * suppresses stack trace in the error message.
+   *
+   *     chai.config.includeStack = true;  // enable stack on error
+   *
+   * @param {Boolean}
+   * @api public
+   */
+
+   includeStack: false,
+
+  /**
+   * ### config.showDiff
+   *
+   * User configurable property, influences whether or not
+   * the `showDiff` flag should be included in the thrown
+   * AssertionErrors. `false` will always be `false`; `true`
+   * will be true when the assertion has requested a diff
+   * be shown.
+   *
+   * @param {Boolean}
+   * @api public
+   */
+
+  showDiff: true,
+
+  /**
+   * ### config.truncateThreshold
+   *
+   * User configurable property, sets length threshold for actual and
+   * expected values in assertion errors. If this threshold is exceeded, for
+   * example for large data structures, the value is replaced with something
+   * like `[ Array(3) ]` or `{ Object (prop1, prop2) }`.
+   *
+   * Set it to zero if you want to disable truncating altogether.
+   *
+   * This is especially userful when doing assertions on arrays: having this
+   * set to a reasonable large value makes the failure messages readily
+   * inspectable.
+   *
+   *     chai.config.truncateThreshold = 0;  // disable truncating
+   *
+   * @param {Number}
+   * @api public
+   */
+
+  truncateThreshold: 40
+
+};
+
+},{}],5:[function(require,module,exports){
+/*!
+ * chai
+ * http://chaijs.com
+ * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+module.exports = function (chai, _) {
+  var Assertion = chai.Assertion
+    , toString = Object.prototype.toString
+    , flag = _.flag;
+
+  /**
+   * ### Language Chains
+   *
+   * The following are provided as chainable getters to
+   * improve the readability of your assertions. They
+   * do not provide testing capabilities unless they
+   * have been overwritten by a plugin.
+   *
+   * **Chains**
+   *
+   * - to
+   * - be
+   * - been
+   * - is
+   * - that
+   * - which
+   * - and
+   * - has
+   * - have
+   * - with
+   * - at
+   * - of
+   * - same
+   *
+   * @name language chains
+   * @namespace BDD
+   * @api public
+   */
+
+  [ 'to', 'be', 'been'
+  , 'is', 'and', 'has', 'have'
+  , 'with', 'that', 'which', 'at'
+  , 'of', 'same' ].forEach(function (chain) {
+    Assertion.addProperty(chain, function () {
+      return this;
+    });
+  });
+
+  /**
+   * ### .not
+   *
+   * Negates any of assertions following in the chain.
+   *
+   *     expect(foo).to.not.equal('bar');
+   *     expect(goodFn).to.not.throw(Error);
+   *     expect({ foo: 'baz' }).to.have.property('foo')
+   *       .and.not.equal('bar');
+   *
+   * @name not
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addProperty('not', function () {
+    flag(this, 'negate', true);
+  });
+
+  /**
+   * ### .deep
+   *
+   * Sets the `deep` flag, later used by the `equal` and
+   * `property` assertions.
+   *
+   *     expect(foo).to.deep.equal({ bar: 'baz' });
+   *     expect({ foo: { bar: { baz: 'quux' } } })
+   *       .to.have.deep.property('foo.bar.baz', 'quux');
+   *
+   * `.deep.property` special characters can be escaped
+   * by adding two slashes before the `.` or `[]`.
+   *
+   *     var deepCss = { '.link': { '[target]': 42 }};
+   *     expect(deepCss).to.have.deep.property('\\.link.\\[target\\]', 42);
+   *
+   * @name deep
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addProperty('deep', function () {
+    flag(this, 'deep', true);
+  });
+
+  /**
+   * ### .any
+   *
+   * Sets the `any` flag, (opposite of the `all` flag)
+   * later used in the `keys` assertion.
+   *
+   *     expect(foo).to.have.any.keys('bar', 'baz');
+   *
+   * @name any
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addProperty('any', function () {
+    flag(this, 'any', true);
+    flag(this, 'all', false)
+  });
+
+
+  /**
+   * ### .all
+   *
+   * Sets the `all` flag (opposite of the `any` flag)
+   * later used by the `keys` assertion.
+   *
+   *     expect(foo).to.have.all.keys('bar', 'baz');
+   *
+   * @name all
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addProperty('all', function () {
+    flag(this, 'all', true);
+    flag(this, 'any', false);
+  });
+
+  /**
+   * ### .a(type)
+   *
+   * The `a` and `an` assertions are aliases that can be
+   * used either as language chains or to assert a value's
+   * type.
+   *
+   *     // typeof
+   *     expect('test').to.be.a('string');
+   *     expect({ foo: 'bar' }).to.be.an('object');
+   *     expect(null).to.be.a('null');
+   *     expect(undefined).to.be.an('undefined');
+   *     expect(new Error).to.be.an('error');
+   *     expect(new Promise).to.be.a('promise');
+   *     expect(new Float32Array()).to.be.a('float32array');
+   *     expect(Symbol()).to.be.a('symbol');
+   *
+   *     // es6 overrides
+   *     expect({[Symbol.toStringTag]:()=>'foo'}).to.be.a('foo');
+   *
+   *     // language chain
+   *     expect(foo).to.be.an.instanceof(Foo);
+   *
+   * @name a
+   * @alias an
+   * @param {String} type
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  function an (type, msg) {
+    if (msg) flag(this, 'message', msg);
+    type = type.toLowerCase();
+    var obj = flag(this, 'object')
+      , article = ~[ 'a', 'e', 'i', 'o', 'u' ].indexOf(type.charAt(0)) ? 'an ' : 'a ';
+
+    this.assert(
+        type === _.type(obj)
+      , 'expected #{this} to be ' + article + type
+      , 'expected #{this} not to be ' + article + type
+    );
+  }
+
+  Assertion.addChainableMethod('an', an);
+  Assertion.addChainableMethod('a', an);
+
+  /**
+   * ### .include(value)
+   *
+   * The `include` and `contain` assertions can be used as either property
+   * based language chains or as methods to assert the inclusion of an object
+   * in an array or a substring in a string. When used as language chains,
+   * they toggle the `contains` flag for the `keys` assertion.
+   *
+   *     expect([1,2,3]).to.include(2);
+   *     expect('foobar').to.contain('foo');
+   *     expect({ foo: 'bar', hello: 'universe' }).to.include.keys('foo');
+   *
+   * @name include
+   * @alias contain
+   * @alias includes
+   * @alias contains
+   * @param {Object|String|Number} obj
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  function includeChainingBehavior () {
+    flag(this, 'contains', true);
+  }
+
+  function include (val, msg) {
+    _.expectTypes(this, ['array', 'object', 'string']);
+
+    if (msg) flag(this, 'message', msg);
+    var obj = flag(this, 'object');
+    var expected = false;
+
+    if (_.type(obj) === 'array' && _.type(val) === 'object') {
+      for (var i in obj) {
+        if (_.eql(obj[i], val)) {
+          expected = true;
+          break;
+        }
+      }
+    } else if (_.type(val) === 'object') {
+      if (!flag(this, 'negate')) {
+        for (var k in val) new Assertion(obj).property(k, val[k]);
+        return;
+      }
+      var subset = {};
+      for (var k in val) subset[k] = obj[k];
+      expected = _.eql(subset, val);
+    } else {
+      expected = (obj != undefined) && ~obj.indexOf(val);
+    }
+    this.assert(
+        expected
+      , 'expected #{this} to include ' + _.inspect(val)
+      , 'expected #{this} to not include ' + _.inspect(val));
+  }
+
+  Assertion.addChainableMethod('include', include, includeChainingBehavior);
+  Assertion.addChainableMethod('contain', include, includeChainingBehavior);
+  Assertion.addChainableMethod('contains', include, includeChainingBehavior);
+  Assertion.addChainableMethod('includes', include, includeChainingBehavior);
+
+  /**
+   * ### .ok
+   *
+   * Asserts that the target is truthy.
+   *
+   *     expect('everything').to.be.ok;
+   *     expect(1).to.be.ok;
+   *     expect(false).to.not.be.ok;
+   *     expect(undefined).to.not.be.ok;
+   *     expect(null).to.not.be.ok;
+   *
+   * @name ok
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addProperty('ok', function () {
+    this.assert(
+        flag(this, 'object')
+      , 'expected #{this} to be truthy'
+      , 'expected #{this} to be falsy');
+  });
+
+  /**
+   * ### .true
+   *
+   * Asserts that the target is `true`.
+   *
+   *     expect(true).to.be.true;
+   *     expect(1).to.not.be.true;
+   *
+   * @name true
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addProperty('true', function () {
+    this.assert(
+        true === flag(this, 'object')
+      , 'expected #{this} to be true'
+      , 'expected #{this} to be false'
+      , this.negate ? false : true
+    );
+  });
+
+  /**
+   * ### .false
+   *
+   * Asserts that the target is `false`.
+   *
+   *     expect(false).to.be.false;
+   *     expect(0).to.not.be.false;
+   *
+   * @name false
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addProperty('false', function () {
+    this.assert(
+        false === flag(this, 'object')
+      , 'expected #{this} to be false'
+      , 'expected #{this} to be true'
+      , this.negate ? true : false
+    );
+  });
+
+  /**
+   * ### .null
+   *
+   * Asserts that the target is `null`.
+   *
+   *     expect(null).to.be.null;
+   *     expect(undefined).to.not.be.null;
+   *
+   * @name null
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addProperty('null', function () {
+    this.assert(
+        null === flag(this, 'object')
+      , 'expected #{this} to be null'
+      , 'expected #{this} not to be null'
+    );
+  });
+
+  /**
+   * ### .undefined
+   *
+   * Asserts that the target is `undefined`.
+   *
+   *     expect(undefined).to.be.undefined;
+   *     expect(null).to.not.be.undefined;
+   *
+   * @name undefined
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addProperty('undefined', function () {
+    this.assert(
+        undefined === flag(this, 'object')
+      , 'expected #{this} to be undefined'
+      , 'expected #{this} not to be undefined'
+    );
+  });
+
+  /**
+   * ### .NaN
+   * Asserts that the target is `NaN`.
+   *
+   *     expect('foo').to.be.NaN;
+   *     expect(4).not.to.be.NaN;
+   *
+   * @name NaN
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addProperty('NaN', function () {
+    this.assert(
+        isNaN(flag(this, 'object'))
+        , 'expected #{this} to be NaN'
+        , 'expected #{this} not to be NaN'
+    );
+  });
+
+  /**
+   * ### .exist
+   *
+   * Asserts that the target is neither `null` nor `undefined`.
+   *
+   *     var foo = 'hi'
+   *       , bar = null
+   *       , baz;
+   *
+   *     expect(foo).to.exist;
+   *     expect(bar).to.not.exist;
+   *     expect(baz).to.not.exist;
+   *
+   * @name exist
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addProperty('exist', function () {
+    this.assert(
+        null != flag(this, 'object')
+      , 'expected #{this} to exist'
+      , 'expected #{this} to not exist'
+    );
+  });
+
+
+  /**
+   * ### .empty
+   *
+   * Asserts that the target's length is `0`. For arrays and strings, it checks
+   * the `length` property. For objects, it gets the count of
+   * enumerable keys.
+   *
+   *     expect([]).to.be.empty;
+   *     expect('').to.be.empty;
+   *     expect({}).to.be.empty;
+   *
+   * @name empty
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addProperty('empty', function () {
+    var obj = flag(this, 'object')
+      , expected = obj;
+
+    if (Array.isArray(obj) || 'string' === typeof object) {
+      expected = obj.length;
+    } else if (typeof obj === 'object') {
+      expected = Object.keys(obj).length;
+    }
+
+    this.assert(
+        !expected
+      , 'expected #{this} to be empty'
+      , 'expected #{this} not to be empty'
+    );
+  });
+
+  /**
+   * ### .arguments
+   *
+   * Asserts that the target is an arguments object.
+   *
+   *     function test () {
+   *       expect(arguments).to.be.arguments;
+   *     }
+   *
+   * @name arguments
+   * @alias Arguments
+   * @namespace BDD
+   * @api public
+   */
+
+  function checkArguments () {
+    var obj = flag(this, 'object')
+      , type = Object.prototype.toString.call(obj);
+    this.assert(
+        '[object Arguments]' === type
+      , 'expected #{this} to be arguments but got ' + type
+      , 'expected #{this} to not be arguments'
+    );
+  }
+
+  Assertion.addProperty('arguments', checkArguments);
+  Assertion.addProperty('Arguments', checkArguments);
+
+  /**
+   * ### .equal(value)
+   *
+   * Asserts that the target is strictly equal (`===`) to `value`.
+   * Alternately, if the `deep` flag is set, asserts that
+   * the target is deeply equal to `value`.
+   *
+   *     expect('hello').to.equal('hello');
+   *     expect(42).to.equal(42);
+   *     expect(1).to.not.equal(true);
+   *     expect({ foo: 'bar' }).to.not.equal({ foo: 'bar' });
+   *     expect({ foo: 'bar' }).to.deep.equal({ foo: 'bar' });
+   *
+   * @name equal
+   * @alias equals
+   * @alias eq
+   * @alias deep.equal
+   * @param {Mixed} value
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  function assertEqual (val, msg) {
+    if (msg) flag(this, 'message', msg);
+    var obj = flag(this, 'object');
+    if (flag(this, 'deep')) {
+      return this.eql(val);
+    } else {
+      this.assert(
+          val === obj
+        , 'expected #{this} to equal #{exp}'
+        , 'expected #{this} to not equal #{exp}'
+        , val
+        , this._obj
+        , true
+      );
+    }
+  }
+
+  Assertion.addMethod('equal', assertEqual);
+  Assertion.addMethod('equals', assertEqual);
+  Assertion.addMethod('eq', assertEqual);
+
+  /**
+   * ### .eql(value)
+   *
+   * Asserts that the target is deeply equal to `value`.
+   *
+   *     expect({ foo: 'bar' }).to.eql({ foo: 'bar' });
+   *     expect([ 1, 2, 3 ]).to.eql([ 1, 2, 3 ]);
+   *
+   * @name eql
+   * @alias eqls
+   * @param {Mixed} value
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  function assertEql(obj, msg) {
+    if (msg) flag(this, 'message', msg);
+    this.assert(
+        _.eql(obj, flag(this, 'object'))
+      , 'expected #{this} to deeply equal #{exp}'
+      , 'expected #{this} to not deeply equal #{exp}'
+      , obj
+      , this._obj
+      , true
+    );
+  }
+
+  Assertion.addMethod('eql', assertEql);
+  Assertion.addMethod('eqls', assertEql);
+
+  /**
+   * ### .above(value)
+   *
+   * Asserts that the target is greater than `value`.
+   *
+   *     expect(10).to.be.above(5);
+   *
+   * Can also be used in conjunction with `length` to
+   * assert a minimum length. The benefit being a
+   * more informative error message than if the length
+   * was supplied directly.
+   *
+   *     expect('foo').to.have.length.above(2);
+   *     expect([ 1, 2, 3 ]).to.have.length.above(2);
+   *
+   * @name above
+   * @alias gt
+   * @alias greaterThan
+   * @param {Number} value
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  function assertAbove (n, msg) {
+    if (msg) flag(this, 'message', msg);
+    var obj = flag(this, 'object');
+    if (flag(this, 'doLength')) {
+      new Assertion(obj, msg).to.have.property('length');
+      var len = obj.length;
+      this.assert(
+          len > n
+        , 'expected #{this} to have a length above #{exp} but got #{act}'
+        , 'expected #{this} to not have a length above #{exp}'
+        , n
+        , len
+      );
+    } else {
+      this.assert(
+          obj > n
+        , 'expected #{this} to be above ' + n
+        , 'expected #{this} to be at most ' + n
+      );
+    }
+  }
+
+  Assertion.addMethod('above', assertAbove);
+  Assertion.addMethod('gt', assertAbove);
+  Assertion.addMethod('greaterThan', assertAbove);
+
+  /**
+   * ### .least(value)
+   *
+   * Asserts that the target is greater than or equal to `value`.
+   *
+   *     expect(10).to.be.at.least(10);
+   *
+   * Can also be used in conjunction with `length` to
+   * assert a minimum length. The benefit being a
+   * more informative error message than if the length
+   * was supplied directly.
+   *
+   *     expect('foo').to.have.length.of.at.least(2);
+   *     expect([ 1, 2, 3 ]).to.have.length.of.at.least(3);
+   *
+   * @name least
+   * @alias gte
+   * @param {Number} value
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  function assertLeast (n, msg) {
+    if (msg) flag(this, 'message', msg);
+    var obj = flag(this, 'object');
+    if (flag(this, 'doLength')) {
+      new Assertion(obj, msg).to.have.property('length');
+      var len = obj.length;
+      this.assert(
+          len >= n
+        , 'expected #{this} to have a length at least #{exp} but got #{act}'
+        , 'expected #{this} to have a length below #{exp}'
+        , n
+        , len
+      );
+    } else {
+      this.assert(
+          obj >= n
+        , 'expected #{this} to be at least ' + n
+        , 'expected #{this} to be below ' + n
+      );
+    }
+  }
+
+  Assertion.addMethod('least', assertLeast);
+  Assertion.addMethod('gte', assertLeast);
+
+  /**
+   * ### .below(value)
+   *
+   * Asserts that the target is less than `value`.
+   *
+   *     expect(5).to.be.below(10);
+   *
+   * Can also be used in conjunction with `length` to
+   * assert a maximum length. The benefit being a
+   * more informative error message than if the length
+   * was supplied directly.
+   *
+   *     expect('foo').to.have.length.below(4);
+   *     expect([ 1, 2, 3 ]).to.have.length.below(4);
+   *
+   * @name below
+   * @alias lt
+   * @alias lessThan
+   * @param {Number} value
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  function assertBelow (n, msg) {
+    if (msg) flag(this, 'message', msg);
+    var obj = flag(this, 'object');
+    if (flag(this, 'doLength')) {
+      new Assertion(obj, msg).to.have.property('length');
+      var len = obj.length;
+      this.assert(
+          len < n
+        , 'expected #{this} to have a length below #{exp} but got #{act}'
+        , 'expected #{this} to not have a length below #{exp}'
+        , n
+        , len
+      );
+    } else {
+      this.assert(
+          obj < n
+        , 'expected #{this} to be below ' + n
+        , 'expected #{this} to be at least ' + n
+      );
+    }
+  }
+
+  Assertion.addMethod('below', assertBelow);
+  Assertion.addMethod('lt', assertBelow);
+  Assertion.addMethod('lessThan', assertBelow);
+
+  /**
+   * ### .most(value)
+   *
+   * Asserts that the target is less than or equal to `value`.
+   *
+   *     expect(5).to.be.at.most(5);
+   *
+   * Can also be used in conjunction with `length` to
+   * assert a maximum length. The benefit being a
+   * more informative error message than if the length
+   * was supplied directly.
+   *
+   *     expect('foo').to.have.length.of.at.most(4);
+   *     expect([ 1, 2, 3 ]).to.have.length.of.at.most(3);
+   *
+   * @name most
+   * @alias lte
+   * @param {Number} value
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  function assertMost (n, msg) {
+    if (msg) flag(this, 'message', msg);
+    var obj = flag(this, 'object');
+    if (flag(this, 'doLength')) {
+      new Assertion(obj, msg).to.have.property('length');
+      var len = obj.length;
+      this.assert(
+          len <= n
+        , 'expected #{this} to have a length at most #{exp} but got #{act}'
+        , 'expected #{this} to have a length above #{exp}'
+        , n
+        , len
+      );
+    } else {
+      this.assert(
+          obj <= n
+        , 'expected #{this} to be at most ' + n
+        , 'expected #{this} to be above ' + n
+      );
+    }
+  }
+
+  Assertion.addMethod('most', assertMost);
+  Assertion.addMethod('lte', assertMost);
+
+  /**
+   * ### .within(start, finish)
+   *
+   * Asserts that the target is within a range.
+   *
+   *     expect(7).to.be.within(5,10);
+   *
+   * Can also be used in conjunction with `length` to
+   * assert a length range. The benefit being a
+   * more informative error message than if the length
+   * was supplied directly.
+   *
+   *     expect('foo').to.have.length.within(2,4);
+   *     expect([ 1, 2, 3 ]).to.have.length.within(2,4);
+   *
+   * @name within
+   * @param {Number} start lowerbound inclusive
+   * @param {Number} finish upperbound inclusive
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addMethod('within', function (start, finish, msg) {
+    if (msg) flag(this, 'message', msg);
+    var obj = flag(this, 'object')
+      , range = start + '..' + finish;
+    if (flag(this, 'doLength')) {
+      new Assertion(obj, msg).to.have.property('length');
+      var len = obj.length;
+      this.assert(
+          len >= start && len <= finish
+        , 'expected #{this} to have a length within ' + range
+        , 'expected #{this} to not have a length within ' + range
+      );
+    } else {
+      this.assert(
+          obj >= start && obj <= finish
+        , 'expected #{this} to be within ' + range
+        , 'expected #{this} to not be within ' + range
+      );
+    }
+  });
+
+  /**
+   * ### .instanceof(constructor)
+   *
+   * Asserts that the target is an instance of `constructor`.
+   *
+   *     var Tea = function (name) { this.name = name; }
+   *       , Chai = new Tea('chai');
+   *
+   *     expect(Chai).to.be.an.instanceof(Tea);
+   *     expect([ 1, 2, 3 ]).to.be.instanceof(Array);
+   *
+   * @name instanceof
+   * @param {Constructor} constructor
+   * @param {String} message _optional_
+   * @alias instanceOf
+   * @namespace BDD
+   * @api public
+   */
+
+  function assertInstanceOf (constructor, msg) {
+    if (msg) flag(this, 'message', msg);
+    var name = _.getName(constructor);
+    this.assert(
+        flag(this, 'object') instanceof constructor
+      , 'expected #{this} to be an instance of ' + name
+      , 'expected #{this} to not be an instance of ' + name
+    );
+  };
+
+  Assertion.addMethod('instanceof', assertInstanceOf);
+  Assertion.addMethod('instanceOf', assertInstanceOf);
+
+  /**
+   * ### .property(name, [value])
+   *
+   * Asserts that the target has a property `name`, optionally asserting that
+   * the value of that property is strictly equal to  `value`.
+   * If the `deep` flag is set, you can use dot- and bracket-notation for deep
+   * references into objects and arrays.
+   *
+   *     // simple referencing
+   *     var obj = { foo: 'bar' };
+   *     expect(obj).to.have.property('foo');
+   *     expect(obj).to.have.property('foo', 'bar');
+   *
+   *     // deep referencing
+   *     var deepObj = {
+   *         green: { tea: 'matcha' }
+   *       , teas: [ 'chai', 'matcha', { tea: 'konacha' } ]
+   *     };
+   *
+   *     expect(deepObj).to.have.deep.property('green.tea', 'matcha');
+   *     expect(deepObj).to.have.deep.property('teas[1]', 'matcha');
+   *     expect(deepObj).to.have.deep.property('teas[2].tea', 'konacha');
+   *
+   * You can also use an array as the starting point of a `deep.property`
+   * assertion, or traverse nested arrays.
+   *
+   *     var arr = [
+   *         [ 'chai', 'matcha', 'konacha' ]
+   *       , [ { tea: 'chai' }
+   *         , { tea: 'matcha' }
+   *         , { tea: 'konacha' } ]
+   *     ];
+   *
+   *     expect(arr).to.have.deep.property('[0][1]', 'matcha');
+   *     expect(arr).to.have.deep.property('[1][2].tea', 'konacha');
+   *
+   * Furthermore, `property` changes the subject of the assertion
+   * to be the value of that property from the original object. This
+   * permits for further chainable assertions on that property.
+   *
+   *     expect(obj).to.have.property('foo')
+   *       .that.is.a('string');
+   *     expect(deepObj).to.have.property('green')
+   *       .that.is.an('object')
+   *       .that.deep.equals({ tea: 'matcha' });
+   *     expect(deepObj).to.have.property('teas')
+   *       .that.is.an('array')
+   *       .with.deep.property('[2]')
+   *         .that.deep.equals({ tea: 'konacha' });
+   *
+   * Note that dots and bracket in `name` must be backslash-escaped when
+   * the `deep` flag is set, while they must NOT be escaped when the `deep`
+   * flag is not set.
+   *
+   *     // simple referencing
+   *     var css = { '.link[target]': 42 };
+   *     expect(css).to.have.property('.link[target]', 42);
+   *
+   *     // deep referencing
+   *     var deepCss = { '.link': { '[target]': 42 }};
+   *     expect(deepCss).to.have.deep.property('\\.link.\\[target\\]', 42);
+   *
+   * @name property
+   * @alias deep.property
+   * @param {String} name
+   * @param {Mixed} value (optional)
+   * @param {String} message _optional_
+   * @returns value of property for chaining
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addMethod('property', function (name, val, msg) {
+    if (msg) flag(this, 'message', msg);
+
+    var isDeep = !!flag(this, 'deep')
+      , descriptor = isDeep ? 'deep property ' : 'property '
+      , negate = flag(this, 'negate')
+      , obj = flag(this, 'object')
+      , pathInfo = isDeep ? _.getPathInfo(name, obj) : null
+      , hasProperty = isDeep
+        ? pathInfo.exists
+        : _.hasProperty(name, obj)
+      , value = isDeep
+        ? pathInfo.value
+        : obj[name];
+
+    if (negate && arguments.length > 1) {
+      if (undefined === value) {
+        msg = (msg != null) ? msg + ': ' : '';
+        throw new Error(msg + _.inspect(obj) + ' has no ' + descriptor + _.inspect(name));
+      }
+    } else {
+      this.assert(
+          hasProperty
+        , 'expected #{this} to have a ' + descriptor + _.inspect(name)
+        , 'expected #{this} to not have ' + descriptor + _.inspect(name));
+    }
+
+    if (arguments.length > 1) {
+      this.assert(
+          val === value
+        , 'expected #{this} to have a ' + descriptor + _.inspect(name) + ' of #{exp}, but got #{act}'
+        , 'expected #{this} to not have a ' + descriptor + _.inspect(name) + ' of #{act}'
+        , val
+        , value
+      );
+    }
+
+    flag(this, 'object', value);
+  });
+
+
+  /**
+   * ### .ownProperty(name)
+   *
+   * Asserts that the target has an own property `name`.
+   *
+   *     expect('test').to.have.ownProperty('length');
+   *
+   * @name ownProperty
+   * @alias haveOwnProperty
+   * @param {String} name
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  function assertOwnProperty (name, msg) {
+    if (msg) flag(this, 'message', msg);
+    var obj = flag(this, 'object');
+    this.assert(
+        obj.hasOwnProperty(name)
+      , 'expected #{this} to have own property ' + _.inspect(name)
+      , 'expected #{this} to not have own property ' + _.inspect(name)
+    );
+  }
+
+  Assertion.addMethod('ownProperty', assertOwnProperty);
+  Assertion.addMethod('haveOwnProperty', assertOwnProperty);
+
+  /**
+   * ### .ownPropertyDescriptor(name[, descriptor[, message]])
+   *
+   * Asserts that the target has an own property descriptor `name`, that optionally matches `descriptor`.
+   *
+   *     expect('test').to.have.ownPropertyDescriptor('length');
+   *     expect('test').to.have.ownPropertyDescriptor('length', { enumerable: false, configurable: false, writable: false, value: 4 });
+   *     expect('test').not.to.have.ownPropertyDescriptor('length', { enumerable: false, configurable: false, writable: false, value: 3 });
+   *     expect('test').ownPropertyDescriptor('length').to.have.property('enumerable', false);
+   *     expect('test').ownPropertyDescriptor('length').to.have.keys('value');
+   *
+   * @name ownPropertyDescriptor
+   * @alias haveOwnPropertyDescriptor
+   * @param {String} name
+   * @param {Object} descriptor _optional_
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  function assertOwnPropertyDescriptor (name, descriptor, msg) {
+    if (typeof descriptor === 'string') {
+      msg = descriptor;
+      descriptor = null;
+    }
+    if (msg) flag(this, 'message', msg);
+    var obj = flag(this, 'object');
+    var actualDescriptor = Object.getOwnPropertyDescriptor(Object(obj), name);
+    if (actualDescriptor && descriptor) {
+      this.assert(
+          _.eql(descriptor, actualDescriptor)
+        , 'expected the own property descriptor for ' + _.inspect(name) + ' on #{this} to match ' + _.inspect(descriptor) + ', got ' + _.inspect(actualDescriptor)
+        , 'expected the own property descriptor for ' + _.inspect(name) + ' on #{this} to not match ' + _.inspect(descriptor)
+        , descriptor
+        , actualDescriptor
+        , true
+      );
+    } else {
+      this.assert(
+          actualDescriptor
+        , 'expected #{this} to have an own property descriptor for ' + _.inspect(name)
+        , 'expected #{this} to not have an own property descriptor for ' + _.inspect(name)
+      );
+    }
+    flag(this, 'object', actualDescriptor);
+  }
+
+  Assertion.addMethod('ownPropertyDescriptor', assertOwnPropertyDescriptor);
+  Assertion.addMethod('haveOwnPropertyDescriptor', assertOwnPropertyDescriptor);
+
+  /**
+   * ### .length
+   *
+   * Sets the `doLength` flag later used as a chain precursor to a value
+   * comparison for the `length` property.
+   *
+   *     expect('foo').to.have.length.above(2);
+   *     expect([ 1, 2, 3 ]).to.have.length.above(2);
+   *     expect('foo').to.have.length.below(4);
+   *     expect([ 1, 2, 3 ]).to.have.length.below(4);
+   *     expect('foo').to.have.length.within(2,4);
+   *     expect([ 1, 2, 3 ]).to.have.length.within(2,4);
+   *
+   * *Deprecation notice:* Using `length` as an assertion will be deprecated
+   * in version 2.4.0 and removed in 3.0.0. Code using the old style of
+   * asserting for `length` property value using `length(value)` should be
+   * switched to use `lengthOf(value)` instead.
+   *
+   * @name length
+   * @namespace BDD
+   * @api public
+   */
+
+  /**
+   * ### .lengthOf(value[, message])
+   *
+   * Asserts that the target's `length` property has
+   * the expected value.
+   *
+   *     expect([ 1, 2, 3]).to.have.lengthOf(3);
+   *     expect('foobar').to.have.lengthOf(6);
+   *
+   * @name lengthOf
+   * @param {Number} length
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  function assertLengthChain () {
+    flag(this, 'doLength', true);
+  }
+
+  function assertLength (n, msg) {
+    if (msg) flag(this, 'message', msg);
+    var obj = flag(this, 'object');
+    new Assertion(obj, msg).to.have.property('length');
+    var len = obj.length;
+
+    this.assert(
+        len == n
+      , 'expected #{this} to have a length of #{exp} but got #{act}'
+      , 'expected #{this} to not have a length of #{act}'
+      , n
+      , len
+    );
+  }
+
+  Assertion.addChainableMethod('length', assertLength, assertLengthChain);
+  Assertion.addMethod('lengthOf', assertLength);
+
+  /**
+   * ### .match(regexp)
+   *
+   * Asserts that the target matches a regular expression.
+   *
+   *     expect('foobar').to.match(/^foo/);
+   *
+   * @name match
+   * @alias matches
+   * @param {RegExp} RegularExpression
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+  function assertMatch(re, msg) {
+    if (msg) flag(this, 'message', msg);
+    var obj = flag(this, 'object');
+    this.assert(
+        re.exec(obj)
+      , 'expected #{this} to match ' + re
+      , 'expected #{this} not to match ' + re
+    );
+  }
+
+  Assertion.addMethod('match', assertMatch);
+  Assertion.addMethod('matches', assertMatch);
+
+  /**
+   * ### .string(string)
+   *
+   * Asserts that the string target contains another string.
+   *
+   *     expect('foobar').to.have.string('bar');
+   *
+   * @name string
+   * @param {String} string
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addMethod('string', function (str, msg) {
+    if (msg) flag(this, 'message', msg);
+    var obj = flag(this, 'object');
+    new Assertion(obj, msg).is.a('string');
+
+    this.assert(
+        ~obj.indexOf(str)
+      , 'expected #{this} to contain ' + _.inspect(str)
+      , 'expected #{this} to not contain ' + _.inspect(str)
+    );
+  });
+
+
+  /**
+   * ### .keys(key1, [key2], [...])
+   *
+   * Asserts that the target contains any or all of the passed-in keys.
+   * Use in combination with `any`, `all`, `contains`, or `have` will affect
+   * what will pass.
+   *
+   * When used in conjunction with `any`, at least one key that is passed
+   * in must exist in the target object. This is regardless whether or not
+   * the `have` or `contain` qualifiers are used. Note, either `any` or `all`
+   * should be used in the assertion. If neither are used, the assertion is
+   * defaulted to `all`.
+   *
+   * When both `all` and `contain` are used, the target object must have at
+   * least all of the passed-in keys but may have more keys not listed.
+   *
+   * When both `all` and `have` are used, the target object must both contain
+   * all of the passed-in keys AND the number of keys in the target object must
+   * match the number of keys passed in (in other words, a target object must
+   * have all and only all of the passed-in keys).
+   *
+   *     expect({ foo: 1, bar: 2 }).to.have.any.keys('foo', 'baz');
+   *     expect({ foo: 1, bar: 2 }).to.have.any.keys('foo');
+   *     expect({ foo: 1, bar: 2 }).to.contain.any.keys('bar', 'baz');
+   *     expect({ foo: 1, bar: 2 }).to.contain.any.keys(['foo']);
+   *     expect({ foo: 1, bar: 2 }).to.contain.any.keys({'foo': 6});
+   *     expect({ foo: 1, bar: 2 }).to.have.all.keys(['bar', 'foo']);
+   *     expect({ foo: 1, bar: 2 }).to.have.all.keys({'bar': 6, 'foo': 7});
+   *     expect({ foo: 1, bar: 2, baz: 3 }).to.contain.all.keys(['bar', 'foo']);
+   *     expect({ foo: 1, bar: 2, baz: 3 }).to.contain.all.keys({'bar': 6});
+   *
+   *
+   * @name keys
+   * @alias key
+   * @param {...String|Array|Object} keys
+   * @namespace BDD
+   * @api public
+   */
+
+  function assertKeys (keys) {
+    var obj = flag(this, 'object')
+      , str
+      , ok = true
+      , mixedArgsMsg = 'keys must be given single argument of Array|Object|String, or multiple String arguments';
+
+    switch (_.type(keys)) {
+      case "array":
+        if (arguments.length > 1) throw (new Error(mixedArgsMsg));
+        break;
+      case "object":
+        if (arguments.length > 1) throw (new Error(mixedArgsMsg));
+        keys = Object.keys(keys);
+        break;
+      default:
+        keys = Array.prototype.slice.call(arguments);
+    }
+
+    if (!keys.length) throw new Error('keys required');
+
+    var actual = Object.keys(obj)
+      , expected = keys
+      , len = keys.length
+      , any = flag(this, 'any')
+      , all = flag(this, 'all');
+
+    if (!any && !all) {
+      all = true;
+    }
+
+    // Has any
+    if (any) {
+      var intersection = expected.filter(function(key) {
+        return ~actual.indexOf(key);
+      });
+      ok = intersection.length > 0;
+    }
+
+    // Has all
+    if (all) {
+      ok = keys.every(function(key){
+        return ~actual.indexOf(key);
+      });
+      if (!flag(this, 'negate') && !flag(this, 'contains')) {
+        ok = ok && keys.length == actual.length;
+      }
+    }
+
+    // Key string
+    if (len > 1) {
+      keys = keys.map(function(key){
+        return _.inspect(key);
+      });
+      var last = keys.pop();
+      if (all) {
+        str = keys.join(', ') + ', and ' + last;
+      }
+      if (any) {
+        str = keys.join(', ') + ', or ' + last;
+      }
+    } else {
+      str = _.inspect(keys[0]);
+    }
+
+    // Form
+    str = (len > 1 ? 'keys ' : 'key ') + str;
+
+    // Have / include
+    str = (flag(this, 'contains') ? 'contain ' : 'have ') + str;
+
+    // Assertion
+    this.assert(
+        ok
+      , 'expected #{this} to ' + str
+      , 'expected #{this} to not ' + str
+      , expected.slice(0).sort()
+      , actual.sort()
+      , true
+    );
+  }
+
+  Assertion.addMethod('keys', assertKeys);
+  Assertion.addMethod('key', assertKeys);
+
+  /**
+   * ### .throw(constructor)
+   *
+   * Asserts that the function target will throw a specific error, or specific type of error
+   * (as determined using `instanceof`), optionally with a RegExp or string inclusion test
+   * for the error's message.
+   *
+   *     var err = new ReferenceError('This is a bad function.');
+   *     var fn = function () { throw err; }
+   *     expect(fn).to.throw(ReferenceError);
+   *     expect(fn).to.throw(Error);
+   *     expect(fn).to.throw(/bad function/);
+   *     expect(fn).to.not.throw('good function');
+   *     expect(fn).to.throw(ReferenceError, /bad function/);
+   *     expect(fn).to.throw(err);
+   *
+   * Please note that when a throw expectation is negated, it will check each
+   * parameter independently, starting with error constructor type. The appropriate way
+   * to check for the existence of a type of error but for a message that does not match
+   * is to use `and`.
+   *
+   *     expect(fn).to.throw(ReferenceError)
+   *        .and.not.throw(/good function/);
+   *
+   * @name throw
+   * @alias throws
+   * @alias Throw
+   * @param {ErrorConstructor} constructor
+   * @param {String|RegExp} expected error message
+   * @param {String} message _optional_
+   * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error#Error_types
+   * @returns error for chaining (null if no error)
+   * @namespace BDD
+   * @api public
+   */
+
+  function assertThrows (constructor, errMsg, msg) {
+    if (msg) flag(this, 'message', msg);
+    var obj = flag(this, 'object');
+    new Assertion(obj, msg).is.a('function');
+
+    var thrown = false
+      , desiredError = null
+      , name = null
+      , thrownError = null;
+
+    if (arguments.length === 0) {
+      errMsg = null;
+      constructor = null;
+    } else if (constructor && (constructor instanceof RegExp || 'string' === typeof constructor)) {
+      errMsg = constructor;
+      constructor = null;
+    } else if (constructor && constructor instanceof Error) {
+      desiredError = constructor;
+      constructor = null;
+      errMsg = null;
+    } else if (typeof constructor === 'function') {
+      name = constructor.prototype.name;
+      if (!name || (name === 'Error' && constructor !== Error)) {
+        name = constructor.name || (new constructor()).name;
+      }
+    } else {
+      constructor = null;
+    }
+
+    try {
+      obj();
+    } catch (err) {
+      // first, check desired error
+      if (desiredError) {
+        this.assert(
+            err === desiredError
+          , 'expected #{this} to throw #{exp} but #{act} was thrown'
+          , 'expected #{this} to not throw #{exp}'
+          , (desiredError instanceof Error ? desiredError.toString() : desiredError)
+          , (err instanceof Error ? err.toString() : err)
+        );
+
+        flag(this, 'object', err);
+        return this;
+      }
+
+      // next, check constructor
+      if (constructor) {
+        this.assert(
+            err instanceof constructor
+          , 'expected #{this} to throw #{exp} but #{act} was thrown'
+          , 'expected #{this} to not throw #{exp} but #{act} was thrown'
+          , name
+          , (err instanceof Error ? err.toString() : err)
+        );
+
+        if (!errMsg) {
+          flag(this, 'object', err);
+          return this;
+        }
+      }
+
+      // next, check message
+      var message = 'error' === _.type(err) && "message" in err
+        ? err.message
+        : '' + err;
+
+      if ((message != null) && errMsg && errMsg instanceof RegExp) {
+        this.assert(
+            errMsg.exec(message)
+          , 'expected #{this} to throw error matching #{exp} but got #{act}'
+          , 'expected #{this} to throw error not matching #{exp}'
+          , errMsg
+          , message
+        );
+
+        flag(this, 'object', err);
+        return this;
+      } else if ((message != null) && errMsg && 'string' === typeof errMsg) {
+        this.assert(
+            ~message.indexOf(errMsg)
+          , 'expected #{this} to throw error including #{exp} but got #{act}'
+          , 'expected #{this} to throw error not including #{act}'
+          , errMsg
+          , message
+        );
+
+        flag(this, 'object', err);
+        return this;
+      } else {
+        thrown = true;
+        thrownError = err;
+      }
+    }
+
+    var actuallyGot = ''
+      , expectedThrown = name !== null
+        ? name
+        : desiredError
+          ? '#{exp}' //_.inspect(desiredError)
+          : 'an error';
+
+    if (thrown) {
+      actuallyGot = ' but #{act} was thrown'
+    }
+
+    this.assert(
+        thrown === true
+      , 'expected #{this} to throw ' + expectedThrown + actuallyGot
+      , 'expected #{this} to not throw ' + expectedThrown + actuallyGot
+      , (desiredError instanceof Error ? desiredError.toString() : desiredError)
+      , (thrownError instanceof Error ? thrownError.toString() : thrownError)
+    );
+
+    flag(this, 'object', thrownError);
+  };
+
+  Assertion.addMethod('throw', assertThrows);
+  Assertion.addMethod('throws', assertThrows);
+  Assertion.addMethod('Throw', assertThrows);
+
+  /**
+   * ### .respondTo(method)
+   *
+   * Asserts that the object or class target will respond to a method.
+   *
+   *     Klass.prototype.bar = function(){};
+   *     expect(Klass).to.respondTo('bar');
+   *     expect(obj).to.respondTo('bar');
+   *
+   * To check if a constructor will respond to a static function,
+   * set the `itself` flag.
+   *
+   *     Klass.baz = function(){};
+   *     expect(Klass).itself.to.respondTo('baz');
+   *
+   * @name respondTo
+   * @alias respondsTo
+   * @param {String} method
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  function respondTo (method, msg) {
+    if (msg) flag(this, 'message', msg);
+    var obj = flag(this, 'object')
+      , itself = flag(this, 'itself')
+      , context = ('function' === _.type(obj) && !itself)
+        ? obj.prototype[method]
+        : obj[method];
+
+    this.assert(
+        'function' === typeof context
+      , 'expected #{this} to respond to ' + _.inspect(method)
+      , 'expected #{this} to not respond to ' + _.inspect(method)
+    );
+  }
+
+  Assertion.addMethod('respondTo', respondTo);
+  Assertion.addMethod('respondsTo', respondTo);
+
+  /**
+   * ### .itself
+   *
+   * Sets the `itself` flag, later used by the `respondTo` assertion.
+   *
+   *     function Foo() {}
+   *     Foo.bar = function() {}
+   *     Foo.prototype.baz = function() {}
+   *
+   *     expect(Foo).itself.to.respondTo('bar');
+   *     expect(Foo).itself.not.to.respondTo('baz');
+   *
+   * @name itself
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addProperty('itself', function () {
+    flag(this, 'itself', true);
+  });
+
+  /**
+   * ### .satisfy(method)
+   *
+   * Asserts that the target passes a given truth test.
+   *
+   *     expect(1).to.satisfy(function(num) { return num > 0; });
+   *
+   * @name satisfy
+   * @alias satisfies
+   * @param {Function} matcher
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  function satisfy (matcher, msg) {
+    if (msg) flag(this, 'message', msg);
+    var obj = flag(this, 'object');
+    var result = matcher(obj);
+    this.assert(
+        result
+      , 'expected #{this} to satisfy ' + _.objDisplay(matcher)
+      , 'expected #{this} to not satisfy' + _.objDisplay(matcher)
+      , this.negate ? false : true
+      , result
+    );
+  }
+
+  Assertion.addMethod('satisfy', satisfy);
+  Assertion.addMethod('satisfies', satisfy);
+
+  /**
+   * ### .closeTo(expected, delta)
+   *
+   * Asserts that the target is equal `expected`, to within a +/- `delta` range.
+   *
+   *     expect(1.5).to.be.closeTo(1, 0.5);
+   *
+   * @name closeTo
+   * @alias approximately
+   * @param {Number} expected
+   * @param {Number} delta
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  function closeTo(expected, delta, msg) {
+    if (msg) flag(this, 'message', msg);
+    var obj = flag(this, 'object');
+
+    new Assertion(obj, msg).is.a('number');
+    if (_.type(expected) !== 'number' || _.type(delta) !== 'number') {
+      throw new Error('the arguments to closeTo or approximately must be numbers');
+    }
+
+    this.assert(
+        Math.abs(obj - expected) <= delta
+      , 'expected #{this} to be close to ' + expected + ' +/- ' + delta
+      , 'expected #{this} not to be close to ' + expected + ' +/- ' + delta
+    );
+  }
+
+  Assertion.addMethod('closeTo', closeTo);
+  Assertion.addMethod('approximately', closeTo);
+
+  function isSubsetOf(subset, superset, cmp) {
+    return subset.every(function(elem) {
+      if (!cmp) return superset.indexOf(elem) !== -1;
+
+      return superset.some(function(elem2) {
+        return cmp(elem, elem2);
+      });
+    })
+  }
+
+  /**
+   * ### .members(set)
+   *
+   * Asserts that the target is a superset of `set`,
+   * or that the target and `set` have the same strictly-equal (===) members.
+   * Alternately, if the `deep` flag is set, set members are compared for deep
+   * equality.
+   *
+   *     expect([1, 2, 3]).to.include.members([3, 2]);
+   *     expect([1, 2, 3]).to.not.include.members([3, 2, 8]);
+   *
+   *     expect([4, 2]).to.have.members([2, 4]);
+   *     expect([5, 2]).to.not.have.members([5, 2, 1]);
+   *
+   *     expect([{ id: 1 }]).to.deep.include.members([{ id: 1 }]);
+   *
+   * @name members
+   * @param {Array} set
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addMethod('members', function (subset, msg) {
+    if (msg) flag(this, 'message', msg);
+    var obj = flag(this, 'object');
+
+    new Assertion(obj).to.be.an('array');
+    new Assertion(subset).to.be.an('array');
+
+    var cmp = flag(this, 'deep') ? _.eql : undefined;
+
+    if (flag(this, 'contains')) {
+      return this.assert(
+          isSubsetOf(subset, obj, cmp)
+        , 'expected #{this} to be a superset of #{act}'
+        , 'expected #{this} to not be a superset of #{act}'
+        , obj
+        , subset
+      );
+    }
+
+    this.assert(
+        isSubsetOf(obj, subset, cmp) && isSubsetOf(subset, obj, cmp)
+        , 'expected #{this} to have the same members as #{act}'
+        , 'expected #{this} to not have the same members as #{act}'
+        , obj
+        , subset
+    );
+  });
+
+  /**
+   * ### .oneOf(list)
+   *
+   * Assert that a value appears somewhere in the top level of array `list`.
+   *
+   *     expect('a').to.be.oneOf(['a', 'b', 'c']);
+   *     expect(9).to.not.be.oneOf(['z']);
+   *     expect([3]).to.not.be.oneOf([1, 2, [3]]);
+   *
+   *     var three = [3];
+   *     // for object-types, contents are not compared
+   *     expect(three).to.not.be.oneOf([1, 2, [3]]);
+   *     // comparing references works
+   *     expect(three).to.be.oneOf([1, 2, three]);
+   *
+   * @name oneOf
+   * @param {Array<*>} list
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  function oneOf (list, msg) {
+    if (msg) flag(this, 'message', msg);
+    var expected = flag(this, 'object');
+    new Assertion(list).to.be.an('array');
+
+    this.assert(
+        list.indexOf(expected) > -1
+      , 'expected #{this} to be one of #{exp}'
+      , 'expected #{this} to not be one of #{exp}'
+      , list
+      , expected
+    );
+  }
+
+  Assertion.addMethod('oneOf', oneOf);
+
+
+  /**
+   * ### .change(function)
+   *
+   * Asserts that a function changes an object property
+   *
+   *     var obj = { val: 10 };
+   *     var fn = function() { obj.val += 3 };
+   *     var noChangeFn = function() { return 'foo' + 'bar'; }
+   *     expect(fn).to.change(obj, 'val');
+   *     expect(noChangeFn).to.not.change(obj, 'val')
+   *
+   * @name change
+   * @alias changes
+   * @alias Change
+   * @param {String} object
+   * @param {String} property name
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  function assertChanges (object, prop, msg) {
+    if (msg) flag(this, 'message', msg);
+    var fn = flag(this, 'object');
+    new Assertion(object, msg).to.have.property(prop);
+    new Assertion(fn).is.a('function');
+
+    var initial = object[prop];
+    fn();
+
+    this.assert(
+      initial !== object[prop]
+      , 'expected .' + prop + ' to change'
+      , 'expected .' + prop + ' to not change'
+    );
+  }
+
+  Assertion.addChainableMethod('change', assertChanges);
+  Assertion.addChainableMethod('changes', assertChanges);
+
+  /**
+   * ### .increase(function)
+   *
+   * Asserts that a function increases an object property
+   *
+   *     var obj = { val: 10 };
+   *     var fn = function() { obj.val = 15 };
+   *     expect(fn).to.increase(obj, 'val');
+   *
+   * @name increase
+   * @alias increases
+   * @alias Increase
+   * @param {String} object
+   * @param {String} property name
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  function assertIncreases (object, prop, msg) {
+    if (msg) flag(this, 'message', msg);
+    var fn = flag(this, 'object');
+    new Assertion(object, msg).to.have.property(prop);
+    new Assertion(fn).is.a('function');
+
+    var initial = object[prop];
+    fn();
+
+    this.assert(
+      object[prop] - initial > 0
+      , 'expected .' + prop + ' to increase'
+      , 'expected .' + prop + ' to not increase'
+    );
+  }
+
+  Assertion.addChainableMethod('increase', assertIncreases);
+  Assertion.addChainableMethod('increases', assertIncreases);
+
+  /**
+   * ### .decrease(function)
+   *
+   * Asserts that a function decreases an object property
+   *
+   *     var obj = { val: 10 };
+   *     var fn = function() { obj.val = 5 };
+   *     expect(fn).to.decrease(obj, 'val');
+   *
+   * @name decrease
+   * @alias decreases
+   * @alias Decrease
+   * @param {String} object
+   * @param {String} property name
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  function assertDecreases (object, prop, msg) {
+    if (msg) flag(this, 'message', msg);
+    var fn = flag(this, 'object');
+    new Assertion(object, msg).to.have.property(prop);
+    new Assertion(fn).is.a('function');
+
+    var initial = object[prop];
+    fn();
+
+    this.assert(
+      object[prop] - initial < 0
+      , 'expected .' + prop + ' to decrease'
+      , 'expected .' + prop + ' to not decrease'
+    );
+  }
+
+  Assertion.addChainableMethod('decrease', assertDecreases);
+  Assertion.addChainableMethod('decreases', assertDecreases);
+
+  /**
+   * ### .extensible
+   *
+   * Asserts that the target is extensible (can have new properties added to
+   * it).
+   *
+   *     var nonExtensibleObject = Object.preventExtensions({});
+   *     var sealedObject = Object.seal({});
+   *     var frozenObject = Object.freeze({});
+   *
+   *     expect({}).to.be.extensible;
+   *     expect(nonExtensibleObject).to.not.be.extensible;
+   *     expect(sealedObject).to.not.be.extensible;
+   *     expect(frozenObject).to.not.be.extensible;
+   *
+   * @name extensible
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addProperty('extensible', function() {
+    var obj = flag(this, 'object');
+
+    // In ES5, if the argument to this method is not an object (a primitive), then it will cause a TypeError.
+    // In ES6, a non-object argument will be treated as if it was a non-extensible ordinary object, simply return false.
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/isExtensible
+    // The following provides ES6 behavior when a TypeError is thrown under ES5.
+
+    var isExtensible;
+
+    try {
+      isExtensible = Object.isExtensible(obj);
+    } catch (err) {
+      if (err instanceof TypeError) isExtensible = false;
+      else throw err;
+    }
+
+    this.assert(
+      isExtensible
+      , 'expected #{this} to be extensible'
+      , 'expected #{this} to not be extensible'
+    );
+  });
+
+  /**
+   * ### .sealed
+   *
+   * Asserts that the target is sealed (cannot have new properties added to it
+   * and its existing properties cannot be removed).
+   *
+   *     var sealedObject = Object.seal({});
+   *     var frozenObject = Object.freeze({});
+   *
+   *     expect(sealedObject).to.be.sealed;
+   *     expect(frozenObject).to.be.sealed;
+   *     expect({}).to.not.be.sealed;
+   *
+   * @name sealed
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addProperty('sealed', function() {
+    var obj = flag(this, 'object');
+
+    // In ES5, if the argument to this method is not an object (a primitive), then it will cause a TypeError.
+    // In ES6, a non-object argument will be treated as if it was a sealed ordinary object, simply return true.
+    // See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/isSealed
+    // The following provides ES6 behavior when a TypeError is thrown under ES5.
+
+    var isSealed;
+
+    try {
+      isSealed = Object.isSealed(obj);
+    } catch (err) {
+      if (err instanceof TypeError) isSealed = true;
+      else throw err;
+    }
+
+    this.assert(
+      isSealed
+      , 'expected #{this} to be sealed'
+      , 'expected #{this} to not be sealed'
+    );
+  });
+
+  /**
+   * ### .frozen
+   *
+   * Asserts that the target is frozen (cannot have new properties added to it
+   * and its existing properties cannot be modified).
+   *
+   *     var frozenObject = Object.freeze({});
+   *
+   *     expect(frozenObject).to.be.frozen;
+   *     expect({}).to.not.be.frozen;
+   *
+   * @name frozen
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addProperty('frozen', function() {
+    var obj = flag(this, 'object');
+
+    // In ES5, if the argument to this method is not an object (a primitive), then it will cause a TypeError.
+    // In ES6, a non-object argument will be treated as if it was a frozen ordinary object, simply return true.
+    // See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/isFrozen
+    // The following provides ES6 behavior when a TypeError is thrown under ES5.
+
+    var isFrozen;
+
+    try {
+      isFrozen = Object.isFrozen(obj);
+    } catch (err) {
+      if (err instanceof TypeError) isFrozen = true;
+      else throw err;
+    }
+
+    this.assert(
+      isFrozen
+      , 'expected #{this} to be frozen'
+      , 'expected #{this} to not be frozen'
+    );
+  });
+};
+
+},{}],6:[function(require,module,exports){
+/*!
+ * chai
+ * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+
+module.exports = function (chai, util) {
+
+  /*!
+   * Chai dependencies.
+   */
+
+  var Assertion = chai.Assertion
+    , flag = util.flag;
+
+  /*!
+   * Module export.
+   */
+
+  /**
+   * ### assert(expression, message)
+   *
+   * Write your own test expressions.
+   *
+   *     assert('foo' !== 'bar', 'foo is not bar');
+   *     assert(Array.isArray([]), 'empty arrays are arrays');
+   *
+   * @param {Mixed} expression to test for truthiness
+   * @param {String} message to display on error
+   * @name assert
+   * @namespace Assert
+   * @api public
+   */
+
+  var assert = chai.assert = function (express, errmsg) {
+    var test = new Assertion(null, null, chai.assert);
+    test.assert(
+        express
+      , errmsg
+      , '[ negation message unavailable ]'
+    );
+  };
+
+  /**
+   * ### .fail(actual, expected, [message], [operator])
+   *
+   * Throw a failure. Node.js `assert` module-compatible.
+   *
+   * @name fail
+   * @param {Mixed} actual
+   * @param {Mixed} expected
+   * @param {String} message
+   * @param {String} operator
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.fail = function (actual, expected, message, operator) {
+    message = message || 'assert.fail()';
+    throw new chai.AssertionError(message, {
+        actual: actual
+      , expected: expected
+      , operator: operator
+    }, assert.fail);
+  };
+
+  /**
+   * ### .isOk(object, [message])
+   *
+   * Asserts that `object` is truthy.
+   *
+   *     assert.isOk('everything', 'everything is ok');
+   *     assert.isOk(false, 'this will fail');
+   *
+   * @name isOk
+   * @alias ok
+   * @param {Mixed} object to test
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isOk = function (val, msg) {
+    new Assertion(val, msg).is.ok;
+  };
+
+  /**
+   * ### .isNotOk(object, [message])
+   *
+   * Asserts that `object` is falsy.
+   *
+   *     assert.isNotOk('everything', 'this will fail');
+   *     assert.isNotOk(false, 'this will pass');
+   *
+   * @name isNotOk
+   * @alias notOk
+   * @param {Mixed} object to test
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isNotOk = function (val, msg) {
+    new Assertion(val, msg).is.not.ok;
+  };
+
+  /**
+   * ### .equal(actual, expected, [message])
+   *
+   * Asserts non-strict equality (`==`) of `actual` and `expected`.
+   *
+   *     assert.equal(3, '3', '== coerces values to strings');
+   *
+   * @name equal
+   * @param {Mixed} actual
+   * @param {Mixed} expected
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.equal = function (act, exp, msg) {
+    var test = new Assertion(act, msg, assert.equal);
+
+    test.assert(
+        exp == flag(test, 'object')
+      , 'expected #{this} to equal #{exp}'
+      , 'expected #{this} to not equal #{act}'
+      , exp
+      , act
+    );
+  };
+
+  /**
+   * ### .notEqual(actual, expected, [message])
+   *
+   * Asserts non-strict inequality (`!=`) of `actual` and `expected`.
+   *
+   *     assert.notEqual(3, 4, 'these numbers are not equal');
+   *
+   * @name notEqual
+   * @param {Mixed} actual
+   * @param {Mixed} expected
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.notEqual = function (act, exp, msg) {
+    var test = new Assertion(act, msg, assert.notEqual);
+
+    test.assert(
+        exp != flag(test, 'object')
+      , 'expected #{this} to not equal #{exp}'
+      , 'expected #{this} to equal #{act}'
+      , exp
+      , act
+    );
+  };
+
+  /**
+   * ### .strictEqual(actual, expected, [message])
+   *
+   * Asserts strict equality (`===`) of `actual` and `expected`.
+   *
+   *     assert.strictEqual(true, true, 'these booleans are strictly equal');
+   *
+   * @name strictEqual
+   * @param {Mixed} actual
+   * @param {Mixed} expected
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.strictEqual = function (act, exp, msg) {
+    new Assertion(act, msg).to.equal(exp);
+  };
+
+  /**
+   * ### .notStrictEqual(actual, expected, [message])
+   *
+   * Asserts strict inequality (`!==`) of `actual` and `expected`.
+   *
+   *     assert.notStrictEqual(3, '3', 'no coercion for strict equality');
+   *
+   * @name notStrictEqual
+   * @param {Mixed} actual
+   * @param {Mixed} expected
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.notStrictEqual = function (act, exp, msg) {
+    new Assertion(act, msg).to.not.equal(exp);
+  };
+
+  /**
+   * ### .deepEqual(actual, expected, [message])
+   *
+   * Asserts that `actual` is deeply equal to `expected`.
+   *
+   *     assert.deepEqual({ tea: 'green' }, { tea: 'green' });
+   *
+   * @name deepEqual
+   * @param {Mixed} actual
+   * @param {Mixed} expected
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.deepEqual = function (act, exp, msg) {
+    new Assertion(act, msg).to.eql(exp);
+  };
+
+  /**
+   * ### .notDeepEqual(actual, expected, [message])
+   *
+   * Assert that `actual` is not deeply equal to `expected`.
+   *
+   *     assert.notDeepEqual({ tea: 'green' }, { tea: 'jasmine' });
+   *
+   * @name notDeepEqual
+   * @param {Mixed} actual
+   * @param {Mixed} expected
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.notDeepEqual = function (act, exp, msg) {
+    new Assertion(act, msg).to.not.eql(exp);
+  };
+
+   /**
+   * ### .isAbove(valueToCheck, valueToBeAbove, [message])
+   *
+   * Asserts `valueToCheck` is strictly greater than (>) `valueToBeAbove`
+   *
+   *     assert.isAbove(5, 2, '5 is strictly greater than 2');
+   *
+   * @name isAbove
+   * @param {Mixed} valueToCheck
+   * @param {Mixed} valueToBeAbove
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isAbove = function (val, abv, msg) {
+    new Assertion(val, msg).to.be.above(abv);
+  };
+
+   /**
+   * ### .isAtLeast(valueToCheck, valueToBeAtLeast, [message])
+   *
+   * Asserts `valueToCheck` is greater than or equal to (>=) `valueToBeAtLeast`
+   *
+   *     assert.isAtLeast(5, 2, '5 is greater or equal to 2');
+   *     assert.isAtLeast(3, 3, '3 is greater or equal to 3');
+   *
+   * @name isAtLeast
+   * @param {Mixed} valueToCheck
+   * @param {Mixed} valueToBeAtLeast
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isAtLeast = function (val, atlst, msg) {
+    new Assertion(val, msg).to.be.least(atlst);
+  };
+
+   /**
+   * ### .isBelow(valueToCheck, valueToBeBelow, [message])
+   *
+   * Asserts `valueToCheck` is strictly less than (<) `valueToBeBelow`
+   *
+   *     assert.isBelow(3, 6, '3 is strictly less than 6');
+   *
+   * @name isBelow
+   * @param {Mixed} valueToCheck
+   * @param {Mixed} valueToBeBelow
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isBelow = function (val, blw, msg) {
+    new Assertion(val, msg).to.be.below(blw);
+  };
+
+   /**
+   * ### .isAtMost(valueToCheck, valueToBeAtMost, [message])
+   *
+   * Asserts `valueToCheck` is less than or equal to (<=) `valueToBeAtMost`
+   *
+   *     assert.isAtMost(3, 6, '3 is less than or equal to 6');
+   *     assert.isAtMost(4, 4, '4 is less than or equal to 4');
+   *
+   * @name isAtMost
+   * @param {Mixed} valueToCheck
+   * @param {Mixed} valueToBeAtMost
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isAtMost = function (val, atmst, msg) {
+    new Assertion(val, msg).to.be.most(atmst);
+  };
+
+  /**
+   * ### .isTrue(value, [message])
+   *
+   * Asserts that `value` is true.
+   *
+   *     var teaServed = true;
+   *     assert.isTrue(teaServed, 'the tea has been served');
+   *
+   * @name isTrue
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isTrue = function (val, msg) {
+    new Assertion(val, msg).is['true'];
+  };
+
+  /**
+   * ### .isNotTrue(value, [message])
+   *
+   * Asserts that `value` is not true.
+   *
+   *     var tea = 'tasty chai';
+   *     assert.isNotTrue(tea, 'great, time for tea!');
+   *
+   * @name isNotTrue
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isNotTrue = function (val, msg) {
+    new Assertion(val, msg).to.not.equal(true);
+  };
+
+  /**
+   * ### .isFalse(value, [message])
+   *
+   * Asserts that `value` is false.
+   *
+   *     var teaServed = false;
+   *     assert.isFalse(teaServed, 'no tea yet? hmm...');
+   *
+   * @name isFalse
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isFalse = function (val, msg) {
+    new Assertion(val, msg).is['false'];
+  };
+
+  /**
+   * ### .isNotFalse(value, [message])
+   *
+   * Asserts that `value` is not false.
+   *
+   *     var tea = 'tasty chai';
+   *     assert.isNotFalse(tea, 'great, time for tea!');
+   *
+   * @name isNotFalse
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isNotFalse = function (val, msg) {
+    new Assertion(val, msg).to.not.equal(false);
+  };
+
+  /**
+   * ### .isNull(value, [message])
+   *
+   * Asserts that `value` is null.
+   *
+   *     assert.isNull(err, 'there was no error');
+   *
+   * @name isNull
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isNull = function (val, msg) {
+    new Assertion(val, msg).to.equal(null);
+  };
+
+  /**
+   * ### .isNotNull(value, [message])
+   *
+   * Asserts that `value` is not null.
+   *
+   *     var tea = 'tasty chai';
+   *     assert.isNotNull(tea, 'great, time for tea!');
+   *
+   * @name isNotNull
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isNotNull = function (val, msg) {
+    new Assertion(val, msg).to.not.equal(null);
+  };
+
+  /**
+   * ### .isNaN
+   * Asserts that value is NaN
+   *
+   *    assert.isNaN('foo', 'foo is NaN');
+   *
+   * @name isNaN
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isNaN = function (val, msg) {
+    new Assertion(val, msg).to.be.NaN;
+  };
+
+  /**
+   * ### .isNotNaN
+   * Asserts that value is not NaN
+   *
+   *    assert.isNotNaN(4, '4 is not NaN');
+   *
+   * @name isNotNaN
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+  assert.isNotNaN = function (val, msg) {
+    new Assertion(val, msg).not.to.be.NaN;
+  };
+
+  /**
+   * ### .isUndefined(value, [message])
+   *
+   * Asserts that `value` is `undefined`.
+   *
+   *     var tea;
+   *     assert.isUndefined(tea, 'no tea defined');
+   *
+   * @name isUndefined
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isUndefined = function (val, msg) {
+    new Assertion(val, msg).to.equal(undefined);
+  };
+
+  /**
+   * ### .isDefined(value, [message])
+   *
+   * Asserts that `value` is not `undefined`.
+   *
+   *     var tea = 'cup of chai';
+   *     assert.isDefined(tea, 'tea has been defined');
+   *
+   * @name isDefined
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isDefined = function (val, msg) {
+    new Assertion(val, msg).to.not.equal(undefined);
+  };
+
+  /**
+   * ### .isFunction(value, [message])
+   *
+   * Asserts that `value` is a function.
+   *
+   *     function serveTea() { return 'cup of tea'; };
+   *     assert.isFunction(serveTea, 'great, we can have tea now');
+   *
+   * @name isFunction
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isFunction = function (val, msg) {
+    new Assertion(val, msg).to.be.a('function');
+  };
+
+  /**
+   * ### .isNotFunction(value, [message])
+   *
+   * Asserts that `value` is _not_ a function.
+   *
+   *     var serveTea = [ 'heat', 'pour', 'sip' ];
+   *     assert.isNotFunction(serveTea, 'great, we have listed the steps');
+   *
+   * @name isNotFunction
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isNotFunction = function (val, msg) {
+    new Assertion(val, msg).to.not.be.a('function');
+  };
+
+  /**
+   * ### .isObject(value, [message])
+   *
+   * Asserts that `value` is an object of type 'Object' (as revealed by `Object.prototype.toString`).
+   * _The assertion does not match subclassed objects._
+   *
+   *     var selection = { name: 'Chai', serve: 'with spices' };
+   *     assert.isObject(selection, 'tea selection is an object');
+   *
+   * @name isObject
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isObject = function (val, msg) {
+    new Assertion(val, msg).to.be.a('object');
+  };
+
+  /**
+   * ### .isNotObject(value, [message])
+   *
+   * Asserts that `value` is _not_ an object of type 'Object' (as revealed by `Object.prototype.toString`).
+   *
+   *     var selection = 'chai'
+   *     assert.isNotObject(selection, 'tea selection is not an object');
+   *     assert.isNotObject(null, 'null is not an object');
+   *
+   * @name isNotObject
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isNotObject = function (val, msg) {
+    new Assertion(val, msg).to.not.be.a('object');
+  };
+
+  /**
+   * ### .isArray(value, [message])
+   *
+   * Asserts that `value` is an array.
+   *
+   *     var menu = [ 'green', 'chai', 'oolong' ];
+   *     assert.isArray(menu, 'what kind of tea do we want?');
+   *
+   * @name isArray
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isArray = function (val, msg) {
+    new Assertion(val, msg).to.be.an('array');
+  };
+
+  /**
+   * ### .isNotArray(value, [message])
+   *
+   * Asserts that `value` is _not_ an array.
+   *
+   *     var menu = 'green|chai|oolong';
+   *     assert.isNotArray(menu, 'what kind of tea do we want?');
+   *
+   * @name isNotArray
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isNotArray = function (val, msg) {
+    new Assertion(val, msg).to.not.be.an('array');
+  };
+
+  /**
+   * ### .isString(value, [message])
+   *
+   * Asserts that `value` is a string.
+   *
+   *     var teaOrder = 'chai';
+   *     assert.isString(teaOrder, 'order placed');
+   *
+   * @name isString
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isString = function (val, msg) {
+    new Assertion(val, msg).to.be.a('string');
+  };
+
+  /**
+   * ### .isNotString(value, [message])
+   *
+   * Asserts that `value` is _not_ a string.
+   *
+   *     var teaOrder = 4;
+   *     assert.isNotString(teaOrder, 'order placed');
+   *
+   * @name isNotString
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isNotString = function (val, msg) {
+    new Assertion(val, msg).to.not.be.a('string');
+  };
+
+  /**
+   * ### .isNumber(value, [message])
+   *
+   * Asserts that `value` is a number.
+   *
+   *     var cups = 2;
+   *     assert.isNumber(cups, 'how many cups');
+   *
+   * @name isNumber
+   * @param {Number} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isNumber = function (val, msg) {
+    new Assertion(val, msg).to.be.a('number');
+  };
+
+  /**
+   * ### .isNotNumber(value, [message])
+   *
+   * Asserts that `value` is _not_ a number.
+   *
+   *     var cups = '2 cups please';
+   *     assert.isNotNumber(cups, 'how many cups');
+   *
+   * @name isNotNumber
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isNotNumber = function (val, msg) {
+    new Assertion(val, msg).to.not.be.a('number');
+  };
+
+  /**
+   * ### .isBoolean(value, [message])
+   *
+   * Asserts that `value` is a boolean.
+   *
+   *     var teaReady = true
+   *       , teaServed = false;
+   *
+   *     assert.isBoolean(teaReady, 'is the tea ready');
+   *     assert.isBoolean(teaServed, 'has tea been served');
+   *
+   * @name isBoolean
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isBoolean = function (val, msg) {
+    new Assertion(val, msg).to.be.a('boolean');
+  };
+
+  /**
+   * ### .isNotBoolean(value, [message])
+   *
+   * Asserts that `value` is _not_ a boolean.
+   *
+   *     var teaReady = 'yep'
+   *       , teaServed = 'nope';
+   *
+   *     assert.isNotBoolean(teaReady, 'is the tea ready');
+   *     assert.isNotBoolean(teaServed, 'has tea been served');
+   *
+   * @name isNotBoolean
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isNotBoolean = function (val, msg) {
+    new Assertion(val, msg).to.not.be.a('boolean');
+  };
+
+  /**
+   * ### .typeOf(value, name, [message])
+   *
+   * Asserts that `value`'s type is `name`, as determined by
+   * `Object.prototype.toString`.
+   *
+   *     assert.typeOf({ tea: 'chai' }, 'object', 'we have an object');
+   *     assert.typeOf(['chai', 'jasmine'], 'array', 'we have an array');
+   *     assert.typeOf('tea', 'string', 'we have a string');
+   *     assert.typeOf(/tea/, 'regexp', 'we have a regular expression');
+   *     assert.typeOf(null, 'null', 'we have a null');
+   *     assert.typeOf(undefined, 'undefined', 'we have an undefined');
+   *
+   * @name typeOf
+   * @param {Mixed} value
+   * @param {String} name
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.typeOf = function (val, type, msg) {
+    new Assertion(val, msg).to.be.a(type);
+  };
+
+  /**
+   * ### .notTypeOf(value, name, [message])
+   *
+   * Asserts that `value`'s type is _not_ `name`, as determined by
+   * `Object.prototype.toString`.
+   *
+   *     assert.notTypeOf('tea', 'number', 'strings are not numbers');
+   *
+   * @name notTypeOf
+   * @param {Mixed} value
+   * @param {String} typeof name
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.notTypeOf = function (val, type, msg) {
+    new Assertion(val, msg).to.not.be.a(type);
+  };
+
+  /**
+   * ### .instanceOf(object, constructor, [message])
+   *
+   * Asserts that `value` is an instance of `constructor`.
+   *
+   *     var Tea = function (name) { this.name = name; }
+   *       , chai = new Tea('chai');
+   *
+   *     assert.instanceOf(chai, Tea, 'chai is an instance of tea');
+   *
+   * @name instanceOf
+   * @param {Object} object
+   * @param {Constructor} constructor
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.instanceOf = function (val, type, msg) {
+    new Assertion(val, msg).to.be.instanceOf(type);
+  };
+
+  /**
+   * ### .notInstanceOf(object, constructor, [message])
+   *
+   * Asserts `value` is not an instance of `constructor`.
+   *
+   *     var Tea = function (name) { this.name = name; }
+   *       , chai = new String('chai');
+   *
+   *     assert.notInstanceOf(chai, Tea, 'chai is not an instance of tea');
+   *
+   * @name notInstanceOf
+   * @param {Object} object
+   * @param {Constructor} constructor
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.notInstanceOf = function (val, type, msg) {
+    new Assertion(val, msg).to.not.be.instanceOf(type);
+  };
+
+  /**
+   * ### .include(haystack, needle, [message])
+   *
+   * Asserts that `haystack` includes `needle`. Works
+   * for strings and arrays.
+   *
+   *     assert.include('foobar', 'bar', 'foobar contains string "bar"');
+   *     assert.include([ 1, 2, 3 ], 3, 'array contains value');
+   *
+   * @name include
+   * @param {Array|String} haystack
+   * @param {Mixed} needle
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.include = function (exp, inc, msg) {
+    new Assertion(exp, msg, assert.include).include(inc);
+  };
+
+  /**
+   * ### .notInclude(haystack, needle, [message])
+   *
+   * Asserts that `haystack` does not include `needle`. Works
+   * for strings and arrays.
+   *
+   *     assert.notInclude('foobar', 'baz', 'string not include substring');
+   *     assert.notInclude([ 1, 2, 3 ], 4, 'array not include contain value');
+   *
+   * @name notInclude
+   * @param {Array|String} haystack
+   * @param {Mixed} needle
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.notInclude = function (exp, inc, msg) {
+    new Assertion(exp, msg, assert.notInclude).not.include(inc);
+  };
+
+  /**
+   * ### .match(value, regexp, [message])
+   *
+   * Asserts that `value` matches the regular expression `regexp`.
+   *
+   *     assert.match('foobar', /^foo/, 'regexp matches');
+   *
+   * @name match
+   * @param {Mixed} value
+   * @param {RegExp} regexp
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.match = function (exp, re, msg) {
+    new Assertion(exp, msg).to.match(re);
+  };
+
+  /**
+   * ### .notMatch(value, regexp, [message])
+   *
+   * Asserts that `value` does not match the regular expression `regexp`.
+   *
+   *     assert.notMatch('foobar', /^foo/, 'regexp does not match');
+   *
+   * @name notMatch
+   * @param {Mixed} value
+   * @param {RegExp} regexp
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.notMatch = function (exp, re, msg) {
+    new Assertion(exp, msg).to.not.match(re);
+  };
+
+  /**
+   * ### .property(object, property, [message])
+   *
+   * Asserts that `object` has a property named by `property`.
+   *
+   *     assert.property({ tea: { green: 'matcha' }}, 'tea');
+   *
+   * @name property
+   * @param {Object} object
+   * @param {String} property
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.property = function (obj, prop, msg) {
+    new Assertion(obj, msg).to.have.property(prop);
+  };
+
+  /**
+   * ### .notProperty(object, property, [message])
+   *
+   * Asserts that `object` does _not_ have a property named by `property`.
+   *
+   *     assert.notProperty({ tea: { green: 'matcha' }}, 'coffee');
+   *
+   * @name notProperty
+   * @param {Object} object
+   * @param {String} property
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.notProperty = function (obj, prop, msg) {
+    new Assertion(obj, msg).to.not.have.property(prop);
+  };
+
+  /**
+   * ### .deepProperty(object, property, [message])
+   *
+   * Asserts that `object` has a property named by `property`, which can be a
+   * string using dot- and bracket-notation for deep reference.
+   *
+   *     assert.deepProperty({ tea: { green: 'matcha' }}, 'tea.green');
+   *
+   * @name deepProperty
+   * @param {Object} object
+   * @param {String} property
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.deepProperty = function (obj, prop, msg) {
+    new Assertion(obj, msg).to.have.deep.property(prop);
+  };
+
+  /**
+   * ### .notDeepProperty(object, property, [message])
+   *
+   * Asserts that `object` does _not_ have a property named by `property`, which
+   * can be a string using dot- and bracket-notation for deep reference.
+   *
+   *     assert.notDeepProperty({ tea: { green: 'matcha' }}, 'tea.oolong');
+   *
+   * @name notDeepProperty
+   * @param {Object} object
+   * @param {String} property
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.notDeepProperty = function (obj, prop, msg) {
+    new Assertion(obj, msg).to.not.have.deep.property(prop);
+  };
+
+  /**
+   * ### .propertyVal(object, property, value, [message])
+   *
+   * Asserts that `object` has a property named by `property` with value given
+   * by `value`.
+   *
+   *     assert.propertyVal({ tea: 'is good' }, 'tea', 'is good');
+   *
+   * @name propertyVal
+   * @param {Object} object
+   * @param {String} property
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.propertyVal = function (obj, prop, val, msg) {
+    new Assertion(obj, msg).to.have.property(prop, val);
+  };
+
+  /**
+   * ### .propertyNotVal(object, property, value, [message])
+   *
+   * Asserts that `object` has a property named by `property`, but with a value
+   * different from that given by `value`.
+   *
+   *     assert.propertyNotVal({ tea: 'is good' }, 'tea', 'is bad');
+   *
+   * @name propertyNotVal
+   * @param {Object} object
+   * @param {String} property
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.propertyNotVal = function (obj, prop, val, msg) {
+    new Assertion(obj, msg).to.not.have.property(prop, val);
+  };
+
+  /**
+   * ### .deepPropertyVal(object, property, value, [message])
+   *
+   * Asserts that `object` has a property named by `property` with value given
+   * by `value`. `property` can use dot- and bracket-notation for deep
+   * reference.
+   *
+   *     assert.deepPropertyVal({ tea: { green: 'matcha' }}, 'tea.green', 'matcha');
+   *
+   * @name deepPropertyVal
+   * @param {Object} object
+   * @param {String} property
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.deepPropertyVal = function (obj, prop, val, msg) {
+    new Assertion(obj, msg).to.have.deep.property(prop, val);
+  };
+
+  /**
+   * ### .deepPropertyNotVal(object, property, value, [message])
+   *
+   * Asserts that `object` has a property named by `property`, but with a value
+   * different from that given by `value`. `property` can use dot- and
+   * bracket-notation for deep reference.
+   *
+   *     assert.deepPropertyNotVal({ tea: { green: 'matcha' }}, 'tea.green', 'konacha');
+   *
+   * @name deepPropertyNotVal
+   * @param {Object} object
+   * @param {String} property
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.deepPropertyNotVal = function (obj, prop, val, msg) {
+    new Assertion(obj, msg).to.not.have.deep.property(prop, val);
+  };
+
+  /**
+   * ### .lengthOf(object, length, [message])
+   *
+   * Asserts that `object` has a `length` property with the expected value.
+   *
+   *     assert.lengthOf([1,2,3], 3, 'array has length of 3');
+   *     assert.lengthOf('foobar', 6, 'string has length of 6');
+   *
+   * @name lengthOf
+   * @param {Mixed} object
+   * @param {Number} length
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.lengthOf = function (exp, len, msg) {
+    new Assertion(exp, msg).to.have.length(len);
+  };
+
+  /**
+   * ### .throws(function, [constructor/string/regexp], [string/regexp], [message])
+   *
+   * Asserts that `function` will throw an error that is an instance of
+   * `constructor`, or alternately that it will throw an error with message
+   * matching `regexp`.
+   *
+   *     assert.throws(fn, 'function throws a reference error');
+   *     assert.throws(fn, /function throws a reference error/);
+   *     assert.throws(fn, ReferenceError);
+   *     assert.throws(fn, ReferenceError, 'function throws a reference error');
+   *     assert.throws(fn, ReferenceError, /function throws a reference error/);
+   *
+   * @name throws
+   * @alias throw
+   * @alias Throw
+   * @param {Function} function
+   * @param {ErrorConstructor} constructor
+   * @param {RegExp} regexp
+   * @param {String} message
+   * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error#Error_types
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.throws = function (fn, errt, errs, msg) {
+    if ('string' === typeof errt || errt instanceof RegExp) {
+      errs = errt;
+      errt = null;
+    }
+
+    var assertErr = new Assertion(fn, msg).to.throw(errt, errs);
+    return flag(assertErr, 'object');
+  };
+
+  /**
+   * ### .doesNotThrow(function, [constructor/regexp], [message])
+   *
+   * Asserts that `function` will _not_ throw an error that is an instance of
+   * `constructor`, or alternately that it will not throw an error with message
+   * matching `regexp`.
+   *
+   *     assert.doesNotThrow(fn, Error, 'function does not throw');
+   *
+   * @name doesNotThrow
+   * @param {Function} function
+   * @param {ErrorConstructor} constructor
+   * @param {RegExp} regexp
+   * @param {String} message
+   * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error#Error_types
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.doesNotThrow = function (fn, type, msg) {
+    if ('string' === typeof type) {
+      msg = type;
+      type = null;
+    }
+
+    new Assertion(fn, msg).to.not.Throw(type);
+  };
+
+  /**
+   * ### .operator(val1, operator, val2, [message])
+   *
+   * Compares two values using `operator`.
+   *
+   *     assert.operator(1, '<', 2, 'everything is ok');
+   *     assert.operator(1, '>', 2, 'this will fail');
+   *
+   * @name operator
+   * @param {Mixed} val1
+   * @param {String} operator
+   * @param {Mixed} val2
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.operator = function (val, operator, val2, msg) {
+    var ok;
+    switch(operator) {
+      case '==':
+        ok = val == val2;
+        break;
+      case '===':
+        ok = val === val2;
+        break;
+      case '>':
+        ok = val > val2;
+        break;
+      case '>=':
+        ok = val >= val2;
+        break;
+      case '<':
+        ok = val < val2;
+        break;
+      case '<=':
+        ok = val <= val2;
+        break;
+      case '!=':
+        ok = val != val2;
+        break;
+      case '!==':
+        ok = val !== val2;
+        break;
+      default:
+        throw new Error('Invalid operator "' + operator + '"');
+    }
+    var test = new Assertion(ok, msg);
+    test.assert(
+        true === flag(test, 'object')
+      , 'expected ' + util.inspect(val) + ' to be ' + operator + ' ' + util.inspect(val2)
+      , 'expected ' + util.inspect(val) + ' to not be ' + operator + ' ' + util.inspect(val2) );
+  };
+
+  /**
+   * ### .closeTo(actual, expected, delta, [message])
+   *
+   * Asserts that the target is equal `expected`, to within a +/- `delta` range.
+   *
+   *     assert.closeTo(1.5, 1, 0.5, 'numbers are close');
+   *
+   * @name closeTo
+   * @param {Number} actual
+   * @param {Number} expected
+   * @param {Number} delta
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.closeTo = function (act, exp, delta, msg) {
+    new Assertion(act, msg).to.be.closeTo(exp, delta);
+  };
+
+  /**
+   * ### .approximately(actual, expected, delta, [message])
+   *
+   * Asserts that the target is equal `expected`, to within a +/- `delta` range.
+   *
+   *     assert.approximately(1.5, 1, 0.5, 'numbers are close');
+   *
+   * @name approximately
+   * @param {Number} actual
+   * @param {Number} expected
+   * @param {Number} delta
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.approximately = function (act, exp, delta, msg) {
+    new Assertion(act, msg).to.be.approximately(exp, delta);
+  };
+
+  /**
+   * ### .sameMembers(set1, set2, [message])
+   *
+   * Asserts that `set1` and `set2` have the same members.
+   * Order is not taken into account.
+   *
+   *     assert.sameMembers([ 1, 2, 3 ], [ 2, 1, 3 ], 'same members');
+   *
+   * @name sameMembers
+   * @param {Array} set1
+   * @param {Array} set2
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.sameMembers = function (set1, set2, msg) {
+    new Assertion(set1, msg).to.have.same.members(set2);
+  }
+
+  /**
+   * ### .sameDeepMembers(set1, set2, [message])
+   *
+   * Asserts that `set1` and `set2` have the same members - using a deep equality checking.
+   * Order is not taken into account.
+   *
+   *     assert.sameDeepMembers([ {b: 3}, {a: 2}, {c: 5} ], [ {c: 5}, {b: 3}, {a: 2} ], 'same deep members');
+   *
+   * @name sameDeepMembers
+   * @param {Array} set1
+   * @param {Array} set2
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.sameDeepMembers = function (set1, set2, msg) {
+    new Assertion(set1, msg).to.have.same.deep.members(set2);
+  }
+
+  /**
+   * ### .includeMembers(superset, subset, [message])
+   *
+   * Asserts that `subset` is included in `superset`.
+   * Order is not taken into account.
+   *
+   *     assert.includeMembers([ 1, 2, 3 ], [ 2, 1 ], 'include members');
+   *
+   * @name includeMembers
+   * @param {Array} superset
+   * @param {Array} subset
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.includeMembers = function (superset, subset, msg) {
+    new Assertion(superset, msg).to.include.members(subset);
+  }
+
+  /**
+   * ### .includeDeepMembers(superset, subset, [message])
+   *
+   * Asserts that `subset` is included in `superset` - using deep equality checking.
+   * Order is not taken into account.
+   * Duplicates are ignored.
+   *
+   *     assert.includeDeepMembers([ {a: 1}, {b: 2}, {c: 3} ], [ {b: 2}, {a: 1}, {b: 2} ], 'include deep members');
+   *
+   * @name includeDeepMembers
+   * @param {Array} superset
+   * @param {Array} subset
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.includeDeepMembers = function (superset, subset, msg) {
+    new Assertion(superset, msg).to.include.deep.members(subset);
+  }
+
+  /**
+   * ### .oneOf(inList, list, [message])
+   *
+   * Asserts that non-object, non-array value `inList` appears in the flat array `list`.
+   *
+   *     assert.oneOf(1, [ 2, 1 ], 'Not found in list');
+   *
+   * @name oneOf
+   * @param {*} inList
+   * @param {Array<*>} list
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.oneOf = function (inList, list, msg) {
+    new Assertion(inList, msg).to.be.oneOf(list);
+  }
+
+   /**
+   * ### .changes(function, object, property)
+   *
+   * Asserts that a function changes the value of a property
+   *
+   *     var obj = { val: 10 };
+   *     var fn = function() { obj.val = 22 };
+   *     assert.changes(fn, obj, 'val');
+   *
+   * @name changes
+   * @param {Function} modifier function
+   * @param {Object} object
+   * @param {String} property name
+   * @param {String} message _optional_
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.changes = function (fn, obj, prop) {
+    new Assertion(fn).to.change(obj, prop);
+  }
+
+   /**
+   * ### .doesNotChange(function, object, property)
+   *
+   * Asserts that a function does not changes the value of a property
+   *
+   *     var obj = { val: 10 };
+   *     var fn = function() { console.log('foo'); };
+   *     assert.doesNotChange(fn, obj, 'val');
+   *
+   * @name doesNotChange
+   * @param {Function} modifier function
+   * @param {Object} object
+   * @param {String} property name
+   * @param {String} message _optional_
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.doesNotChange = function (fn, obj, prop) {
+    new Assertion(fn).to.not.change(obj, prop);
+  }
+
+   /**
+   * ### .increases(function, object, property)
+   *
+   * Asserts that a function increases an object property
+   *
+   *     var obj = { val: 10 };
+   *     var fn = function() { obj.val = 13 };
+   *     assert.increases(fn, obj, 'val');
+   *
+   * @name increases
+   * @param {Function} modifier function
+   * @param {Object} object
+   * @param {String} property name
+   * @param {String} message _optional_
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.increases = function (fn, obj, prop) {
+    new Assertion(fn).to.increase(obj, prop);
+  }
+
+   /**
+   * ### .doesNotIncrease(function, object, property)
+   *
+   * Asserts that a function does not increase object property
+   *
+   *     var obj = { val: 10 };
+   *     var fn = function() { obj.val = 8 };
+   *     assert.doesNotIncrease(fn, obj, 'val');
+   *
+   * @name doesNotIncrease
+   * @param {Function} modifier function
+   * @param {Object} object
+   * @param {String} property name
+   * @param {String} message _optional_
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.doesNotIncrease = function (fn, obj, prop) {
+    new Assertion(fn).to.not.increase(obj, prop);
+  }
+
+   /**
+   * ### .decreases(function, object, property)
+   *
+   * Asserts that a function decreases an object property
+   *
+   *     var obj = { val: 10 };
+   *     var fn = function() { obj.val = 5 };
+   *     assert.decreases(fn, obj, 'val');
+   *
+   * @name decreases
+   * @param {Function} modifier function
+   * @param {Object} object
+   * @param {String} property name
+   * @param {String} message _optional_
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.decreases = function (fn, obj, prop) {
+    new Assertion(fn).to.decrease(obj, prop);
+  }
+
+   /**
+   * ### .doesNotDecrease(function, object, property)
+   *
+   * Asserts that a function does not decreases an object property
+   *
+   *     var obj = { val: 10 };
+   *     var fn = function() { obj.val = 15 };
+   *     assert.doesNotDecrease(fn, obj, 'val');
+   *
+   * @name doesNotDecrease
+   * @param {Function} modifier function
+   * @param {Object} object
+   * @param {String} property name
+   * @param {String} message _optional_
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.doesNotDecrease = function (fn, obj, prop) {
+    new Assertion(fn).to.not.decrease(obj, prop);
+  }
+
+  /*!
+   * ### .ifError(object)
+   *
+   * Asserts if value is not a false value, and throws if it is a true value.
+   * This is added to allow for chai to be a drop-in replacement for Node's
+   * assert class.
+   *
+   *     var err = new Error('I am a custom error');
+   *     assert.ifError(err); // Rethrows err!
+   *
+   * @name ifError
+   * @param {Object} object
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.ifError = function (val) {
+    if (val) {
+      throw(val);
+    }
+  };
+
+  /**
+   * ### .isExtensible(object)
+   *
+   * Asserts that `object` is extensible (can have new properties added to it).
+   *
+   *     assert.isExtensible({});
+   *
+   * @name isExtensible
+   * @alias extensible
+   * @param {Object} object
+   * @param {String} message _optional_
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isExtensible = function (obj, msg) {
+    new Assertion(obj, msg).to.be.extensible;
+  };
+
+  /**
+   * ### .isNotExtensible(object)
+   *
+   * Asserts that `object` is _not_ extensible.
+   *
+   *     var nonExtensibleObject = Object.preventExtensions({});
+   *     var sealedObject = Object.seal({});
+   *     var frozenObject = Object.freese({});
+   *
+   *     assert.isNotExtensible(nonExtensibleObject);
+   *     assert.isNotExtensible(sealedObject);
+   *     assert.isNotExtensible(frozenObject);
+   *
+   * @name isNotExtensible
+   * @alias notExtensible
+   * @param {Object} object
+   * @param {String} message _optional_
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isNotExtensible = function (obj, msg) {
+    new Assertion(obj, msg).to.not.be.extensible;
+  };
+
+  /**
+   * ### .isSealed(object)
+   *
+   * Asserts that `object` is sealed (cannot have new properties added to it
+   * and its existing properties cannot be removed).
+   *
+   *     var sealedObject = Object.seal({});
+   *     var frozenObject = Object.seal({});
+   *
+   *     assert.isSealed(sealedObject);
+   *     assert.isSealed(frozenObject);
+   *
+   * @name isSealed
+   * @alias sealed
+   * @param {Object} object
+   * @param {String} message _optional_
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isSealed = function (obj, msg) {
+    new Assertion(obj, msg).to.be.sealed;
+  };
+
+  /**
+   * ### .isNotSealed(object)
+   *
+   * Asserts that `object` is _not_ sealed.
+   *
+   *     assert.isNotSealed({});
+   *
+   * @name isNotSealed
+   * @alias notSealed
+   * @param {Object} object
+   * @param {String} message _optional_
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isNotSealed = function (obj, msg) {
+    new Assertion(obj, msg).to.not.be.sealed;
+  };
+
+  /**
+   * ### .isFrozen(object)
+   *
+   * Asserts that `object` is frozen (cannot have new properties added to it
+   * and its existing properties cannot be modified).
+   *
+   *     var frozenObject = Object.freeze({});
+   *     assert.frozen(frozenObject);
+   *
+   * @name isFrozen
+   * @alias frozen
+   * @param {Object} object
+   * @param {String} message _optional_
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isFrozen = function (obj, msg) {
+    new Assertion(obj, msg).to.be.frozen;
+  };
+
+  /**
+   * ### .isNotFrozen(object)
+   *
+   * Asserts that `object` is _not_ frozen.
+   *
+   *     assert.isNotFrozen({});
+   *
+   * @name isNotFrozen
+   * @alias notFrozen
+   * @param {Object} object
+   * @param {String} message _optional_
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isNotFrozen = function (obj, msg) {
+    new Assertion(obj, msg).to.not.be.frozen;
+  };
+
+  /*!
+   * Aliases.
+   */
+
+  (function alias(name, as){
+    assert[as] = assert[name];
+    return alias;
+  })
+  ('isOk', 'ok')
+  ('isNotOk', 'notOk')
+  ('throws', 'throw')
+  ('throws', 'Throw')
+  ('isExtensible', 'extensible')
+  ('isNotExtensible', 'notExtensible')
+  ('isSealed', 'sealed')
+  ('isNotSealed', 'notSealed')
+  ('isFrozen', 'frozen')
+  ('isNotFrozen', 'notFrozen');
+};
+
+},{}],7:[function(require,module,exports){
+/*!
+ * chai
+ * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+module.exports = function (chai, util) {
+  chai.expect = function (val, message) {
+    return new chai.Assertion(val, message);
+  };
+
+  /**
+   * ### .fail(actual, expected, [message], [operator])
+   *
+   * Throw a failure.
+   *
+   * @name fail
+   * @param {Mixed} actual
+   * @param {Mixed} expected
+   * @param {String} message
+   * @param {String} operator
+   * @namespace Expect
+   * @api public
+   */
+
+  chai.expect.fail = function (actual, expected, message, operator) {
+    message = message || 'expect.fail()';
+    throw new chai.AssertionError(message, {
+        actual: actual
+      , expected: expected
+      , operator: operator
+    }, chai.expect.fail);
+  };
+};
+
+},{}],8:[function(require,module,exports){
+/*!
+ * chai
+ * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+module.exports = function (chai, util) {
+  var Assertion = chai.Assertion;
+
+  function loadShould () {
+    // explicitly define this method as function as to have it's name to include as `ssfi`
+    function shouldGetter() {
+      if (this instanceof String || this instanceof Number || this instanceof Boolean ) {
+        return new Assertion(this.valueOf(), null, shouldGetter);
+      }
+      return new Assertion(this, null, shouldGetter);
+    }
+    function shouldSetter(value) {
+      // See https://github.com/chaijs/chai/issues/86: this makes
+      // `whatever.should = someValue` actually set `someValue`, which is
+      // especially useful for `global.should = require('chai').should()`.
+      //
+      // Note that we have to use [[DefineProperty]] instead of [[Put]]
+      // since otherwise we would trigger this very setter!
+      Object.defineProperty(this, 'should', {
+        value: value,
+        enumerable: true,
+        configurable: true,
+        writable: true
+      });
+    }
+    // modify Object.prototype to have `should`
+    Object.defineProperty(Object.prototype, 'should', {
+      set: shouldSetter
+      , get: shouldGetter
+      , configurable: true
+    });
+
+    var should = {};
+
+    /**
+     * ### .fail(actual, expected, [message], [operator])
+     *
+     * Throw a failure.
+     *
+     * @name fail
+     * @param {Mixed} actual
+     * @param {Mixed} expected
+     * @param {String} message
+     * @param {String} operator
+     * @namespace Should
+     * @api public
+     */
+
+    should.fail = function (actual, expected, message, operator) {
+      message = message || 'should.fail()';
+      throw new chai.AssertionError(message, {
+          actual: actual
+        , expected: expected
+        , operator: operator
+      }, should.fail);
+    };
+
+    /**
+     * ### .equal(actual, expected, [message])
+     *
+     * Asserts non-strict equality (`==`) of `actual` and `expected`.
+     *
+     *     should.equal(3, '3', '== coerces values to strings');
+     *
+     * @name equal
+     * @param {Mixed} actual
+     * @param {Mixed} expected
+     * @param {String} message
+     * @namespace Should
+     * @api public
+     */
+
+    should.equal = function (val1, val2, msg) {
+      new Assertion(val1, msg).to.equal(val2);
+    };
+
+    /**
+     * ### .throw(function, [constructor/string/regexp], [string/regexp], [message])
+     *
+     * Asserts that `function` will throw an error that is an instance of
+     * `constructor`, or alternately that it will throw an error with message
+     * matching `regexp`.
+     *
+     *     should.throw(fn, 'function throws a reference error');
+     *     should.throw(fn, /function throws a reference error/);
+     *     should.throw(fn, ReferenceError);
+     *     should.throw(fn, ReferenceError, 'function throws a reference error');
+     *     should.throw(fn, ReferenceError, /function throws a reference error/);
+     *
+     * @name throw
+     * @alias Throw
+     * @param {Function} function
+     * @param {ErrorConstructor} constructor
+     * @param {RegExp} regexp
+     * @param {String} message
+     * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error#Error_types
+     * @namespace Should
+     * @api public
+     */
+
+    should.Throw = function (fn, errt, errs, msg) {
+      new Assertion(fn, msg).to.Throw(errt, errs);
+    };
+
+    /**
+     * ### .exist
+     *
+     * Asserts that the target is neither `null` nor `undefined`.
+     *
+     *     var foo = 'hi';
+     *
+     *     should.exist(foo, 'foo exists');
+     *
+     * @name exist
+     * @namespace Should
+     * @api public
+     */
+
+    should.exist = function (val, msg) {
+      new Assertion(val, msg).to.exist;
+    }
+
+    // negation
+    should.not = {}
+
+    /**
+     * ### .not.equal(actual, expected, [message])
+     *
+     * Asserts non-strict inequality (`!=`) of `actual` and `expected`.
+     *
+     *     should.not.equal(3, 4, 'these numbers are not equal');
+     *
+     * @name not.equal
+     * @param {Mixed} actual
+     * @param {Mixed} expected
+     * @param {String} message
+     * @namespace Should
+     * @api public
+     */
+
+    should.not.equal = function (val1, val2, msg) {
+      new Assertion(val1, msg).to.not.equal(val2);
+    };
+
+    /**
+     * ### .throw(function, [constructor/regexp], [message])
+     *
+     * Asserts that `function` will _not_ throw an error that is an instance of
+     * `constructor`, or alternately that it will not throw an error with message
+     * matching `regexp`.
+     *
+     *     should.not.throw(fn, Error, 'function does not throw');
+     *
+     * @name not.throw
+     * @alias not.Throw
+     * @param {Function} function
+     * @param {ErrorConstructor} constructor
+     * @param {RegExp} regexp
+     * @param {String} message
+     * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error#Error_types
+     * @namespace Should
+     * @api public
+     */
+
+    should.not.Throw = function (fn, errt, errs, msg) {
+      new Assertion(fn, msg).to.not.Throw(errt, errs);
+    };
+
+    /**
+     * ### .not.exist
+     *
+     * Asserts that the target is neither `null` nor `undefined`.
+     *
+     *     var bar = null;
+     *
+     *     should.not.exist(bar, 'bar does not exist');
+     *
+     * @name not.exist
+     * @namespace Should
+     * @api public
+     */
+
+    should.not.exist = function (val, msg) {
+      new Assertion(val, msg).to.not.exist;
+    }
+
+    should['throw'] = should['Throw'];
+    should.not['throw'] = should.not['Throw'];
+
+    return should;
+  };
+
+  chai.should = loadShould;
+  chai.Should = loadShould;
+};
+
+},{}],9:[function(require,module,exports){
+/*!
+ * Chai - addChainingMethod utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/*!
+ * Module dependencies
+ */
+
+var transferFlags = require('./transferFlags');
+var flag = require('./flag');
+var config = require('../config');
+
+/*!
+ * Module variables
+ */
+
+// Check whether `__proto__` is supported
+var hasProtoSupport = '__proto__' in Object;
+
+// Without `__proto__` support, this module will need to add properties to a function.
+// However, some Function.prototype methods cannot be overwritten,
+// and there seems no easy cross-platform way to detect them (@see chaijs/chai/issues/69).
+var excludeNames = /^(?:length|name|arguments|caller)$/;
+
+// Cache `Function` properties
+var call  = Function.prototype.call,
+    apply = Function.prototype.apply;
+
+/**
+ * ### addChainableMethod (ctx, name, method, chainingBehavior)
+ *
+ * Adds a method to an object, such that the method can also be chained.
+ *
+ *     utils.addChainableMethod(chai.Assertion.prototype, 'foo', function (str) {
+ *       var obj = utils.flag(this, 'object');
+ *       new chai.Assertion(obj).to.be.equal(str);
+ *     });
+ *
+ * Can also be accessed directly from `chai.Assertion`.
+ *
+ *     chai.Assertion.addChainableMethod('foo', fn, chainingBehavior);
+ *
+ * The result can then be used as both a method assertion, executing both `method` and
+ * `chainingBehavior`, or as a language chain, which only executes `chainingBehavior`.
+ *
+ *     expect(fooStr).to.be.foo('bar');
+ *     expect(fooStr).to.be.foo.equal('foo');
+ *
+ * @param {Object} ctx object to which the method is added
+ * @param {String} name of method to add
+ * @param {Function} method function to be used for `name`, when called
+ * @param {Function} chainingBehavior function to be called every time the property is accessed
+ * @namespace Utils
+ * @name addChainableMethod
+ * @api public
+ */
+
+module.exports = function (ctx, name, method, chainingBehavior) {
+  if (typeof chainingBehavior !== 'function') {
+    chainingBehavior = function () { };
+  }
+
+  var chainableBehavior = {
+      method: method
+    , chainingBehavior: chainingBehavior
+  };
+
+  // save the methods so we can overwrite them later, if we need to.
+  if (!ctx.__methods) {
+    ctx.__methods = {};
+  }
+  ctx.__methods[name] = chainableBehavior;
+
+  Object.defineProperty(ctx, name,
+    { get: function () {
+        chainableBehavior.chainingBehavior.call(this);
+
+        var assert = function assert() {
+          var old_ssfi = flag(this, 'ssfi');
+          if (old_ssfi && config.includeStack === false)
+            flag(this, 'ssfi', assert);
+          var result = chainableBehavior.method.apply(this, arguments);
+          return result === undefined ? this : result;
+        };
+
+        // Use `__proto__` if available
+        if (hasProtoSupport) {
+          // Inherit all properties from the object by replacing the `Function` prototype
+          var prototype = assert.__proto__ = Object.create(this);
+          // Restore the `call` and `apply` methods from `Function`
+          prototype.call = call;
+          prototype.apply = apply;
+        }
+        // Otherwise, redefine all properties (slow!)
+        else {
+          var asserterNames = Object.getOwnPropertyNames(ctx);
+          asserterNames.forEach(function (asserterName) {
+            if (!excludeNames.test(asserterName)) {
+              var pd = Object.getOwnPropertyDescriptor(ctx, asserterName);
+              Object.defineProperty(assert, asserterName, pd);
+            }
+          });
+        }
+
+        transferFlags(this, assert);
+        return assert;
+      }
+    , configurable: true
+  });
+};
+
+},{"../config":4,"./flag":13,"./transferFlags":29}],10:[function(require,module,exports){
+/*!
+ * Chai - addMethod utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+var config = require('../config');
+
+/**
+ * ### .addMethod (ctx, name, method)
+ *
+ * Adds a method to the prototype of an object.
+ *
+ *     utils.addMethod(chai.Assertion.prototype, 'foo', function (str) {
+ *       var obj = utils.flag(this, 'object');
+ *       new chai.Assertion(obj).to.be.equal(str);
+ *     });
+ *
+ * Can also be accessed directly from `chai.Assertion`.
+ *
+ *     chai.Assertion.addMethod('foo', fn);
+ *
+ * Then can be used as any other assertion.
+ *
+ *     expect(fooStr).to.be.foo('bar');
+ *
+ * @param {Object} ctx object to which the method is added
+ * @param {String} name of method to add
+ * @param {Function} method function to be used for name
+ * @namespace Utils
+ * @name addMethod
+ * @api public
+ */
+var flag = require('./flag');
+
+module.exports = function (ctx, name, method) {
+  ctx[name] = function () {
+    var old_ssfi = flag(this, 'ssfi');
+    if (old_ssfi && config.includeStack === false)
+      flag(this, 'ssfi', ctx[name]);
+    var result = method.apply(this, arguments);
+    return result === undefined ? this : result;
+  };
+};
+
+},{"../config":4,"./flag":13}],11:[function(require,module,exports){
+/*!
+ * Chai - addProperty utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+var config = require('../config');
+var flag = require('./flag');
+
+/**
+ * ### addProperty (ctx, name, getter)
+ *
+ * Adds a property to the prototype of an object.
+ *
+ *     utils.addProperty(chai.Assertion.prototype, 'foo', function () {
+ *       var obj = utils.flag(this, 'object');
+ *       new chai.Assertion(obj).to.be.instanceof(Foo);
+ *     });
+ *
+ * Can also be accessed directly from `chai.Assertion`.
+ *
+ *     chai.Assertion.addProperty('foo', fn);
+ *
+ * Then can be used as any other assertion.
+ *
+ *     expect(myFoo).to.be.foo;
+ *
+ * @param {Object} ctx object to which the property is added
+ * @param {String} name of property to add
+ * @param {Function} getter function to be used for name
+ * @namespace Utils
+ * @name addProperty
+ * @api public
+ */
+
+module.exports = function (ctx, name, getter) {
+  Object.defineProperty(ctx, name,
+    { get: function addProperty() {
+        var old_ssfi = flag(this, 'ssfi');
+        if (old_ssfi && config.includeStack === false)
+          flag(this, 'ssfi', addProperty);
+
+        var result = getter.call(this);
+        return result === undefined ? this : result;
+      }
+    , configurable: true
+  });
+};
+
+},{"../config":4,"./flag":13}],12:[function(require,module,exports){
+/*!
+ * Chai - expectTypes utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/**
+ * ### expectTypes(obj, types)
+ *
+ * Ensures that the object being tested against is of a valid type.
+ *
+ *     utils.expectTypes(this, ['array', 'object', 'string']);
+ *
+ * @param {Mixed} obj constructed Assertion
+ * @param {Array} type A list of allowed types for this assertion
+ * @namespace Utils
+ * @name expectTypes
+ * @api public
+ */
+
+var AssertionError = require('assertion-error');
+var flag = require('./flag');
+var type = require('type-detect');
+
+module.exports = function (obj, types) {
+  var obj = flag(obj, 'object');
+  types = types.map(function (t) { return t.toLowerCase(); });
+  types.sort();
+
+  // Transforms ['lorem', 'ipsum'] into 'a lirum, or an ipsum'
+  var str = types.map(function (t, index) {
+    var art = ~[ 'a', 'e', 'i', 'o', 'u' ].indexOf(t.charAt(0)) ? 'an' : 'a';
+    var or = types.length > 1 && index === types.length - 1 ? 'or ' : '';
+    return or + art + ' ' + t;
+  }).join(', ');
+
+  if (!types.some(function (expected) { return type(obj) === expected; })) {
+    throw new AssertionError(
+      'object tested must be ' + str + ', but ' + type(obj) + ' given'
+    );
+  }
+};
+
+},{"./flag":13,"assertion-error":30,"type-detect":35}],13:[function(require,module,exports){
+/*!
+ * Chai - flag utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/**
+ * ### flag(object, key, [value])
+ *
+ * Get or set a flag value on an object. If a
+ * value is provided it will be set, else it will
+ * return the currently set value or `undefined` if
+ * the value is not set.
+ *
+ *     utils.flag(this, 'foo', 'bar'); // setter
+ *     utils.flag(this, 'foo'); // getter, returns `bar`
+ *
+ * @param {Object} object constructed Assertion
+ * @param {String} key
+ * @param {Mixed} value (optional)
+ * @namespace Utils
+ * @name flag
+ * @api private
+ */
+
+module.exports = function (obj, key, value) {
+  var flags = obj.__flags || (obj.__flags = Object.create(null));
+  if (arguments.length === 3) {
+    flags[key] = value;
+  } else {
+    return flags[key];
+  }
+};
+
+},{}],14:[function(require,module,exports){
+/*!
+ * Chai - getActual utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/**
+ * # getActual(object, [actual])
+ *
+ * Returns the `actual` value for an Assertion
+ *
+ * @param {Object} object (constructed Assertion)
+ * @param {Arguments} chai.Assertion.prototype.assert arguments
+ * @namespace Utils
+ * @name getActual
+ */
+
+module.exports = function (obj, args) {
+  return args.length > 4 ? args[4] : obj._obj;
+};
+
+},{}],15:[function(require,module,exports){
+/*!
+ * Chai - getEnumerableProperties utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/**
+ * ### .getEnumerableProperties(object)
+ *
+ * This allows the retrieval of enumerable property names of an object,
+ * inherited or not.
+ *
+ * @param {Object} object
+ * @returns {Array}
+ * @namespace Utils
+ * @name getEnumerableProperties
+ * @api public
+ */
+
+module.exports = function getEnumerableProperties(object) {
+  var result = [];
+  for (var name in object) {
+    result.push(name);
+  }
+  return result;
+};
+
+},{}],16:[function(require,module,exports){
+/*!
+ * Chai - message composition utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/*!
+ * Module dependancies
+ */
+
+var flag = require('./flag')
+  , getActual = require('./getActual')
+  , inspect = require('./inspect')
+  , objDisplay = require('./objDisplay');
+
+/**
+ * ### .getMessage(object, message, negateMessage)
+ *
+ * Construct the error message based on flags
+ * and template tags. Template tags will return
+ * a stringified inspection of the object referenced.
+ *
+ * Message template tags:
+ * - `#{this}` current asserted object
+ * - `#{act}` actual value
+ * - `#{exp}` expected value
+ *
+ * @param {Object} object (constructed Assertion)
+ * @param {Arguments} chai.Assertion.prototype.assert arguments
+ * @namespace Utils
+ * @name getMessage
+ * @api public
+ */
+
+module.exports = function (obj, args) {
+  var negate = flag(obj, 'negate')
+    , val = flag(obj, 'object')
+    , expected = args[3]
+    , actual = getActual(obj, args)
+    , msg = negate ? args[2] : args[1]
+    , flagMsg = flag(obj, 'message');
+
+  if(typeof msg === "function") msg = msg();
+  msg = msg || '';
+  msg = msg
+    .replace(/#\{this\}/g, function () { return objDisplay(val); })
+    .replace(/#\{act\}/g, function () { return objDisplay(actual); })
+    .replace(/#\{exp\}/g, function () { return objDisplay(expected); });
+
+  return flagMsg ? flagMsg + ': ' + msg : msg;
+};
+
+},{"./flag":13,"./getActual":14,"./inspect":23,"./objDisplay":24}],17:[function(require,module,exports){
+/*!
+ * Chai - getName utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/**
+ * # getName(func)
+ *
+ * Gets the name of a function, in a cross-browser way.
+ *
+ * @param {Function} a function (usually a constructor)
+ * @namespace Utils
+ * @name getName
+ */
+
+module.exports = function (func) {
+  if (func.name) return func.name;
+
+  var match = /^\s?function ([^(]*)\(/.exec(func);
+  return match && match[1] ? match[1] : "";
+};
+
+},{}],18:[function(require,module,exports){
+/*!
+ * Chai - getPathInfo utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+var hasProperty = require('./hasProperty');
+
+/**
+ * ### .getPathInfo(path, object)
+ *
+ * This allows the retrieval of property info in an
+ * object given a string path.
+ *
+ * The path info consists of an object with the
+ * following properties:
+ *
+ * * parent - The parent object of the property referenced by `path`
+ * * name - The name of the final property, a number if it was an array indexer
+ * * value - The value of the property, if it exists, otherwise `undefined`
+ * * exists - Whether the property exists or not
+ *
+ * @param {String} path
+ * @param {Object} object
+ * @returns {Object} info
+ * @namespace Utils
+ * @name getPathInfo
+ * @api public
+ */
+
+module.exports = function getPathInfo(path, obj) {
+  var parsed = parsePath(path),
+      last = parsed[parsed.length - 1];
+
+  var info = {
+    parent: parsed.length > 1 ? _getPathValue(parsed, obj, parsed.length - 1) : obj,
+    name: last.p || last.i,
+    value: _getPathValue(parsed, obj)
+  };
+  info.exists = hasProperty(info.name, info.parent);
+
+  return info;
+};
+
+
+/*!
+ * ## parsePath(path)
+ *
+ * Helper function used to parse string object
+ * paths. Use in conjunction with `_getPathValue`.
+ *
+ *      var parsed = parsePath('myobject.property.subprop');
+ *
+ * ### Paths:
+ *
+ * * Can be as near infinitely deep and nested
+ * * Arrays are also valid using the formal `myobject.document[3].property`.
+ * * Literal dots and brackets (not delimiter) must be backslash-escaped.
+ *
+ * @param {String} path
+ * @returns {Object} parsed
+ * @api private
+ */
+
+function parsePath (path) {
+  var str = path.replace(/([^\\])\[/g, '$1.[')
+    , parts = str.match(/(\\\.|[^.]+?)+/g);
+  return parts.map(function (value) {
+    var re = /^\[(\d+)\]$/
+      , mArr = re.exec(value);
+    if (mArr) return { i: parseFloat(mArr[1]) };
+    else return { p: value.replace(/\\([.\[\]])/g, '$1') };
+  });
+}
+
+
+/*!
+ * ## _getPathValue(parsed, obj)
+ *
+ * Helper companion function for `.parsePath` that returns
+ * the value located at the parsed address.
+ *
+ *      var value = getPathValue(parsed, obj);
+ *
+ * @param {Object} parsed definition from `parsePath`.
+ * @param {Object} object to search against
+ * @param {Number} object to search against
+ * @returns {Object|Undefined} value
+ * @api private
+ */
+
+function _getPathValue (parsed, obj, index) {
+  var tmp = obj
+    , res;
+
+  index = (index === undefined ? parsed.length : index);
+
+  for (var i = 0, l = index; i < l; i++) {
+    var part = parsed[i];
+    if (tmp) {
+      if ('undefined' !== typeof part.p)
+        tmp = tmp[part.p];
+      else if ('undefined' !== typeof part.i)
+        tmp = tmp[part.i];
+      if (i == (l - 1)) res = tmp;
+    } else {
+      res = undefined;
+    }
+  }
+  return res;
+}
+
+},{"./hasProperty":21}],19:[function(require,module,exports){
+/*!
+ * Chai - getPathValue utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * @see https://github.com/logicalparadox/filtr
+ * MIT Licensed
+ */
+
+var getPathInfo = require('./getPathInfo');
+
+/**
+ * ### .getPathValue(path, object)
+ *
+ * This allows the retrieval of values in an
+ * object given a string path.
+ *
+ *     var obj = {
+ *         prop1: {
+ *             arr: ['a', 'b', 'c']
+ *           , str: 'Hello'
+ *         }
+ *       , prop2: {
+ *             arr: [ { nested: 'Universe' } ]
+ *           , str: 'Hello again!'
+ *         }
+ *     }
+ *
+ * The following would be the results.
+ *
+ *     getPathValue('prop1.str', obj); // Hello
+ *     getPathValue('prop1.att[2]', obj); // b
+ *     getPathValue('prop2.arr[0].nested', obj); // Universe
+ *
+ * @param {String} path
+ * @param {Object} object
+ * @returns {Object} value or `undefined`
+ * @namespace Utils
+ * @name getPathValue
+ * @api public
+ */
+module.exports = function(path, obj) {
+  var info = getPathInfo(path, obj);
+  return info.value;
+};
+
+},{"./getPathInfo":18}],20:[function(require,module,exports){
+/*!
+ * Chai - getProperties utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/**
+ * ### .getProperties(object)
+ *
+ * This allows the retrieval of property names of an object, enumerable or not,
+ * inherited or not.
+ *
+ * @param {Object} object
+ * @returns {Array}
+ * @namespace Utils
+ * @name getProperties
+ * @api public
+ */
+
+module.exports = function getProperties(object) {
+  var result = Object.getOwnPropertyNames(object);
+
+  function addProperty(property) {
+    if (result.indexOf(property) === -1) {
+      result.push(property);
+    }
+  }
+
+  var proto = Object.getPrototypeOf(object);
+  while (proto !== null) {
+    Object.getOwnPropertyNames(proto).forEach(addProperty);
+    proto = Object.getPrototypeOf(proto);
+  }
+
+  return result;
+};
+
+},{}],21:[function(require,module,exports){
+/*!
+ * Chai - hasProperty utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+var type = require('type-detect');
+
+/**
+ * ### .hasProperty(object, name)
+ *
+ * This allows checking whether an object has
+ * named property or numeric array index.
+ *
+ * Basically does the same thing as the `in`
+ * operator but works properly with natives
+ * and null/undefined values.
+ *
+ *     var obj = {
+ *         arr: ['a', 'b', 'c']
+ *       , str: 'Hello'
+ *     }
+ *
+ * The following would be the results.
+ *
+ *     hasProperty('str', obj);  // true
+ *     hasProperty('constructor', obj);  // true
+ *     hasProperty('bar', obj);  // false
+ *
+ *     hasProperty('length', obj.str); // true
+ *     hasProperty(1, obj.str);  // true
+ *     hasProperty(5, obj.str);  // false
+ *
+ *     hasProperty('length', obj.arr);  // true
+ *     hasProperty(2, obj.arr);  // true
+ *     hasProperty(3, obj.arr);  // false
+ *
+ * @param {Objuect} object
+ * @param {String|Number} name
+ * @returns {Boolean} whether it exists
+ * @namespace Utils
+ * @name getPathInfo
+ * @api public
+ */
+
+var literals = {
+    'number': Number
+  , 'string': String
+};
+
+module.exports = function hasProperty(name, obj) {
+  var ot = type(obj);
+
+  // Bad Object, obviously no props at all
+  if(ot === 'null' || ot === 'undefined')
+    return false;
+
+  // The `in` operator does not work with certain literals
+  // box these before the check
+  if(literals[ot] && typeof obj !== 'object')
+    obj = new literals[ot](obj);
+
+  return name in obj;
+};
+
+},{"type-detect":35}],22:[function(require,module,exports){
+/*!
+ * chai
+ * Copyright(c) 2011 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/*!
+ * Main exports
+ */
+
+var exports = module.exports = {};
+
+/*!
+ * test utility
+ */
+
+exports.test = require('./test');
+
+/*!
+ * type utility
+ */
+
+exports.type = require('type-detect');
+
+/*!
+ * expectTypes utility
+ */
+exports.expectTypes = require('./expectTypes');
+
+/*!
+ * message utility
+ */
+
+exports.getMessage = require('./getMessage');
+
+/*!
+ * actual utility
+ */
+
+exports.getActual = require('./getActual');
+
+/*!
+ * Inspect util
+ */
+
+exports.inspect = require('./inspect');
+
+/*!
+ * Object Display util
+ */
+
+exports.objDisplay = require('./objDisplay');
+
+/*!
+ * Flag utility
+ */
+
+exports.flag = require('./flag');
+
+/*!
+ * Flag transferring utility
+ */
+
+exports.transferFlags = require('./transferFlags');
+
+/*!
+ * Deep equal utility
+ */
+
+exports.eql = require('deep-eql');
+
+/*!
+ * Deep path value
+ */
+
+exports.getPathValue = require('./getPathValue');
+
+/*!
+ * Deep path info
+ */
+
+exports.getPathInfo = require('./getPathInfo');
+
+/*!
+ * Check if a property exists
+ */
+
+exports.hasProperty = require('./hasProperty');
+
+/*!
+ * Function name
+ */
+
+exports.getName = require('./getName');
+
+/*!
+ * add Property
+ */
+
+exports.addProperty = require('./addProperty');
+
+/*!
+ * add Method
+ */
+
+exports.addMethod = require('./addMethod');
+
+/*!
+ * overwrite Property
+ */
+
+exports.overwriteProperty = require('./overwriteProperty');
+
+/*!
+ * overwrite Method
+ */
+
+exports.overwriteMethod = require('./overwriteMethod');
+
+/*!
+ * Add a chainable method
+ */
+
+exports.addChainableMethod = require('./addChainableMethod');
+
+/*!
+ * Overwrite chainable method
+ */
+
+exports.overwriteChainableMethod = require('./overwriteChainableMethod');
+
+},{"./addChainableMethod":9,"./addMethod":10,"./addProperty":11,"./expectTypes":12,"./flag":13,"./getActual":14,"./getMessage":16,"./getName":17,"./getPathInfo":18,"./getPathValue":19,"./hasProperty":21,"./inspect":23,"./objDisplay":24,"./overwriteChainableMethod":25,"./overwriteMethod":26,"./overwriteProperty":27,"./test":28,"./transferFlags":29,"deep-eql":31,"type-detect":35}],23:[function(require,module,exports){
+// This is (almost) directly from Node.js utils
+// https://github.com/joyent/node/blob/f8c335d0caf47f16d31413f89aa28eda3878e3aa/lib/util.js
+
+var getName = require('./getName');
+var getProperties = require('./getProperties');
+var getEnumerableProperties = require('./getEnumerableProperties');
+
+module.exports = inspect;
+
+/**
+ * Echos the value of a value. Trys to print the value out
+ * in the best way possible given the different types.
+ *
+ * @param {Object} obj The object to print out.
+ * @param {Boolean} showHidden Flag that shows hidden (not enumerable)
+ *    properties of objects.
+ * @param {Number} depth Depth in which to descend in object. Default is 2.
+ * @param {Boolean} colors Flag to turn on ANSI escape codes to color the
+ *    output. Default is false (no coloring).
+ * @namespace Utils
+ * @name inspect
+ */
+function inspect(obj, showHidden, depth, colors) {
+  var ctx = {
+    showHidden: showHidden,
+    seen: [],
+    stylize: function (str) { return str; }
+  };
+  return formatValue(ctx, obj, (typeof depth === 'undefined' ? 2 : depth));
+}
+
+// Returns true if object is a DOM element.
+var isDOMElement = function (object) {
+  if (typeof HTMLElement === 'object') {
+    return object instanceof HTMLElement;
+  } else {
+    return object &&
+      typeof object === 'object' &&
+      object.nodeType === 1 &&
+      typeof object.nodeName === 'string';
+  }
+};
+
+function formatValue(ctx, value, recurseTimes) {
+  // Provide a hook for user-specified inspect functions.
+  // Check that value is an object with an inspect function on it
+  if (value && typeof value.inspect === 'function' &&
+      // Filter out the util module, it's inspect function is special
+      value.inspect !== exports.inspect &&
+      // Also filter out any prototype objects using the circular check.
+      !(value.constructor && value.constructor.prototype === value)) {
+    var ret = value.inspect(recurseTimes);
+    if (typeof ret !== 'string') {
+      ret = formatValue(ctx, ret, recurseTimes);
+    }
+    return ret;
+  }
+
+  // Primitive types cannot have properties
+  var primitive = formatPrimitive(ctx, value);
+  if (primitive) {
+    return primitive;
+  }
+
+  // If this is a DOM element, try to get the outer HTML.
+  if (isDOMElement(value)) {
+    if ('outerHTML' in value) {
+      return value.outerHTML;
+      // This value does not have an outerHTML attribute,
+      //   it could still be an XML element
+    } else {
+      // Attempt to serialize it
+      try {
+        if (document.xmlVersion) {
+          var xmlSerializer = new XMLSerializer();
+          return xmlSerializer.serializeToString(value);
+        } else {
+          // Firefox 11- do not support outerHTML
+          //   It does, however, support innerHTML
+          //   Use the following to render the element
+          var ns = "http://www.w3.org/1999/xhtml";
+          var container = document.createElementNS(ns, '_');
+
+          container.appendChild(value.cloneNode(false));
+          html = container.innerHTML
+            .replace('><', '>' + value.innerHTML + '<');
+          container.innerHTML = '';
+          return html;
+        }
+      } catch (err) {
+        // This could be a non-native DOM implementation,
+        //   continue with the normal flow:
+        //   printing the element as if it is an object.
+      }
+    }
+  }
+
+  // Look up the keys of the object.
+  var visibleKeys = getEnumerableProperties(value);
+  var keys = ctx.showHidden ? getProperties(value) : visibleKeys;
+
+  // Some type of object without properties can be shortcutted.
+  // In IE, errors have a single `stack` property, or if they are vanilla `Error`,
+  // a `stack` plus `description` property; ignore those for consistency.
+  if (keys.length === 0 || (isError(value) && (
+      (keys.length === 1 && keys[0] === 'stack') ||
+      (keys.length === 2 && keys[0] === 'description' && keys[1] === 'stack')
+     ))) {
+    if (typeof value === 'function') {
+      var name = getName(value);
+      var nameSuffix = name ? ': ' + name : '';
+      return ctx.stylize('[Function' + nameSuffix + ']', 'special');
+    }
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    }
+    if (isDate(value)) {
+      return ctx.stylize(Date.prototype.toUTCString.call(value), 'date');
+    }
+    if (isError(value)) {
+      return formatError(value);
+    }
+  }
+
+  var base = '', array = false, braces = ['{', '}'];
+
+  // Make Array say that they are Array
+  if (isArray(value)) {
+    array = true;
+    braces = ['[', ']'];
+  }
+
+  // Make functions say that they are functions
+  if (typeof value === 'function') {
+    var name = getName(value);
+    var nameSuffix = name ? ': ' + name : '';
+    base = ' [Function' + nameSuffix + ']';
+  }
+
+  // Make RegExps say that they are RegExps
+  if (isRegExp(value)) {
+    base = ' ' + RegExp.prototype.toString.call(value);
+  }
+
+  // Make dates with properties first say the date
+  if (isDate(value)) {
+    base = ' ' + Date.prototype.toUTCString.call(value);
+  }
+
+  // Make error with message first say the error
+  if (isError(value)) {
+    return formatError(value);
+  }
+
+  if (keys.length === 0 && (!array || value.length == 0)) {
+    return braces[0] + base + braces[1];
+  }
+
+  if (recurseTimes < 0) {
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    } else {
+      return ctx.stylize('[Object]', 'special');
+    }
+  }
+
+  ctx.seen.push(value);
+
+  var output;
+  if (array) {
+    output = formatArray(ctx, value, recurseTimes, visibleKeys, keys);
+  } else {
+    output = keys.map(function(key) {
+      return formatProperty(ctx, value, recurseTimes, visibleKeys, key, array);
+    });
+  }
+
+  ctx.seen.pop();
+
+  return reduceToSingleString(output, base, braces);
+}
+
+
+function formatPrimitive(ctx, value) {
+  switch (typeof value) {
+    case 'undefined':
+      return ctx.stylize('undefined', 'undefined');
+
+    case 'string':
+      var simple = '\'' + JSON.stringify(value).replace(/^"|"$/g, '')
+                                               .replace(/'/g, "\\'")
+                                               .replace(/\\"/g, '"') + '\'';
+      return ctx.stylize(simple, 'string');
+
+    case 'number':
+      if (value === 0 && (1/value) === -Infinity) {
+        return ctx.stylize('-0', 'number');
+      }
+      return ctx.stylize('' + value, 'number');
+
+    case 'boolean':
+      return ctx.stylize('' + value, 'boolean');
+  }
+  // For some reason typeof null is "object", so special case here.
+  if (value === null) {
+    return ctx.stylize('null', 'null');
+  }
+}
+
+
+function formatError(value) {
+  return '[' + Error.prototype.toString.call(value) + ']';
+}
+
+
+function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
+  var output = [];
+  for (var i = 0, l = value.length; i < l; ++i) {
+    if (Object.prototype.hasOwnProperty.call(value, String(i))) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+          String(i), true));
+    } else {
+      output.push('');
+    }
+  }
+  keys.forEach(function(key) {
+    if (!key.match(/^\d+$/)) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+          key, true));
+    }
+  });
+  return output;
+}
+
+
+function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
+  var name, str;
+  if (value.__lookupGetter__) {
+    if (value.__lookupGetter__(key)) {
+      if (value.__lookupSetter__(key)) {
+        str = ctx.stylize('[Getter/Setter]', 'special');
+      } else {
+        str = ctx.stylize('[Getter]', 'special');
+      }
+    } else {
+      if (value.__lookupSetter__(key)) {
+        str = ctx.stylize('[Setter]', 'special');
+      }
+    }
+  }
+  if (visibleKeys.indexOf(key) < 0) {
+    name = '[' + key + ']';
+  }
+  if (!str) {
+    if (ctx.seen.indexOf(value[key]) < 0) {
+      if (recurseTimes === null) {
+        str = formatValue(ctx, value[key], null);
+      } else {
+        str = formatValue(ctx, value[key], recurseTimes - 1);
+      }
+      if (str.indexOf('\n') > -1) {
+        if (array) {
+          str = str.split('\n').map(function(line) {
+            return '  ' + line;
+          }).join('\n').substr(2);
+        } else {
+          str = '\n' + str.split('\n').map(function(line) {
+            return '   ' + line;
+          }).join('\n');
+        }
+      }
+    } else {
+      str = ctx.stylize('[Circular]', 'special');
+    }
+  }
+  if (typeof name === 'undefined') {
+    if (array && key.match(/^\d+$/)) {
+      return str;
+    }
+    name = JSON.stringify('' + key);
+    if (name.match(/^"([a-zA-Z_][a-zA-Z_0-9]*)"$/)) {
+      name = name.substr(1, name.length - 2);
+      name = ctx.stylize(name, 'name');
+    } else {
+      name = name.replace(/'/g, "\\'")
+                 .replace(/\\"/g, '"')
+                 .replace(/(^"|"$)/g, "'");
+      name = ctx.stylize(name, 'string');
+    }
+  }
+
+  return name + ': ' + str;
+}
+
+
+function reduceToSingleString(output, base, braces) {
+  var numLinesEst = 0;
+  var length = output.reduce(function(prev, cur) {
+    numLinesEst++;
+    if (cur.indexOf('\n') >= 0) numLinesEst++;
+    return prev + cur.length + 1;
+  }, 0);
+
+  if (length > 60) {
+    return braces[0] +
+           (base === '' ? '' : base + '\n ') +
+           ' ' +
+           output.join(',\n  ') +
+           ' ' +
+           braces[1];
+  }
+
+  return braces[0] + base + ' ' + output.join(', ') + ' ' + braces[1];
+}
+
+function isArray(ar) {
+  return Array.isArray(ar) ||
+         (typeof ar === 'object' && objectToString(ar) === '[object Array]');
+}
+
+function isRegExp(re) {
+  return typeof re === 'object' && objectToString(re) === '[object RegExp]';
+}
+
+function isDate(d) {
+  return typeof d === 'object' && objectToString(d) === '[object Date]';
+}
+
+function isError(e) {
+  return typeof e === 'object' && objectToString(e) === '[object Error]';
+}
+
+function objectToString(o) {
+  return Object.prototype.toString.call(o);
+}
+
+},{"./getEnumerableProperties":15,"./getName":17,"./getProperties":20}],24:[function(require,module,exports){
+/*!
+ * Chai - flag utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/*!
+ * Module dependancies
+ */
+
+var inspect = require('./inspect');
+var config = require('../config');
+
+/**
+ * ### .objDisplay (object)
+ *
+ * Determines if an object or an array matches
+ * criteria to be inspected in-line for error
+ * messages or should be truncated.
+ *
+ * @param {Mixed} javascript object to inspect
+ * @name objDisplay
+ * @namespace Utils
+ * @api public
+ */
+
+module.exports = function (obj) {
+  var str = inspect(obj)
+    , type = Object.prototype.toString.call(obj);
+
+  if (config.truncateThreshold && str.length >= config.truncateThreshold) {
+    if (type === '[object Function]') {
+      return !obj.name || obj.name === ''
+        ? '[Function]'
+        : '[Function: ' + obj.name + ']';
+    } else if (type === '[object Array]') {
+      return '[ Array(' + obj.length + ') ]';
+    } else if (type === '[object Object]') {
+      var keys = Object.keys(obj)
+        , kstr = keys.length > 2
+          ? keys.splice(0, 2).join(', ') + ', ...'
+          : keys.join(', ');
+      return '{ Object (' + kstr + ') }';
+    } else {
+      return str;
+    }
+  } else {
+    return str;
+  }
+};
+
+},{"../config":4,"./inspect":23}],25:[function(require,module,exports){
+/*!
+ * Chai - overwriteChainableMethod utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/**
+ * ### overwriteChainableMethod (ctx, name, method, chainingBehavior)
+ *
+ * Overwites an already existing chainable method
+ * and provides access to the previous function or
+ * property.  Must return functions to be used for
+ * name.
+ *
+ *     utils.overwriteChainableMethod(chai.Assertion.prototype, 'length',
+ *       function (_super) {
+ *       }
+ *     , function (_super) {
+ *       }
+ *     );
+ *
+ * Can also be accessed directly from `chai.Assertion`.
+ *
+ *     chai.Assertion.overwriteChainableMethod('foo', fn, fn);
+ *
+ * Then can be used as any other assertion.
+ *
+ *     expect(myFoo).to.have.length(3);
+ *     expect(myFoo).to.have.length.above(3);
+ *
+ * @param {Object} ctx object whose method / property is to be overwritten
+ * @param {String} name of method / property to overwrite
+ * @param {Function} method function that returns a function to be used for name
+ * @param {Function} chainingBehavior function that returns a function to be used for property
+ * @namespace Utils
+ * @name overwriteChainableMethod
+ * @api public
+ */
+
+module.exports = function (ctx, name, method, chainingBehavior) {
+  var chainableBehavior = ctx.__methods[name];
+
+  var _chainingBehavior = chainableBehavior.chainingBehavior;
+  chainableBehavior.chainingBehavior = function () {
+    var result = chainingBehavior(_chainingBehavior).call(this);
+    return result === undefined ? this : result;
+  };
+
+  var _method = chainableBehavior.method;
+  chainableBehavior.method = function () {
+    var result = method(_method).apply(this, arguments);
+    return result === undefined ? this : result;
+  };
+};
+
+},{}],26:[function(require,module,exports){
+/*!
+ * Chai - overwriteMethod utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/**
+ * ### overwriteMethod (ctx, name, fn)
+ *
+ * Overwites an already existing method and provides
+ * access to previous function. Must return function
+ * to be used for name.
+ *
+ *     utils.overwriteMethod(chai.Assertion.prototype, 'equal', function (_super) {
+ *       return function (str) {
+ *         var obj = utils.flag(this, 'object');
+ *         if (obj instanceof Foo) {
+ *           new chai.Assertion(obj.value).to.equal(str);
+ *         } else {
+ *           _super.apply(this, arguments);
+ *         }
+ *       }
+ *     });
+ *
+ * Can also be accessed directly from `chai.Assertion`.
+ *
+ *     chai.Assertion.overwriteMethod('foo', fn);
+ *
+ * Then can be used as any other assertion.
+ *
+ *     expect(myFoo).to.equal('bar');
+ *
+ * @param {Object} ctx object whose method is to be overwritten
+ * @param {String} name of method to overwrite
+ * @param {Function} method function that returns a function to be used for name
+ * @namespace Utils
+ * @name overwriteMethod
+ * @api public
+ */
+
+module.exports = function (ctx, name, method) {
+  var _method = ctx[name]
+    , _super = function () { return this; };
+
+  if (_method && 'function' === typeof _method)
+    _super = _method;
+
+  ctx[name] = function () {
+    var result = method(_super).apply(this, arguments);
+    return result === undefined ? this : result;
+  }
+};
+
+},{}],27:[function(require,module,exports){
+/*!
+ * Chai - overwriteProperty utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/**
+ * ### overwriteProperty (ctx, name, fn)
+ *
+ * Overwites an already existing property getter and provides
+ * access to previous value. Must return function to use as getter.
+ *
+ *     utils.overwriteProperty(chai.Assertion.prototype, 'ok', function (_super) {
+ *       return function () {
+ *         var obj = utils.flag(this, 'object');
+ *         if (obj instanceof Foo) {
+ *           new chai.Assertion(obj.name).to.equal('bar');
+ *         } else {
+ *           _super.call(this);
+ *         }
+ *       }
+ *     });
+ *
+ *
+ * Can also be accessed directly from `chai.Assertion`.
+ *
+ *     chai.Assertion.overwriteProperty('foo', fn);
+ *
+ * Then can be used as any other assertion.
+ *
+ *     expect(myFoo).to.be.ok;
+ *
+ * @param {Object} ctx object whose property is to be overwritten
+ * @param {String} name of property to overwrite
+ * @param {Function} getter function that returns a getter function to be used for name
+ * @namespace Utils
+ * @name overwriteProperty
+ * @api public
+ */
+
+module.exports = function (ctx, name, getter) {
+  var _get = Object.getOwnPropertyDescriptor(ctx, name)
+    , _super = function () {};
+
+  if (_get && 'function' === typeof _get.get)
+    _super = _get.get
+
+  Object.defineProperty(ctx, name,
+    { get: function () {
+        var result = getter(_super).call(this);
+        return result === undefined ? this : result;
+      }
+    , configurable: true
+  });
+};
+
+},{}],28:[function(require,module,exports){
+/*!
+ * Chai - test utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/*!
+ * Module dependancies
+ */
+
+var flag = require('./flag');
+
+/**
+ * # test(object, expression)
+ *
+ * Test and object for expression.
+ *
+ * @param {Object} object (constructed Assertion)
+ * @param {Arguments} chai.Assertion.prototype.assert arguments
+ * @namespace Utils
+ * @name test
+ */
+
+module.exports = function (obj, args) {
+  var negate = flag(obj, 'negate')
+    , expr = args[0];
+  return negate ? !expr : expr;
+};
+
+},{"./flag":13}],29:[function(require,module,exports){
+/*!
+ * Chai - transferFlags utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/**
+ * ### transferFlags(assertion, object, includeAll = true)
+ *
+ * Transfer all the flags for `assertion` to `object`. If
+ * `includeAll` is set to `false`, then the base Chai
+ * assertion flags (namely `object`, `ssfi`, and `message`)
+ * will not be transferred.
+ *
+ *
+ *     var newAssertion = new Assertion();
+ *     utils.transferFlags(assertion, newAssertion);
+ *
+ *     var anotherAsseriton = new Assertion(myObj);
+ *     utils.transferFlags(assertion, anotherAssertion, false);
+ *
+ * @param {Assertion} assertion the assertion to transfer the flags from
+ * @param {Object} object the object to transfer the flags to; usually a new assertion
+ * @param {Boolean} includeAll
+ * @namespace Utils
+ * @name transferFlags
+ * @api private
+ */
+
+module.exports = function (assertion, object, includeAll) {
+  var flags = assertion.__flags || (assertion.__flags = Object.create(null));
+
+  if (!object.__flags) {
+    object.__flags = Object.create(null);
+  }
+
+  includeAll = arguments.length === 3 ? includeAll : true;
+
+  for (var flag in flags) {
+    if (includeAll ||
+        (flag !== 'object' && flag !== 'ssfi' && flag != 'message')) {
+      object.__flags[flag] = flags[flag];
+    }
+  }
+};
+
+},{}],30:[function(require,module,exports){
+/*!
+ * assertion-error
+ * Copyright(c) 2013 Jake Luer <jake@qualiancy.com>
+ * MIT Licensed
+ */
+
+/*!
+ * Return a function that will copy properties from
+ * one object to another excluding any originally
+ * listed. Returned function will create a new `{}`.
+ *
+ * @param {String} excluded properties ...
+ * @return {Function}
+ */
+
+function exclude () {
+  var excludes = [].slice.call(arguments);
+
+  function excludeProps (res, obj) {
+    Object.keys(obj).forEach(function (key) {
+      if (!~excludes.indexOf(key)) res[key] = obj[key];
+    });
+  }
+
+  return function extendExclude () {
+    var args = [].slice.call(arguments)
+      , i = 0
+      , res = {};
+
+    for (; i < args.length; i++) {
+      excludeProps(res, args[i]);
+    }
+
+    return res;
+  };
+};
+
+/*!
+ * Primary Exports
+ */
+
+module.exports = AssertionError;
+
+/**
+ * ### AssertionError
+ *
+ * An extension of the JavaScript `Error` constructor for
+ * assertion and validation scenarios.
+ *
+ * @param {String} message
+ * @param {Object} properties to include (optional)
+ * @param {callee} start stack function (optional)
+ */
+
+function AssertionError (message, _props, ssf) {
+  var extend = exclude('name', 'message', 'stack', 'constructor', 'toJSON')
+    , props = extend(_props || {});
+
+  // default values
+  this.message = message || 'Unspecified AssertionError';
+  this.showDiff = false;
+
+  // copy from properties
+  for (var key in props) {
+    this[key] = props[key];
+  }
+
+  // capture stack trace
+  ssf = ssf || arguments.callee;
+  if (ssf && Error.captureStackTrace) {
+    Error.captureStackTrace(this, ssf);
+  } else {
+    this.stack = new Error().stack;
+  }
+}
+
+/*!
+ * Inherit from Error.prototype
+ */
+
+AssertionError.prototype = Object.create(Error.prototype);
+
+/*!
+ * Statically set name
+ */
+
+AssertionError.prototype.name = 'AssertionError';
+
+/*!
+ * Ensure correct constructor
+ */
+
+AssertionError.prototype.constructor = AssertionError;
+
+/**
+ * Allow errors to be converted to JSON for static transfer.
+ *
+ * @param {Boolean} include stack (default: `true`)
+ * @return {Object} object that can be `JSON.stringify`
+ */
+
+AssertionError.prototype.toJSON = function (stack) {
+  var extend = exclude('constructor', 'toJSON', 'stack')
+    , props = extend({ name: this.name }, this);
+
+  // include stack if exists and not turned off
+  if (false !== stack && this.stack) {
+    props.stack = this.stack;
+  }
+
+  return props;
+};
+
+},{}],31:[function(require,module,exports){
+module.exports = require('./lib/eql');
+
+},{"./lib/eql":32}],32:[function(require,module,exports){
+/*!
+ * deep-eql
+ * Copyright(c) 2013 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/*!
+ * Module dependencies
+ */
+
+var type = require('type-detect');
+
+/*!
+ * Buffer.isBuffer browser shim
+ */
+
+var Buffer;
+try { Buffer = require('buffer').Buffer; }
+catch(ex) {
+  Buffer = {};
+  Buffer.isBuffer = function() { return false; }
+}
+
+/*!
+ * Primary Export
+ */
+
+module.exports = deepEqual;
+
+/**
+ * Assert super-strict (egal) equality between
+ * two objects of any type.
+ *
+ * @param {Mixed} a
+ * @param {Mixed} b
+ * @param {Array} memoised (optional)
+ * @return {Boolean} equal match
+ */
+
+function deepEqual(a, b, m) {
+  if (sameValue(a, b)) {
+    return true;
+  } else if ('date' === type(a)) {
+    return dateEqual(a, b);
+  } else if ('regexp' === type(a)) {
+    return regexpEqual(a, b);
+  } else if (Buffer.isBuffer(a)) {
+    return bufferEqual(a, b);
+  } else if ('arguments' === type(a)) {
+    return argumentsEqual(a, b, m);
+  } else if (!typeEqual(a, b)) {
+    return false;
+  } else if (('object' !== type(a) && 'object' !== type(b))
+  && ('array' !== type(a) && 'array' !== type(b))) {
+    return sameValue(a, b);
+  } else {
+    return objectEqual(a, b, m);
+  }
+}
+
+/*!
+ * Strict (egal) equality test. Ensures that NaN always
+ * equals NaN and `-0` does not equal `+0`.
+ *
+ * @param {Mixed} a
+ * @param {Mixed} b
+ * @return {Boolean} equal match
+ */
+
+function sameValue(a, b) {
+  if (a === b) return a !== 0 || 1 / a === 1 / b;
+  return a !== a && b !== b;
+}
+
+/*!
+ * Compare the types of two given objects and
+ * return if they are equal. Note that an Array
+ * has a type of `array` (not `object`) and arguments
+ * have a type of `arguments` (not `array`/`object`).
+ *
+ * @param {Mixed} a
+ * @param {Mixed} b
+ * @return {Boolean} result
+ */
+
+function typeEqual(a, b) {
+  return type(a) === type(b);
+}
+
+/*!
+ * Compare two Date objects by asserting that
+ * the time values are equal using `saveValue`.
+ *
+ * @param {Date} a
+ * @param {Date} b
+ * @return {Boolean} result
+ */
+
+function dateEqual(a, b) {
+  if ('date' !== type(b)) return false;
+  return sameValue(a.getTime(), b.getTime());
+}
+
+/*!
+ * Compare two regular expressions by converting them
+ * to string and checking for `sameValue`.
+ *
+ * @param {RegExp} a
+ * @param {RegExp} b
+ * @return {Boolean} result
+ */
+
+function regexpEqual(a, b) {
+  if ('regexp' !== type(b)) return false;
+  return sameValue(a.toString(), b.toString());
+}
+
+/*!
+ * Assert deep equality of two `arguments` objects.
+ * Unfortunately, these must be sliced to arrays
+ * prior to test to ensure no bad behavior.
+ *
+ * @param {Arguments} a
+ * @param {Arguments} b
+ * @param {Array} memoize (optional)
+ * @return {Boolean} result
+ */
+
+function argumentsEqual(a, b, m) {
+  if ('arguments' !== type(b)) return false;
+  a = [].slice.call(a);
+  b = [].slice.call(b);
+  return deepEqual(a, b, m);
+}
+
+/*!
+ * Get enumerable properties of a given object.
+ *
+ * @param {Object} a
+ * @return {Array} property names
+ */
+
+function enumerable(a) {
+  var res = [];
+  for (var key in a) res.push(key);
+  return res;
+}
+
+/*!
+ * Simple equality for flat iterable objects
+ * such as Arrays or Node.js buffers.
+ *
+ * @param {Iterable} a
+ * @param {Iterable} b
+ * @return {Boolean} result
+ */
+
+function iterableEqual(a, b) {
+  if (a.length !==  b.length) return false;
+
+  var i = 0;
+  var match = true;
+
+  for (; i < a.length; i++) {
+    if (a[i] !== b[i]) {
+      match = false;
+      break;
+    }
+  }
+
+  return match;
+}
+
+/*!
+ * Extension to `iterableEqual` specifically
+ * for Node.js Buffers.
+ *
+ * @param {Buffer} a
+ * @param {Mixed} b
+ * @return {Boolean} result
+ */
+
+function bufferEqual(a, b) {
+  if (!Buffer.isBuffer(b)) return false;
+  return iterableEqual(a, b);
+}
+
+/*!
+ * Block for `objectEqual` ensuring non-existing
+ * values don't get in.
+ *
+ * @param {Mixed} object
+ * @return {Boolean} result
+ */
+
+function isValue(a) {
+  return a !== null && a !== undefined;
+}
+
+/*!
+ * Recursively check the equality of two objects.
+ * Once basic sameness has been established it will
+ * defer to `deepEqual` for each enumerable key
+ * in the object.
+ *
+ * @param {Mixed} a
+ * @param {Mixed} b
+ * @return {Boolean} result
+ */
+
+function objectEqual(a, b, m) {
+  if (!isValue(a) || !isValue(b)) {
+    return false;
+  }
+
+  if (a.prototype !== b.prototype) {
+    return false;
+  }
+
+  var i;
+  if (m) {
+    for (i = 0; i < m.length; i++) {
+      if ((m[i][0] === a && m[i][1] === b)
+      ||  (m[i][0] === b && m[i][1] === a)) {
+        return true;
+      }
+    }
+  } else {
+    m = [];
+  }
+
+  try {
+    var ka = enumerable(a);
+    var kb = enumerable(b);
+  } catch (ex) {
+    return false;
+  }
+
+  ka.sort();
+  kb.sort();
+
+  if (!iterableEqual(ka, kb)) {
+    return false;
+  }
+
+  m.push([ a, b ]);
+
+  var key;
+  for (i = ka.length - 1; i >= 0; i--) {
+    key = ka[i];
+    if (!deepEqual(a[key], b[key], m)) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+},{"buffer":undefined,"type-detect":33}],33:[function(require,module,exports){
+module.exports = require('./lib/type');
+
+},{"./lib/type":34}],34:[function(require,module,exports){
+/*!
+ * type-detect
+ * Copyright(c) 2013 jake luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/*!
+ * Primary Exports
+ */
+
+var exports = module.exports = getType;
+
+/*!
+ * Detectable javascript natives
+ */
+
+var natives = {
+    '[object Array]': 'array'
+  , '[object RegExp]': 'regexp'
+  , '[object Function]': 'function'
+  , '[object Arguments]': 'arguments'
+  , '[object Date]': 'date'
+};
+
+/**
+ * ### typeOf (obj)
+ *
+ * Use several different techniques to determine
+ * the type of object being tested.
+ *
+ *
+ * @param {Mixed} object
+ * @return {String} object type
+ * @api public
+ */
+
+function getType (obj) {
+  var str = Object.prototype.toString.call(obj);
+  if (natives[str]) return natives[str];
+  if (obj === null) return 'null';
+  if (obj === undefined) return 'undefined';
+  if (obj === Object(obj)) return 'object';
+  return typeof obj;
+}
+
+exports.Library = Library;
+
+/**
+ * ### Library
+ *
+ * Create a repository for custom type detection.
+ *
+ * ```js
+ * var lib = new type.Library;
+ * ```
+ *
+ */
+
+function Library () {
+  this.tests = {};
+}
+
+/**
+ * #### .of (obj)
+ *
+ * Expose replacement `typeof` detection to the library.
+ *
+ * ```js
+ * if ('string' === lib.of('hello world')) {
+ *   // ...
+ * }
+ * ```
+ *
+ * @param {Mixed} object to test
+ * @return {String} type
+ */
+
+Library.prototype.of = getType;
+
+/**
+ * #### .define (type, test)
+ *
+ * Add a test to for the `.test()` assertion.
+ *
+ * Can be defined as a regular expression:
+ *
+ * ```js
+ * lib.define('int', /^[0-9]+$/);
+ * ```
+ *
+ * ... or as a function:
+ *
+ * ```js
+ * lib.define('bln', function (obj) {
+ *   if ('boolean' === lib.of(obj)) return true;
+ *   var blns = [ 'yes', 'no', 'true', 'false', 1, 0 ];
+ *   if ('string' === lib.of(obj)) obj = obj.toLowerCase();
+ *   return !! ~blns.indexOf(obj);
+ * });
+ * ```
+ *
+ * @param {String} type
+ * @param {RegExp|Function} test
+ * @api public
+ */
+
+Library.prototype.define = function (type, test) {
+  if (arguments.length === 1) return this.tests[type];
+  this.tests[type] = test;
+  return this;
+};
+
+/**
+ * #### .test (obj, test)
+ *
+ * Assert that an object is of type. Will first
+ * check natives, and if that does not pass it will
+ * use the user defined custom tests.
+ *
+ * ```js
+ * assert(lib.test('1', 'int'));
+ * assert(lib.test('yes', 'bln'));
+ * ```
+ *
+ * @param {Mixed} object
+ * @param {String} type
+ * @return {Boolean} result
+ * @api public
+ */
+
+Library.prototype.test = function (obj, type) {
+  if (type === getType(obj)) return true;
+  var test = this.tests[type];
+
+  if (test && 'regexp' === getType(test)) {
+    return test.test(obj);
+  } else if (test && 'function' === getType(test)) {
+    return test(obj);
+  } else {
+    throw new ReferenceError('Type test "' + type + '" not defined or invalid.');
+  }
+};
+
+},{}],35:[function(require,module,exports){
+arguments[4][33][0].apply(exports,arguments)
+},{"./lib/type":36,"dup":33}],36:[function(require,module,exports){
+/*!
+ * type-detect
+ * Copyright(c) 2013 jake luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/*!
+ * Primary Exports
+ */
+
+var exports = module.exports = getType;
+
+/**
+ * ### typeOf (obj)
+ *
+ * Use several different techniques to determine
+ * the type of object being tested.
+ *
+ *
+ * @param {Mixed} object
+ * @return {String} object type
+ * @api public
+ */
+var objectTypeRegexp = /^\[object (.*)\]$/;
+
+function getType(obj) {
+  var type = Object.prototype.toString.call(obj).match(objectTypeRegexp)[1].toLowerCase();
+  // Let "new String('')" return 'object'
+  if (typeof Promise === 'function' && obj instanceof Promise) return 'promise';
+  // PhantomJS has type "DOMWindow" for null
+  if (obj === null) return 'null';
+  // PhantomJS has type "DOMWindow" for undefined
+  if (obj === undefined) return 'undefined';
+  return type;
+}
+
+exports.Library = Library;
+
+/**
+ * ### Library
+ *
+ * Create a repository for custom type detection.
+ *
+ * ```js
+ * var lib = new type.Library;
+ * ```
+ *
+ */
+
+function Library() {
+  if (!(this instanceof Library)) return new Library();
+  this.tests = {};
+}
+
+/**
+ * #### .of (obj)
+ *
+ * Expose replacement `typeof` detection to the library.
+ *
+ * ```js
+ * if ('string' === lib.of('hello world')) {
+ *   // ...
+ * }
+ * ```
+ *
+ * @param {Mixed} object to test
+ * @return {String} type
+ */
+
+Library.prototype.of = getType;
+
+/**
+ * #### .define (type, test)
+ *
+ * Add a test to for the `.test()` assertion.
+ *
+ * Can be defined as a regular expression:
+ *
+ * ```js
+ * lib.define('int', /^[0-9]+$/);
+ * ```
+ *
+ * ... or as a function:
+ *
+ * ```js
+ * lib.define('bln', function (obj) {
+ *   if ('boolean' === lib.of(obj)) return true;
+ *   var blns = [ 'yes', 'no', 'true', 'false', 1, 0 ];
+ *   if ('string' === lib.of(obj)) obj = obj.toLowerCase();
+ *   return !! ~blns.indexOf(obj);
+ * });
+ * ```
+ *
+ * @param {String} type
+ * @param {RegExp|Function} test
+ * @api public
+ */
+
+Library.prototype.define = function(type, test) {
+  if (arguments.length === 1) return this.tests[type];
+  this.tests[type] = test;
+  return this;
+};
+
+/**
+ * #### .test (obj, test)
+ *
+ * Assert that an object is of type. Will first
+ * check natives, and if that does not pass it will
+ * use the user defined custom tests.
+ *
+ * ```js
+ * assert(lib.test('1', 'int'));
+ * assert(lib.test('yes', 'bln'));
+ * ```
+ *
+ * @param {Mixed} object
+ * @param {String} type
+ * @return {Boolean} result
+ * @api public
+ */
+
+Library.prototype.test = function(obj, type) {
+  if (type === getType(obj)) return true;
+  var test = this.tests[type];
+
+  if (test && 'regexp' === getType(test)) {
+    return test.test(obj);
+  } else if (test && 'function' === getType(test)) {
+    return test(obj);
+  } else {
+    throw new ReferenceError('Type test "' + type + '" not defined or invalid.');
+  }
+};
+
+},{}]},{},[1])(1)
+});
+/* global self, define */
+
+// Declare `expect` as a global here instead of as a var in individual tests.
+// This avoids jshint warnings re: `Redefinition of 'expect'`.
+self.expect = self.chai.expect;
+
+(function() {
+  function vendorModule() {
+    'use strict';
+
+    return {
+      default: self.chai,
+
+      assert: self.chai.assert,
+      expect: self.chai.expect,
+      should: self.chai.should,
+
+      config: self.chai.config,
+      use: self.chai.use,
+      util: self.chai.util,
+
+      Assertion: self.chai.Assertion,
+      AssertionError: self.chai.AssertionError,
+    };
+  }
+
+  define('chai', [], vendorModule);
+})();
+
+(function(chaiDom) {
+  if (typeof require === 'function' && typeof exports === 'object' && typeof module === 'object') {
+    module.exports = chaiDom
+  } else if (typeof define === 'function' && define.amd) {
+    define(function() {
+      return chaiDom
+    })
+  } else {
+    chai.use(chaiDom)
+  }
+}(function(chai, utils) {
+  var flag = utils.flag,
+
+  elToString = function(el) {
+    var desc
+    if (isNodeList(el)) {
+      if (el.length === 0) return 'empty NodeList'
+      desc = Array.prototype.slice.call(el, 0, 5).map(elToString).join(', ')
+      return el.length > 5 ? desc + '... (+' + (el.length - 5) + ' more)' : desc
+    }
+    if (!isHTMLElement(el)) {
+      return String(el)
+    }
+
+    desc = el.tagName.toLowerCase()
+    if (el.id) {
+      desc += '#' + el.id
+    }
+    if (el.className) {
+      desc += '.' + String(el.className).replace(/\s+/g, '.')
+    }
+    Array.prototype.forEach.call(el.attributes, function(attr) {
+      if (attr.name !== 'class' && attr.name !== 'id') {
+        desc += '[' + attr.name + (attr.value ? '="' + attr.value + '"]' : ']')
+      }
+    })
+    return desc
+  },
+
+  attrAssert = function(name, val) {
+    var el = flag(this, 'object'), actual = el.getAttribute(name)
+
+    if (!flag(this, 'negate') || undefined === val) {
+      this.assert(
+        !!el.attributes[name]
+        , 'expected ' + elToString(el) + ' to have an attribute #{exp}'
+        , 'expected ' + elToString(el) + ' not to have an attribute #{exp}'
+        , name
+      )
+    }
+
+    if (undefined !== val) {
+      this.assert(
+        val === actual
+        , 'expected ' + elToString(el) + ' to have an attribute ' + utils.inspect(name) + ' with the value #{exp}, but the value was #{act}'
+        , 'expected ' + elToString(el) + ' not to have an attribute ' + utils.inspect(name) + ' with the value #{act}'
+        , val
+        , actual
+      )
+    }
+
+    flag(this, 'object', actual)
+  },
+
+  isHTMLElement = function(el) {
+    return el.nodeType === window.Node.ELEMENT_NODE;
+  },
+
+  NODE_LIST_STRING = Object.prototype.toString.call(document.childNodes),
+
+  isNodeList = function(obj) {
+    return Object.prototype.toString.call(obj) === NODE_LIST_STRING;
+  }
+
+  utils.elToString = elToString
+  chai.Assertion.addMethod('attr', attrAssert)
+  chai.Assertion.addMethod('attribute', attrAssert)
+
+  chai.Assertion.addMethod('class', function(className) {
+    var el = flag(this, 'object')
+    this.assert(
+      el.classList.contains(className)
+      , 'expected ' + elToString(el) + ' to have class #{exp}'
+      , 'expected ' + elToString(el) + ' not to have class #{exp}'
+      , className
+    )
+  })
+
+  chai.Assertion.addMethod('id', function(id) {
+    var el = flag(this, 'object')
+    this.assert(
+      el.id == id
+      , 'expected ' + elToString(el) + ' to have id #{exp}'
+      , 'expected ' + elToString(el) + ' not to have id #{exp}'
+      , id
+    )
+  })
+
+  chai.Assertion.addMethod('html', function(html) {
+    var el = flag(this, 'object'), actual = flag(this, 'object').innerHTML
+
+    if (flag(this, 'contains')) {
+      this.assert(
+        actual.indexOf(html) >= 0
+        , 'expected #{act} to contain HTML #{exp}'
+        , 'expected #{act} not to contain HTML #{exp}'
+        , html
+        , actual
+      )
+    } else {
+      this.assert(
+        actual === html
+        , 'expected ' + elToString(el) + ' to have HTML #{exp}, but the HTML was #{act}'
+        , 'expected ' + elToString(el) + ' not to have HTML #{exp}'
+        , html
+        , actual
+      )
+    }
+  })
+
+  chai.Assertion.addChainableMethod('trimmed', null, function() {
+    flag(this, 'trim-text', true)
+  })
+
+  chai.Assertion.addMethod('text', function(text) {
+    var obj = flag(this, 'object'), contains = flag(this, 'contains'),
+        trim = flag(this, 'trim-text'), actual, result
+
+    if (isNodeList(obj)) {
+      actual = Array.prototype.map.call(obj, function(el) { return trim ? el.textContent.trim() : el.textContent })
+      if (Array.isArray(text)) {
+        result = contains ?
+          text[flag(this, 'negate') ? 'some' : 'every'](function(t) {
+            return Array.prototype.some.call(obj, function(el) {
+              return (trim ? el.textContent.trim() : el.textContent) === t
+            })
+          })
+          :
+          utils.eql(actual, text)
+
+        actual = actual.join()
+        text = text.join()
+      } else {
+        actual = actual.join('')
+        result = contains ? actual.indexOf(text) >= 0 : actual === text
+      }
+    } else {
+      actual = trim ? obj.textContent.trim() : obj.textContent
+      result = contains ? actual.indexOf(text) >= 0 : actual === text
+    }
+
+    var objDesc = elToString(obj), textMsg = trim ? 'trimmed text' : 'text'
+    if (contains) {
+      this.assert(
+        result
+        , 'expected ' + objDesc + ' to contain #{exp}, but the ' + textMsg + ' was #{act}'
+        , 'expected ' + objDesc + ' not to contain #{exp}, but the ' + textMsg + ' was #{act}'
+        , text
+        , actual
+      )
+    } else {
+      this.assert(
+        result
+        , 'expected ' + objDesc + ' to have ' + textMsg + ' #{exp}, but the ' + textMsg + ' was #{act}'
+        , 'expected ' + objDesc + ' not to have ' + textMsg + ' #{exp}'
+        , text
+        , actual
+      )
+    }
+  })
+
+  chai.Assertion.addMethod('value', function(value) {
+    var el = flag(this, 'object'), actual = flag(this, 'object').value
+    this.assert(
+      flag(this, 'object').value === value
+      , 'expected ' + elToString(el) + ' to have value #{exp}, but the value was #{act}'
+      , 'expected ' + elToString(el) + ' not to have value #{exp}'
+      , value
+      , actual
+    )
+  })
+
+  chai.Assertion.overwriteProperty('exist', function(_super) {
+    return function() {
+      var obj = flag(this, 'object')
+      if (isNodeList(obj)) {
+        this.assert(
+          obj.length > 0
+          , 'expected an empty NodeList to have nodes'
+          , 'expected ' + elToString(obj) + ' to not exist')
+      } else {
+        _super.apply(this, arguments)
+      }
+    }
+  })
+
+  chai.Assertion.overwriteProperty('empty', function(_super) {
+    return function() {
+      var obj = flag(this, 'object')
+      if (isHTMLElement(obj)) {
+        this.assert(
+          obj.children.length === 0
+          , 'expected ' + elToString(obj) + ' to be empty'
+          , 'expected ' + elToString(obj) + ' to not be empty')
+      } else if (isNodeList(obj)) {
+        this.assert(
+          obj.length === 0
+          , 'expected ' + elToString(obj) + ' to be empty'
+          , 'expected ' + elToString(obj) + ' to not be empty')
+      } else {
+        _super.apply(this, arguments)
+      }
+    }
+  })
+
+  chai.Assertion.overwriteChainableMethod('length',
+    function(_super) {
+      return function(length) {
+        var obj = flag(this, 'object')
+        if (isNodeList(obj) || isHTMLElement(obj)) {
+          var actualLength = obj.children ? obj.children.length : obj.length;
+          this.assert(
+              actualLength === length
+            , 'expected ' + elToString(obj) + ' to have #{exp} children but it had #{act} children'
+            , 'expected ' + elToString(obj) + ' to not have #{exp} children'
+            , length
+            , actualLength
+          )
+        } else {
+          _super.apply(this, arguments)
+        }
+      }
+    },
+    function(_super) {
+      return function() {
+        _super.call(this)
+      }
+    }
+  )
+
+
+  chai.Assertion.overwriteMethod('match', function(_super) {
+    return function(selector) {
+      var obj = flag(this, 'object')
+      if (isHTMLElement(obj)) {
+        this.assert(
+          obj.matches(selector)
+          , 'expected ' + elToString(obj) + ' to match #{exp}'
+          , 'expected ' + elToString(obj) + ' to not match #{exp}'
+          , selector
+        )
+      } else if (isNodeList(obj)) {
+        this.assert(
+          (!!obj.length && Array.prototype.every.call(obj, function(el) { return el.matches(selector) }))
+          , 'expected ' + elToString(obj) + ' to match #{exp}'
+          , 'expected ' + elToString(obj) + ' to not match #{exp}'
+          , selector
+        )
+      } else {
+        _super.apply(this, arguments)
+      }
+    }
+  })
+
+  chai.Assertion.overwriteChainableMethod('contain',
+    function(_super) {
+      return function(subitem) {
+        var obj = flag(this, 'object')
+        if (isHTMLElement(obj)) {
+          if (typeof subitem === 'string') {
+            this.assert(
+              !!obj.querySelector(subitem)
+              , 'expected ' + elToString(obj) + ' to contain #{exp}'
+              , 'expected ' + elToString(obj) + ' to not contain #{exp}'
+              , subitem)
+          } else {
+            this.assert(
+              obj.contains(subitem)
+              , 'expected ' + elToString(obj) + ' to contain ' + elToString(subitem)
+              , 'expected ' + elToString(obj) + ' to not contain ' + elToString(subitem))
+          }
+        } else {
+          _super.apply(this, arguments)
+        }
+      }
+    },
+    function(_super) {
+      return function() {
+        _super.call(this)
+      }
+    }
+  )
+
+  chai.Assertion.addMethod('descendant', function(subitem) {
+    var obj = flag(this, 'object'), actual = subitem
+
+    if (typeof subitem === 'string') {
+      actual = obj.querySelector(subitem)
+      this.assert(
+        !!actual
+        , 'expected ' + elToString(obj) + ' to have descendant #{exp}'
+        , 'expected ' + elToString(obj) + ' to not have descendant #{exp}'
+        , subitem)
+    } else {
+      this.assert(
+        obj.contains(subitem)
+        , 'expected ' + elToString(obj) + ' to contain ' + elToString(subitem)
+        , 'expected ' + elToString(obj) + ' to not contain ' + elToString(subitem))
+    }
+
+    flag(this, 'object', actual)
+  })
+
+  chai.Assertion.addMethod('descendants', function(selector) {
+    var obj = flag(this, 'object'),
+        actual = obj.querySelectorAll(selector)
+    this.assert(
+      !!actual.length
+      , 'expected ' + elToString(obj) + ' to have descendants #{exp}'
+      , 'expected ' + elToString(obj) + ' to not have descendants #{exp}'
+      , selector)
+    flag(this, 'object', actual)
+  })
+
+  chai.Assertion.addProperty('displayed', function() {
+    var el = flag(this, 'object'),
+        actual = document.body.contains(el) ? window.getComputedStyle(el).display : el.style.display
+
+    this.assert(
+      actual !== 'none'
+      , 'expected ' + elToString(el) + ' to be displayed, but it was not'
+      , 'expected ' + elToString(el) + ' to not be displayed, but it was as ' + actual
+      , actual
+    )
+  })
+
+  chai.Assertion.addProperty('visible', function() {
+    var el = flag(this, 'object'),
+        actual = document.body.contains(el) ? window.getComputedStyle(el).visibility : el.style.visibility
+
+    this.assert(
+      actual !== 'hidden' && actual !== 'collapse'
+      , 'expected ' + elToString(el) + ' to be visible, but it was ' + (actual === 'hidden' ? 'hidden' : 'collapsed')
+      , 'expected ' + elToString(el) + ' to not be visible, but it was'
+      , actual
+    )
+  })
+}));
+
+/* globals require, Ember, jQuery */
+
+(function () {
+  if (typeof jQuery !== 'undefined') {
+    var _Ember = void 0;
+    if (typeof Ember !== 'undefined') {
+      _Ember = Ember;
+    } else {
+      _Ember = require('ember').default;
+    }
+
+    var pendingRequests = void 0;
+    if (Ember.__loader.registry['ember-testing/test/pending_requests']) {
+      // Ember <= 3.1
+      pendingRequests = Ember.__loader.require('ember-testing/test/pending_requests');
+    } else if (Ember.__loader.registry['ember-testing/lib/test/pending_requests']) {
+      // Ember >= 3.2
+      pendingRequests = Ember.__loader.require('ember-testing/lib/test/pending_requests');
+    }
+
+    if (pendingRequests) {
+      // This exists to ensure that the AJAX listeners setup by Ember itself
+      // (which as of 2.17 are not properly torn down) get cleared and released
+      // when the application is destroyed. Without this, any AJAX requests
+      // that happen _between_ acceptance tests will always share
+      // `pendingRequests`.
+      _Ember.Application.reopen({
+        willDestroy: function willDestroy() {
+          jQuery(document).off('ajaxSend', pendingRequests.incrementPendingRequests);
+          jQuery(document).off('ajaxComplete', pendingRequests.decrementPendingRequests);
+
+          pendingRequests.clearPendingRequests();
+
+          this._super.apply(this, arguments);
+        }
+      });
+    }
+  }
+})();
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (process,global){
 /**
@@ -15743,7 +22434,11 @@ function hasOwnProperty(obj, prop) {
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./support/isBuffer":74,"_process":58,"inherits":53}]},{},[1]);
 
-mocha.setup('bdd');
+/* globals mocha */
+
+(function() {
+  mocha.setup('bdd');
+})();
 
 /* Ember Mocha Adapter | (C) 2014 Teddy Zeenny | https://github.com/teddyzeenny/ember-mocha-adapter */
 
@@ -15935,7 +22630,7 @@ mocha.setup('bdd');
 
 Ember.Test.adapter = Ember.Test.MochaAdapter.create();
 
-/* globals jQuery, chai, mocha, require, requirejs */
+/* globals jQuery, mocha, require, requirejs */
 
 jQuery(document).ready(function() {
   var testLoaderModulePath = 'ember-cli-test-loader/test-support/index';
@@ -15966,6504 +22661,6 @@ jQuery(document).ready(function() {
     window.mochaRunner = mocha.run();
   }, 250);
 });
-
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.chai = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-module.exports = require('./lib/chai');
-
-},{"./lib/chai":2}],2:[function(require,module,exports){
-/*!
- * chai
- * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
- * MIT Licensed
- */
-
-var used = []
-  , exports = module.exports = {};
-
-/*!
- * Chai version
- */
-
-exports.version = '3.5.0';
-
-/*!
- * Assertion Error
- */
-
-exports.AssertionError = require('assertion-error');
-
-/*!
- * Utils for plugins (not exported)
- */
-
-var util = require('./chai/utils');
-
-/**
- * # .use(function)
- *
- * Provides a way to extend the internals of Chai
- *
- * @param {Function}
- * @returns {this} for chaining
- * @api public
- */
-
-exports.use = function (fn) {
-  if (!~used.indexOf(fn)) {
-    fn(this, util);
-    used.push(fn);
-  }
-
-  return this;
-};
-
-/*!
- * Utility Functions
- */
-
-exports.util = util;
-
-/*!
- * Configuration
- */
-
-var config = require('./chai/config');
-exports.config = config;
-
-/*!
- * Primary `Assertion` prototype
- */
-
-var assertion = require('./chai/assertion');
-exports.use(assertion);
-
-/*!
- * Core Assertions
- */
-
-var core = require('./chai/core/assertions');
-exports.use(core);
-
-/*!
- * Expect interface
- */
-
-var expect = require('./chai/interface/expect');
-exports.use(expect);
-
-/*!
- * Should interface
- */
-
-var should = require('./chai/interface/should');
-exports.use(should);
-
-/*!
- * Assert interface
- */
-
-var assert = require('./chai/interface/assert');
-exports.use(assert);
-
-},{"./chai/assertion":3,"./chai/config":4,"./chai/core/assertions":5,"./chai/interface/assert":6,"./chai/interface/expect":7,"./chai/interface/should":8,"./chai/utils":22,"assertion-error":30}],3:[function(require,module,exports){
-/*!
- * chai
- * http://chaijs.com
- * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
- * MIT Licensed
- */
-
-var config = require('./config');
-
-module.exports = function (_chai, util) {
-  /*!
-   * Module dependencies.
-   */
-
-  var AssertionError = _chai.AssertionError
-    , flag = util.flag;
-
-  /*!
-   * Module export.
-   */
-
-  _chai.Assertion = Assertion;
-
-  /*!
-   * Assertion Constructor
-   *
-   * Creates object for chaining.
-   *
-   * @api private
-   */
-
-  function Assertion (obj, msg, stack) {
-    flag(this, 'ssfi', stack || arguments.callee);
-    flag(this, 'object', obj);
-    flag(this, 'message', msg);
-  }
-
-  Object.defineProperty(Assertion, 'includeStack', {
-    get: function() {
-      console.warn('Assertion.includeStack is deprecated, use chai.config.includeStack instead.');
-      return config.includeStack;
-    },
-    set: function(value) {
-      console.warn('Assertion.includeStack is deprecated, use chai.config.includeStack instead.');
-      config.includeStack = value;
-    }
-  });
-
-  Object.defineProperty(Assertion, 'showDiff', {
-    get: function() {
-      console.warn('Assertion.showDiff is deprecated, use chai.config.showDiff instead.');
-      return config.showDiff;
-    },
-    set: function(value) {
-      console.warn('Assertion.showDiff is deprecated, use chai.config.showDiff instead.');
-      config.showDiff = value;
-    }
-  });
-
-  Assertion.addProperty = function (name, fn) {
-    util.addProperty(this.prototype, name, fn);
-  };
-
-  Assertion.addMethod = function (name, fn) {
-    util.addMethod(this.prototype, name, fn);
-  };
-
-  Assertion.addChainableMethod = function (name, fn, chainingBehavior) {
-    util.addChainableMethod(this.prototype, name, fn, chainingBehavior);
-  };
-
-  Assertion.overwriteProperty = function (name, fn) {
-    util.overwriteProperty(this.prototype, name, fn);
-  };
-
-  Assertion.overwriteMethod = function (name, fn) {
-    util.overwriteMethod(this.prototype, name, fn);
-  };
-
-  Assertion.overwriteChainableMethod = function (name, fn, chainingBehavior) {
-    util.overwriteChainableMethod(this.prototype, name, fn, chainingBehavior);
-  };
-
-  /**
-   * ### .assert(expression, message, negateMessage, expected, actual, showDiff)
-   *
-   * Executes an expression and check expectations. Throws AssertionError for reporting if test doesn't pass.
-   *
-   * @name assert
-   * @param {Philosophical} expression to be tested
-   * @param {String|Function} message or function that returns message to display if expression fails
-   * @param {String|Function} negatedMessage or function that returns negatedMessage to display if negated expression fails
-   * @param {Mixed} expected value (remember to check for negation)
-   * @param {Mixed} actual (optional) will default to `this.obj`
-   * @param {Boolean} showDiff (optional) when set to `true`, assert will display a diff in addition to the message if expression fails
-   * @api private
-   */
-
-  Assertion.prototype.assert = function (expr, msg, negateMsg, expected, _actual, showDiff) {
-    var ok = util.test(this, arguments);
-    if (true !== showDiff) showDiff = false;
-    if (true !== config.showDiff) showDiff = false;
-
-    if (!ok) {
-      var msg = util.getMessage(this, arguments)
-        , actual = util.getActual(this, arguments);
-      throw new AssertionError(msg, {
-          actual: actual
-        , expected: expected
-        , showDiff: showDiff
-      }, (config.includeStack) ? this.assert : flag(this, 'ssfi'));
-    }
-  };
-
-  /*!
-   * ### ._obj
-   *
-   * Quick reference to stored `actual` value for plugin developers.
-   *
-   * @api private
-   */
-
-  Object.defineProperty(Assertion.prototype, '_obj',
-    { get: function () {
-        return flag(this, 'object');
-      }
-    , set: function (val) {
-        flag(this, 'object', val);
-      }
-  });
-};
-
-},{"./config":4}],4:[function(require,module,exports){
-module.exports = {
-
-  /**
-   * ### config.includeStack
-   *
-   * User configurable property, influences whether stack trace
-   * is included in Assertion error message. Default of false
-   * suppresses stack trace in the error message.
-   *
-   *     chai.config.includeStack = true;  // enable stack on error
-   *
-   * @param {Boolean}
-   * @api public
-   */
-
-   includeStack: false,
-
-  /**
-   * ### config.showDiff
-   *
-   * User configurable property, influences whether or not
-   * the `showDiff` flag should be included in the thrown
-   * AssertionErrors. `false` will always be `false`; `true`
-   * will be true when the assertion has requested a diff
-   * be shown.
-   *
-   * @param {Boolean}
-   * @api public
-   */
-
-  showDiff: true,
-
-  /**
-   * ### config.truncateThreshold
-   *
-   * User configurable property, sets length threshold for actual and
-   * expected values in assertion errors. If this threshold is exceeded, for
-   * example for large data structures, the value is replaced with something
-   * like `[ Array(3) ]` or `{ Object (prop1, prop2) }`.
-   *
-   * Set it to zero if you want to disable truncating altogether.
-   *
-   * This is especially userful when doing assertions on arrays: having this
-   * set to a reasonable large value makes the failure messages readily
-   * inspectable.
-   *
-   *     chai.config.truncateThreshold = 0;  // disable truncating
-   *
-   * @param {Number}
-   * @api public
-   */
-
-  truncateThreshold: 40
-
-};
-
-},{}],5:[function(require,module,exports){
-/*!
- * chai
- * http://chaijs.com
- * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
- * MIT Licensed
- */
-
-module.exports = function (chai, _) {
-  var Assertion = chai.Assertion
-    , toString = Object.prototype.toString
-    , flag = _.flag;
-
-  /**
-   * ### Language Chains
-   *
-   * The following are provided as chainable getters to
-   * improve the readability of your assertions. They
-   * do not provide testing capabilities unless they
-   * have been overwritten by a plugin.
-   *
-   * **Chains**
-   *
-   * - to
-   * - be
-   * - been
-   * - is
-   * - that
-   * - which
-   * - and
-   * - has
-   * - have
-   * - with
-   * - at
-   * - of
-   * - same
-   *
-   * @name language chains
-   * @namespace BDD
-   * @api public
-   */
-
-  [ 'to', 'be', 'been'
-  , 'is', 'and', 'has', 'have'
-  , 'with', 'that', 'which', 'at'
-  , 'of', 'same' ].forEach(function (chain) {
-    Assertion.addProperty(chain, function () {
-      return this;
-    });
-  });
-
-  /**
-   * ### .not
-   *
-   * Negates any of assertions following in the chain.
-   *
-   *     expect(foo).to.not.equal('bar');
-   *     expect(goodFn).to.not.throw(Error);
-   *     expect({ foo: 'baz' }).to.have.property('foo')
-   *       .and.not.equal('bar');
-   *
-   * @name not
-   * @namespace BDD
-   * @api public
-   */
-
-  Assertion.addProperty('not', function () {
-    flag(this, 'negate', true);
-  });
-
-  /**
-   * ### .deep
-   *
-   * Sets the `deep` flag, later used by the `equal` and
-   * `property` assertions.
-   *
-   *     expect(foo).to.deep.equal({ bar: 'baz' });
-   *     expect({ foo: { bar: { baz: 'quux' } } })
-   *       .to.have.deep.property('foo.bar.baz', 'quux');
-   *
-   * `.deep.property` special characters can be escaped
-   * by adding two slashes before the `.` or `[]`.
-   *
-   *     var deepCss = { '.link': { '[target]': 42 }};
-   *     expect(deepCss).to.have.deep.property('\\.link.\\[target\\]', 42);
-   *
-   * @name deep
-   * @namespace BDD
-   * @api public
-   */
-
-  Assertion.addProperty('deep', function () {
-    flag(this, 'deep', true);
-  });
-
-  /**
-   * ### .any
-   *
-   * Sets the `any` flag, (opposite of the `all` flag)
-   * later used in the `keys` assertion.
-   *
-   *     expect(foo).to.have.any.keys('bar', 'baz');
-   *
-   * @name any
-   * @namespace BDD
-   * @api public
-   */
-
-  Assertion.addProperty('any', function () {
-    flag(this, 'any', true);
-    flag(this, 'all', false)
-  });
-
-
-  /**
-   * ### .all
-   *
-   * Sets the `all` flag (opposite of the `any` flag)
-   * later used by the `keys` assertion.
-   *
-   *     expect(foo).to.have.all.keys('bar', 'baz');
-   *
-   * @name all
-   * @namespace BDD
-   * @api public
-   */
-
-  Assertion.addProperty('all', function () {
-    flag(this, 'all', true);
-    flag(this, 'any', false);
-  });
-
-  /**
-   * ### .a(type)
-   *
-   * The `a` and `an` assertions are aliases that can be
-   * used either as language chains or to assert a value's
-   * type.
-   *
-   *     // typeof
-   *     expect('test').to.be.a('string');
-   *     expect({ foo: 'bar' }).to.be.an('object');
-   *     expect(null).to.be.a('null');
-   *     expect(undefined).to.be.an('undefined');
-   *     expect(new Error).to.be.an('error');
-   *     expect(new Promise).to.be.a('promise');
-   *     expect(new Float32Array()).to.be.a('float32array');
-   *     expect(Symbol()).to.be.a('symbol');
-   *
-   *     // es6 overrides
-   *     expect({[Symbol.toStringTag]:()=>'foo'}).to.be.a('foo');
-   *
-   *     // language chain
-   *     expect(foo).to.be.an.instanceof(Foo);
-   *
-   * @name a
-   * @alias an
-   * @param {String} type
-   * @param {String} message _optional_
-   * @namespace BDD
-   * @api public
-   */
-
-  function an (type, msg) {
-    if (msg) flag(this, 'message', msg);
-    type = type.toLowerCase();
-    var obj = flag(this, 'object')
-      , article = ~[ 'a', 'e', 'i', 'o', 'u' ].indexOf(type.charAt(0)) ? 'an ' : 'a ';
-
-    this.assert(
-        type === _.type(obj)
-      , 'expected #{this} to be ' + article + type
-      , 'expected #{this} not to be ' + article + type
-    );
-  }
-
-  Assertion.addChainableMethod('an', an);
-  Assertion.addChainableMethod('a', an);
-
-  /**
-   * ### .include(value)
-   *
-   * The `include` and `contain` assertions can be used as either property
-   * based language chains or as methods to assert the inclusion of an object
-   * in an array or a substring in a string. When used as language chains,
-   * they toggle the `contains` flag for the `keys` assertion.
-   *
-   *     expect([1,2,3]).to.include(2);
-   *     expect('foobar').to.contain('foo');
-   *     expect({ foo: 'bar', hello: 'universe' }).to.include.keys('foo');
-   *
-   * @name include
-   * @alias contain
-   * @alias includes
-   * @alias contains
-   * @param {Object|String|Number} obj
-   * @param {String} message _optional_
-   * @namespace BDD
-   * @api public
-   */
-
-  function includeChainingBehavior () {
-    flag(this, 'contains', true);
-  }
-
-  function include (val, msg) {
-    _.expectTypes(this, ['array', 'object', 'string']);
-
-    if (msg) flag(this, 'message', msg);
-    var obj = flag(this, 'object');
-    var expected = false;
-
-    if (_.type(obj) === 'array' && _.type(val) === 'object') {
-      for (var i in obj) {
-        if (_.eql(obj[i], val)) {
-          expected = true;
-          break;
-        }
-      }
-    } else if (_.type(val) === 'object') {
-      if (!flag(this, 'negate')) {
-        for (var k in val) new Assertion(obj).property(k, val[k]);
-        return;
-      }
-      var subset = {};
-      for (var k in val) subset[k] = obj[k];
-      expected = _.eql(subset, val);
-    } else {
-      expected = (obj != undefined) && ~obj.indexOf(val);
-    }
-    this.assert(
-        expected
-      , 'expected #{this} to include ' + _.inspect(val)
-      , 'expected #{this} to not include ' + _.inspect(val));
-  }
-
-  Assertion.addChainableMethod('include', include, includeChainingBehavior);
-  Assertion.addChainableMethod('contain', include, includeChainingBehavior);
-  Assertion.addChainableMethod('contains', include, includeChainingBehavior);
-  Assertion.addChainableMethod('includes', include, includeChainingBehavior);
-
-  /**
-   * ### .ok
-   *
-   * Asserts that the target is truthy.
-   *
-   *     expect('everything').to.be.ok;
-   *     expect(1).to.be.ok;
-   *     expect(false).to.not.be.ok;
-   *     expect(undefined).to.not.be.ok;
-   *     expect(null).to.not.be.ok;
-   *
-   * @name ok
-   * @namespace BDD
-   * @api public
-   */
-
-  Assertion.addProperty('ok', function () {
-    this.assert(
-        flag(this, 'object')
-      , 'expected #{this} to be truthy'
-      , 'expected #{this} to be falsy');
-  });
-
-  /**
-   * ### .true
-   *
-   * Asserts that the target is `true`.
-   *
-   *     expect(true).to.be.true;
-   *     expect(1).to.not.be.true;
-   *
-   * @name true
-   * @namespace BDD
-   * @api public
-   */
-
-  Assertion.addProperty('true', function () {
-    this.assert(
-        true === flag(this, 'object')
-      , 'expected #{this} to be true'
-      , 'expected #{this} to be false'
-      , this.negate ? false : true
-    );
-  });
-
-  /**
-   * ### .false
-   *
-   * Asserts that the target is `false`.
-   *
-   *     expect(false).to.be.false;
-   *     expect(0).to.not.be.false;
-   *
-   * @name false
-   * @namespace BDD
-   * @api public
-   */
-
-  Assertion.addProperty('false', function () {
-    this.assert(
-        false === flag(this, 'object')
-      , 'expected #{this} to be false'
-      , 'expected #{this} to be true'
-      , this.negate ? true : false
-    );
-  });
-
-  /**
-   * ### .null
-   *
-   * Asserts that the target is `null`.
-   *
-   *     expect(null).to.be.null;
-   *     expect(undefined).to.not.be.null;
-   *
-   * @name null
-   * @namespace BDD
-   * @api public
-   */
-
-  Assertion.addProperty('null', function () {
-    this.assert(
-        null === flag(this, 'object')
-      , 'expected #{this} to be null'
-      , 'expected #{this} not to be null'
-    );
-  });
-
-  /**
-   * ### .undefined
-   *
-   * Asserts that the target is `undefined`.
-   *
-   *     expect(undefined).to.be.undefined;
-   *     expect(null).to.not.be.undefined;
-   *
-   * @name undefined
-   * @namespace BDD
-   * @api public
-   */
-
-  Assertion.addProperty('undefined', function () {
-    this.assert(
-        undefined === flag(this, 'object')
-      , 'expected #{this} to be undefined'
-      , 'expected #{this} not to be undefined'
-    );
-  });
-
-  /**
-   * ### .NaN
-   * Asserts that the target is `NaN`.
-   *
-   *     expect('foo').to.be.NaN;
-   *     expect(4).not.to.be.NaN;
-   *
-   * @name NaN
-   * @namespace BDD
-   * @api public
-   */
-
-  Assertion.addProperty('NaN', function () {
-    this.assert(
-        isNaN(flag(this, 'object'))
-        , 'expected #{this} to be NaN'
-        , 'expected #{this} not to be NaN'
-    );
-  });
-
-  /**
-   * ### .exist
-   *
-   * Asserts that the target is neither `null` nor `undefined`.
-   *
-   *     var foo = 'hi'
-   *       , bar = null
-   *       , baz;
-   *
-   *     expect(foo).to.exist;
-   *     expect(bar).to.not.exist;
-   *     expect(baz).to.not.exist;
-   *
-   * @name exist
-   * @namespace BDD
-   * @api public
-   */
-
-  Assertion.addProperty('exist', function () {
-    this.assert(
-        null != flag(this, 'object')
-      , 'expected #{this} to exist'
-      , 'expected #{this} to not exist'
-    );
-  });
-
-
-  /**
-   * ### .empty
-   *
-   * Asserts that the target's length is `0`. For arrays and strings, it checks
-   * the `length` property. For objects, it gets the count of
-   * enumerable keys.
-   *
-   *     expect([]).to.be.empty;
-   *     expect('').to.be.empty;
-   *     expect({}).to.be.empty;
-   *
-   * @name empty
-   * @namespace BDD
-   * @api public
-   */
-
-  Assertion.addProperty('empty', function () {
-    var obj = flag(this, 'object')
-      , expected = obj;
-
-    if (Array.isArray(obj) || 'string' === typeof object) {
-      expected = obj.length;
-    } else if (typeof obj === 'object') {
-      expected = Object.keys(obj).length;
-    }
-
-    this.assert(
-        !expected
-      , 'expected #{this} to be empty'
-      , 'expected #{this} not to be empty'
-    );
-  });
-
-  /**
-   * ### .arguments
-   *
-   * Asserts that the target is an arguments object.
-   *
-   *     function test () {
-   *       expect(arguments).to.be.arguments;
-   *     }
-   *
-   * @name arguments
-   * @alias Arguments
-   * @namespace BDD
-   * @api public
-   */
-
-  function checkArguments () {
-    var obj = flag(this, 'object')
-      , type = Object.prototype.toString.call(obj);
-    this.assert(
-        '[object Arguments]' === type
-      , 'expected #{this} to be arguments but got ' + type
-      , 'expected #{this} to not be arguments'
-    );
-  }
-
-  Assertion.addProperty('arguments', checkArguments);
-  Assertion.addProperty('Arguments', checkArguments);
-
-  /**
-   * ### .equal(value)
-   *
-   * Asserts that the target is strictly equal (`===`) to `value`.
-   * Alternately, if the `deep` flag is set, asserts that
-   * the target is deeply equal to `value`.
-   *
-   *     expect('hello').to.equal('hello');
-   *     expect(42).to.equal(42);
-   *     expect(1).to.not.equal(true);
-   *     expect({ foo: 'bar' }).to.not.equal({ foo: 'bar' });
-   *     expect({ foo: 'bar' }).to.deep.equal({ foo: 'bar' });
-   *
-   * @name equal
-   * @alias equals
-   * @alias eq
-   * @alias deep.equal
-   * @param {Mixed} value
-   * @param {String} message _optional_
-   * @namespace BDD
-   * @api public
-   */
-
-  function assertEqual (val, msg) {
-    if (msg) flag(this, 'message', msg);
-    var obj = flag(this, 'object');
-    if (flag(this, 'deep')) {
-      return this.eql(val);
-    } else {
-      this.assert(
-          val === obj
-        , 'expected #{this} to equal #{exp}'
-        , 'expected #{this} to not equal #{exp}'
-        , val
-        , this._obj
-        , true
-      );
-    }
-  }
-
-  Assertion.addMethod('equal', assertEqual);
-  Assertion.addMethod('equals', assertEqual);
-  Assertion.addMethod('eq', assertEqual);
-
-  /**
-   * ### .eql(value)
-   *
-   * Asserts that the target is deeply equal to `value`.
-   *
-   *     expect({ foo: 'bar' }).to.eql({ foo: 'bar' });
-   *     expect([ 1, 2, 3 ]).to.eql([ 1, 2, 3 ]);
-   *
-   * @name eql
-   * @alias eqls
-   * @param {Mixed} value
-   * @param {String} message _optional_
-   * @namespace BDD
-   * @api public
-   */
-
-  function assertEql(obj, msg) {
-    if (msg) flag(this, 'message', msg);
-    this.assert(
-        _.eql(obj, flag(this, 'object'))
-      , 'expected #{this} to deeply equal #{exp}'
-      , 'expected #{this} to not deeply equal #{exp}'
-      , obj
-      , this._obj
-      , true
-    );
-  }
-
-  Assertion.addMethod('eql', assertEql);
-  Assertion.addMethod('eqls', assertEql);
-
-  /**
-   * ### .above(value)
-   *
-   * Asserts that the target is greater than `value`.
-   *
-   *     expect(10).to.be.above(5);
-   *
-   * Can also be used in conjunction with `length` to
-   * assert a minimum length. The benefit being a
-   * more informative error message than if the length
-   * was supplied directly.
-   *
-   *     expect('foo').to.have.length.above(2);
-   *     expect([ 1, 2, 3 ]).to.have.length.above(2);
-   *
-   * @name above
-   * @alias gt
-   * @alias greaterThan
-   * @param {Number} value
-   * @param {String} message _optional_
-   * @namespace BDD
-   * @api public
-   */
-
-  function assertAbove (n, msg) {
-    if (msg) flag(this, 'message', msg);
-    var obj = flag(this, 'object');
-    if (flag(this, 'doLength')) {
-      new Assertion(obj, msg).to.have.property('length');
-      var len = obj.length;
-      this.assert(
-          len > n
-        , 'expected #{this} to have a length above #{exp} but got #{act}'
-        , 'expected #{this} to not have a length above #{exp}'
-        , n
-        , len
-      );
-    } else {
-      this.assert(
-          obj > n
-        , 'expected #{this} to be above ' + n
-        , 'expected #{this} to be at most ' + n
-      );
-    }
-  }
-
-  Assertion.addMethod('above', assertAbove);
-  Assertion.addMethod('gt', assertAbove);
-  Assertion.addMethod('greaterThan', assertAbove);
-
-  /**
-   * ### .least(value)
-   *
-   * Asserts that the target is greater than or equal to `value`.
-   *
-   *     expect(10).to.be.at.least(10);
-   *
-   * Can also be used in conjunction with `length` to
-   * assert a minimum length. The benefit being a
-   * more informative error message than if the length
-   * was supplied directly.
-   *
-   *     expect('foo').to.have.length.of.at.least(2);
-   *     expect([ 1, 2, 3 ]).to.have.length.of.at.least(3);
-   *
-   * @name least
-   * @alias gte
-   * @param {Number} value
-   * @param {String} message _optional_
-   * @namespace BDD
-   * @api public
-   */
-
-  function assertLeast (n, msg) {
-    if (msg) flag(this, 'message', msg);
-    var obj = flag(this, 'object');
-    if (flag(this, 'doLength')) {
-      new Assertion(obj, msg).to.have.property('length');
-      var len = obj.length;
-      this.assert(
-          len >= n
-        , 'expected #{this} to have a length at least #{exp} but got #{act}'
-        , 'expected #{this} to have a length below #{exp}'
-        , n
-        , len
-      );
-    } else {
-      this.assert(
-          obj >= n
-        , 'expected #{this} to be at least ' + n
-        , 'expected #{this} to be below ' + n
-      );
-    }
-  }
-
-  Assertion.addMethod('least', assertLeast);
-  Assertion.addMethod('gte', assertLeast);
-
-  /**
-   * ### .below(value)
-   *
-   * Asserts that the target is less than `value`.
-   *
-   *     expect(5).to.be.below(10);
-   *
-   * Can also be used in conjunction with `length` to
-   * assert a maximum length. The benefit being a
-   * more informative error message than if the length
-   * was supplied directly.
-   *
-   *     expect('foo').to.have.length.below(4);
-   *     expect([ 1, 2, 3 ]).to.have.length.below(4);
-   *
-   * @name below
-   * @alias lt
-   * @alias lessThan
-   * @param {Number} value
-   * @param {String} message _optional_
-   * @namespace BDD
-   * @api public
-   */
-
-  function assertBelow (n, msg) {
-    if (msg) flag(this, 'message', msg);
-    var obj = flag(this, 'object');
-    if (flag(this, 'doLength')) {
-      new Assertion(obj, msg).to.have.property('length');
-      var len = obj.length;
-      this.assert(
-          len < n
-        , 'expected #{this} to have a length below #{exp} but got #{act}'
-        , 'expected #{this} to not have a length below #{exp}'
-        , n
-        , len
-      );
-    } else {
-      this.assert(
-          obj < n
-        , 'expected #{this} to be below ' + n
-        , 'expected #{this} to be at least ' + n
-      );
-    }
-  }
-
-  Assertion.addMethod('below', assertBelow);
-  Assertion.addMethod('lt', assertBelow);
-  Assertion.addMethod('lessThan', assertBelow);
-
-  /**
-   * ### .most(value)
-   *
-   * Asserts that the target is less than or equal to `value`.
-   *
-   *     expect(5).to.be.at.most(5);
-   *
-   * Can also be used in conjunction with `length` to
-   * assert a maximum length. The benefit being a
-   * more informative error message than if the length
-   * was supplied directly.
-   *
-   *     expect('foo').to.have.length.of.at.most(4);
-   *     expect([ 1, 2, 3 ]).to.have.length.of.at.most(3);
-   *
-   * @name most
-   * @alias lte
-   * @param {Number} value
-   * @param {String} message _optional_
-   * @namespace BDD
-   * @api public
-   */
-
-  function assertMost (n, msg) {
-    if (msg) flag(this, 'message', msg);
-    var obj = flag(this, 'object');
-    if (flag(this, 'doLength')) {
-      new Assertion(obj, msg).to.have.property('length');
-      var len = obj.length;
-      this.assert(
-          len <= n
-        , 'expected #{this} to have a length at most #{exp} but got #{act}'
-        , 'expected #{this} to have a length above #{exp}'
-        , n
-        , len
-      );
-    } else {
-      this.assert(
-          obj <= n
-        , 'expected #{this} to be at most ' + n
-        , 'expected #{this} to be above ' + n
-      );
-    }
-  }
-
-  Assertion.addMethod('most', assertMost);
-  Assertion.addMethod('lte', assertMost);
-
-  /**
-   * ### .within(start, finish)
-   *
-   * Asserts that the target is within a range.
-   *
-   *     expect(7).to.be.within(5,10);
-   *
-   * Can also be used in conjunction with `length` to
-   * assert a length range. The benefit being a
-   * more informative error message than if the length
-   * was supplied directly.
-   *
-   *     expect('foo').to.have.length.within(2,4);
-   *     expect([ 1, 2, 3 ]).to.have.length.within(2,4);
-   *
-   * @name within
-   * @param {Number} start lowerbound inclusive
-   * @param {Number} finish upperbound inclusive
-   * @param {String} message _optional_
-   * @namespace BDD
-   * @api public
-   */
-
-  Assertion.addMethod('within', function (start, finish, msg) {
-    if (msg) flag(this, 'message', msg);
-    var obj = flag(this, 'object')
-      , range = start + '..' + finish;
-    if (flag(this, 'doLength')) {
-      new Assertion(obj, msg).to.have.property('length');
-      var len = obj.length;
-      this.assert(
-          len >= start && len <= finish
-        , 'expected #{this} to have a length within ' + range
-        , 'expected #{this} to not have a length within ' + range
-      );
-    } else {
-      this.assert(
-          obj >= start && obj <= finish
-        , 'expected #{this} to be within ' + range
-        , 'expected #{this} to not be within ' + range
-      );
-    }
-  });
-
-  /**
-   * ### .instanceof(constructor)
-   *
-   * Asserts that the target is an instance of `constructor`.
-   *
-   *     var Tea = function (name) { this.name = name; }
-   *       , Chai = new Tea('chai');
-   *
-   *     expect(Chai).to.be.an.instanceof(Tea);
-   *     expect([ 1, 2, 3 ]).to.be.instanceof(Array);
-   *
-   * @name instanceof
-   * @param {Constructor} constructor
-   * @param {String} message _optional_
-   * @alias instanceOf
-   * @namespace BDD
-   * @api public
-   */
-
-  function assertInstanceOf (constructor, msg) {
-    if (msg) flag(this, 'message', msg);
-    var name = _.getName(constructor);
-    this.assert(
-        flag(this, 'object') instanceof constructor
-      , 'expected #{this} to be an instance of ' + name
-      , 'expected #{this} to not be an instance of ' + name
-    );
-  };
-
-  Assertion.addMethod('instanceof', assertInstanceOf);
-  Assertion.addMethod('instanceOf', assertInstanceOf);
-
-  /**
-   * ### .property(name, [value])
-   *
-   * Asserts that the target has a property `name`, optionally asserting that
-   * the value of that property is strictly equal to  `value`.
-   * If the `deep` flag is set, you can use dot- and bracket-notation for deep
-   * references into objects and arrays.
-   *
-   *     // simple referencing
-   *     var obj = { foo: 'bar' };
-   *     expect(obj).to.have.property('foo');
-   *     expect(obj).to.have.property('foo', 'bar');
-   *
-   *     // deep referencing
-   *     var deepObj = {
-   *         green: { tea: 'matcha' }
-   *       , teas: [ 'chai', 'matcha', { tea: 'konacha' } ]
-   *     };
-   *
-   *     expect(deepObj).to.have.deep.property('green.tea', 'matcha');
-   *     expect(deepObj).to.have.deep.property('teas[1]', 'matcha');
-   *     expect(deepObj).to.have.deep.property('teas[2].tea', 'konacha');
-   *
-   * You can also use an array as the starting point of a `deep.property`
-   * assertion, or traverse nested arrays.
-   *
-   *     var arr = [
-   *         [ 'chai', 'matcha', 'konacha' ]
-   *       , [ { tea: 'chai' }
-   *         , { tea: 'matcha' }
-   *         , { tea: 'konacha' } ]
-   *     ];
-   *
-   *     expect(arr).to.have.deep.property('[0][1]', 'matcha');
-   *     expect(arr).to.have.deep.property('[1][2].tea', 'konacha');
-   *
-   * Furthermore, `property` changes the subject of the assertion
-   * to be the value of that property from the original object. This
-   * permits for further chainable assertions on that property.
-   *
-   *     expect(obj).to.have.property('foo')
-   *       .that.is.a('string');
-   *     expect(deepObj).to.have.property('green')
-   *       .that.is.an('object')
-   *       .that.deep.equals({ tea: 'matcha' });
-   *     expect(deepObj).to.have.property('teas')
-   *       .that.is.an('array')
-   *       .with.deep.property('[2]')
-   *         .that.deep.equals({ tea: 'konacha' });
-   *
-   * Note that dots and bracket in `name` must be backslash-escaped when
-   * the `deep` flag is set, while they must NOT be escaped when the `deep`
-   * flag is not set.
-   *
-   *     // simple referencing
-   *     var css = { '.link[target]': 42 };
-   *     expect(css).to.have.property('.link[target]', 42);
-   *
-   *     // deep referencing
-   *     var deepCss = { '.link': { '[target]': 42 }};
-   *     expect(deepCss).to.have.deep.property('\\.link.\\[target\\]', 42);
-   *
-   * @name property
-   * @alias deep.property
-   * @param {String} name
-   * @param {Mixed} value (optional)
-   * @param {String} message _optional_
-   * @returns value of property for chaining
-   * @namespace BDD
-   * @api public
-   */
-
-  Assertion.addMethod('property', function (name, val, msg) {
-    if (msg) flag(this, 'message', msg);
-
-    var isDeep = !!flag(this, 'deep')
-      , descriptor = isDeep ? 'deep property ' : 'property '
-      , negate = flag(this, 'negate')
-      , obj = flag(this, 'object')
-      , pathInfo = isDeep ? _.getPathInfo(name, obj) : null
-      , hasProperty = isDeep
-        ? pathInfo.exists
-        : _.hasProperty(name, obj)
-      , value = isDeep
-        ? pathInfo.value
-        : obj[name];
-
-    if (negate && arguments.length > 1) {
-      if (undefined === value) {
-        msg = (msg != null) ? msg + ': ' : '';
-        throw new Error(msg + _.inspect(obj) + ' has no ' + descriptor + _.inspect(name));
-      }
-    } else {
-      this.assert(
-          hasProperty
-        , 'expected #{this} to have a ' + descriptor + _.inspect(name)
-        , 'expected #{this} to not have ' + descriptor + _.inspect(name));
-    }
-
-    if (arguments.length > 1) {
-      this.assert(
-          val === value
-        , 'expected #{this} to have a ' + descriptor + _.inspect(name) + ' of #{exp}, but got #{act}'
-        , 'expected #{this} to not have a ' + descriptor + _.inspect(name) + ' of #{act}'
-        , val
-        , value
-      );
-    }
-
-    flag(this, 'object', value);
-  });
-
-
-  /**
-   * ### .ownProperty(name)
-   *
-   * Asserts that the target has an own property `name`.
-   *
-   *     expect('test').to.have.ownProperty('length');
-   *
-   * @name ownProperty
-   * @alias haveOwnProperty
-   * @param {String} name
-   * @param {String} message _optional_
-   * @namespace BDD
-   * @api public
-   */
-
-  function assertOwnProperty (name, msg) {
-    if (msg) flag(this, 'message', msg);
-    var obj = flag(this, 'object');
-    this.assert(
-        obj.hasOwnProperty(name)
-      , 'expected #{this} to have own property ' + _.inspect(name)
-      , 'expected #{this} to not have own property ' + _.inspect(name)
-    );
-  }
-
-  Assertion.addMethod('ownProperty', assertOwnProperty);
-  Assertion.addMethod('haveOwnProperty', assertOwnProperty);
-
-  /**
-   * ### .ownPropertyDescriptor(name[, descriptor[, message]])
-   *
-   * Asserts that the target has an own property descriptor `name`, that optionally matches `descriptor`.
-   *
-   *     expect('test').to.have.ownPropertyDescriptor('length');
-   *     expect('test').to.have.ownPropertyDescriptor('length', { enumerable: false, configurable: false, writable: false, value: 4 });
-   *     expect('test').not.to.have.ownPropertyDescriptor('length', { enumerable: false, configurable: false, writable: false, value: 3 });
-   *     expect('test').ownPropertyDescriptor('length').to.have.property('enumerable', false);
-   *     expect('test').ownPropertyDescriptor('length').to.have.keys('value');
-   *
-   * @name ownPropertyDescriptor
-   * @alias haveOwnPropertyDescriptor
-   * @param {String} name
-   * @param {Object} descriptor _optional_
-   * @param {String} message _optional_
-   * @namespace BDD
-   * @api public
-   */
-
-  function assertOwnPropertyDescriptor (name, descriptor, msg) {
-    if (typeof descriptor === 'string') {
-      msg = descriptor;
-      descriptor = null;
-    }
-    if (msg) flag(this, 'message', msg);
-    var obj = flag(this, 'object');
-    var actualDescriptor = Object.getOwnPropertyDescriptor(Object(obj), name);
-    if (actualDescriptor && descriptor) {
-      this.assert(
-          _.eql(descriptor, actualDescriptor)
-        , 'expected the own property descriptor for ' + _.inspect(name) + ' on #{this} to match ' + _.inspect(descriptor) + ', got ' + _.inspect(actualDescriptor)
-        , 'expected the own property descriptor for ' + _.inspect(name) + ' on #{this} to not match ' + _.inspect(descriptor)
-        , descriptor
-        , actualDescriptor
-        , true
-      );
-    } else {
-      this.assert(
-          actualDescriptor
-        , 'expected #{this} to have an own property descriptor for ' + _.inspect(name)
-        , 'expected #{this} to not have an own property descriptor for ' + _.inspect(name)
-      );
-    }
-    flag(this, 'object', actualDescriptor);
-  }
-
-  Assertion.addMethod('ownPropertyDescriptor', assertOwnPropertyDescriptor);
-  Assertion.addMethod('haveOwnPropertyDescriptor', assertOwnPropertyDescriptor);
-
-  /**
-   * ### .length
-   *
-   * Sets the `doLength` flag later used as a chain precursor to a value
-   * comparison for the `length` property.
-   *
-   *     expect('foo').to.have.length.above(2);
-   *     expect([ 1, 2, 3 ]).to.have.length.above(2);
-   *     expect('foo').to.have.length.below(4);
-   *     expect([ 1, 2, 3 ]).to.have.length.below(4);
-   *     expect('foo').to.have.length.within(2,4);
-   *     expect([ 1, 2, 3 ]).to.have.length.within(2,4);
-   *
-   * *Deprecation notice:* Using `length` as an assertion will be deprecated
-   * in version 2.4.0 and removed in 3.0.0. Code using the old style of
-   * asserting for `length` property value using `length(value)` should be
-   * switched to use `lengthOf(value)` instead.
-   *
-   * @name length
-   * @namespace BDD
-   * @api public
-   */
-
-  /**
-   * ### .lengthOf(value[, message])
-   *
-   * Asserts that the target's `length` property has
-   * the expected value.
-   *
-   *     expect([ 1, 2, 3]).to.have.lengthOf(3);
-   *     expect('foobar').to.have.lengthOf(6);
-   *
-   * @name lengthOf
-   * @param {Number} length
-   * @param {String} message _optional_
-   * @namespace BDD
-   * @api public
-   */
-
-  function assertLengthChain () {
-    flag(this, 'doLength', true);
-  }
-
-  function assertLength (n, msg) {
-    if (msg) flag(this, 'message', msg);
-    var obj = flag(this, 'object');
-    new Assertion(obj, msg).to.have.property('length');
-    var len = obj.length;
-
-    this.assert(
-        len == n
-      , 'expected #{this} to have a length of #{exp} but got #{act}'
-      , 'expected #{this} to not have a length of #{act}'
-      , n
-      , len
-    );
-  }
-
-  Assertion.addChainableMethod('length', assertLength, assertLengthChain);
-  Assertion.addMethod('lengthOf', assertLength);
-
-  /**
-   * ### .match(regexp)
-   *
-   * Asserts that the target matches a regular expression.
-   *
-   *     expect('foobar').to.match(/^foo/);
-   *
-   * @name match
-   * @alias matches
-   * @param {RegExp} RegularExpression
-   * @param {String} message _optional_
-   * @namespace BDD
-   * @api public
-   */
-  function assertMatch(re, msg) {
-    if (msg) flag(this, 'message', msg);
-    var obj = flag(this, 'object');
-    this.assert(
-        re.exec(obj)
-      , 'expected #{this} to match ' + re
-      , 'expected #{this} not to match ' + re
-    );
-  }
-
-  Assertion.addMethod('match', assertMatch);
-  Assertion.addMethod('matches', assertMatch);
-
-  /**
-   * ### .string(string)
-   *
-   * Asserts that the string target contains another string.
-   *
-   *     expect('foobar').to.have.string('bar');
-   *
-   * @name string
-   * @param {String} string
-   * @param {String} message _optional_
-   * @namespace BDD
-   * @api public
-   */
-
-  Assertion.addMethod('string', function (str, msg) {
-    if (msg) flag(this, 'message', msg);
-    var obj = flag(this, 'object');
-    new Assertion(obj, msg).is.a('string');
-
-    this.assert(
-        ~obj.indexOf(str)
-      , 'expected #{this} to contain ' + _.inspect(str)
-      , 'expected #{this} to not contain ' + _.inspect(str)
-    );
-  });
-
-
-  /**
-   * ### .keys(key1, [key2], [...])
-   *
-   * Asserts that the target contains any or all of the passed-in keys.
-   * Use in combination with `any`, `all`, `contains`, or `have` will affect
-   * what will pass.
-   *
-   * When used in conjunction with `any`, at least one key that is passed
-   * in must exist in the target object. This is regardless whether or not
-   * the `have` or `contain` qualifiers are used. Note, either `any` or `all`
-   * should be used in the assertion. If neither are used, the assertion is
-   * defaulted to `all`.
-   *
-   * When both `all` and `contain` are used, the target object must have at
-   * least all of the passed-in keys but may have more keys not listed.
-   *
-   * When both `all` and `have` are used, the target object must both contain
-   * all of the passed-in keys AND the number of keys in the target object must
-   * match the number of keys passed in (in other words, a target object must
-   * have all and only all of the passed-in keys).
-   *
-   *     expect({ foo: 1, bar: 2 }).to.have.any.keys('foo', 'baz');
-   *     expect({ foo: 1, bar: 2 }).to.have.any.keys('foo');
-   *     expect({ foo: 1, bar: 2 }).to.contain.any.keys('bar', 'baz');
-   *     expect({ foo: 1, bar: 2 }).to.contain.any.keys(['foo']);
-   *     expect({ foo: 1, bar: 2 }).to.contain.any.keys({'foo': 6});
-   *     expect({ foo: 1, bar: 2 }).to.have.all.keys(['bar', 'foo']);
-   *     expect({ foo: 1, bar: 2 }).to.have.all.keys({'bar': 6, 'foo': 7});
-   *     expect({ foo: 1, bar: 2, baz: 3 }).to.contain.all.keys(['bar', 'foo']);
-   *     expect({ foo: 1, bar: 2, baz: 3 }).to.contain.all.keys({'bar': 6});
-   *
-   *
-   * @name keys
-   * @alias key
-   * @param {...String|Array|Object} keys
-   * @namespace BDD
-   * @api public
-   */
-
-  function assertKeys (keys) {
-    var obj = flag(this, 'object')
-      , str
-      , ok = true
-      , mixedArgsMsg = 'keys must be given single argument of Array|Object|String, or multiple String arguments';
-
-    switch (_.type(keys)) {
-      case "array":
-        if (arguments.length > 1) throw (new Error(mixedArgsMsg));
-        break;
-      case "object":
-        if (arguments.length > 1) throw (new Error(mixedArgsMsg));
-        keys = Object.keys(keys);
-        break;
-      default:
-        keys = Array.prototype.slice.call(arguments);
-    }
-
-    if (!keys.length) throw new Error('keys required');
-
-    var actual = Object.keys(obj)
-      , expected = keys
-      , len = keys.length
-      , any = flag(this, 'any')
-      , all = flag(this, 'all');
-
-    if (!any && !all) {
-      all = true;
-    }
-
-    // Has any
-    if (any) {
-      var intersection = expected.filter(function(key) {
-        return ~actual.indexOf(key);
-      });
-      ok = intersection.length > 0;
-    }
-
-    // Has all
-    if (all) {
-      ok = keys.every(function(key){
-        return ~actual.indexOf(key);
-      });
-      if (!flag(this, 'negate') && !flag(this, 'contains')) {
-        ok = ok && keys.length == actual.length;
-      }
-    }
-
-    // Key string
-    if (len > 1) {
-      keys = keys.map(function(key){
-        return _.inspect(key);
-      });
-      var last = keys.pop();
-      if (all) {
-        str = keys.join(', ') + ', and ' + last;
-      }
-      if (any) {
-        str = keys.join(', ') + ', or ' + last;
-      }
-    } else {
-      str = _.inspect(keys[0]);
-    }
-
-    // Form
-    str = (len > 1 ? 'keys ' : 'key ') + str;
-
-    // Have / include
-    str = (flag(this, 'contains') ? 'contain ' : 'have ') + str;
-
-    // Assertion
-    this.assert(
-        ok
-      , 'expected #{this} to ' + str
-      , 'expected #{this} to not ' + str
-      , expected.slice(0).sort()
-      , actual.sort()
-      , true
-    );
-  }
-
-  Assertion.addMethod('keys', assertKeys);
-  Assertion.addMethod('key', assertKeys);
-
-  /**
-   * ### .throw(constructor)
-   *
-   * Asserts that the function target will throw a specific error, or specific type of error
-   * (as determined using `instanceof`), optionally with a RegExp or string inclusion test
-   * for the error's message.
-   *
-   *     var err = new ReferenceError('This is a bad function.');
-   *     var fn = function () { throw err; }
-   *     expect(fn).to.throw(ReferenceError);
-   *     expect(fn).to.throw(Error);
-   *     expect(fn).to.throw(/bad function/);
-   *     expect(fn).to.not.throw('good function');
-   *     expect(fn).to.throw(ReferenceError, /bad function/);
-   *     expect(fn).to.throw(err);
-   *
-   * Please note that when a throw expectation is negated, it will check each
-   * parameter independently, starting with error constructor type. The appropriate way
-   * to check for the existence of a type of error but for a message that does not match
-   * is to use `and`.
-   *
-   *     expect(fn).to.throw(ReferenceError)
-   *        .and.not.throw(/good function/);
-   *
-   * @name throw
-   * @alias throws
-   * @alias Throw
-   * @param {ErrorConstructor} constructor
-   * @param {String|RegExp} expected error message
-   * @param {String} message _optional_
-   * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error#Error_types
-   * @returns error for chaining (null if no error)
-   * @namespace BDD
-   * @api public
-   */
-
-  function assertThrows (constructor, errMsg, msg) {
-    if (msg) flag(this, 'message', msg);
-    var obj = flag(this, 'object');
-    new Assertion(obj, msg).is.a('function');
-
-    var thrown = false
-      , desiredError = null
-      , name = null
-      , thrownError = null;
-
-    if (arguments.length === 0) {
-      errMsg = null;
-      constructor = null;
-    } else if (constructor && (constructor instanceof RegExp || 'string' === typeof constructor)) {
-      errMsg = constructor;
-      constructor = null;
-    } else if (constructor && constructor instanceof Error) {
-      desiredError = constructor;
-      constructor = null;
-      errMsg = null;
-    } else if (typeof constructor === 'function') {
-      name = constructor.prototype.name;
-      if (!name || (name === 'Error' && constructor !== Error)) {
-        name = constructor.name || (new constructor()).name;
-      }
-    } else {
-      constructor = null;
-    }
-
-    try {
-      obj();
-    } catch (err) {
-      // first, check desired error
-      if (desiredError) {
-        this.assert(
-            err === desiredError
-          , 'expected #{this} to throw #{exp} but #{act} was thrown'
-          , 'expected #{this} to not throw #{exp}'
-          , (desiredError instanceof Error ? desiredError.toString() : desiredError)
-          , (err instanceof Error ? err.toString() : err)
-        );
-
-        flag(this, 'object', err);
-        return this;
-      }
-
-      // next, check constructor
-      if (constructor) {
-        this.assert(
-            err instanceof constructor
-          , 'expected #{this} to throw #{exp} but #{act} was thrown'
-          , 'expected #{this} to not throw #{exp} but #{act} was thrown'
-          , name
-          , (err instanceof Error ? err.toString() : err)
-        );
-
-        if (!errMsg) {
-          flag(this, 'object', err);
-          return this;
-        }
-      }
-
-      // next, check message
-      var message = 'error' === _.type(err) && "message" in err
-        ? err.message
-        : '' + err;
-
-      if ((message != null) && errMsg && errMsg instanceof RegExp) {
-        this.assert(
-            errMsg.exec(message)
-          , 'expected #{this} to throw error matching #{exp} but got #{act}'
-          , 'expected #{this} to throw error not matching #{exp}'
-          , errMsg
-          , message
-        );
-
-        flag(this, 'object', err);
-        return this;
-      } else if ((message != null) && errMsg && 'string' === typeof errMsg) {
-        this.assert(
-            ~message.indexOf(errMsg)
-          , 'expected #{this} to throw error including #{exp} but got #{act}'
-          , 'expected #{this} to throw error not including #{act}'
-          , errMsg
-          , message
-        );
-
-        flag(this, 'object', err);
-        return this;
-      } else {
-        thrown = true;
-        thrownError = err;
-      }
-    }
-
-    var actuallyGot = ''
-      , expectedThrown = name !== null
-        ? name
-        : desiredError
-          ? '#{exp}' //_.inspect(desiredError)
-          : 'an error';
-
-    if (thrown) {
-      actuallyGot = ' but #{act} was thrown'
-    }
-
-    this.assert(
-        thrown === true
-      , 'expected #{this} to throw ' + expectedThrown + actuallyGot
-      , 'expected #{this} to not throw ' + expectedThrown + actuallyGot
-      , (desiredError instanceof Error ? desiredError.toString() : desiredError)
-      , (thrownError instanceof Error ? thrownError.toString() : thrownError)
-    );
-
-    flag(this, 'object', thrownError);
-  };
-
-  Assertion.addMethod('throw', assertThrows);
-  Assertion.addMethod('throws', assertThrows);
-  Assertion.addMethod('Throw', assertThrows);
-
-  /**
-   * ### .respondTo(method)
-   *
-   * Asserts that the object or class target will respond to a method.
-   *
-   *     Klass.prototype.bar = function(){};
-   *     expect(Klass).to.respondTo('bar');
-   *     expect(obj).to.respondTo('bar');
-   *
-   * To check if a constructor will respond to a static function,
-   * set the `itself` flag.
-   *
-   *     Klass.baz = function(){};
-   *     expect(Klass).itself.to.respondTo('baz');
-   *
-   * @name respondTo
-   * @alias respondsTo
-   * @param {String} method
-   * @param {String} message _optional_
-   * @namespace BDD
-   * @api public
-   */
-
-  function respondTo (method, msg) {
-    if (msg) flag(this, 'message', msg);
-    var obj = flag(this, 'object')
-      , itself = flag(this, 'itself')
-      , context = ('function' === _.type(obj) && !itself)
-        ? obj.prototype[method]
-        : obj[method];
-
-    this.assert(
-        'function' === typeof context
-      , 'expected #{this} to respond to ' + _.inspect(method)
-      , 'expected #{this} to not respond to ' + _.inspect(method)
-    );
-  }
-
-  Assertion.addMethod('respondTo', respondTo);
-  Assertion.addMethod('respondsTo', respondTo);
-
-  /**
-   * ### .itself
-   *
-   * Sets the `itself` flag, later used by the `respondTo` assertion.
-   *
-   *     function Foo() {}
-   *     Foo.bar = function() {}
-   *     Foo.prototype.baz = function() {}
-   *
-   *     expect(Foo).itself.to.respondTo('bar');
-   *     expect(Foo).itself.not.to.respondTo('baz');
-   *
-   * @name itself
-   * @namespace BDD
-   * @api public
-   */
-
-  Assertion.addProperty('itself', function () {
-    flag(this, 'itself', true);
-  });
-
-  /**
-   * ### .satisfy(method)
-   *
-   * Asserts that the target passes a given truth test.
-   *
-   *     expect(1).to.satisfy(function(num) { return num > 0; });
-   *
-   * @name satisfy
-   * @alias satisfies
-   * @param {Function} matcher
-   * @param {String} message _optional_
-   * @namespace BDD
-   * @api public
-   */
-
-  function satisfy (matcher, msg) {
-    if (msg) flag(this, 'message', msg);
-    var obj = flag(this, 'object');
-    var result = matcher(obj);
-    this.assert(
-        result
-      , 'expected #{this} to satisfy ' + _.objDisplay(matcher)
-      , 'expected #{this} to not satisfy' + _.objDisplay(matcher)
-      , this.negate ? false : true
-      , result
-    );
-  }
-
-  Assertion.addMethod('satisfy', satisfy);
-  Assertion.addMethod('satisfies', satisfy);
-
-  /**
-   * ### .closeTo(expected, delta)
-   *
-   * Asserts that the target is equal `expected`, to within a +/- `delta` range.
-   *
-   *     expect(1.5).to.be.closeTo(1, 0.5);
-   *
-   * @name closeTo
-   * @alias approximately
-   * @param {Number} expected
-   * @param {Number} delta
-   * @param {String} message _optional_
-   * @namespace BDD
-   * @api public
-   */
-
-  function closeTo(expected, delta, msg) {
-    if (msg) flag(this, 'message', msg);
-    var obj = flag(this, 'object');
-
-    new Assertion(obj, msg).is.a('number');
-    if (_.type(expected) !== 'number' || _.type(delta) !== 'number') {
-      throw new Error('the arguments to closeTo or approximately must be numbers');
-    }
-
-    this.assert(
-        Math.abs(obj - expected) <= delta
-      , 'expected #{this} to be close to ' + expected + ' +/- ' + delta
-      , 'expected #{this} not to be close to ' + expected + ' +/- ' + delta
-    );
-  }
-
-  Assertion.addMethod('closeTo', closeTo);
-  Assertion.addMethod('approximately', closeTo);
-
-  function isSubsetOf(subset, superset, cmp) {
-    return subset.every(function(elem) {
-      if (!cmp) return superset.indexOf(elem) !== -1;
-
-      return superset.some(function(elem2) {
-        return cmp(elem, elem2);
-      });
-    })
-  }
-
-  /**
-   * ### .members(set)
-   *
-   * Asserts that the target is a superset of `set`,
-   * or that the target and `set` have the same strictly-equal (===) members.
-   * Alternately, if the `deep` flag is set, set members are compared for deep
-   * equality.
-   *
-   *     expect([1, 2, 3]).to.include.members([3, 2]);
-   *     expect([1, 2, 3]).to.not.include.members([3, 2, 8]);
-   *
-   *     expect([4, 2]).to.have.members([2, 4]);
-   *     expect([5, 2]).to.not.have.members([5, 2, 1]);
-   *
-   *     expect([{ id: 1 }]).to.deep.include.members([{ id: 1 }]);
-   *
-   * @name members
-   * @param {Array} set
-   * @param {String} message _optional_
-   * @namespace BDD
-   * @api public
-   */
-
-  Assertion.addMethod('members', function (subset, msg) {
-    if (msg) flag(this, 'message', msg);
-    var obj = flag(this, 'object');
-
-    new Assertion(obj).to.be.an('array');
-    new Assertion(subset).to.be.an('array');
-
-    var cmp = flag(this, 'deep') ? _.eql : undefined;
-
-    if (flag(this, 'contains')) {
-      return this.assert(
-          isSubsetOf(subset, obj, cmp)
-        , 'expected #{this} to be a superset of #{act}'
-        , 'expected #{this} to not be a superset of #{act}'
-        , obj
-        , subset
-      );
-    }
-
-    this.assert(
-        isSubsetOf(obj, subset, cmp) && isSubsetOf(subset, obj, cmp)
-        , 'expected #{this} to have the same members as #{act}'
-        , 'expected #{this} to not have the same members as #{act}'
-        , obj
-        , subset
-    );
-  });
-
-  /**
-   * ### .oneOf(list)
-   *
-   * Assert that a value appears somewhere in the top level of array `list`.
-   *
-   *     expect('a').to.be.oneOf(['a', 'b', 'c']);
-   *     expect(9).to.not.be.oneOf(['z']);
-   *     expect([3]).to.not.be.oneOf([1, 2, [3]]);
-   *
-   *     var three = [3];
-   *     // for object-types, contents are not compared
-   *     expect(three).to.not.be.oneOf([1, 2, [3]]);
-   *     // comparing references works
-   *     expect(three).to.be.oneOf([1, 2, three]);
-   *
-   * @name oneOf
-   * @param {Array<*>} list
-   * @param {String} message _optional_
-   * @namespace BDD
-   * @api public
-   */
-
-  function oneOf (list, msg) {
-    if (msg) flag(this, 'message', msg);
-    var expected = flag(this, 'object');
-    new Assertion(list).to.be.an('array');
-
-    this.assert(
-        list.indexOf(expected) > -1
-      , 'expected #{this} to be one of #{exp}'
-      , 'expected #{this} to not be one of #{exp}'
-      , list
-      , expected
-    );
-  }
-
-  Assertion.addMethod('oneOf', oneOf);
-
-
-  /**
-   * ### .change(function)
-   *
-   * Asserts that a function changes an object property
-   *
-   *     var obj = { val: 10 };
-   *     var fn = function() { obj.val += 3 };
-   *     var noChangeFn = function() { return 'foo' + 'bar'; }
-   *     expect(fn).to.change(obj, 'val');
-   *     expect(noChangeFn).to.not.change(obj, 'val')
-   *
-   * @name change
-   * @alias changes
-   * @alias Change
-   * @param {String} object
-   * @param {String} property name
-   * @param {String} message _optional_
-   * @namespace BDD
-   * @api public
-   */
-
-  function assertChanges (object, prop, msg) {
-    if (msg) flag(this, 'message', msg);
-    var fn = flag(this, 'object');
-    new Assertion(object, msg).to.have.property(prop);
-    new Assertion(fn).is.a('function');
-
-    var initial = object[prop];
-    fn();
-
-    this.assert(
-      initial !== object[prop]
-      , 'expected .' + prop + ' to change'
-      , 'expected .' + prop + ' to not change'
-    );
-  }
-
-  Assertion.addChainableMethod('change', assertChanges);
-  Assertion.addChainableMethod('changes', assertChanges);
-
-  /**
-   * ### .increase(function)
-   *
-   * Asserts that a function increases an object property
-   *
-   *     var obj = { val: 10 };
-   *     var fn = function() { obj.val = 15 };
-   *     expect(fn).to.increase(obj, 'val');
-   *
-   * @name increase
-   * @alias increases
-   * @alias Increase
-   * @param {String} object
-   * @param {String} property name
-   * @param {String} message _optional_
-   * @namespace BDD
-   * @api public
-   */
-
-  function assertIncreases (object, prop, msg) {
-    if (msg) flag(this, 'message', msg);
-    var fn = flag(this, 'object');
-    new Assertion(object, msg).to.have.property(prop);
-    new Assertion(fn).is.a('function');
-
-    var initial = object[prop];
-    fn();
-
-    this.assert(
-      object[prop] - initial > 0
-      , 'expected .' + prop + ' to increase'
-      , 'expected .' + prop + ' to not increase'
-    );
-  }
-
-  Assertion.addChainableMethod('increase', assertIncreases);
-  Assertion.addChainableMethod('increases', assertIncreases);
-
-  /**
-   * ### .decrease(function)
-   *
-   * Asserts that a function decreases an object property
-   *
-   *     var obj = { val: 10 };
-   *     var fn = function() { obj.val = 5 };
-   *     expect(fn).to.decrease(obj, 'val');
-   *
-   * @name decrease
-   * @alias decreases
-   * @alias Decrease
-   * @param {String} object
-   * @param {String} property name
-   * @param {String} message _optional_
-   * @namespace BDD
-   * @api public
-   */
-
-  function assertDecreases (object, prop, msg) {
-    if (msg) flag(this, 'message', msg);
-    var fn = flag(this, 'object');
-    new Assertion(object, msg).to.have.property(prop);
-    new Assertion(fn).is.a('function');
-
-    var initial = object[prop];
-    fn();
-
-    this.assert(
-      object[prop] - initial < 0
-      , 'expected .' + prop + ' to decrease'
-      , 'expected .' + prop + ' to not decrease'
-    );
-  }
-
-  Assertion.addChainableMethod('decrease', assertDecreases);
-  Assertion.addChainableMethod('decreases', assertDecreases);
-
-  /**
-   * ### .extensible
-   *
-   * Asserts that the target is extensible (can have new properties added to
-   * it).
-   *
-   *     var nonExtensibleObject = Object.preventExtensions({});
-   *     var sealedObject = Object.seal({});
-   *     var frozenObject = Object.freeze({});
-   *
-   *     expect({}).to.be.extensible;
-   *     expect(nonExtensibleObject).to.not.be.extensible;
-   *     expect(sealedObject).to.not.be.extensible;
-   *     expect(frozenObject).to.not.be.extensible;
-   *
-   * @name extensible
-   * @namespace BDD
-   * @api public
-   */
-
-  Assertion.addProperty('extensible', function() {
-    var obj = flag(this, 'object');
-
-    // In ES5, if the argument to this method is not an object (a primitive), then it will cause a TypeError.
-    // In ES6, a non-object argument will be treated as if it was a non-extensible ordinary object, simply return false.
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/isExtensible
-    // The following provides ES6 behavior when a TypeError is thrown under ES5.
-
-    var isExtensible;
-
-    try {
-      isExtensible = Object.isExtensible(obj);
-    } catch (err) {
-      if (err instanceof TypeError) isExtensible = false;
-      else throw err;
-    }
-
-    this.assert(
-      isExtensible
-      , 'expected #{this} to be extensible'
-      , 'expected #{this} to not be extensible'
-    );
-  });
-
-  /**
-   * ### .sealed
-   *
-   * Asserts that the target is sealed (cannot have new properties added to it
-   * and its existing properties cannot be removed).
-   *
-   *     var sealedObject = Object.seal({});
-   *     var frozenObject = Object.freeze({});
-   *
-   *     expect(sealedObject).to.be.sealed;
-   *     expect(frozenObject).to.be.sealed;
-   *     expect({}).to.not.be.sealed;
-   *
-   * @name sealed
-   * @namespace BDD
-   * @api public
-   */
-
-  Assertion.addProperty('sealed', function() {
-    var obj = flag(this, 'object');
-
-    // In ES5, if the argument to this method is not an object (a primitive), then it will cause a TypeError.
-    // In ES6, a non-object argument will be treated as if it was a sealed ordinary object, simply return true.
-    // See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/isSealed
-    // The following provides ES6 behavior when a TypeError is thrown under ES5.
-
-    var isSealed;
-
-    try {
-      isSealed = Object.isSealed(obj);
-    } catch (err) {
-      if (err instanceof TypeError) isSealed = true;
-      else throw err;
-    }
-
-    this.assert(
-      isSealed
-      , 'expected #{this} to be sealed'
-      , 'expected #{this} to not be sealed'
-    );
-  });
-
-  /**
-   * ### .frozen
-   *
-   * Asserts that the target is frozen (cannot have new properties added to it
-   * and its existing properties cannot be modified).
-   *
-   *     var frozenObject = Object.freeze({});
-   *
-   *     expect(frozenObject).to.be.frozen;
-   *     expect({}).to.not.be.frozen;
-   *
-   * @name frozen
-   * @namespace BDD
-   * @api public
-   */
-
-  Assertion.addProperty('frozen', function() {
-    var obj = flag(this, 'object');
-
-    // In ES5, if the argument to this method is not an object (a primitive), then it will cause a TypeError.
-    // In ES6, a non-object argument will be treated as if it was a frozen ordinary object, simply return true.
-    // See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/isFrozen
-    // The following provides ES6 behavior when a TypeError is thrown under ES5.
-
-    var isFrozen;
-
-    try {
-      isFrozen = Object.isFrozen(obj);
-    } catch (err) {
-      if (err instanceof TypeError) isFrozen = true;
-      else throw err;
-    }
-
-    this.assert(
-      isFrozen
-      , 'expected #{this} to be frozen'
-      , 'expected #{this} to not be frozen'
-    );
-  });
-};
-
-},{}],6:[function(require,module,exports){
-/*!
- * chai
- * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
- * MIT Licensed
- */
-
-
-module.exports = function (chai, util) {
-
-  /*!
-   * Chai dependencies.
-   */
-
-  var Assertion = chai.Assertion
-    , flag = util.flag;
-
-  /*!
-   * Module export.
-   */
-
-  /**
-   * ### assert(expression, message)
-   *
-   * Write your own test expressions.
-   *
-   *     assert('foo' !== 'bar', 'foo is not bar');
-   *     assert(Array.isArray([]), 'empty arrays are arrays');
-   *
-   * @param {Mixed} expression to test for truthiness
-   * @param {String} message to display on error
-   * @name assert
-   * @namespace Assert
-   * @api public
-   */
-
-  var assert = chai.assert = function (express, errmsg) {
-    var test = new Assertion(null, null, chai.assert);
-    test.assert(
-        express
-      , errmsg
-      , '[ negation message unavailable ]'
-    );
-  };
-
-  /**
-   * ### .fail(actual, expected, [message], [operator])
-   *
-   * Throw a failure. Node.js `assert` module-compatible.
-   *
-   * @name fail
-   * @param {Mixed} actual
-   * @param {Mixed} expected
-   * @param {String} message
-   * @param {String} operator
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.fail = function (actual, expected, message, operator) {
-    message = message || 'assert.fail()';
-    throw new chai.AssertionError(message, {
-        actual: actual
-      , expected: expected
-      , operator: operator
-    }, assert.fail);
-  };
-
-  /**
-   * ### .isOk(object, [message])
-   *
-   * Asserts that `object` is truthy.
-   *
-   *     assert.isOk('everything', 'everything is ok');
-   *     assert.isOk(false, 'this will fail');
-   *
-   * @name isOk
-   * @alias ok
-   * @param {Mixed} object to test
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.isOk = function (val, msg) {
-    new Assertion(val, msg).is.ok;
-  };
-
-  /**
-   * ### .isNotOk(object, [message])
-   *
-   * Asserts that `object` is falsy.
-   *
-   *     assert.isNotOk('everything', 'this will fail');
-   *     assert.isNotOk(false, 'this will pass');
-   *
-   * @name isNotOk
-   * @alias notOk
-   * @param {Mixed} object to test
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.isNotOk = function (val, msg) {
-    new Assertion(val, msg).is.not.ok;
-  };
-
-  /**
-   * ### .equal(actual, expected, [message])
-   *
-   * Asserts non-strict equality (`==`) of `actual` and `expected`.
-   *
-   *     assert.equal(3, '3', '== coerces values to strings');
-   *
-   * @name equal
-   * @param {Mixed} actual
-   * @param {Mixed} expected
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.equal = function (act, exp, msg) {
-    var test = new Assertion(act, msg, assert.equal);
-
-    test.assert(
-        exp == flag(test, 'object')
-      , 'expected #{this} to equal #{exp}'
-      , 'expected #{this} to not equal #{act}'
-      , exp
-      , act
-    );
-  };
-
-  /**
-   * ### .notEqual(actual, expected, [message])
-   *
-   * Asserts non-strict inequality (`!=`) of `actual` and `expected`.
-   *
-   *     assert.notEqual(3, 4, 'these numbers are not equal');
-   *
-   * @name notEqual
-   * @param {Mixed} actual
-   * @param {Mixed} expected
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.notEqual = function (act, exp, msg) {
-    var test = new Assertion(act, msg, assert.notEqual);
-
-    test.assert(
-        exp != flag(test, 'object')
-      , 'expected #{this} to not equal #{exp}'
-      , 'expected #{this} to equal #{act}'
-      , exp
-      , act
-    );
-  };
-
-  /**
-   * ### .strictEqual(actual, expected, [message])
-   *
-   * Asserts strict equality (`===`) of `actual` and `expected`.
-   *
-   *     assert.strictEqual(true, true, 'these booleans are strictly equal');
-   *
-   * @name strictEqual
-   * @param {Mixed} actual
-   * @param {Mixed} expected
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.strictEqual = function (act, exp, msg) {
-    new Assertion(act, msg).to.equal(exp);
-  };
-
-  /**
-   * ### .notStrictEqual(actual, expected, [message])
-   *
-   * Asserts strict inequality (`!==`) of `actual` and `expected`.
-   *
-   *     assert.notStrictEqual(3, '3', 'no coercion for strict equality');
-   *
-   * @name notStrictEqual
-   * @param {Mixed} actual
-   * @param {Mixed} expected
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.notStrictEqual = function (act, exp, msg) {
-    new Assertion(act, msg).to.not.equal(exp);
-  };
-
-  /**
-   * ### .deepEqual(actual, expected, [message])
-   *
-   * Asserts that `actual` is deeply equal to `expected`.
-   *
-   *     assert.deepEqual({ tea: 'green' }, { tea: 'green' });
-   *
-   * @name deepEqual
-   * @param {Mixed} actual
-   * @param {Mixed} expected
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.deepEqual = function (act, exp, msg) {
-    new Assertion(act, msg).to.eql(exp);
-  };
-
-  /**
-   * ### .notDeepEqual(actual, expected, [message])
-   *
-   * Assert that `actual` is not deeply equal to `expected`.
-   *
-   *     assert.notDeepEqual({ tea: 'green' }, { tea: 'jasmine' });
-   *
-   * @name notDeepEqual
-   * @param {Mixed} actual
-   * @param {Mixed} expected
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.notDeepEqual = function (act, exp, msg) {
-    new Assertion(act, msg).to.not.eql(exp);
-  };
-
-   /**
-   * ### .isAbove(valueToCheck, valueToBeAbove, [message])
-   *
-   * Asserts `valueToCheck` is strictly greater than (>) `valueToBeAbove`
-   *
-   *     assert.isAbove(5, 2, '5 is strictly greater than 2');
-   *
-   * @name isAbove
-   * @param {Mixed} valueToCheck
-   * @param {Mixed} valueToBeAbove
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.isAbove = function (val, abv, msg) {
-    new Assertion(val, msg).to.be.above(abv);
-  };
-
-   /**
-   * ### .isAtLeast(valueToCheck, valueToBeAtLeast, [message])
-   *
-   * Asserts `valueToCheck` is greater than or equal to (>=) `valueToBeAtLeast`
-   *
-   *     assert.isAtLeast(5, 2, '5 is greater or equal to 2');
-   *     assert.isAtLeast(3, 3, '3 is greater or equal to 3');
-   *
-   * @name isAtLeast
-   * @param {Mixed} valueToCheck
-   * @param {Mixed} valueToBeAtLeast
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.isAtLeast = function (val, atlst, msg) {
-    new Assertion(val, msg).to.be.least(atlst);
-  };
-
-   /**
-   * ### .isBelow(valueToCheck, valueToBeBelow, [message])
-   *
-   * Asserts `valueToCheck` is strictly less than (<) `valueToBeBelow`
-   *
-   *     assert.isBelow(3, 6, '3 is strictly less than 6');
-   *
-   * @name isBelow
-   * @param {Mixed} valueToCheck
-   * @param {Mixed} valueToBeBelow
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.isBelow = function (val, blw, msg) {
-    new Assertion(val, msg).to.be.below(blw);
-  };
-
-   /**
-   * ### .isAtMost(valueToCheck, valueToBeAtMost, [message])
-   *
-   * Asserts `valueToCheck` is less than or equal to (<=) `valueToBeAtMost`
-   *
-   *     assert.isAtMost(3, 6, '3 is less than or equal to 6');
-   *     assert.isAtMost(4, 4, '4 is less than or equal to 4');
-   *
-   * @name isAtMost
-   * @param {Mixed} valueToCheck
-   * @param {Mixed} valueToBeAtMost
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.isAtMost = function (val, atmst, msg) {
-    new Assertion(val, msg).to.be.most(atmst);
-  };
-
-  /**
-   * ### .isTrue(value, [message])
-   *
-   * Asserts that `value` is true.
-   *
-   *     var teaServed = true;
-   *     assert.isTrue(teaServed, 'the tea has been served');
-   *
-   * @name isTrue
-   * @param {Mixed} value
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.isTrue = function (val, msg) {
-    new Assertion(val, msg).is['true'];
-  };
-
-  /**
-   * ### .isNotTrue(value, [message])
-   *
-   * Asserts that `value` is not true.
-   *
-   *     var tea = 'tasty chai';
-   *     assert.isNotTrue(tea, 'great, time for tea!');
-   *
-   * @name isNotTrue
-   * @param {Mixed} value
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.isNotTrue = function (val, msg) {
-    new Assertion(val, msg).to.not.equal(true);
-  };
-
-  /**
-   * ### .isFalse(value, [message])
-   *
-   * Asserts that `value` is false.
-   *
-   *     var teaServed = false;
-   *     assert.isFalse(teaServed, 'no tea yet? hmm...');
-   *
-   * @name isFalse
-   * @param {Mixed} value
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.isFalse = function (val, msg) {
-    new Assertion(val, msg).is['false'];
-  };
-
-  /**
-   * ### .isNotFalse(value, [message])
-   *
-   * Asserts that `value` is not false.
-   *
-   *     var tea = 'tasty chai';
-   *     assert.isNotFalse(tea, 'great, time for tea!');
-   *
-   * @name isNotFalse
-   * @param {Mixed} value
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.isNotFalse = function (val, msg) {
-    new Assertion(val, msg).to.not.equal(false);
-  };
-
-  /**
-   * ### .isNull(value, [message])
-   *
-   * Asserts that `value` is null.
-   *
-   *     assert.isNull(err, 'there was no error');
-   *
-   * @name isNull
-   * @param {Mixed} value
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.isNull = function (val, msg) {
-    new Assertion(val, msg).to.equal(null);
-  };
-
-  /**
-   * ### .isNotNull(value, [message])
-   *
-   * Asserts that `value` is not null.
-   *
-   *     var tea = 'tasty chai';
-   *     assert.isNotNull(tea, 'great, time for tea!');
-   *
-   * @name isNotNull
-   * @param {Mixed} value
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.isNotNull = function (val, msg) {
-    new Assertion(val, msg).to.not.equal(null);
-  };
-
-  /**
-   * ### .isNaN
-   * Asserts that value is NaN
-   *
-   *    assert.isNaN('foo', 'foo is NaN');
-   *
-   * @name isNaN
-   * @param {Mixed} value
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.isNaN = function (val, msg) {
-    new Assertion(val, msg).to.be.NaN;
-  };
-
-  /**
-   * ### .isNotNaN
-   * Asserts that value is not NaN
-   *
-   *    assert.isNotNaN(4, '4 is not NaN');
-   *
-   * @name isNotNaN
-   * @param {Mixed} value
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-  assert.isNotNaN = function (val, msg) {
-    new Assertion(val, msg).not.to.be.NaN;
-  };
-
-  /**
-   * ### .isUndefined(value, [message])
-   *
-   * Asserts that `value` is `undefined`.
-   *
-   *     var tea;
-   *     assert.isUndefined(tea, 'no tea defined');
-   *
-   * @name isUndefined
-   * @param {Mixed} value
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.isUndefined = function (val, msg) {
-    new Assertion(val, msg).to.equal(undefined);
-  };
-
-  /**
-   * ### .isDefined(value, [message])
-   *
-   * Asserts that `value` is not `undefined`.
-   *
-   *     var tea = 'cup of chai';
-   *     assert.isDefined(tea, 'tea has been defined');
-   *
-   * @name isDefined
-   * @param {Mixed} value
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.isDefined = function (val, msg) {
-    new Assertion(val, msg).to.not.equal(undefined);
-  };
-
-  /**
-   * ### .isFunction(value, [message])
-   *
-   * Asserts that `value` is a function.
-   *
-   *     function serveTea() { return 'cup of tea'; };
-   *     assert.isFunction(serveTea, 'great, we can have tea now');
-   *
-   * @name isFunction
-   * @param {Mixed} value
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.isFunction = function (val, msg) {
-    new Assertion(val, msg).to.be.a('function');
-  };
-
-  /**
-   * ### .isNotFunction(value, [message])
-   *
-   * Asserts that `value` is _not_ a function.
-   *
-   *     var serveTea = [ 'heat', 'pour', 'sip' ];
-   *     assert.isNotFunction(serveTea, 'great, we have listed the steps');
-   *
-   * @name isNotFunction
-   * @param {Mixed} value
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.isNotFunction = function (val, msg) {
-    new Assertion(val, msg).to.not.be.a('function');
-  };
-
-  /**
-   * ### .isObject(value, [message])
-   *
-   * Asserts that `value` is an object of type 'Object' (as revealed by `Object.prototype.toString`).
-   * _The assertion does not match subclassed objects._
-   *
-   *     var selection = { name: 'Chai', serve: 'with spices' };
-   *     assert.isObject(selection, 'tea selection is an object');
-   *
-   * @name isObject
-   * @param {Mixed} value
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.isObject = function (val, msg) {
-    new Assertion(val, msg).to.be.a('object');
-  };
-
-  /**
-   * ### .isNotObject(value, [message])
-   *
-   * Asserts that `value` is _not_ an object of type 'Object' (as revealed by `Object.prototype.toString`).
-   *
-   *     var selection = 'chai'
-   *     assert.isNotObject(selection, 'tea selection is not an object');
-   *     assert.isNotObject(null, 'null is not an object');
-   *
-   * @name isNotObject
-   * @param {Mixed} value
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.isNotObject = function (val, msg) {
-    new Assertion(val, msg).to.not.be.a('object');
-  };
-
-  /**
-   * ### .isArray(value, [message])
-   *
-   * Asserts that `value` is an array.
-   *
-   *     var menu = [ 'green', 'chai', 'oolong' ];
-   *     assert.isArray(menu, 'what kind of tea do we want?');
-   *
-   * @name isArray
-   * @param {Mixed} value
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.isArray = function (val, msg) {
-    new Assertion(val, msg).to.be.an('array');
-  };
-
-  /**
-   * ### .isNotArray(value, [message])
-   *
-   * Asserts that `value` is _not_ an array.
-   *
-   *     var menu = 'green|chai|oolong';
-   *     assert.isNotArray(menu, 'what kind of tea do we want?');
-   *
-   * @name isNotArray
-   * @param {Mixed} value
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.isNotArray = function (val, msg) {
-    new Assertion(val, msg).to.not.be.an('array');
-  };
-
-  /**
-   * ### .isString(value, [message])
-   *
-   * Asserts that `value` is a string.
-   *
-   *     var teaOrder = 'chai';
-   *     assert.isString(teaOrder, 'order placed');
-   *
-   * @name isString
-   * @param {Mixed} value
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.isString = function (val, msg) {
-    new Assertion(val, msg).to.be.a('string');
-  };
-
-  /**
-   * ### .isNotString(value, [message])
-   *
-   * Asserts that `value` is _not_ a string.
-   *
-   *     var teaOrder = 4;
-   *     assert.isNotString(teaOrder, 'order placed');
-   *
-   * @name isNotString
-   * @param {Mixed} value
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.isNotString = function (val, msg) {
-    new Assertion(val, msg).to.not.be.a('string');
-  };
-
-  /**
-   * ### .isNumber(value, [message])
-   *
-   * Asserts that `value` is a number.
-   *
-   *     var cups = 2;
-   *     assert.isNumber(cups, 'how many cups');
-   *
-   * @name isNumber
-   * @param {Number} value
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.isNumber = function (val, msg) {
-    new Assertion(val, msg).to.be.a('number');
-  };
-
-  /**
-   * ### .isNotNumber(value, [message])
-   *
-   * Asserts that `value` is _not_ a number.
-   *
-   *     var cups = '2 cups please';
-   *     assert.isNotNumber(cups, 'how many cups');
-   *
-   * @name isNotNumber
-   * @param {Mixed} value
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.isNotNumber = function (val, msg) {
-    new Assertion(val, msg).to.not.be.a('number');
-  };
-
-  /**
-   * ### .isBoolean(value, [message])
-   *
-   * Asserts that `value` is a boolean.
-   *
-   *     var teaReady = true
-   *       , teaServed = false;
-   *
-   *     assert.isBoolean(teaReady, 'is the tea ready');
-   *     assert.isBoolean(teaServed, 'has tea been served');
-   *
-   * @name isBoolean
-   * @param {Mixed} value
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.isBoolean = function (val, msg) {
-    new Assertion(val, msg).to.be.a('boolean');
-  };
-
-  /**
-   * ### .isNotBoolean(value, [message])
-   *
-   * Asserts that `value` is _not_ a boolean.
-   *
-   *     var teaReady = 'yep'
-   *       , teaServed = 'nope';
-   *
-   *     assert.isNotBoolean(teaReady, 'is the tea ready');
-   *     assert.isNotBoolean(teaServed, 'has tea been served');
-   *
-   * @name isNotBoolean
-   * @param {Mixed} value
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.isNotBoolean = function (val, msg) {
-    new Assertion(val, msg).to.not.be.a('boolean');
-  };
-
-  /**
-   * ### .typeOf(value, name, [message])
-   *
-   * Asserts that `value`'s type is `name`, as determined by
-   * `Object.prototype.toString`.
-   *
-   *     assert.typeOf({ tea: 'chai' }, 'object', 'we have an object');
-   *     assert.typeOf(['chai', 'jasmine'], 'array', 'we have an array');
-   *     assert.typeOf('tea', 'string', 'we have a string');
-   *     assert.typeOf(/tea/, 'regexp', 'we have a regular expression');
-   *     assert.typeOf(null, 'null', 'we have a null');
-   *     assert.typeOf(undefined, 'undefined', 'we have an undefined');
-   *
-   * @name typeOf
-   * @param {Mixed} value
-   * @param {String} name
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.typeOf = function (val, type, msg) {
-    new Assertion(val, msg).to.be.a(type);
-  };
-
-  /**
-   * ### .notTypeOf(value, name, [message])
-   *
-   * Asserts that `value`'s type is _not_ `name`, as determined by
-   * `Object.prototype.toString`.
-   *
-   *     assert.notTypeOf('tea', 'number', 'strings are not numbers');
-   *
-   * @name notTypeOf
-   * @param {Mixed} value
-   * @param {String} typeof name
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.notTypeOf = function (val, type, msg) {
-    new Assertion(val, msg).to.not.be.a(type);
-  };
-
-  /**
-   * ### .instanceOf(object, constructor, [message])
-   *
-   * Asserts that `value` is an instance of `constructor`.
-   *
-   *     var Tea = function (name) { this.name = name; }
-   *       , chai = new Tea('chai');
-   *
-   *     assert.instanceOf(chai, Tea, 'chai is an instance of tea');
-   *
-   * @name instanceOf
-   * @param {Object} object
-   * @param {Constructor} constructor
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.instanceOf = function (val, type, msg) {
-    new Assertion(val, msg).to.be.instanceOf(type);
-  };
-
-  /**
-   * ### .notInstanceOf(object, constructor, [message])
-   *
-   * Asserts `value` is not an instance of `constructor`.
-   *
-   *     var Tea = function (name) { this.name = name; }
-   *       , chai = new String('chai');
-   *
-   *     assert.notInstanceOf(chai, Tea, 'chai is not an instance of tea');
-   *
-   * @name notInstanceOf
-   * @param {Object} object
-   * @param {Constructor} constructor
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.notInstanceOf = function (val, type, msg) {
-    new Assertion(val, msg).to.not.be.instanceOf(type);
-  };
-
-  /**
-   * ### .include(haystack, needle, [message])
-   *
-   * Asserts that `haystack` includes `needle`. Works
-   * for strings and arrays.
-   *
-   *     assert.include('foobar', 'bar', 'foobar contains string "bar"');
-   *     assert.include([ 1, 2, 3 ], 3, 'array contains value');
-   *
-   * @name include
-   * @param {Array|String} haystack
-   * @param {Mixed} needle
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.include = function (exp, inc, msg) {
-    new Assertion(exp, msg, assert.include).include(inc);
-  };
-
-  /**
-   * ### .notInclude(haystack, needle, [message])
-   *
-   * Asserts that `haystack` does not include `needle`. Works
-   * for strings and arrays.
-   *
-   *     assert.notInclude('foobar', 'baz', 'string not include substring');
-   *     assert.notInclude([ 1, 2, 3 ], 4, 'array not include contain value');
-   *
-   * @name notInclude
-   * @param {Array|String} haystack
-   * @param {Mixed} needle
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.notInclude = function (exp, inc, msg) {
-    new Assertion(exp, msg, assert.notInclude).not.include(inc);
-  };
-
-  /**
-   * ### .match(value, regexp, [message])
-   *
-   * Asserts that `value` matches the regular expression `regexp`.
-   *
-   *     assert.match('foobar', /^foo/, 'regexp matches');
-   *
-   * @name match
-   * @param {Mixed} value
-   * @param {RegExp} regexp
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.match = function (exp, re, msg) {
-    new Assertion(exp, msg).to.match(re);
-  };
-
-  /**
-   * ### .notMatch(value, regexp, [message])
-   *
-   * Asserts that `value` does not match the regular expression `regexp`.
-   *
-   *     assert.notMatch('foobar', /^foo/, 'regexp does not match');
-   *
-   * @name notMatch
-   * @param {Mixed} value
-   * @param {RegExp} regexp
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.notMatch = function (exp, re, msg) {
-    new Assertion(exp, msg).to.not.match(re);
-  };
-
-  /**
-   * ### .property(object, property, [message])
-   *
-   * Asserts that `object` has a property named by `property`.
-   *
-   *     assert.property({ tea: { green: 'matcha' }}, 'tea');
-   *
-   * @name property
-   * @param {Object} object
-   * @param {String} property
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.property = function (obj, prop, msg) {
-    new Assertion(obj, msg).to.have.property(prop);
-  };
-
-  /**
-   * ### .notProperty(object, property, [message])
-   *
-   * Asserts that `object` does _not_ have a property named by `property`.
-   *
-   *     assert.notProperty({ tea: { green: 'matcha' }}, 'coffee');
-   *
-   * @name notProperty
-   * @param {Object} object
-   * @param {String} property
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.notProperty = function (obj, prop, msg) {
-    new Assertion(obj, msg).to.not.have.property(prop);
-  };
-
-  /**
-   * ### .deepProperty(object, property, [message])
-   *
-   * Asserts that `object` has a property named by `property`, which can be a
-   * string using dot- and bracket-notation for deep reference.
-   *
-   *     assert.deepProperty({ tea: { green: 'matcha' }}, 'tea.green');
-   *
-   * @name deepProperty
-   * @param {Object} object
-   * @param {String} property
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.deepProperty = function (obj, prop, msg) {
-    new Assertion(obj, msg).to.have.deep.property(prop);
-  };
-
-  /**
-   * ### .notDeepProperty(object, property, [message])
-   *
-   * Asserts that `object` does _not_ have a property named by `property`, which
-   * can be a string using dot- and bracket-notation for deep reference.
-   *
-   *     assert.notDeepProperty({ tea: { green: 'matcha' }}, 'tea.oolong');
-   *
-   * @name notDeepProperty
-   * @param {Object} object
-   * @param {String} property
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.notDeepProperty = function (obj, prop, msg) {
-    new Assertion(obj, msg).to.not.have.deep.property(prop);
-  };
-
-  /**
-   * ### .propertyVal(object, property, value, [message])
-   *
-   * Asserts that `object` has a property named by `property` with value given
-   * by `value`.
-   *
-   *     assert.propertyVal({ tea: 'is good' }, 'tea', 'is good');
-   *
-   * @name propertyVal
-   * @param {Object} object
-   * @param {String} property
-   * @param {Mixed} value
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.propertyVal = function (obj, prop, val, msg) {
-    new Assertion(obj, msg).to.have.property(prop, val);
-  };
-
-  /**
-   * ### .propertyNotVal(object, property, value, [message])
-   *
-   * Asserts that `object` has a property named by `property`, but with a value
-   * different from that given by `value`.
-   *
-   *     assert.propertyNotVal({ tea: 'is good' }, 'tea', 'is bad');
-   *
-   * @name propertyNotVal
-   * @param {Object} object
-   * @param {String} property
-   * @param {Mixed} value
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.propertyNotVal = function (obj, prop, val, msg) {
-    new Assertion(obj, msg).to.not.have.property(prop, val);
-  };
-
-  /**
-   * ### .deepPropertyVal(object, property, value, [message])
-   *
-   * Asserts that `object` has a property named by `property` with value given
-   * by `value`. `property` can use dot- and bracket-notation for deep
-   * reference.
-   *
-   *     assert.deepPropertyVal({ tea: { green: 'matcha' }}, 'tea.green', 'matcha');
-   *
-   * @name deepPropertyVal
-   * @param {Object} object
-   * @param {String} property
-   * @param {Mixed} value
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.deepPropertyVal = function (obj, prop, val, msg) {
-    new Assertion(obj, msg).to.have.deep.property(prop, val);
-  };
-
-  /**
-   * ### .deepPropertyNotVal(object, property, value, [message])
-   *
-   * Asserts that `object` has a property named by `property`, but with a value
-   * different from that given by `value`. `property` can use dot- and
-   * bracket-notation for deep reference.
-   *
-   *     assert.deepPropertyNotVal({ tea: { green: 'matcha' }}, 'tea.green', 'konacha');
-   *
-   * @name deepPropertyNotVal
-   * @param {Object} object
-   * @param {String} property
-   * @param {Mixed} value
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.deepPropertyNotVal = function (obj, prop, val, msg) {
-    new Assertion(obj, msg).to.not.have.deep.property(prop, val);
-  };
-
-  /**
-   * ### .lengthOf(object, length, [message])
-   *
-   * Asserts that `object` has a `length` property with the expected value.
-   *
-   *     assert.lengthOf([1,2,3], 3, 'array has length of 3');
-   *     assert.lengthOf('foobar', 6, 'string has length of 6');
-   *
-   * @name lengthOf
-   * @param {Mixed} object
-   * @param {Number} length
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.lengthOf = function (exp, len, msg) {
-    new Assertion(exp, msg).to.have.length(len);
-  };
-
-  /**
-   * ### .throws(function, [constructor/string/regexp], [string/regexp], [message])
-   *
-   * Asserts that `function` will throw an error that is an instance of
-   * `constructor`, or alternately that it will throw an error with message
-   * matching `regexp`.
-   *
-   *     assert.throws(fn, 'function throws a reference error');
-   *     assert.throws(fn, /function throws a reference error/);
-   *     assert.throws(fn, ReferenceError);
-   *     assert.throws(fn, ReferenceError, 'function throws a reference error');
-   *     assert.throws(fn, ReferenceError, /function throws a reference error/);
-   *
-   * @name throws
-   * @alias throw
-   * @alias Throw
-   * @param {Function} function
-   * @param {ErrorConstructor} constructor
-   * @param {RegExp} regexp
-   * @param {String} message
-   * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error#Error_types
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.throws = function (fn, errt, errs, msg) {
-    if ('string' === typeof errt || errt instanceof RegExp) {
-      errs = errt;
-      errt = null;
-    }
-
-    var assertErr = new Assertion(fn, msg).to.throw(errt, errs);
-    return flag(assertErr, 'object');
-  };
-
-  /**
-   * ### .doesNotThrow(function, [constructor/regexp], [message])
-   *
-   * Asserts that `function` will _not_ throw an error that is an instance of
-   * `constructor`, or alternately that it will not throw an error with message
-   * matching `regexp`.
-   *
-   *     assert.doesNotThrow(fn, Error, 'function does not throw');
-   *
-   * @name doesNotThrow
-   * @param {Function} function
-   * @param {ErrorConstructor} constructor
-   * @param {RegExp} regexp
-   * @param {String} message
-   * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error#Error_types
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.doesNotThrow = function (fn, type, msg) {
-    if ('string' === typeof type) {
-      msg = type;
-      type = null;
-    }
-
-    new Assertion(fn, msg).to.not.Throw(type);
-  };
-
-  /**
-   * ### .operator(val1, operator, val2, [message])
-   *
-   * Compares two values using `operator`.
-   *
-   *     assert.operator(1, '<', 2, 'everything is ok');
-   *     assert.operator(1, '>', 2, 'this will fail');
-   *
-   * @name operator
-   * @param {Mixed} val1
-   * @param {String} operator
-   * @param {Mixed} val2
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.operator = function (val, operator, val2, msg) {
-    var ok;
-    switch(operator) {
-      case '==':
-        ok = val == val2;
-        break;
-      case '===':
-        ok = val === val2;
-        break;
-      case '>':
-        ok = val > val2;
-        break;
-      case '>=':
-        ok = val >= val2;
-        break;
-      case '<':
-        ok = val < val2;
-        break;
-      case '<=':
-        ok = val <= val2;
-        break;
-      case '!=':
-        ok = val != val2;
-        break;
-      case '!==':
-        ok = val !== val2;
-        break;
-      default:
-        throw new Error('Invalid operator "' + operator + '"');
-    }
-    var test = new Assertion(ok, msg);
-    test.assert(
-        true === flag(test, 'object')
-      , 'expected ' + util.inspect(val) + ' to be ' + operator + ' ' + util.inspect(val2)
-      , 'expected ' + util.inspect(val) + ' to not be ' + operator + ' ' + util.inspect(val2) );
-  };
-
-  /**
-   * ### .closeTo(actual, expected, delta, [message])
-   *
-   * Asserts that the target is equal `expected`, to within a +/- `delta` range.
-   *
-   *     assert.closeTo(1.5, 1, 0.5, 'numbers are close');
-   *
-   * @name closeTo
-   * @param {Number} actual
-   * @param {Number} expected
-   * @param {Number} delta
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.closeTo = function (act, exp, delta, msg) {
-    new Assertion(act, msg).to.be.closeTo(exp, delta);
-  };
-
-  /**
-   * ### .approximately(actual, expected, delta, [message])
-   *
-   * Asserts that the target is equal `expected`, to within a +/- `delta` range.
-   *
-   *     assert.approximately(1.5, 1, 0.5, 'numbers are close');
-   *
-   * @name approximately
-   * @param {Number} actual
-   * @param {Number} expected
-   * @param {Number} delta
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.approximately = function (act, exp, delta, msg) {
-    new Assertion(act, msg).to.be.approximately(exp, delta);
-  };
-
-  /**
-   * ### .sameMembers(set1, set2, [message])
-   *
-   * Asserts that `set1` and `set2` have the same members.
-   * Order is not taken into account.
-   *
-   *     assert.sameMembers([ 1, 2, 3 ], [ 2, 1, 3 ], 'same members');
-   *
-   * @name sameMembers
-   * @param {Array} set1
-   * @param {Array} set2
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.sameMembers = function (set1, set2, msg) {
-    new Assertion(set1, msg).to.have.same.members(set2);
-  }
-
-  /**
-   * ### .sameDeepMembers(set1, set2, [message])
-   *
-   * Asserts that `set1` and `set2` have the same members - using a deep equality checking.
-   * Order is not taken into account.
-   *
-   *     assert.sameDeepMembers([ {b: 3}, {a: 2}, {c: 5} ], [ {c: 5}, {b: 3}, {a: 2} ], 'same deep members');
-   *
-   * @name sameDeepMembers
-   * @param {Array} set1
-   * @param {Array} set2
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.sameDeepMembers = function (set1, set2, msg) {
-    new Assertion(set1, msg).to.have.same.deep.members(set2);
-  }
-
-  /**
-   * ### .includeMembers(superset, subset, [message])
-   *
-   * Asserts that `subset` is included in `superset`.
-   * Order is not taken into account.
-   *
-   *     assert.includeMembers([ 1, 2, 3 ], [ 2, 1 ], 'include members');
-   *
-   * @name includeMembers
-   * @param {Array} superset
-   * @param {Array} subset
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.includeMembers = function (superset, subset, msg) {
-    new Assertion(superset, msg).to.include.members(subset);
-  }
-
-  /**
-   * ### .includeDeepMembers(superset, subset, [message])
-   *
-   * Asserts that `subset` is included in `superset` - using deep equality checking.
-   * Order is not taken into account.
-   * Duplicates are ignored.
-   *
-   *     assert.includeDeepMembers([ {a: 1}, {b: 2}, {c: 3} ], [ {b: 2}, {a: 1}, {b: 2} ], 'include deep members');
-   *
-   * @name includeDeepMembers
-   * @param {Array} superset
-   * @param {Array} subset
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.includeDeepMembers = function (superset, subset, msg) {
-    new Assertion(superset, msg).to.include.deep.members(subset);
-  }
-
-  /**
-   * ### .oneOf(inList, list, [message])
-   *
-   * Asserts that non-object, non-array value `inList` appears in the flat array `list`.
-   *
-   *     assert.oneOf(1, [ 2, 1 ], 'Not found in list');
-   *
-   * @name oneOf
-   * @param {*} inList
-   * @param {Array<*>} list
-   * @param {String} message
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.oneOf = function (inList, list, msg) {
-    new Assertion(inList, msg).to.be.oneOf(list);
-  }
-
-   /**
-   * ### .changes(function, object, property)
-   *
-   * Asserts that a function changes the value of a property
-   *
-   *     var obj = { val: 10 };
-   *     var fn = function() { obj.val = 22 };
-   *     assert.changes(fn, obj, 'val');
-   *
-   * @name changes
-   * @param {Function} modifier function
-   * @param {Object} object
-   * @param {String} property name
-   * @param {String} message _optional_
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.changes = function (fn, obj, prop) {
-    new Assertion(fn).to.change(obj, prop);
-  }
-
-   /**
-   * ### .doesNotChange(function, object, property)
-   *
-   * Asserts that a function does not changes the value of a property
-   *
-   *     var obj = { val: 10 };
-   *     var fn = function() { console.log('foo'); };
-   *     assert.doesNotChange(fn, obj, 'val');
-   *
-   * @name doesNotChange
-   * @param {Function} modifier function
-   * @param {Object} object
-   * @param {String} property name
-   * @param {String} message _optional_
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.doesNotChange = function (fn, obj, prop) {
-    new Assertion(fn).to.not.change(obj, prop);
-  }
-
-   /**
-   * ### .increases(function, object, property)
-   *
-   * Asserts that a function increases an object property
-   *
-   *     var obj = { val: 10 };
-   *     var fn = function() { obj.val = 13 };
-   *     assert.increases(fn, obj, 'val');
-   *
-   * @name increases
-   * @param {Function} modifier function
-   * @param {Object} object
-   * @param {String} property name
-   * @param {String} message _optional_
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.increases = function (fn, obj, prop) {
-    new Assertion(fn).to.increase(obj, prop);
-  }
-
-   /**
-   * ### .doesNotIncrease(function, object, property)
-   *
-   * Asserts that a function does not increase object property
-   *
-   *     var obj = { val: 10 };
-   *     var fn = function() { obj.val = 8 };
-   *     assert.doesNotIncrease(fn, obj, 'val');
-   *
-   * @name doesNotIncrease
-   * @param {Function} modifier function
-   * @param {Object} object
-   * @param {String} property name
-   * @param {String} message _optional_
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.doesNotIncrease = function (fn, obj, prop) {
-    new Assertion(fn).to.not.increase(obj, prop);
-  }
-
-   /**
-   * ### .decreases(function, object, property)
-   *
-   * Asserts that a function decreases an object property
-   *
-   *     var obj = { val: 10 };
-   *     var fn = function() { obj.val = 5 };
-   *     assert.decreases(fn, obj, 'val');
-   *
-   * @name decreases
-   * @param {Function} modifier function
-   * @param {Object} object
-   * @param {String} property name
-   * @param {String} message _optional_
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.decreases = function (fn, obj, prop) {
-    new Assertion(fn).to.decrease(obj, prop);
-  }
-
-   /**
-   * ### .doesNotDecrease(function, object, property)
-   *
-   * Asserts that a function does not decreases an object property
-   *
-   *     var obj = { val: 10 };
-   *     var fn = function() { obj.val = 15 };
-   *     assert.doesNotDecrease(fn, obj, 'val');
-   *
-   * @name doesNotDecrease
-   * @param {Function} modifier function
-   * @param {Object} object
-   * @param {String} property name
-   * @param {String} message _optional_
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.doesNotDecrease = function (fn, obj, prop) {
-    new Assertion(fn).to.not.decrease(obj, prop);
-  }
-
-  /*!
-   * ### .ifError(object)
-   *
-   * Asserts if value is not a false value, and throws if it is a true value.
-   * This is added to allow for chai to be a drop-in replacement for Node's
-   * assert class.
-   *
-   *     var err = new Error('I am a custom error');
-   *     assert.ifError(err); // Rethrows err!
-   *
-   * @name ifError
-   * @param {Object} object
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.ifError = function (val) {
-    if (val) {
-      throw(val);
-    }
-  };
-
-  /**
-   * ### .isExtensible(object)
-   *
-   * Asserts that `object` is extensible (can have new properties added to it).
-   *
-   *     assert.isExtensible({});
-   *
-   * @name isExtensible
-   * @alias extensible
-   * @param {Object} object
-   * @param {String} message _optional_
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.isExtensible = function (obj, msg) {
-    new Assertion(obj, msg).to.be.extensible;
-  };
-
-  /**
-   * ### .isNotExtensible(object)
-   *
-   * Asserts that `object` is _not_ extensible.
-   *
-   *     var nonExtensibleObject = Object.preventExtensions({});
-   *     var sealedObject = Object.seal({});
-   *     var frozenObject = Object.freese({});
-   *
-   *     assert.isNotExtensible(nonExtensibleObject);
-   *     assert.isNotExtensible(sealedObject);
-   *     assert.isNotExtensible(frozenObject);
-   *
-   * @name isNotExtensible
-   * @alias notExtensible
-   * @param {Object} object
-   * @param {String} message _optional_
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.isNotExtensible = function (obj, msg) {
-    new Assertion(obj, msg).to.not.be.extensible;
-  };
-
-  /**
-   * ### .isSealed(object)
-   *
-   * Asserts that `object` is sealed (cannot have new properties added to it
-   * and its existing properties cannot be removed).
-   *
-   *     var sealedObject = Object.seal({});
-   *     var frozenObject = Object.seal({});
-   *
-   *     assert.isSealed(sealedObject);
-   *     assert.isSealed(frozenObject);
-   *
-   * @name isSealed
-   * @alias sealed
-   * @param {Object} object
-   * @param {String} message _optional_
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.isSealed = function (obj, msg) {
-    new Assertion(obj, msg).to.be.sealed;
-  };
-
-  /**
-   * ### .isNotSealed(object)
-   *
-   * Asserts that `object` is _not_ sealed.
-   *
-   *     assert.isNotSealed({});
-   *
-   * @name isNotSealed
-   * @alias notSealed
-   * @param {Object} object
-   * @param {String} message _optional_
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.isNotSealed = function (obj, msg) {
-    new Assertion(obj, msg).to.not.be.sealed;
-  };
-
-  /**
-   * ### .isFrozen(object)
-   *
-   * Asserts that `object` is frozen (cannot have new properties added to it
-   * and its existing properties cannot be modified).
-   *
-   *     var frozenObject = Object.freeze({});
-   *     assert.frozen(frozenObject);
-   *
-   * @name isFrozen
-   * @alias frozen
-   * @param {Object} object
-   * @param {String} message _optional_
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.isFrozen = function (obj, msg) {
-    new Assertion(obj, msg).to.be.frozen;
-  };
-
-  /**
-   * ### .isNotFrozen(object)
-   *
-   * Asserts that `object` is _not_ frozen.
-   *
-   *     assert.isNotFrozen({});
-   *
-   * @name isNotFrozen
-   * @alias notFrozen
-   * @param {Object} object
-   * @param {String} message _optional_
-   * @namespace Assert
-   * @api public
-   */
-
-  assert.isNotFrozen = function (obj, msg) {
-    new Assertion(obj, msg).to.not.be.frozen;
-  };
-
-  /*!
-   * Aliases.
-   */
-
-  (function alias(name, as){
-    assert[as] = assert[name];
-    return alias;
-  })
-  ('isOk', 'ok')
-  ('isNotOk', 'notOk')
-  ('throws', 'throw')
-  ('throws', 'Throw')
-  ('isExtensible', 'extensible')
-  ('isNotExtensible', 'notExtensible')
-  ('isSealed', 'sealed')
-  ('isNotSealed', 'notSealed')
-  ('isFrozen', 'frozen')
-  ('isNotFrozen', 'notFrozen');
-};
-
-},{}],7:[function(require,module,exports){
-/*!
- * chai
- * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
- * MIT Licensed
- */
-
-module.exports = function (chai, util) {
-  chai.expect = function (val, message) {
-    return new chai.Assertion(val, message);
-  };
-
-  /**
-   * ### .fail(actual, expected, [message], [operator])
-   *
-   * Throw a failure.
-   *
-   * @name fail
-   * @param {Mixed} actual
-   * @param {Mixed} expected
-   * @param {String} message
-   * @param {String} operator
-   * @namespace Expect
-   * @api public
-   */
-
-  chai.expect.fail = function (actual, expected, message, operator) {
-    message = message || 'expect.fail()';
-    throw new chai.AssertionError(message, {
-        actual: actual
-      , expected: expected
-      , operator: operator
-    }, chai.expect.fail);
-  };
-};
-
-},{}],8:[function(require,module,exports){
-/*!
- * chai
- * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
- * MIT Licensed
- */
-
-module.exports = function (chai, util) {
-  var Assertion = chai.Assertion;
-
-  function loadShould () {
-    // explicitly define this method as function as to have it's name to include as `ssfi`
-    function shouldGetter() {
-      if (this instanceof String || this instanceof Number || this instanceof Boolean ) {
-        return new Assertion(this.valueOf(), null, shouldGetter);
-      }
-      return new Assertion(this, null, shouldGetter);
-    }
-    function shouldSetter(value) {
-      // See https://github.com/chaijs/chai/issues/86: this makes
-      // `whatever.should = someValue` actually set `someValue`, which is
-      // especially useful for `global.should = require('chai').should()`.
-      //
-      // Note that we have to use [[DefineProperty]] instead of [[Put]]
-      // since otherwise we would trigger this very setter!
-      Object.defineProperty(this, 'should', {
-        value: value,
-        enumerable: true,
-        configurable: true,
-        writable: true
-      });
-    }
-    // modify Object.prototype to have `should`
-    Object.defineProperty(Object.prototype, 'should', {
-      set: shouldSetter
-      , get: shouldGetter
-      , configurable: true
-    });
-
-    var should = {};
-
-    /**
-     * ### .fail(actual, expected, [message], [operator])
-     *
-     * Throw a failure.
-     *
-     * @name fail
-     * @param {Mixed} actual
-     * @param {Mixed} expected
-     * @param {String} message
-     * @param {String} operator
-     * @namespace Should
-     * @api public
-     */
-
-    should.fail = function (actual, expected, message, operator) {
-      message = message || 'should.fail()';
-      throw new chai.AssertionError(message, {
-          actual: actual
-        , expected: expected
-        , operator: operator
-      }, should.fail);
-    };
-
-    /**
-     * ### .equal(actual, expected, [message])
-     *
-     * Asserts non-strict equality (`==`) of `actual` and `expected`.
-     *
-     *     should.equal(3, '3', '== coerces values to strings');
-     *
-     * @name equal
-     * @param {Mixed} actual
-     * @param {Mixed} expected
-     * @param {String} message
-     * @namespace Should
-     * @api public
-     */
-
-    should.equal = function (val1, val2, msg) {
-      new Assertion(val1, msg).to.equal(val2);
-    };
-
-    /**
-     * ### .throw(function, [constructor/string/regexp], [string/regexp], [message])
-     *
-     * Asserts that `function` will throw an error that is an instance of
-     * `constructor`, or alternately that it will throw an error with message
-     * matching `regexp`.
-     *
-     *     should.throw(fn, 'function throws a reference error');
-     *     should.throw(fn, /function throws a reference error/);
-     *     should.throw(fn, ReferenceError);
-     *     should.throw(fn, ReferenceError, 'function throws a reference error');
-     *     should.throw(fn, ReferenceError, /function throws a reference error/);
-     *
-     * @name throw
-     * @alias Throw
-     * @param {Function} function
-     * @param {ErrorConstructor} constructor
-     * @param {RegExp} regexp
-     * @param {String} message
-     * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error#Error_types
-     * @namespace Should
-     * @api public
-     */
-
-    should.Throw = function (fn, errt, errs, msg) {
-      new Assertion(fn, msg).to.Throw(errt, errs);
-    };
-
-    /**
-     * ### .exist
-     *
-     * Asserts that the target is neither `null` nor `undefined`.
-     *
-     *     var foo = 'hi';
-     *
-     *     should.exist(foo, 'foo exists');
-     *
-     * @name exist
-     * @namespace Should
-     * @api public
-     */
-
-    should.exist = function (val, msg) {
-      new Assertion(val, msg).to.exist;
-    }
-
-    // negation
-    should.not = {}
-
-    /**
-     * ### .not.equal(actual, expected, [message])
-     *
-     * Asserts non-strict inequality (`!=`) of `actual` and `expected`.
-     *
-     *     should.not.equal(3, 4, 'these numbers are not equal');
-     *
-     * @name not.equal
-     * @param {Mixed} actual
-     * @param {Mixed} expected
-     * @param {String} message
-     * @namespace Should
-     * @api public
-     */
-
-    should.not.equal = function (val1, val2, msg) {
-      new Assertion(val1, msg).to.not.equal(val2);
-    };
-
-    /**
-     * ### .throw(function, [constructor/regexp], [message])
-     *
-     * Asserts that `function` will _not_ throw an error that is an instance of
-     * `constructor`, or alternately that it will not throw an error with message
-     * matching `regexp`.
-     *
-     *     should.not.throw(fn, Error, 'function does not throw');
-     *
-     * @name not.throw
-     * @alias not.Throw
-     * @param {Function} function
-     * @param {ErrorConstructor} constructor
-     * @param {RegExp} regexp
-     * @param {String} message
-     * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error#Error_types
-     * @namespace Should
-     * @api public
-     */
-
-    should.not.Throw = function (fn, errt, errs, msg) {
-      new Assertion(fn, msg).to.not.Throw(errt, errs);
-    };
-
-    /**
-     * ### .not.exist
-     *
-     * Asserts that the target is neither `null` nor `undefined`.
-     *
-     *     var bar = null;
-     *
-     *     should.not.exist(bar, 'bar does not exist');
-     *
-     * @name not.exist
-     * @namespace Should
-     * @api public
-     */
-
-    should.not.exist = function (val, msg) {
-      new Assertion(val, msg).to.not.exist;
-    }
-
-    should['throw'] = should['Throw'];
-    should.not['throw'] = should.not['Throw'];
-
-    return should;
-  };
-
-  chai.should = loadShould;
-  chai.Should = loadShould;
-};
-
-},{}],9:[function(require,module,exports){
-/*!
- * Chai - addChainingMethod utility
- * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
- * MIT Licensed
- */
-
-/*!
- * Module dependencies
- */
-
-var transferFlags = require('./transferFlags');
-var flag = require('./flag');
-var config = require('../config');
-
-/*!
- * Module variables
- */
-
-// Check whether `__proto__` is supported
-var hasProtoSupport = '__proto__' in Object;
-
-// Without `__proto__` support, this module will need to add properties to a function.
-// However, some Function.prototype methods cannot be overwritten,
-// and there seems no easy cross-platform way to detect them (@see chaijs/chai/issues/69).
-var excludeNames = /^(?:length|name|arguments|caller)$/;
-
-// Cache `Function` properties
-var call  = Function.prototype.call,
-    apply = Function.prototype.apply;
-
-/**
- * ### addChainableMethod (ctx, name, method, chainingBehavior)
- *
- * Adds a method to an object, such that the method can also be chained.
- *
- *     utils.addChainableMethod(chai.Assertion.prototype, 'foo', function (str) {
- *       var obj = utils.flag(this, 'object');
- *       new chai.Assertion(obj).to.be.equal(str);
- *     });
- *
- * Can also be accessed directly from `chai.Assertion`.
- *
- *     chai.Assertion.addChainableMethod('foo', fn, chainingBehavior);
- *
- * The result can then be used as both a method assertion, executing both `method` and
- * `chainingBehavior`, or as a language chain, which only executes `chainingBehavior`.
- *
- *     expect(fooStr).to.be.foo('bar');
- *     expect(fooStr).to.be.foo.equal('foo');
- *
- * @param {Object} ctx object to which the method is added
- * @param {String} name of method to add
- * @param {Function} method function to be used for `name`, when called
- * @param {Function} chainingBehavior function to be called every time the property is accessed
- * @namespace Utils
- * @name addChainableMethod
- * @api public
- */
-
-module.exports = function (ctx, name, method, chainingBehavior) {
-  if (typeof chainingBehavior !== 'function') {
-    chainingBehavior = function () { };
-  }
-
-  var chainableBehavior = {
-      method: method
-    , chainingBehavior: chainingBehavior
-  };
-
-  // save the methods so we can overwrite them later, if we need to.
-  if (!ctx.__methods) {
-    ctx.__methods = {};
-  }
-  ctx.__methods[name] = chainableBehavior;
-
-  Object.defineProperty(ctx, name,
-    { get: function () {
-        chainableBehavior.chainingBehavior.call(this);
-
-        var assert = function assert() {
-          var old_ssfi = flag(this, 'ssfi');
-          if (old_ssfi && config.includeStack === false)
-            flag(this, 'ssfi', assert);
-          var result = chainableBehavior.method.apply(this, arguments);
-          return result === undefined ? this : result;
-        };
-
-        // Use `__proto__` if available
-        if (hasProtoSupport) {
-          // Inherit all properties from the object by replacing the `Function` prototype
-          var prototype = assert.__proto__ = Object.create(this);
-          // Restore the `call` and `apply` methods from `Function`
-          prototype.call = call;
-          prototype.apply = apply;
-        }
-        // Otherwise, redefine all properties (slow!)
-        else {
-          var asserterNames = Object.getOwnPropertyNames(ctx);
-          asserterNames.forEach(function (asserterName) {
-            if (!excludeNames.test(asserterName)) {
-              var pd = Object.getOwnPropertyDescriptor(ctx, asserterName);
-              Object.defineProperty(assert, asserterName, pd);
-            }
-          });
-        }
-
-        transferFlags(this, assert);
-        return assert;
-      }
-    , configurable: true
-  });
-};
-
-},{"../config":4,"./flag":13,"./transferFlags":29}],10:[function(require,module,exports){
-/*!
- * Chai - addMethod utility
- * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
- * MIT Licensed
- */
-
-var config = require('../config');
-
-/**
- * ### .addMethod (ctx, name, method)
- *
- * Adds a method to the prototype of an object.
- *
- *     utils.addMethod(chai.Assertion.prototype, 'foo', function (str) {
- *       var obj = utils.flag(this, 'object');
- *       new chai.Assertion(obj).to.be.equal(str);
- *     });
- *
- * Can also be accessed directly from `chai.Assertion`.
- *
- *     chai.Assertion.addMethod('foo', fn);
- *
- * Then can be used as any other assertion.
- *
- *     expect(fooStr).to.be.foo('bar');
- *
- * @param {Object} ctx object to which the method is added
- * @param {String} name of method to add
- * @param {Function} method function to be used for name
- * @namespace Utils
- * @name addMethod
- * @api public
- */
-var flag = require('./flag');
-
-module.exports = function (ctx, name, method) {
-  ctx[name] = function () {
-    var old_ssfi = flag(this, 'ssfi');
-    if (old_ssfi && config.includeStack === false)
-      flag(this, 'ssfi', ctx[name]);
-    var result = method.apply(this, arguments);
-    return result === undefined ? this : result;
-  };
-};
-
-},{"../config":4,"./flag":13}],11:[function(require,module,exports){
-/*!
- * Chai - addProperty utility
- * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
- * MIT Licensed
- */
-
-var config = require('../config');
-var flag = require('./flag');
-
-/**
- * ### addProperty (ctx, name, getter)
- *
- * Adds a property to the prototype of an object.
- *
- *     utils.addProperty(chai.Assertion.prototype, 'foo', function () {
- *       var obj = utils.flag(this, 'object');
- *       new chai.Assertion(obj).to.be.instanceof(Foo);
- *     });
- *
- * Can also be accessed directly from `chai.Assertion`.
- *
- *     chai.Assertion.addProperty('foo', fn);
- *
- * Then can be used as any other assertion.
- *
- *     expect(myFoo).to.be.foo;
- *
- * @param {Object} ctx object to which the property is added
- * @param {String} name of property to add
- * @param {Function} getter function to be used for name
- * @namespace Utils
- * @name addProperty
- * @api public
- */
-
-module.exports = function (ctx, name, getter) {
-  Object.defineProperty(ctx, name,
-    { get: function addProperty() {
-        var old_ssfi = flag(this, 'ssfi');
-        if (old_ssfi && config.includeStack === false)
-          flag(this, 'ssfi', addProperty);
-
-        var result = getter.call(this);
-        return result === undefined ? this : result;
-      }
-    , configurable: true
-  });
-};
-
-},{"../config":4,"./flag":13}],12:[function(require,module,exports){
-/*!
- * Chai - expectTypes utility
- * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
- * MIT Licensed
- */
-
-/**
- * ### expectTypes(obj, types)
- *
- * Ensures that the object being tested against is of a valid type.
- *
- *     utils.expectTypes(this, ['array', 'object', 'string']);
- *
- * @param {Mixed} obj constructed Assertion
- * @param {Array} type A list of allowed types for this assertion
- * @namespace Utils
- * @name expectTypes
- * @api public
- */
-
-var AssertionError = require('assertion-error');
-var flag = require('./flag');
-var type = require('type-detect');
-
-module.exports = function (obj, types) {
-  var obj = flag(obj, 'object');
-  types = types.map(function (t) { return t.toLowerCase(); });
-  types.sort();
-
-  // Transforms ['lorem', 'ipsum'] into 'a lirum, or an ipsum'
-  var str = types.map(function (t, index) {
-    var art = ~[ 'a', 'e', 'i', 'o', 'u' ].indexOf(t.charAt(0)) ? 'an' : 'a';
-    var or = types.length > 1 && index === types.length - 1 ? 'or ' : '';
-    return or + art + ' ' + t;
-  }).join(', ');
-
-  if (!types.some(function (expected) { return type(obj) === expected; })) {
-    throw new AssertionError(
-      'object tested must be ' + str + ', but ' + type(obj) + ' given'
-    );
-  }
-};
-
-},{"./flag":13,"assertion-error":30,"type-detect":35}],13:[function(require,module,exports){
-/*!
- * Chai - flag utility
- * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
- * MIT Licensed
- */
-
-/**
- * ### flag(object, key, [value])
- *
- * Get or set a flag value on an object. If a
- * value is provided it will be set, else it will
- * return the currently set value or `undefined` if
- * the value is not set.
- *
- *     utils.flag(this, 'foo', 'bar'); // setter
- *     utils.flag(this, 'foo'); // getter, returns `bar`
- *
- * @param {Object} object constructed Assertion
- * @param {String} key
- * @param {Mixed} value (optional)
- * @namespace Utils
- * @name flag
- * @api private
- */
-
-module.exports = function (obj, key, value) {
-  var flags = obj.__flags || (obj.__flags = Object.create(null));
-  if (arguments.length === 3) {
-    flags[key] = value;
-  } else {
-    return flags[key];
-  }
-};
-
-},{}],14:[function(require,module,exports){
-/*!
- * Chai - getActual utility
- * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
- * MIT Licensed
- */
-
-/**
- * # getActual(object, [actual])
- *
- * Returns the `actual` value for an Assertion
- *
- * @param {Object} object (constructed Assertion)
- * @param {Arguments} chai.Assertion.prototype.assert arguments
- * @namespace Utils
- * @name getActual
- */
-
-module.exports = function (obj, args) {
-  return args.length > 4 ? args[4] : obj._obj;
-};
-
-},{}],15:[function(require,module,exports){
-/*!
- * Chai - getEnumerableProperties utility
- * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
- * MIT Licensed
- */
-
-/**
- * ### .getEnumerableProperties(object)
- *
- * This allows the retrieval of enumerable property names of an object,
- * inherited or not.
- *
- * @param {Object} object
- * @returns {Array}
- * @namespace Utils
- * @name getEnumerableProperties
- * @api public
- */
-
-module.exports = function getEnumerableProperties(object) {
-  var result = [];
-  for (var name in object) {
-    result.push(name);
-  }
-  return result;
-};
-
-},{}],16:[function(require,module,exports){
-/*!
- * Chai - message composition utility
- * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
- * MIT Licensed
- */
-
-/*!
- * Module dependancies
- */
-
-var flag = require('./flag')
-  , getActual = require('./getActual')
-  , inspect = require('./inspect')
-  , objDisplay = require('./objDisplay');
-
-/**
- * ### .getMessage(object, message, negateMessage)
- *
- * Construct the error message based on flags
- * and template tags. Template tags will return
- * a stringified inspection of the object referenced.
- *
- * Message template tags:
- * - `#{this}` current asserted object
- * - `#{act}` actual value
- * - `#{exp}` expected value
- *
- * @param {Object} object (constructed Assertion)
- * @param {Arguments} chai.Assertion.prototype.assert arguments
- * @namespace Utils
- * @name getMessage
- * @api public
- */
-
-module.exports = function (obj, args) {
-  var negate = flag(obj, 'negate')
-    , val = flag(obj, 'object')
-    , expected = args[3]
-    , actual = getActual(obj, args)
-    , msg = negate ? args[2] : args[1]
-    , flagMsg = flag(obj, 'message');
-
-  if(typeof msg === "function") msg = msg();
-  msg = msg || '';
-  msg = msg
-    .replace(/#\{this\}/g, function () { return objDisplay(val); })
-    .replace(/#\{act\}/g, function () { return objDisplay(actual); })
-    .replace(/#\{exp\}/g, function () { return objDisplay(expected); });
-
-  return flagMsg ? flagMsg + ': ' + msg : msg;
-};
-
-},{"./flag":13,"./getActual":14,"./inspect":23,"./objDisplay":24}],17:[function(require,module,exports){
-/*!
- * Chai - getName utility
- * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
- * MIT Licensed
- */
-
-/**
- * # getName(func)
- *
- * Gets the name of a function, in a cross-browser way.
- *
- * @param {Function} a function (usually a constructor)
- * @namespace Utils
- * @name getName
- */
-
-module.exports = function (func) {
-  if (func.name) return func.name;
-
-  var match = /^\s?function ([^(]*)\(/.exec(func);
-  return match && match[1] ? match[1] : "";
-};
-
-},{}],18:[function(require,module,exports){
-/*!
- * Chai - getPathInfo utility
- * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
- * MIT Licensed
- */
-
-var hasProperty = require('./hasProperty');
-
-/**
- * ### .getPathInfo(path, object)
- *
- * This allows the retrieval of property info in an
- * object given a string path.
- *
- * The path info consists of an object with the
- * following properties:
- *
- * * parent - The parent object of the property referenced by `path`
- * * name - The name of the final property, a number if it was an array indexer
- * * value - The value of the property, if it exists, otherwise `undefined`
- * * exists - Whether the property exists or not
- *
- * @param {String} path
- * @param {Object} object
- * @returns {Object} info
- * @namespace Utils
- * @name getPathInfo
- * @api public
- */
-
-module.exports = function getPathInfo(path, obj) {
-  var parsed = parsePath(path),
-      last = parsed[parsed.length - 1];
-
-  var info = {
-    parent: parsed.length > 1 ? _getPathValue(parsed, obj, parsed.length - 1) : obj,
-    name: last.p || last.i,
-    value: _getPathValue(parsed, obj)
-  };
-  info.exists = hasProperty(info.name, info.parent);
-
-  return info;
-};
-
-
-/*!
- * ## parsePath(path)
- *
- * Helper function used to parse string object
- * paths. Use in conjunction with `_getPathValue`.
- *
- *      var parsed = parsePath('myobject.property.subprop');
- *
- * ### Paths:
- *
- * * Can be as near infinitely deep and nested
- * * Arrays are also valid using the formal `myobject.document[3].property`.
- * * Literal dots and brackets (not delimiter) must be backslash-escaped.
- *
- * @param {String} path
- * @returns {Object} parsed
- * @api private
- */
-
-function parsePath (path) {
-  var str = path.replace(/([^\\])\[/g, '$1.[')
-    , parts = str.match(/(\\\.|[^.]+?)+/g);
-  return parts.map(function (value) {
-    var re = /^\[(\d+)\]$/
-      , mArr = re.exec(value);
-    if (mArr) return { i: parseFloat(mArr[1]) };
-    else return { p: value.replace(/\\([.\[\]])/g, '$1') };
-  });
-}
-
-
-/*!
- * ## _getPathValue(parsed, obj)
- *
- * Helper companion function for `.parsePath` that returns
- * the value located at the parsed address.
- *
- *      var value = getPathValue(parsed, obj);
- *
- * @param {Object} parsed definition from `parsePath`.
- * @param {Object} object to search against
- * @param {Number} object to search against
- * @returns {Object|Undefined} value
- * @api private
- */
-
-function _getPathValue (parsed, obj, index) {
-  var tmp = obj
-    , res;
-
-  index = (index === undefined ? parsed.length : index);
-
-  for (var i = 0, l = index; i < l; i++) {
-    var part = parsed[i];
-    if (tmp) {
-      if ('undefined' !== typeof part.p)
-        tmp = tmp[part.p];
-      else if ('undefined' !== typeof part.i)
-        tmp = tmp[part.i];
-      if (i == (l - 1)) res = tmp;
-    } else {
-      res = undefined;
-    }
-  }
-  return res;
-}
-
-},{"./hasProperty":21}],19:[function(require,module,exports){
-/*!
- * Chai - getPathValue utility
- * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
- * @see https://github.com/logicalparadox/filtr
- * MIT Licensed
- */
-
-var getPathInfo = require('./getPathInfo');
-
-/**
- * ### .getPathValue(path, object)
- *
- * This allows the retrieval of values in an
- * object given a string path.
- *
- *     var obj = {
- *         prop1: {
- *             arr: ['a', 'b', 'c']
- *           , str: 'Hello'
- *         }
- *       , prop2: {
- *             arr: [ { nested: 'Universe' } ]
- *           , str: 'Hello again!'
- *         }
- *     }
- *
- * The following would be the results.
- *
- *     getPathValue('prop1.str', obj); // Hello
- *     getPathValue('prop1.att[2]', obj); // b
- *     getPathValue('prop2.arr[0].nested', obj); // Universe
- *
- * @param {String} path
- * @param {Object} object
- * @returns {Object} value or `undefined`
- * @namespace Utils
- * @name getPathValue
- * @api public
- */
-module.exports = function(path, obj) {
-  var info = getPathInfo(path, obj);
-  return info.value;
-};
-
-},{"./getPathInfo":18}],20:[function(require,module,exports){
-/*!
- * Chai - getProperties utility
- * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
- * MIT Licensed
- */
-
-/**
- * ### .getProperties(object)
- *
- * This allows the retrieval of property names of an object, enumerable or not,
- * inherited or not.
- *
- * @param {Object} object
- * @returns {Array}
- * @namespace Utils
- * @name getProperties
- * @api public
- */
-
-module.exports = function getProperties(object) {
-  var result = Object.getOwnPropertyNames(object);
-
-  function addProperty(property) {
-    if (result.indexOf(property) === -1) {
-      result.push(property);
-    }
-  }
-
-  var proto = Object.getPrototypeOf(object);
-  while (proto !== null) {
-    Object.getOwnPropertyNames(proto).forEach(addProperty);
-    proto = Object.getPrototypeOf(proto);
-  }
-
-  return result;
-};
-
-},{}],21:[function(require,module,exports){
-/*!
- * Chai - hasProperty utility
- * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
- * MIT Licensed
- */
-
-var type = require('type-detect');
-
-/**
- * ### .hasProperty(object, name)
- *
- * This allows checking whether an object has
- * named property or numeric array index.
- *
- * Basically does the same thing as the `in`
- * operator but works properly with natives
- * and null/undefined values.
- *
- *     var obj = {
- *         arr: ['a', 'b', 'c']
- *       , str: 'Hello'
- *     }
- *
- * The following would be the results.
- *
- *     hasProperty('str', obj);  // true
- *     hasProperty('constructor', obj);  // true
- *     hasProperty('bar', obj);  // false
- *
- *     hasProperty('length', obj.str); // true
- *     hasProperty(1, obj.str);  // true
- *     hasProperty(5, obj.str);  // false
- *
- *     hasProperty('length', obj.arr);  // true
- *     hasProperty(2, obj.arr);  // true
- *     hasProperty(3, obj.arr);  // false
- *
- * @param {Objuect} object
- * @param {String|Number} name
- * @returns {Boolean} whether it exists
- * @namespace Utils
- * @name getPathInfo
- * @api public
- */
-
-var literals = {
-    'number': Number
-  , 'string': String
-};
-
-module.exports = function hasProperty(name, obj) {
-  var ot = type(obj);
-
-  // Bad Object, obviously no props at all
-  if(ot === 'null' || ot === 'undefined')
-    return false;
-
-  // The `in` operator does not work with certain literals
-  // box these before the check
-  if(literals[ot] && typeof obj !== 'object')
-    obj = new literals[ot](obj);
-
-  return name in obj;
-};
-
-},{"type-detect":35}],22:[function(require,module,exports){
-/*!
- * chai
- * Copyright(c) 2011 Jake Luer <jake@alogicalparadox.com>
- * MIT Licensed
- */
-
-/*!
- * Main exports
- */
-
-var exports = module.exports = {};
-
-/*!
- * test utility
- */
-
-exports.test = require('./test');
-
-/*!
- * type utility
- */
-
-exports.type = require('type-detect');
-
-/*!
- * expectTypes utility
- */
-exports.expectTypes = require('./expectTypes');
-
-/*!
- * message utility
- */
-
-exports.getMessage = require('./getMessage');
-
-/*!
- * actual utility
- */
-
-exports.getActual = require('./getActual');
-
-/*!
- * Inspect util
- */
-
-exports.inspect = require('./inspect');
-
-/*!
- * Object Display util
- */
-
-exports.objDisplay = require('./objDisplay');
-
-/*!
- * Flag utility
- */
-
-exports.flag = require('./flag');
-
-/*!
- * Flag transferring utility
- */
-
-exports.transferFlags = require('./transferFlags');
-
-/*!
- * Deep equal utility
- */
-
-exports.eql = require('deep-eql');
-
-/*!
- * Deep path value
- */
-
-exports.getPathValue = require('./getPathValue');
-
-/*!
- * Deep path info
- */
-
-exports.getPathInfo = require('./getPathInfo');
-
-/*!
- * Check if a property exists
- */
-
-exports.hasProperty = require('./hasProperty');
-
-/*!
- * Function name
- */
-
-exports.getName = require('./getName');
-
-/*!
- * add Property
- */
-
-exports.addProperty = require('./addProperty');
-
-/*!
- * add Method
- */
-
-exports.addMethod = require('./addMethod');
-
-/*!
- * overwrite Property
- */
-
-exports.overwriteProperty = require('./overwriteProperty');
-
-/*!
- * overwrite Method
- */
-
-exports.overwriteMethod = require('./overwriteMethod');
-
-/*!
- * Add a chainable method
- */
-
-exports.addChainableMethod = require('./addChainableMethod');
-
-/*!
- * Overwrite chainable method
- */
-
-exports.overwriteChainableMethod = require('./overwriteChainableMethod');
-
-},{"./addChainableMethod":9,"./addMethod":10,"./addProperty":11,"./expectTypes":12,"./flag":13,"./getActual":14,"./getMessage":16,"./getName":17,"./getPathInfo":18,"./getPathValue":19,"./hasProperty":21,"./inspect":23,"./objDisplay":24,"./overwriteChainableMethod":25,"./overwriteMethod":26,"./overwriteProperty":27,"./test":28,"./transferFlags":29,"deep-eql":31,"type-detect":35}],23:[function(require,module,exports){
-// This is (almost) directly from Node.js utils
-// https://github.com/joyent/node/blob/f8c335d0caf47f16d31413f89aa28eda3878e3aa/lib/util.js
-
-var getName = require('./getName');
-var getProperties = require('./getProperties');
-var getEnumerableProperties = require('./getEnumerableProperties');
-
-module.exports = inspect;
-
-/**
- * Echos the value of a value. Trys to print the value out
- * in the best way possible given the different types.
- *
- * @param {Object} obj The object to print out.
- * @param {Boolean} showHidden Flag that shows hidden (not enumerable)
- *    properties of objects.
- * @param {Number} depth Depth in which to descend in object. Default is 2.
- * @param {Boolean} colors Flag to turn on ANSI escape codes to color the
- *    output. Default is false (no coloring).
- * @namespace Utils
- * @name inspect
- */
-function inspect(obj, showHidden, depth, colors) {
-  var ctx = {
-    showHidden: showHidden,
-    seen: [],
-    stylize: function (str) { return str; }
-  };
-  return formatValue(ctx, obj, (typeof depth === 'undefined' ? 2 : depth));
-}
-
-// Returns true if object is a DOM element.
-var isDOMElement = function (object) {
-  if (typeof HTMLElement === 'object') {
-    return object instanceof HTMLElement;
-  } else {
-    return object &&
-      typeof object === 'object' &&
-      object.nodeType === 1 &&
-      typeof object.nodeName === 'string';
-  }
-};
-
-function formatValue(ctx, value, recurseTimes) {
-  // Provide a hook for user-specified inspect functions.
-  // Check that value is an object with an inspect function on it
-  if (value && typeof value.inspect === 'function' &&
-      // Filter out the util module, it's inspect function is special
-      value.inspect !== exports.inspect &&
-      // Also filter out any prototype objects using the circular check.
-      !(value.constructor && value.constructor.prototype === value)) {
-    var ret = value.inspect(recurseTimes);
-    if (typeof ret !== 'string') {
-      ret = formatValue(ctx, ret, recurseTimes);
-    }
-    return ret;
-  }
-
-  // Primitive types cannot have properties
-  var primitive = formatPrimitive(ctx, value);
-  if (primitive) {
-    return primitive;
-  }
-
-  // If this is a DOM element, try to get the outer HTML.
-  if (isDOMElement(value)) {
-    if ('outerHTML' in value) {
-      return value.outerHTML;
-      // This value does not have an outerHTML attribute,
-      //   it could still be an XML element
-    } else {
-      // Attempt to serialize it
-      try {
-        if (document.xmlVersion) {
-          var xmlSerializer = new XMLSerializer();
-          return xmlSerializer.serializeToString(value);
-        } else {
-          // Firefox 11- do not support outerHTML
-          //   It does, however, support innerHTML
-          //   Use the following to render the element
-          var ns = "http://www.w3.org/1999/xhtml";
-          var container = document.createElementNS(ns, '_');
-
-          container.appendChild(value.cloneNode(false));
-          html = container.innerHTML
-            .replace('><', '>' + value.innerHTML + '<');
-          container.innerHTML = '';
-          return html;
-        }
-      } catch (err) {
-        // This could be a non-native DOM implementation,
-        //   continue with the normal flow:
-        //   printing the element as if it is an object.
-      }
-    }
-  }
-
-  // Look up the keys of the object.
-  var visibleKeys = getEnumerableProperties(value);
-  var keys = ctx.showHidden ? getProperties(value) : visibleKeys;
-
-  // Some type of object without properties can be shortcutted.
-  // In IE, errors have a single `stack` property, or if they are vanilla `Error`,
-  // a `stack` plus `description` property; ignore those for consistency.
-  if (keys.length === 0 || (isError(value) && (
-      (keys.length === 1 && keys[0] === 'stack') ||
-      (keys.length === 2 && keys[0] === 'description' && keys[1] === 'stack')
-     ))) {
-    if (typeof value === 'function') {
-      var name = getName(value);
-      var nameSuffix = name ? ': ' + name : '';
-      return ctx.stylize('[Function' + nameSuffix + ']', 'special');
-    }
-    if (isRegExp(value)) {
-      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
-    }
-    if (isDate(value)) {
-      return ctx.stylize(Date.prototype.toUTCString.call(value), 'date');
-    }
-    if (isError(value)) {
-      return formatError(value);
-    }
-  }
-
-  var base = '', array = false, braces = ['{', '}'];
-
-  // Make Array say that they are Array
-  if (isArray(value)) {
-    array = true;
-    braces = ['[', ']'];
-  }
-
-  // Make functions say that they are functions
-  if (typeof value === 'function') {
-    var name = getName(value);
-    var nameSuffix = name ? ': ' + name : '';
-    base = ' [Function' + nameSuffix + ']';
-  }
-
-  // Make RegExps say that they are RegExps
-  if (isRegExp(value)) {
-    base = ' ' + RegExp.prototype.toString.call(value);
-  }
-
-  // Make dates with properties first say the date
-  if (isDate(value)) {
-    base = ' ' + Date.prototype.toUTCString.call(value);
-  }
-
-  // Make error with message first say the error
-  if (isError(value)) {
-    return formatError(value);
-  }
-
-  if (keys.length === 0 && (!array || value.length == 0)) {
-    return braces[0] + base + braces[1];
-  }
-
-  if (recurseTimes < 0) {
-    if (isRegExp(value)) {
-      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
-    } else {
-      return ctx.stylize('[Object]', 'special');
-    }
-  }
-
-  ctx.seen.push(value);
-
-  var output;
-  if (array) {
-    output = formatArray(ctx, value, recurseTimes, visibleKeys, keys);
-  } else {
-    output = keys.map(function(key) {
-      return formatProperty(ctx, value, recurseTimes, visibleKeys, key, array);
-    });
-  }
-
-  ctx.seen.pop();
-
-  return reduceToSingleString(output, base, braces);
-}
-
-
-function formatPrimitive(ctx, value) {
-  switch (typeof value) {
-    case 'undefined':
-      return ctx.stylize('undefined', 'undefined');
-
-    case 'string':
-      var simple = '\'' + JSON.stringify(value).replace(/^"|"$/g, '')
-                                               .replace(/'/g, "\\'")
-                                               .replace(/\\"/g, '"') + '\'';
-      return ctx.stylize(simple, 'string');
-
-    case 'number':
-      if (value === 0 && (1/value) === -Infinity) {
-        return ctx.stylize('-0', 'number');
-      }
-      return ctx.stylize('' + value, 'number');
-
-    case 'boolean':
-      return ctx.stylize('' + value, 'boolean');
-  }
-  // For some reason typeof null is "object", so special case here.
-  if (value === null) {
-    return ctx.stylize('null', 'null');
-  }
-}
-
-
-function formatError(value) {
-  return '[' + Error.prototype.toString.call(value) + ']';
-}
-
-
-function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
-  var output = [];
-  for (var i = 0, l = value.length; i < l; ++i) {
-    if (Object.prototype.hasOwnProperty.call(value, String(i))) {
-      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
-          String(i), true));
-    } else {
-      output.push('');
-    }
-  }
-  keys.forEach(function(key) {
-    if (!key.match(/^\d+$/)) {
-      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
-          key, true));
-    }
-  });
-  return output;
-}
-
-
-function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
-  var name, str;
-  if (value.__lookupGetter__) {
-    if (value.__lookupGetter__(key)) {
-      if (value.__lookupSetter__(key)) {
-        str = ctx.stylize('[Getter/Setter]', 'special');
-      } else {
-        str = ctx.stylize('[Getter]', 'special');
-      }
-    } else {
-      if (value.__lookupSetter__(key)) {
-        str = ctx.stylize('[Setter]', 'special');
-      }
-    }
-  }
-  if (visibleKeys.indexOf(key) < 0) {
-    name = '[' + key + ']';
-  }
-  if (!str) {
-    if (ctx.seen.indexOf(value[key]) < 0) {
-      if (recurseTimes === null) {
-        str = formatValue(ctx, value[key], null);
-      } else {
-        str = formatValue(ctx, value[key], recurseTimes - 1);
-      }
-      if (str.indexOf('\n') > -1) {
-        if (array) {
-          str = str.split('\n').map(function(line) {
-            return '  ' + line;
-          }).join('\n').substr(2);
-        } else {
-          str = '\n' + str.split('\n').map(function(line) {
-            return '   ' + line;
-          }).join('\n');
-        }
-      }
-    } else {
-      str = ctx.stylize('[Circular]', 'special');
-    }
-  }
-  if (typeof name === 'undefined') {
-    if (array && key.match(/^\d+$/)) {
-      return str;
-    }
-    name = JSON.stringify('' + key);
-    if (name.match(/^"([a-zA-Z_][a-zA-Z_0-9]*)"$/)) {
-      name = name.substr(1, name.length - 2);
-      name = ctx.stylize(name, 'name');
-    } else {
-      name = name.replace(/'/g, "\\'")
-                 .replace(/\\"/g, '"')
-                 .replace(/(^"|"$)/g, "'");
-      name = ctx.stylize(name, 'string');
-    }
-  }
-
-  return name + ': ' + str;
-}
-
-
-function reduceToSingleString(output, base, braces) {
-  var numLinesEst = 0;
-  var length = output.reduce(function(prev, cur) {
-    numLinesEst++;
-    if (cur.indexOf('\n') >= 0) numLinesEst++;
-    return prev + cur.length + 1;
-  }, 0);
-
-  if (length > 60) {
-    return braces[0] +
-           (base === '' ? '' : base + '\n ') +
-           ' ' +
-           output.join(',\n  ') +
-           ' ' +
-           braces[1];
-  }
-
-  return braces[0] + base + ' ' + output.join(', ') + ' ' + braces[1];
-}
-
-function isArray(ar) {
-  return Array.isArray(ar) ||
-         (typeof ar === 'object' && objectToString(ar) === '[object Array]');
-}
-
-function isRegExp(re) {
-  return typeof re === 'object' && objectToString(re) === '[object RegExp]';
-}
-
-function isDate(d) {
-  return typeof d === 'object' && objectToString(d) === '[object Date]';
-}
-
-function isError(e) {
-  return typeof e === 'object' && objectToString(e) === '[object Error]';
-}
-
-function objectToString(o) {
-  return Object.prototype.toString.call(o);
-}
-
-},{"./getEnumerableProperties":15,"./getName":17,"./getProperties":20}],24:[function(require,module,exports){
-/*!
- * Chai - flag utility
- * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
- * MIT Licensed
- */
-
-/*!
- * Module dependancies
- */
-
-var inspect = require('./inspect');
-var config = require('../config');
-
-/**
- * ### .objDisplay (object)
- *
- * Determines if an object or an array matches
- * criteria to be inspected in-line for error
- * messages or should be truncated.
- *
- * @param {Mixed} javascript object to inspect
- * @name objDisplay
- * @namespace Utils
- * @api public
- */
-
-module.exports = function (obj) {
-  var str = inspect(obj)
-    , type = Object.prototype.toString.call(obj);
-
-  if (config.truncateThreshold && str.length >= config.truncateThreshold) {
-    if (type === '[object Function]') {
-      return !obj.name || obj.name === ''
-        ? '[Function]'
-        : '[Function: ' + obj.name + ']';
-    } else if (type === '[object Array]') {
-      return '[ Array(' + obj.length + ') ]';
-    } else if (type === '[object Object]') {
-      var keys = Object.keys(obj)
-        , kstr = keys.length > 2
-          ? keys.splice(0, 2).join(', ') + ', ...'
-          : keys.join(', ');
-      return '{ Object (' + kstr + ') }';
-    } else {
-      return str;
-    }
-  } else {
-    return str;
-  }
-};
-
-},{"../config":4,"./inspect":23}],25:[function(require,module,exports){
-/*!
- * Chai - overwriteChainableMethod utility
- * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
- * MIT Licensed
- */
-
-/**
- * ### overwriteChainableMethod (ctx, name, method, chainingBehavior)
- *
- * Overwites an already existing chainable method
- * and provides access to the previous function or
- * property.  Must return functions to be used for
- * name.
- *
- *     utils.overwriteChainableMethod(chai.Assertion.prototype, 'length',
- *       function (_super) {
- *       }
- *     , function (_super) {
- *       }
- *     );
- *
- * Can also be accessed directly from `chai.Assertion`.
- *
- *     chai.Assertion.overwriteChainableMethod('foo', fn, fn);
- *
- * Then can be used as any other assertion.
- *
- *     expect(myFoo).to.have.length(3);
- *     expect(myFoo).to.have.length.above(3);
- *
- * @param {Object} ctx object whose method / property is to be overwritten
- * @param {String} name of method / property to overwrite
- * @param {Function} method function that returns a function to be used for name
- * @param {Function} chainingBehavior function that returns a function to be used for property
- * @namespace Utils
- * @name overwriteChainableMethod
- * @api public
- */
-
-module.exports = function (ctx, name, method, chainingBehavior) {
-  var chainableBehavior = ctx.__methods[name];
-
-  var _chainingBehavior = chainableBehavior.chainingBehavior;
-  chainableBehavior.chainingBehavior = function () {
-    var result = chainingBehavior(_chainingBehavior).call(this);
-    return result === undefined ? this : result;
-  };
-
-  var _method = chainableBehavior.method;
-  chainableBehavior.method = function () {
-    var result = method(_method).apply(this, arguments);
-    return result === undefined ? this : result;
-  };
-};
-
-},{}],26:[function(require,module,exports){
-/*!
- * Chai - overwriteMethod utility
- * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
- * MIT Licensed
- */
-
-/**
- * ### overwriteMethod (ctx, name, fn)
- *
- * Overwites an already existing method and provides
- * access to previous function. Must return function
- * to be used for name.
- *
- *     utils.overwriteMethod(chai.Assertion.prototype, 'equal', function (_super) {
- *       return function (str) {
- *         var obj = utils.flag(this, 'object');
- *         if (obj instanceof Foo) {
- *           new chai.Assertion(obj.value).to.equal(str);
- *         } else {
- *           _super.apply(this, arguments);
- *         }
- *       }
- *     });
- *
- * Can also be accessed directly from `chai.Assertion`.
- *
- *     chai.Assertion.overwriteMethod('foo', fn);
- *
- * Then can be used as any other assertion.
- *
- *     expect(myFoo).to.equal('bar');
- *
- * @param {Object} ctx object whose method is to be overwritten
- * @param {String} name of method to overwrite
- * @param {Function} method function that returns a function to be used for name
- * @namespace Utils
- * @name overwriteMethod
- * @api public
- */
-
-module.exports = function (ctx, name, method) {
-  var _method = ctx[name]
-    , _super = function () { return this; };
-
-  if (_method && 'function' === typeof _method)
-    _super = _method;
-
-  ctx[name] = function () {
-    var result = method(_super).apply(this, arguments);
-    return result === undefined ? this : result;
-  }
-};
-
-},{}],27:[function(require,module,exports){
-/*!
- * Chai - overwriteProperty utility
- * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
- * MIT Licensed
- */
-
-/**
- * ### overwriteProperty (ctx, name, fn)
- *
- * Overwites an already existing property getter and provides
- * access to previous value. Must return function to use as getter.
- *
- *     utils.overwriteProperty(chai.Assertion.prototype, 'ok', function (_super) {
- *       return function () {
- *         var obj = utils.flag(this, 'object');
- *         if (obj instanceof Foo) {
- *           new chai.Assertion(obj.name).to.equal('bar');
- *         } else {
- *           _super.call(this);
- *         }
- *       }
- *     });
- *
- *
- * Can also be accessed directly from `chai.Assertion`.
- *
- *     chai.Assertion.overwriteProperty('foo', fn);
- *
- * Then can be used as any other assertion.
- *
- *     expect(myFoo).to.be.ok;
- *
- * @param {Object} ctx object whose property is to be overwritten
- * @param {String} name of property to overwrite
- * @param {Function} getter function that returns a getter function to be used for name
- * @namespace Utils
- * @name overwriteProperty
- * @api public
- */
-
-module.exports = function (ctx, name, getter) {
-  var _get = Object.getOwnPropertyDescriptor(ctx, name)
-    , _super = function () {};
-
-  if (_get && 'function' === typeof _get.get)
-    _super = _get.get
-
-  Object.defineProperty(ctx, name,
-    { get: function () {
-        var result = getter(_super).call(this);
-        return result === undefined ? this : result;
-      }
-    , configurable: true
-  });
-};
-
-},{}],28:[function(require,module,exports){
-/*!
- * Chai - test utility
- * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
- * MIT Licensed
- */
-
-/*!
- * Module dependancies
- */
-
-var flag = require('./flag');
-
-/**
- * # test(object, expression)
- *
- * Test and object for expression.
- *
- * @param {Object} object (constructed Assertion)
- * @param {Arguments} chai.Assertion.prototype.assert arguments
- * @namespace Utils
- * @name test
- */
-
-module.exports = function (obj, args) {
-  var negate = flag(obj, 'negate')
-    , expr = args[0];
-  return negate ? !expr : expr;
-};
-
-},{"./flag":13}],29:[function(require,module,exports){
-/*!
- * Chai - transferFlags utility
- * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
- * MIT Licensed
- */
-
-/**
- * ### transferFlags(assertion, object, includeAll = true)
- *
- * Transfer all the flags for `assertion` to `object`. If
- * `includeAll` is set to `false`, then the base Chai
- * assertion flags (namely `object`, `ssfi`, and `message`)
- * will not be transferred.
- *
- *
- *     var newAssertion = new Assertion();
- *     utils.transferFlags(assertion, newAssertion);
- *
- *     var anotherAsseriton = new Assertion(myObj);
- *     utils.transferFlags(assertion, anotherAssertion, false);
- *
- * @param {Assertion} assertion the assertion to transfer the flags from
- * @param {Object} object the object to transfer the flags to; usually a new assertion
- * @param {Boolean} includeAll
- * @namespace Utils
- * @name transferFlags
- * @api private
- */
-
-module.exports = function (assertion, object, includeAll) {
-  var flags = assertion.__flags || (assertion.__flags = Object.create(null));
-
-  if (!object.__flags) {
-    object.__flags = Object.create(null);
-  }
-
-  includeAll = arguments.length === 3 ? includeAll : true;
-
-  for (var flag in flags) {
-    if (includeAll ||
-        (flag !== 'object' && flag !== 'ssfi' && flag != 'message')) {
-      object.__flags[flag] = flags[flag];
-    }
-  }
-};
-
-},{}],30:[function(require,module,exports){
-/*!
- * assertion-error
- * Copyright(c) 2013 Jake Luer <jake@qualiancy.com>
- * MIT Licensed
- */
-
-/*!
- * Return a function that will copy properties from
- * one object to another excluding any originally
- * listed. Returned function will create a new `{}`.
- *
- * @param {String} excluded properties ...
- * @return {Function}
- */
-
-function exclude () {
-  var excludes = [].slice.call(arguments);
-
-  function excludeProps (res, obj) {
-    Object.keys(obj).forEach(function (key) {
-      if (!~excludes.indexOf(key)) res[key] = obj[key];
-    });
-  }
-
-  return function extendExclude () {
-    var args = [].slice.call(arguments)
-      , i = 0
-      , res = {};
-
-    for (; i < args.length; i++) {
-      excludeProps(res, args[i]);
-    }
-
-    return res;
-  };
-};
-
-/*!
- * Primary Exports
- */
-
-module.exports = AssertionError;
-
-/**
- * ### AssertionError
- *
- * An extension of the JavaScript `Error` constructor for
- * assertion and validation scenarios.
- *
- * @param {String} message
- * @param {Object} properties to include (optional)
- * @param {callee} start stack function (optional)
- */
-
-function AssertionError (message, _props, ssf) {
-  var extend = exclude('name', 'message', 'stack', 'constructor', 'toJSON')
-    , props = extend(_props || {});
-
-  // default values
-  this.message = message || 'Unspecified AssertionError';
-  this.showDiff = false;
-
-  // copy from properties
-  for (var key in props) {
-    this[key] = props[key];
-  }
-
-  // capture stack trace
-  ssf = ssf || arguments.callee;
-  if (ssf && Error.captureStackTrace) {
-    Error.captureStackTrace(this, ssf);
-  } else {
-    this.stack = new Error().stack;
-  }
-}
-
-/*!
- * Inherit from Error.prototype
- */
-
-AssertionError.prototype = Object.create(Error.prototype);
-
-/*!
- * Statically set name
- */
-
-AssertionError.prototype.name = 'AssertionError';
-
-/*!
- * Ensure correct constructor
- */
-
-AssertionError.prototype.constructor = AssertionError;
-
-/**
- * Allow errors to be converted to JSON for static transfer.
- *
- * @param {Boolean} include stack (default: `true`)
- * @return {Object} object that can be `JSON.stringify`
- */
-
-AssertionError.prototype.toJSON = function (stack) {
-  var extend = exclude('constructor', 'toJSON', 'stack')
-    , props = extend({ name: this.name }, this);
-
-  // include stack if exists and not turned off
-  if (false !== stack && this.stack) {
-    props.stack = this.stack;
-  }
-
-  return props;
-};
-
-},{}],31:[function(require,module,exports){
-module.exports = require('./lib/eql');
-
-},{"./lib/eql":32}],32:[function(require,module,exports){
-/*!
- * deep-eql
- * Copyright(c) 2013 Jake Luer <jake@alogicalparadox.com>
- * MIT Licensed
- */
-
-/*!
- * Module dependencies
- */
-
-var type = require('type-detect');
-
-/*!
- * Buffer.isBuffer browser shim
- */
-
-var Buffer;
-try { Buffer = require('buffer').Buffer; }
-catch(ex) {
-  Buffer = {};
-  Buffer.isBuffer = function() { return false; }
-}
-
-/*!
- * Primary Export
- */
-
-module.exports = deepEqual;
-
-/**
- * Assert super-strict (egal) equality between
- * two objects of any type.
- *
- * @param {Mixed} a
- * @param {Mixed} b
- * @param {Array} memoised (optional)
- * @return {Boolean} equal match
- */
-
-function deepEqual(a, b, m) {
-  if (sameValue(a, b)) {
-    return true;
-  } else if ('date' === type(a)) {
-    return dateEqual(a, b);
-  } else if ('regexp' === type(a)) {
-    return regexpEqual(a, b);
-  } else if (Buffer.isBuffer(a)) {
-    return bufferEqual(a, b);
-  } else if ('arguments' === type(a)) {
-    return argumentsEqual(a, b, m);
-  } else if (!typeEqual(a, b)) {
-    return false;
-  } else if (('object' !== type(a) && 'object' !== type(b))
-  && ('array' !== type(a) && 'array' !== type(b))) {
-    return sameValue(a, b);
-  } else {
-    return objectEqual(a, b, m);
-  }
-}
-
-/*!
- * Strict (egal) equality test. Ensures that NaN always
- * equals NaN and `-0` does not equal `+0`.
- *
- * @param {Mixed} a
- * @param {Mixed} b
- * @return {Boolean} equal match
- */
-
-function sameValue(a, b) {
-  if (a === b) return a !== 0 || 1 / a === 1 / b;
-  return a !== a && b !== b;
-}
-
-/*!
- * Compare the types of two given objects and
- * return if they are equal. Note that an Array
- * has a type of `array` (not `object`) and arguments
- * have a type of `arguments` (not `array`/`object`).
- *
- * @param {Mixed} a
- * @param {Mixed} b
- * @return {Boolean} result
- */
-
-function typeEqual(a, b) {
-  return type(a) === type(b);
-}
-
-/*!
- * Compare two Date objects by asserting that
- * the time values are equal using `saveValue`.
- *
- * @param {Date} a
- * @param {Date} b
- * @return {Boolean} result
- */
-
-function dateEqual(a, b) {
-  if ('date' !== type(b)) return false;
-  return sameValue(a.getTime(), b.getTime());
-}
-
-/*!
- * Compare two regular expressions by converting them
- * to string and checking for `sameValue`.
- *
- * @param {RegExp} a
- * @param {RegExp} b
- * @return {Boolean} result
- */
-
-function regexpEqual(a, b) {
-  if ('regexp' !== type(b)) return false;
-  return sameValue(a.toString(), b.toString());
-}
-
-/*!
- * Assert deep equality of two `arguments` objects.
- * Unfortunately, these must be sliced to arrays
- * prior to test to ensure no bad behavior.
- *
- * @param {Arguments} a
- * @param {Arguments} b
- * @param {Array} memoize (optional)
- * @return {Boolean} result
- */
-
-function argumentsEqual(a, b, m) {
-  if ('arguments' !== type(b)) return false;
-  a = [].slice.call(a);
-  b = [].slice.call(b);
-  return deepEqual(a, b, m);
-}
-
-/*!
- * Get enumerable properties of a given object.
- *
- * @param {Object} a
- * @return {Array} property names
- */
-
-function enumerable(a) {
-  var res = [];
-  for (var key in a) res.push(key);
-  return res;
-}
-
-/*!
- * Simple equality for flat iterable objects
- * such as Arrays or Node.js buffers.
- *
- * @param {Iterable} a
- * @param {Iterable} b
- * @return {Boolean} result
- */
-
-function iterableEqual(a, b) {
-  if (a.length !==  b.length) return false;
-
-  var i = 0;
-  var match = true;
-
-  for (; i < a.length; i++) {
-    if (a[i] !== b[i]) {
-      match = false;
-      break;
-    }
-  }
-
-  return match;
-}
-
-/*!
- * Extension to `iterableEqual` specifically
- * for Node.js Buffers.
- *
- * @param {Buffer} a
- * @param {Mixed} b
- * @return {Boolean} result
- */
-
-function bufferEqual(a, b) {
-  if (!Buffer.isBuffer(b)) return false;
-  return iterableEqual(a, b);
-}
-
-/*!
- * Block for `objectEqual` ensuring non-existing
- * values don't get in.
- *
- * @param {Mixed} object
- * @return {Boolean} result
- */
-
-function isValue(a) {
-  return a !== null && a !== undefined;
-}
-
-/*!
- * Recursively check the equality of two objects.
- * Once basic sameness has been established it will
- * defer to `deepEqual` for each enumerable key
- * in the object.
- *
- * @param {Mixed} a
- * @param {Mixed} b
- * @return {Boolean} result
- */
-
-function objectEqual(a, b, m) {
-  if (!isValue(a) || !isValue(b)) {
-    return false;
-  }
-
-  if (a.prototype !== b.prototype) {
-    return false;
-  }
-
-  var i;
-  if (m) {
-    for (i = 0; i < m.length; i++) {
-      if ((m[i][0] === a && m[i][1] === b)
-      ||  (m[i][0] === b && m[i][1] === a)) {
-        return true;
-      }
-    }
-  } else {
-    m = [];
-  }
-
-  try {
-    var ka = enumerable(a);
-    var kb = enumerable(b);
-  } catch (ex) {
-    return false;
-  }
-
-  ka.sort();
-  kb.sort();
-
-  if (!iterableEqual(ka, kb)) {
-    return false;
-  }
-
-  m.push([ a, b ]);
-
-  var key;
-  for (i = ka.length - 1; i >= 0; i--) {
-    key = ka[i];
-    if (!deepEqual(a[key], b[key], m)) {
-      return false;
-    }
-  }
-
-  return true;
-}
-
-},{"buffer":undefined,"type-detect":33}],33:[function(require,module,exports){
-module.exports = require('./lib/type');
-
-},{"./lib/type":34}],34:[function(require,module,exports){
-/*!
- * type-detect
- * Copyright(c) 2013 jake luer <jake@alogicalparadox.com>
- * MIT Licensed
- */
-
-/*!
- * Primary Exports
- */
-
-var exports = module.exports = getType;
-
-/*!
- * Detectable javascript natives
- */
-
-var natives = {
-    '[object Array]': 'array'
-  , '[object RegExp]': 'regexp'
-  , '[object Function]': 'function'
-  , '[object Arguments]': 'arguments'
-  , '[object Date]': 'date'
-};
-
-/**
- * ### typeOf (obj)
- *
- * Use several different techniques to determine
- * the type of object being tested.
- *
- *
- * @param {Mixed} object
- * @return {String} object type
- * @api public
- */
-
-function getType (obj) {
-  var str = Object.prototype.toString.call(obj);
-  if (natives[str]) return natives[str];
-  if (obj === null) return 'null';
-  if (obj === undefined) return 'undefined';
-  if (obj === Object(obj)) return 'object';
-  return typeof obj;
-}
-
-exports.Library = Library;
-
-/**
- * ### Library
- *
- * Create a repository for custom type detection.
- *
- * ```js
- * var lib = new type.Library;
- * ```
- *
- */
-
-function Library () {
-  this.tests = {};
-}
-
-/**
- * #### .of (obj)
- *
- * Expose replacement `typeof` detection to the library.
- *
- * ```js
- * if ('string' === lib.of('hello world')) {
- *   // ...
- * }
- * ```
- *
- * @param {Mixed} object to test
- * @return {String} type
- */
-
-Library.prototype.of = getType;
-
-/**
- * #### .define (type, test)
- *
- * Add a test to for the `.test()` assertion.
- *
- * Can be defined as a regular expression:
- *
- * ```js
- * lib.define('int', /^[0-9]+$/);
- * ```
- *
- * ... or as a function:
- *
- * ```js
- * lib.define('bln', function (obj) {
- *   if ('boolean' === lib.of(obj)) return true;
- *   var blns = [ 'yes', 'no', 'true', 'false', 1, 0 ];
- *   if ('string' === lib.of(obj)) obj = obj.toLowerCase();
- *   return !! ~blns.indexOf(obj);
- * });
- * ```
- *
- * @param {String} type
- * @param {RegExp|Function} test
- * @api public
- */
-
-Library.prototype.define = function (type, test) {
-  if (arguments.length === 1) return this.tests[type];
-  this.tests[type] = test;
-  return this;
-};
-
-/**
- * #### .test (obj, test)
- *
- * Assert that an object is of type. Will first
- * check natives, and if that does not pass it will
- * use the user defined custom tests.
- *
- * ```js
- * assert(lib.test('1', 'int'));
- * assert(lib.test('yes', 'bln'));
- * ```
- *
- * @param {Mixed} object
- * @param {String} type
- * @return {Boolean} result
- * @api public
- */
-
-Library.prototype.test = function (obj, type) {
-  if (type === getType(obj)) return true;
-  var test = this.tests[type];
-
-  if (test && 'regexp' === getType(test)) {
-    return test.test(obj);
-  } else if (test && 'function' === getType(test)) {
-    return test(obj);
-  } else {
-    throw new ReferenceError('Type test "' + type + '" not defined or invalid.');
-  }
-};
-
-},{}],35:[function(require,module,exports){
-arguments[4][33][0].apply(exports,arguments)
-},{"./lib/type":36,"dup":33}],36:[function(require,module,exports){
-/*!
- * type-detect
- * Copyright(c) 2013 jake luer <jake@alogicalparadox.com>
- * MIT Licensed
- */
-
-/*!
- * Primary Exports
- */
-
-var exports = module.exports = getType;
-
-/**
- * ### typeOf (obj)
- *
- * Use several different techniques to determine
- * the type of object being tested.
- *
- *
- * @param {Mixed} object
- * @return {String} object type
- * @api public
- */
-var objectTypeRegexp = /^\[object (.*)\]$/;
-
-function getType(obj) {
-  var type = Object.prototype.toString.call(obj).match(objectTypeRegexp)[1].toLowerCase();
-  // Let "new String('')" return 'object'
-  if (typeof Promise === 'function' && obj instanceof Promise) return 'promise';
-  // PhantomJS has type "DOMWindow" for null
-  if (obj === null) return 'null';
-  // PhantomJS has type "DOMWindow" for undefined
-  if (obj === undefined) return 'undefined';
-  return type;
-}
-
-exports.Library = Library;
-
-/**
- * ### Library
- *
- * Create a repository for custom type detection.
- *
- * ```js
- * var lib = new type.Library;
- * ```
- *
- */
-
-function Library() {
-  if (!(this instanceof Library)) return new Library();
-  this.tests = {};
-}
-
-/**
- * #### .of (obj)
- *
- * Expose replacement `typeof` detection to the library.
- *
- * ```js
- * if ('string' === lib.of('hello world')) {
- *   // ...
- * }
- * ```
- *
- * @param {Mixed} object to test
- * @return {String} type
- */
-
-Library.prototype.of = getType;
-
-/**
- * #### .define (type, test)
- *
- * Add a test to for the `.test()` assertion.
- *
- * Can be defined as a regular expression:
- *
- * ```js
- * lib.define('int', /^[0-9]+$/);
- * ```
- *
- * ... or as a function:
- *
- * ```js
- * lib.define('bln', function (obj) {
- *   if ('boolean' === lib.of(obj)) return true;
- *   var blns = [ 'yes', 'no', 'true', 'false', 1, 0 ];
- *   if ('string' === lib.of(obj)) obj = obj.toLowerCase();
- *   return !! ~blns.indexOf(obj);
- * });
- * ```
- *
- * @param {String} type
- * @param {RegExp|Function} test
- * @api public
- */
-
-Library.prototype.define = function(type, test) {
-  if (arguments.length === 1) return this.tests[type];
-  this.tests[type] = test;
-  return this;
-};
-
-/**
- * #### .test (obj, test)
- *
- * Assert that an object is of type. Will first
- * check natives, and if that does not pass it will
- * use the user defined custom tests.
- *
- * ```js
- * assert(lib.test('1', 'int'));
- * assert(lib.test('yes', 'bln'));
- * ```
- *
- * @param {Mixed} object
- * @param {String} type
- * @return {Boolean} result
- * @api public
- */
-
-Library.prototype.test = function(obj, type) {
-  if (type === getType(obj)) return true;
-  var test = this.tests[type];
-
-  if (test && 'regexp' === getType(test)) {
-    return test.test(obj);
-  } else if (test && 'function' === getType(test)) {
-    return test(obj);
-  } else {
-    throw new ReferenceError('Type test "' + type + '" not defined or invalid.');
-  }
-};
-
-},{}]},{},[1])(1)
-});
-/* global self, define */
-
-// Declare `expect` as a global here instead of as a var in individual tests.
-// This avoids jshint warnings re: `Redefinition of 'expect'`.
-self.expect = self.chai.expect;
-
-(function() {
-  function vendorModule() {
-    'use strict';
-
-    return {
-      default: self.chai,
-
-      assert: self.chai.assert,
-      expect: self.chai.expect,
-      should: self.chai.should,
-
-      config: self.chai.config,
-      use: self.chai.use,
-      util: self.chai.util,
-
-      Assertion: self.chai.Assertion,
-      AssertionError: self.chai.AssertionError,
-    };
-  }
-
-  define('chai', [], vendorModule);
-})();
-
-(function(chaiDom) {
-  if (typeof require === 'function' && typeof exports === 'object' && typeof module === 'object') {
-    module.exports = chaiDom
-  } else if (typeof define === 'function' && define.amd) {
-    define(function() {
-      return chaiDom
-    })
-  } else {
-    chai.use(chaiDom)
-  }
-}(function(chai, utils) {
-  var flag = utils.flag,
-
-  elToString = function(el) {
-    var desc
-    if (el instanceof window.NodeList) {
-      if (el.length === 0) return 'empty NodeList'
-      desc = Array.prototype.slice.call(el, 0, 5).map(elToString).join(', ')
-      return el.length > 5 ? desc + '... (+' + (el.length - 5) + ' more)' : desc
-    }
-    if (!(el instanceof window.HTMLElement)) {
-      return String(el)
-    }
-
-    desc = el.tagName.toLowerCase()
-    if (el.id) {
-      desc += '#' + el.id
-    }
-    if (el.className) {
-      desc += '.' + String(el.className).replace(/\s+/g, '.')
-    }
-    Array.prototype.forEach.call(el.attributes, function(attr) {
-      if (attr.name !== 'class' && attr.name !== 'id') {
-        desc += '[' + attr.name + (attr.value ? '="' + attr.value + '"]' : ']')
-      }
-    })
-    return desc
-  },
-
-  attrAssert = function(name, val) {
-    var el = flag(this, 'object'), actual = el.getAttribute(name)
-
-    if (!flag(this, 'negate') || undefined === val) {
-      this.assert(
-        !!el.attributes[name]
-        , 'expected ' + elToString(el) + ' to have an attribute #{exp}'
-        , 'expected ' + elToString(el) + ' not to have an attribute #{exp}'
-        , name
-      )
-    }
-
-    if (undefined !== val) {
-      this.assert(
-        val === actual
-        , 'expected ' + elToString(el) + ' to have an attribute ' + utils.inspect(name) + ' with the value #{exp}, but the value was #{act}'
-        , 'expected ' + elToString(el) + ' not to have an attribute ' + utils.inspect(name) + ' with the value #{act}'
-        , val
-        , actual
-      )
-    }
-
-    flag(this, 'object', actual)
-  }
-
-  utils.elToString = elToString
-  chai.Assertion.addMethod('attr', attrAssert)
-  chai.Assertion.addMethod('attribute', attrAssert)
-
-  chai.Assertion.addMethod('class', function(className) {
-    var el = flag(this, 'object')
-    this.assert(
-      el.classList.contains(className)
-      , 'expected ' + elToString(el) + ' to have class #{exp}'
-      , 'expected ' + elToString(el) + ' not to have class #{exp}'
-      , className
-    )
-  })
-
-  chai.Assertion.addMethod('id', function(id) {
-    var el = flag(this, 'object')
-    this.assert(
-      el.id == id
-      , 'expected ' + elToString(el) + ' to have id #{exp}'
-      , 'expected ' + elToString(el) + ' not to have id #{exp}'
-      , id
-    )
-  })
-
-  chai.Assertion.addMethod('html', function(html) {
-    var el = flag(this, 'object'), actual = flag(this, 'object').innerHTML
-
-    if (flag(this, 'contains')) {
-      this.assert(
-        actual.indexOf(html) >= 0
-        , 'expected #{act} to contain HTML #{exp}'
-        , 'expected #{act} not to contain HTML #{exp}'
-        , html
-        , actual
-      )
-    } else {
-      this.assert(
-        actual === html
-        , 'expected ' + elToString(el) + ' to have HTML #{exp}, but the HTML was #{act}'
-        , 'expected ' + elToString(el) + ' not to have HTML #{exp}'
-        , html
-        , actual
-      )
-    }
-  })
-
-  chai.Assertion.addChainableMethod('trimmed', null, function() {
-    flag(this, 'trim-text', true)
-  })
-
-  chai.Assertion.addMethod('text', function(text) {
-    var obj = flag(this, 'object'), contains = flag(this, 'contains'),
-        trim = flag(this, 'trim-text'), actual, result
-
-    if (obj instanceof window.NodeList) {
-      actual = Array.prototype.map.call(obj, function(el) { return trim ? el.textContent.trim() : el.textContent })
-      if (Array.isArray(text)) {
-        result = contains ?
-          text[flag(this, 'negate') ? 'some' : 'every'](function(t) {
-            return Array.prototype.some.call(obj, function(el) {
-              return (trim ? el.textContent.trim() : el.textContent) === t
-            })
-          })
-          :
-          utils.eql(actual, text)
-
-        actual = actual.join()
-        text = text.join()
-      } else {
-        actual = actual.join('')
-        result = contains ? actual.indexOf(text) >= 0 : actual === text
-      }
-    } else {
-      actual = trim ? obj.textContent.trim() : obj.textContent
-      result = contains ? actual.indexOf(text) >= 0 : actual === text
-    }
-
-    var objDesc = elToString(obj), textMsg = trim ? 'trimmed text' : 'text'
-    if (contains) {
-      this.assert(
-        result
-        , 'expected ' + objDesc + ' to contain #{exp}, but the ' + textMsg + ' was #{act}'
-        , 'expected ' + objDesc + ' not to contain #{exp}, but the ' + textMsg + ' was #{act}'
-        , text
-        , actual
-      )
-    } else {
-      this.assert(
-        result
-        , 'expected ' + objDesc + ' to have ' + textMsg + ' #{exp}, but the ' + textMsg + ' was #{act}'
-        , 'expected ' + objDesc + ' not to have ' + textMsg + ' #{exp}'
-        , text
-        , actual
-      )
-    }
-  })
-
-  chai.Assertion.addMethod('value', function(value) {
-    var el = flag(this, 'object'), actual = flag(this, 'object').value
-    this.assert(
-      flag(this, 'object').value === value
-      , 'expected ' + elToString(el) + ' to have value #{exp}, but the value was #{act}'
-      , 'expected ' + elToString(el) + ' not to have value #{exp}'
-      , value
-      , actual
-    )
-  })
-
-  chai.Assertion.overwriteProperty('exist', function(_super) {
-    return function() {
-      var obj = flag(this, 'object')
-      if (obj instanceof window.NodeList) {
-        this.assert(
-          obj.length > 0
-          , 'expected an empty NodeList to have nodes'
-          , 'expected ' + elToString(obj) + ' to not exist')
-      } else {
-        _super.apply(this, arguments)
-      }
-    }
-  })
-
-  chai.Assertion.overwriteProperty('empty', function(_super) {
-    return function() {
-      var obj = flag(this, 'object')
-      if (obj instanceof window.HTMLElement) {
-        this.assert(
-          obj.children.length === 0
-          , 'expected ' + elToString(obj) + ' to be empty'
-          , 'expected ' + elToString(obj) + ' to not be empty')
-      } else if (obj instanceof window.NodeList) {
-        this.assert(
-          obj.length === 0
-          , 'expected ' + elToString(obj) + ' to be empty'
-          , 'expected ' + elToString(obj) + ' to not be empty')
-      } else {
-        _super.apply(this, arguments)
-      }
-    }
-  })
-
-  chai.Assertion.overwriteChainableMethod('length',
-    function(_super) {
-      return function(length) {
-        var obj = flag(this, 'object')
-        if (obj instanceof window.NodeList || obj instanceof window.HTMLElement) {
-          var actualLength = obj.children ? obj.children.length : obj.length;
-          this.assert(
-              actualLength === length
-            , 'expected ' + elToString(obj) + ' to have #{exp} children but it had #{act} children'
-            , 'expected ' + elToString(obj) + ' to not have #{exp} children'
-            , length
-            , actualLength
-          )
-        } else {
-          _super.apply(this, arguments)
-        }
-      }
-    },
-    function(_super) {
-      return function() {
-        _super.call(this)
-      }
-    }
-  )
-
-
-  chai.Assertion.overwriteMethod('match', function(_super) {
-    return function(selector) {
-      var obj = flag(this, 'object')
-      if (obj instanceof window.HTMLElement) {
-        this.assert(
-          obj.matches(selector)
-          , 'expected ' + elToString(obj) + ' to match #{exp}'
-          , 'expected ' + elToString(obj) + ' to not match #{exp}'
-          , selector
-        )
-      } else if (obj instanceof window.NodeList) {
-        this.assert(
-          (!!obj.length && Array.prototype.every.call(obj, function(el) { return el.matches(selector) }))
-          , 'expected ' + elToString(obj) + ' to match #{exp}'
-          , 'expected ' + elToString(obj) + ' to not match #{exp}'
-          , selector
-        )
-      } else {
-        _super.apply(this, arguments)
-      }
-    }
-  })
-
-  chai.Assertion.overwriteChainableMethod('contain',
-    function(_super) {
-      return function(subitem) {
-        var obj = flag(this, 'object')
-        if (obj instanceof window.HTMLElement) {
-          if (typeof subitem === 'string') {
-            this.assert(
-              !!obj.querySelector(subitem)
-              , 'expected ' + elToString(obj) + ' to contain #{exp}'
-              , 'expected ' + elToString(obj) + ' to not contain #{exp}'
-              , subitem)
-          } else {
-            this.assert(
-              obj.contains(subitem)
-              , 'expected ' + elToString(obj) + ' to contain ' + elToString(subitem)
-              , 'expected ' + elToString(obj) + ' to not contain ' + elToString(subitem))
-          }
-        } else {
-          _super.apply(this, arguments)
-        }
-      }
-    },
-    function(_super) {
-      return function() {
-        _super.call(this)
-      }
-    }
-  )
-
-  chai.Assertion.addMethod('descendant', function(subitem) {
-    var obj = flag(this, 'object'), actual = subitem
-
-    if (typeof subitem === 'string') {
-      actual = obj.querySelector(subitem)
-      this.assert(
-        !!actual
-        , 'expected ' + elToString(obj) + ' to have descendant #{exp}'
-        , 'expected ' + elToString(obj) + ' to not have descendant #{exp}'
-        , subitem)
-    } else {
-      this.assert(
-        obj.contains(subitem)
-        , 'expected ' + elToString(obj) + ' to contain ' + elToString(subitem)
-        , 'expected ' + elToString(obj) + ' to not contain ' + elToString(subitem))
-    }
-
-    flag(this, 'object', actual)
-  })
-
-  chai.Assertion.addMethod('descendants', function(selector) {
-    var obj = flag(this, 'object'),
-        actual = obj.querySelectorAll(selector)
-    this.assert(
-      !!actual.length
-      , 'expected ' + elToString(obj) + ' to have descendants #{exp}'
-      , 'expected ' + elToString(obj) + ' to not have descendants #{exp}'
-      , selector)
-    flag(this, 'object', actual)
-  })
-
-  chai.Assertion.addProperty('displayed', function() {
-    var el = flag(this, 'object'),
-        actual = document.body.contains(el) ? window.getComputedStyle(el).display : el.style.display
-
-    this.assert(
-      actual !== 'none'
-      , 'expected ' + elToString(el) + ' to be displayed, but it was not'
-      , 'expected ' + elToString(el) + ' to not be displayed, but it was as ' + actual
-      , actual
-    )
-  })
-}));
 
 /* Sinon.JS 3.3.0, 2017-09-18, @license BSD-3 */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.sinon = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 "use strict";
@@ -36466,6 +36663,2478 @@ module.exports.typeDetect = module.exports;
   define('sinon', [], vendorModule);
 })();
 
+define('@ember/test-helpers/-utils', ['exports'], function (exports) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.nextTickPromise = nextTickPromise;
+  exports.runDestroyablesFor = runDestroyablesFor;
+  var nextTick = exports.nextTick = setTimeout;
+  var futureTick = exports.futureTick = setTimeout;
+
+  /**
+   @private
+   @returns {Promise<void>} promise which resolves on the next turn of the event loop
+  */
+  function nextTickPromise() {
+    return new Ember.RSVP.Promise(function (resolve) {
+      nextTick(resolve);
+    });
+  }
+
+  /**
+   Retrieves an array of destroyables from the specified property on the object
+   provided, iterates that array invoking each function, then deleting the
+   property (clearing the array).
+  
+   @private
+   @param {Object} object an object to search for the destroyable array within
+   @param {string} property the property on the object that contains the destroyable array
+  */
+  function runDestroyablesFor(object, property) {
+    var destroyables = object[property];
+
+    if (!destroyables) {
+      return;
+    }
+
+    for (var i = 0; i < destroyables.length; i++) {
+      destroyables[i]();
+    }
+
+    delete object[property];
+  }
+});
+define('@ember/test-helpers/application', ['exports', '@ember/test-helpers/resolver'], function (exports, _resolver) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.setApplication = setApplication;
+  exports.getApplication = getApplication;
+
+
+  var __application__;
+
+  /**
+    Stores the provided application instance so that tests being ran will be aware of the application under test.
+  
+    - Required by `setupApplicationContext` method.
+    - Used by `setupContext` and `setupRenderingContext` when present.
+  
+    @public
+    @param {Ember.Application} application the application that will be tested
+  */
+  function setApplication(application) {
+    __application__ = application;
+
+    if (!(0, _resolver.getResolver)()) {
+      var Resolver = application.Resolver;
+      var resolver = Resolver.create({ namespace: application });
+
+      (0, _resolver.setResolver)(resolver);
+    }
+  }
+
+  /**
+    Retrieve the application instance stored by `setApplication`.
+  
+    @public
+    @returns {Ember.Application} the previously stored application instance under test
+  */
+  function getApplication() {
+    return __application__;
+  }
+});
+define('@ember/test-helpers/build-owner', ['exports', 'ember-test-helpers/legacy-0-6-x/build-registry'], function (exports, _buildRegistry) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = buildOwner;
+
+
+  /**
+    Creates an "owner" (an object that either _is_ or duck-types like an
+    `Ember.ApplicationInstance`) from the provided options.
+  
+    If `options.application` is present (e.g. setup by an earlier call to
+    `setApplication`) an `Ember.ApplicationInstance` is built via
+    `application.buildInstance()`.
+  
+    If `options.application` is not present, we fall back to using
+    `options.resolver` instead (setup via `setResolver`). This creates a mock
+    "owner" by using a custom created combination of `Ember.Registry`,
+    `Ember.Container`, `Ember._ContainerProxyMixin`, and
+    `Ember._RegistryProxyMixin`.
+  
+    @private
+    @param {Ember.Application} [application] the Ember.Application to build an instance from
+    @param {Ember.Resolver} [resolver] the resolver to use to back a "mock owner"
+    @returns {Promise<Ember.ApplicationInstance>} a promise resolving to the generated "owner"
+  */
+  function buildOwner(application, resolver) {
+    if (application) {
+      return application.boot().then(function (app) {
+        return app.buildInstance().boot();
+      });
+    }
+
+    if (!resolver) {
+      throw new Error('You must set up the ember-test-helpers environment with either `setResolver` or `setApplication` before running any tests.');
+    }
+
+    var _legacyBuildRegistry = (0, _buildRegistry.default)(resolver),
+        owner = _legacyBuildRegistry.owner;
+
+    return Ember.RSVP.Promise.resolve(owner);
+  }
+});
+define('@ember/test-helpers/dom/-get-element', ['exports', '@ember/test-helpers/dom/get-root-element'], function (exports, _getRootElement) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = getElement;
+
+
+  /**
+    Used internally by the DOM interaction helpers to find one element.
+  
+    @private
+    @param {string|Element} target the element or selector to retrieve
+    @returns {Element} the target or selector
+  */
+  function getElement(target) {
+    if (target.nodeType === Node.ELEMENT_NODE || target.nodeType === Node.DOCUMENT_NODE || target instanceof Window) {
+      return target;
+    } else if (typeof target === 'string') {
+      var rootElement = (0, _getRootElement.default)();
+
+      return rootElement.querySelector(target);
+    } else {
+      throw new Error('Must use an element or a selector string');
+    }
+  }
+});
+define('@ember/test-helpers/dom/-get-elements', ['exports', '@ember/test-helpers/dom/get-root-element'], function (exports, _getRootElement) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = getElements;
+
+
+  /**
+    Used internally by the DOM interaction helpers to find multiple elements.
+  
+    @private
+    @param {string} target the selector to retrieve
+    @returns {NodeList} the matched elements
+  */
+  function getElements(target) {
+    if (typeof target === 'string') {
+      var rootElement = (0, _getRootElement.default)();
+
+      return rootElement.querySelectorAll(target);
+    } else {
+      throw new Error('Must use a selector string');
+    }
+  }
+});
+define('@ember/test-helpers/dom/-is-focusable', ['exports', '@ember/test-helpers/dom/-is-form-control'], function (exports, _isFormControl) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = isFocusable;
+
+
+  var FOCUSABLE_TAGS = ['A'];
+
+  /**
+    @private
+    @param {Element} element the element to check
+    @returns {boolean} `true` when the element is focusable, `false` otherwise
+  */
+  function isFocusable(element) {
+    if ((0, _isFormControl.default)(element) || element.isContentEditable || FOCUSABLE_TAGS.indexOf(element.tagName) > -1) {
+      return true;
+    }
+
+    return element.hasAttribute('tabindex');
+  }
+});
+define('@ember/test-helpers/dom/-is-form-control', ['exports'], function (exports) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = isFormControl;
+  var FORM_CONTROL_TAGS = ['INPUT', 'BUTTON', 'SELECT', 'TEXTAREA'];
+
+  /**
+    @private
+    @param {Element} element the element to check
+    @returns {boolean} `true` when the element is a form control, `false` otherwise
+  */
+  function isFormControl(element) {
+    var tagName = element.tagName,
+        type = element.type;
+
+
+    if (type === 'hidden') {
+      return false;
+    }
+
+    return FORM_CONTROL_TAGS.indexOf(tagName) > -1;
+  }
+});
+define("@ember/test-helpers/dom/-to-array", ["exports"], function (exports) {
+  "use strict";
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = toArray;
+  /**
+    @private
+    @param {NodeList} nodelist the nodelist to convert to an array
+    @returns {Array} an array
+  */
+  function toArray(nodelist) {
+    var array = new Array(nodelist.length);
+    for (var i = 0; i < nodelist.length; i++) {
+      array[i] = nodelist[i];
+    }
+
+    return array;
+  }
+});
+define('@ember/test-helpers/dom/blur', ['exports', '@ember/test-helpers/dom/-get-element', '@ember/test-helpers/dom/fire-event', '@ember/test-helpers/settled', '@ember/test-helpers/dom/-is-focusable', '@ember/test-helpers/-utils'], function (exports, _getElement, _fireEvent, _settled, _isFocusable, _utils) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.__blur__ = __blur__;
+  exports.default = blur;
+
+
+  /**
+    @private
+    @param {Element} element the element to trigger events on
+  */
+  function __blur__(element) {
+    var browserIsNotFocused = document.hasFocus && !document.hasFocus();
+
+    // makes `document.activeElement` be `body`.
+    // If the browser is focused, it also fires a blur event
+    element.blur();
+
+    // Chrome/Firefox does not trigger the `blur` event if the window
+    // does not have focus. If the document does not have focus then
+    // fire `blur` event via native event.
+    if (browserIsNotFocused) {
+      (0, _fireEvent.default)(element, 'blur', { bubbles: false });
+      (0, _fireEvent.default)(element, 'focusout');
+    }
+  }
+
+  /**
+    Unfocus the specified target.
+  
+    Sends a number of events intending to simulate a "real" user unfocusing an
+    element.
+  
+    The following events are triggered (in order):
+  
+    - `blur`
+    - `focusout`
+  
+    The exact listing of events that are triggered may change over time as needed
+    to continue to emulate how actual browsers handle unfocusing a given element.
+  
+    @public
+    @param {string|Element} [target=document.activeElement] the element or selector to unfocus
+    @return {Promise<void>} resolves when settled
+  */
+  function blur() {
+    var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : document.activeElement;
+
+    return (0, _utils.nextTickPromise)().then(function () {
+      var element = (0, _getElement.default)(target);
+      if (!element) {
+        throw new Error('Element not found when calling `blur(\'' + target + '\')`.');
+      }
+
+      if (!(0, _isFocusable.default)(element)) {
+        throw new Error(target + ' is not focusable');
+      }
+
+      __blur__(element);
+
+      return (0, _settled.default)();
+    });
+  }
+});
+define('@ember/test-helpers/dom/click', ['exports', '@ember/test-helpers/dom/-get-element', '@ember/test-helpers/dom/fire-event', '@ember/test-helpers/dom/focus', '@ember/test-helpers/settled', '@ember/test-helpers/dom/-is-focusable', '@ember/test-helpers/-utils'], function (exports, _getElement, _fireEvent, _focus, _settled, _isFocusable, _utils) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.__click__ = __click__;
+  exports.default = click;
+
+
+  /**
+    @private
+    @param {Element} element the element to click on
+  */
+  function __click__(element) {
+    (0, _fireEvent.default)(element, 'mousedown');
+
+    if ((0, _isFocusable.default)(element)) {
+      (0, _focus.__focus__)(element);
+    }
+
+    (0, _fireEvent.default)(element, 'mouseup');
+    (0, _fireEvent.default)(element, 'click');
+  }
+
+  /**
+    Clicks on the specified target.
+  
+    Sends a number of events intending to simulate a "real" user clicking on an
+    element.
+  
+    For non-focusable elements the following events are triggered (in order):
+  
+    - `mousedown`
+    - `mouseup`
+    - `click`
+  
+    For focusable (e.g. form control) elements the following events are triggered
+    (in order):
+  
+    - `mousedown`
+    - `focus`
+    - `focusin`
+    - `mouseup`
+    - `click`
+  
+    The exact listing of events that are triggered may change over time as needed
+    to continue to emulate how actual browsers handle clicking a given element.
+  
+    @public
+    @param {string|Element} target the element or selector to click on
+    @return {Promise<void>} resolves when settled
+  */
+  function click(target) {
+    return (0, _utils.nextTickPromise)().then(function () {
+      if (!target) {
+        throw new Error('Must pass an element or selector to `click`.');
+      }
+
+      var element = (0, _getElement.default)(target);
+      if (!element) {
+        throw new Error('Element not found when calling `click(\'' + target + '\')`.');
+      }
+
+      __click__(element);
+      return (0, _settled.default)();
+    });
+  }
+});
+define('@ember/test-helpers/dom/fill-in', ['exports', '@ember/test-helpers/dom/-get-element', '@ember/test-helpers/dom/-is-form-control', '@ember/test-helpers/dom/focus', '@ember/test-helpers/settled', '@ember/test-helpers/dom/fire-event', '@ember/test-helpers/-utils'], function (exports, _getElement, _isFormControl, _focus, _settled, _fireEvent, _utils) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = fillIn;
+
+
+  /**
+    Fill the provided text into the `value` property (or set `.innerHTML` when
+    the target is a content editable element) then trigger `change` and `input`
+    events on the specified target.
+  
+    @public
+    @param {string|Element} target the element or selector to enter text into
+    @param {string} text the text to fill into the target element
+    @return {Promise<void>} resolves when the application is settled
+  */
+  function fillIn(target, text) {
+    return (0, _utils.nextTickPromise)().then(function () {
+      if (!target) {
+        throw new Error('Must pass an element or selector to `fillIn`.');
+      }
+
+      var element = (0, _getElement.default)(target);
+      if (!element) {
+        throw new Error('Element not found when calling `fillIn(\'' + target + '\')`.');
+      }
+      var isControl = (0, _isFormControl.default)(element);
+      if (!isControl && !element.isContentEditable) {
+        throw new Error('`fillIn` is only usable on form controls or contenteditable elements.');
+      }
+
+      if (typeof text === 'undefined' || text === null) {
+        throw new Error('Must provide `text` when calling `fillIn`.');
+      }
+
+      (0, _focus.__focus__)(element);
+
+      if (isControl) {
+        element.value = text;
+      } else {
+        element.innerHTML = text;
+      }
+
+      (0, _fireEvent.default)(element, 'input');
+      (0, _fireEvent.default)(element, 'change');
+
+      return (0, _settled.default)();
+    });
+  }
+});
+define('@ember/test-helpers/dom/find-all', ['exports', '@ember/test-helpers/dom/-get-elements', '@ember/test-helpers/dom/-to-array'], function (exports, _getElements, _toArray) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = find;
+
+
+  /**
+    Find all elements matched by the given selector. Equivalent to calling
+    `querySelectorAll()` on the test root element.
+  
+    @public
+    @param {string} selector the selector to search for
+    @return {Array} array of matched elements
+  */
+  function find(selector) {
+    if (!selector) {
+      throw new Error('Must pass a selector to `findAll`.');
+    }
+
+    if (arguments.length > 1) {
+      throw new Error('The `findAll` test helper only takes a single argument.');
+    }
+
+    return (0, _toArray.default)((0, _getElements.default)(selector));
+  }
+});
+define('@ember/test-helpers/dom/find', ['exports', '@ember/test-helpers/dom/-get-element'], function (exports, _getElement) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = find;
+
+
+  /**
+    Find the first element matched by the given selector. Equivalent to calling
+    `querySelector()` on the test root element.
+  
+    @public
+    @param {string} selector the selector to search for
+    @return {Element} matched element or null
+  */
+  function find(selector) {
+    if (!selector) {
+      throw new Error('Must pass a selector to `find`.');
+    }
+
+    if (arguments.length > 1) {
+      throw new Error('The `find` test helper only takes a single argument.');
+    }
+
+    return (0, _getElement.default)(selector);
+  }
+});
+define('@ember/test-helpers/dom/fire-event', ['exports'], function (exports) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = fireEvent;
+
+
+  var DEFAULT_EVENT_OPTIONS = { bubbles: true, cancelable: true };
+  var KEYBOARD_EVENT_TYPES = exports.KEYBOARD_EVENT_TYPES = Object.freeze(['keydown', 'keypress', 'keyup']);
+  var MOUSE_EVENT_TYPES = ['click', 'mousedown', 'mouseup', 'dblclick', 'mouseenter', 'mouseleave', 'mousemove', 'mouseout', 'mouseover'];
+  var FILE_SELECTION_EVENT_TYPES = ['change'];
+
+  /**
+    Internal helper used to build and dispatch events throughout the other DOM helpers.
+  
+    @private
+    @param {Element} element the element to dispatch the event to
+    @param {string} eventType the type of event
+    @param {Object} [options] additional properties to be set on the event
+    @returns {Event} the event that was dispatched
+  */
+  function fireEvent(element, eventType) {
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+
+    if (!element) {
+      throw new Error('Must pass an element to `fireEvent`');
+    }
+
+    var event = void 0;
+    if (KEYBOARD_EVENT_TYPES.indexOf(eventType) > -1) {
+      event = buildKeyboardEvent(eventType, options);
+    } else if (MOUSE_EVENT_TYPES.indexOf(eventType) > -1) {
+      var rect = void 0;
+      if (element instanceof Window) {
+        rect = element.document.documentElement.getBoundingClientRect();
+      } else if (element.nodeType === Node.DOCUMENT_NODE) {
+        rect = element.documentElement.getBoundingClientRect();
+      } else if (element.nodeType === Node.ELEMENT_NODE) {
+        rect = element.getBoundingClientRect();
+      } else {
+        return;
+      }
+
+      var x = rect.left + 1;
+      var y = rect.top + 1;
+      var simulatedCoordinates = {
+        screenX: x + 5, // Those numbers don't really mean anything.
+        screenY: y + 95, // They're just to make the screenX/Y be different of clientX/Y..
+        clientX: x,
+        clientY: y
+      };
+
+      event = buildMouseEvent(eventType, Ember.merge(simulatedCoordinates, options));
+    } else if (FILE_SELECTION_EVENT_TYPES.indexOf(eventType) > -1 && element.files) {
+      event = buildFileEvent(eventType, element, options);
+    } else {
+      event = buildBasicEvent(eventType, options);
+    }
+
+    element.dispatchEvent(event);
+    return event;
+  }
+
+  // eslint-disable-next-line require-jsdoc
+  function buildBasicEvent(type) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+    var event = document.createEvent('Events');
+
+    var bubbles = options.bubbles !== undefined ? options.bubbles : true;
+    var cancelable = options.cancelable !== undefined ? options.cancelable : true;
+
+    delete options.bubbles;
+    delete options.cancelable;
+
+    // bubbles and cancelable are readonly, so they can be
+    // set when initializing event
+    event.initEvent(type, bubbles, cancelable);
+    Ember.merge(event, options);
+    return event;
+  }
+
+  // eslint-disable-next-line require-jsdoc
+  function buildMouseEvent(type) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+    var event = void 0;
+    try {
+      event = document.createEvent('MouseEvents');
+      var eventOpts = Ember.merge(Ember.merge({}, DEFAULT_EVENT_OPTIONS), options);
+      event.initMouseEvent(type, eventOpts.bubbles, eventOpts.cancelable, window, eventOpts.detail, eventOpts.screenX, eventOpts.screenY, eventOpts.clientX, eventOpts.clientY, eventOpts.ctrlKey, eventOpts.altKey, eventOpts.shiftKey, eventOpts.metaKey, eventOpts.button, eventOpts.relatedTarget);
+    } catch (e) {
+      event = buildBasicEvent(type, options);
+    }
+    return event;
+  }
+
+  // eslint-disable-next-line require-jsdoc
+  function buildKeyboardEvent(type) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+    var eventOpts = Ember.merge(Ember.merge({}, DEFAULT_EVENT_OPTIONS), options);
+    var event = void 0,
+        eventMethodName = void 0;
+
+    try {
+      event = new KeyboardEvent(type, eventOpts);
+
+      // Property definitions are required for B/C for keyboard event usage
+      // If this properties are not defined, when listening for key events
+      // keyCode/which will be 0. Also, keyCode and which now are string
+      // and if app compare it with === with integer key definitions,
+      // there will be a fail.
+      //
+      // https://w3c.github.io/uievents/#interface-keyboardevent
+      // https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
+      Object.defineProperty(event, 'keyCode', {
+        get: function get() {
+          return parseInt(eventOpts.keyCode);
+        }
+      });
+
+      Object.defineProperty(event, 'which', {
+        get: function get() {
+          return parseInt(eventOpts.which);
+        }
+      });
+
+      return event;
+    } catch (e) {
+      // left intentionally blank
+    }
+
+    try {
+      event = document.createEvent('KeyboardEvents');
+      eventMethodName = 'initKeyboardEvent';
+    } catch (e) {
+      // left intentionally blank
+    }
+
+    if (!event) {
+      try {
+        event = document.createEvent('KeyEvents');
+        eventMethodName = 'initKeyEvent';
+      } catch (e) {
+        // left intentionally blank
+      }
+    }
+
+    if (event) {
+      event[eventMethodName](type, eventOpts.bubbles, eventOpts.cancelable, window, eventOpts.ctrlKey, eventOpts.altKey, eventOpts.shiftKey, eventOpts.metaKey, eventOpts.keyCode, eventOpts.charCode);
+    } else {
+      event = buildBasicEvent(type, options);
+    }
+
+    return event;
+  }
+
+  // eslint-disable-next-line require-jsdoc
+  function buildFileEvent(type, element) {
+    var files = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+
+    var event = buildBasicEvent(type);
+
+    if (files.length > 0) {
+      Object.defineProperty(files, 'item', {
+        value: function value(index) {
+          return typeof index === 'number' ? this[index] : null;
+        }
+      });
+      Object.defineProperty(element, 'files', {
+        value: files,
+        configurable: true
+      });
+    }
+
+    Object.defineProperty(event, 'target', {
+      value: element
+    });
+
+    return event;
+  }
+});
+define('@ember/test-helpers/dom/focus', ['exports', '@ember/test-helpers/dom/-get-element', '@ember/test-helpers/dom/fire-event', '@ember/test-helpers/settled', '@ember/test-helpers/dom/-is-focusable', '@ember/test-helpers/-utils'], function (exports, _getElement, _fireEvent, _settled, _isFocusable, _utils) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.__focus__ = __focus__;
+  exports.default = focus;
+
+
+  /**
+    @private
+    @param {Element} element the element to trigger events on
+  */
+  function __focus__(element) {
+    var browserIsNotFocused = document.hasFocus && !document.hasFocus();
+
+    // makes `document.activeElement` be `element`. If the browser is focused, it also fires a focus event
+    element.focus();
+
+    // Firefox does not trigger the `focusin` event if the window
+    // does not have focus. If the document does not have focus then
+    // fire `focusin` event as well.
+    if (browserIsNotFocused) {
+      // if the browser is not focused the previous `el.focus()` didn't fire an event, so we simulate it
+      (0, _fireEvent.default)(element, 'focus', {
+        bubbles: false
+      });
+
+      (0, _fireEvent.default)(element, 'focusin');
+    }
+  }
+
+  /**
+    Focus the specified target.
+  
+    Sends a number of events intending to simulate a "real" user focusing an
+    element.
+  
+    The following events are triggered (in order):
+  
+    - `focus`
+    - `focusin`
+  
+    The exact listing of events that are triggered may change over time as needed
+    to continue to emulate how actual browsers handle focusing a given element.
+  
+    @public
+    @param {string|Element} target the element or selector to focus
+    @return {Promise<void>} resolves when the application is settled
+  */
+  function focus(target) {
+    return (0, _utils.nextTickPromise)().then(function () {
+      if (!target) {
+        throw new Error('Must pass an element or selector to `focus`.');
+      }
+
+      var element = (0, _getElement.default)(target);
+      if (!element) {
+        throw new Error('Element not found when calling `focus(\'' + target + '\')`.');
+      }
+
+      if (!(0, _isFocusable.default)(element)) {
+        throw new Error(target + ' is not focusable');
+      }
+
+      __focus__(element);
+
+      return (0, _settled.default)();
+    });
+  }
+});
+define('@ember/test-helpers/dom/get-root-element', ['exports', '@ember/test-helpers/setup-context'], function (exports, _setupContext) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = getRootElement;
+
+
+  /**
+    Get the root element of the application under test (usually `#ember-testing`)
+  
+    @public
+    @returns {Element} the root element
+  */
+  function getRootElement() {
+    var context = (0, _setupContext.getContext)();
+    var owner = context && context.owner;
+
+    if (!owner) {
+      throw new Error('Must setup rendering context before attempting to interact with elements.');
+    }
+
+    var rootElementSelector = void 0;
+    // When the host app uses `setApplication` (instead of `setResolver`) the owner has
+    // a `rootElement` set on it with the element id to be used
+    if (owner && owner._emberTestHelpersMockOwner === undefined) {
+      rootElementSelector = owner.rootElement;
+    } else {
+      rootElementSelector = '#ember-testing';
+    }
+
+    var rootElement = document.querySelector(rootElementSelector);
+
+    return rootElement;
+  }
+});
+define('@ember/test-helpers/dom/tap', ['exports', '@ember/test-helpers/dom/-get-element', '@ember/test-helpers/dom/fire-event', '@ember/test-helpers/dom/click', '@ember/test-helpers/settled', '@ember/test-helpers/-utils'], function (exports, _getElement, _fireEvent, _click, _settled, _utils) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = tap;
+
+
+  /**
+    Taps on the specified target.
+  
+    Sends a number of events intending to simulate a "real" user tapping on an
+    element.
+  
+    For non-focusable elements the following events are triggered (in order):
+  
+    - `touchstart`
+    - `touchend`
+    - `mousedown`
+    - `mouseup`
+    - `click`
+  
+    For focusable (e.g. form control) elements the following events are triggered
+    (in order):
+  
+    - `touchstart`
+    - `touchend`
+    - `mousedown`
+    - `focus`
+    - `focusin`
+    - `mouseup`
+    - `click`
+  
+    The exact listing of events that are triggered may change over time as needed
+    to continue to emulate how actual browsers handle tapping on a given element.
+  
+    @public
+    @param {string|Element} target the element or selector to tap on
+    @param {Object} options the options to be provided to the touch events
+    @return {Promise<void>} resolves when settled
+  */
+  function tap(target) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+    return (0, _utils.nextTickPromise)().then(function () {
+      if (!target) {
+        throw new Error('Must pass an element or selector to `tap`.');
+      }
+
+      var element = (0, _getElement.default)(target);
+      if (!element) {
+        throw new Error('Element not found when calling `tap(\'' + target + '\')`.');
+      }
+
+      var touchstartEv = (0, _fireEvent.default)(element, 'touchstart', options);
+      var touchendEv = (0, _fireEvent.default)(element, 'touchend', options);
+
+      if (!touchstartEv.defaultPrevented && !touchendEv.defaultPrevented) {
+        (0, _click.__click__)(element);
+      }
+
+      return (0, _settled.default)();
+    });
+  }
+});
+define('@ember/test-helpers/dom/trigger-event', ['exports', '@ember/test-helpers/dom/-get-element', '@ember/test-helpers/dom/fire-event', '@ember/test-helpers/settled', '@ember/test-helpers/-utils'], function (exports, _getElement, _fireEvent, _settled, _utils) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = triggerEvent;
+
+
+  /**
+    Triggers an event on the specified target.
+  
+    @public
+    @param {string|Element} target the element or selector to trigger the event on
+    @param {string} eventType the type of event to trigger
+    @param {Object} options additional properties to be set on the event
+    @return {Promise<void>} resolves when the application is settled
+  */
+  function triggerEvent(target, eventType, options) {
+    return (0, _utils.nextTickPromise)().then(function () {
+      if (!target) {
+        throw new Error('Must pass an element or selector to `triggerEvent`.');
+      }
+
+      var element = (0, _getElement.default)(target);
+      if (!element) {
+        throw new Error('Element not found when calling `triggerEvent(\'' + target + '\', ...)`.');
+      }
+
+      if (!eventType) {
+        throw new Error('Must provide an `eventType` to `triggerEvent`');
+      }
+
+      (0, _fireEvent.default)(element, eventType, options);
+
+      return (0, _settled.default)();
+    });
+  }
+});
+define('@ember/test-helpers/dom/trigger-key-event', ['exports', '@ember/test-helpers/dom/-get-element', '@ember/test-helpers/dom/fire-event', '@ember/test-helpers/settled', '@ember/test-helpers/-utils'], function (exports, _getElement, _fireEvent, _settled, _utils) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = triggerKeyEvent;
+
+
+  var DEFAULT_MODIFIERS = Object.freeze({
+    ctrlKey: false,
+    altKey: false,
+    shiftKey: false,
+    metaKey: false
+  });
+
+  // This is not a comprehensive list, but it is better than nothing.
+  var keyFromKeyCode = {
+    8: 'Backspace',
+    9: 'Tab',
+    13: 'Enter',
+    16: 'Shift',
+    17: 'Control',
+    18: 'Alt',
+    20: 'CapsLock',
+    27: 'Escape',
+    32: '',
+    37: 'ArrowLeft',
+    38: 'ArrowUp',
+    39: 'ArrowRight',
+    40: 'ArrowDown',
+    65: 'a',
+    66: 'b',
+    67: 'c',
+    68: 'd',
+    69: 'e',
+    70: 'f',
+    71: 'g',
+    72: 'h',
+    73: 'i',
+    74: 'j',
+    75: 'k',
+    76: 'l',
+    77: 'm',
+    78: 'n',
+    79: 'o',
+    80: 'p',
+    81: 'q',
+    82: 'r',
+    83: 's',
+    84: 't',
+    85: 'u',
+    86: 'v',
+    87: 'v',
+    88: 'x',
+    89: 'y',
+    90: 'z',
+    91: 'Meta',
+    93: 'Meta', // There is two keys that map to meta,
+    187: '=',
+    189: '-'
+  };
+
+  /**
+    Calculates the value of KeyboardEvent#key given a keycode and the modifiers.
+    Note that this works if the key is pressed in combination with the shift key, but it cannot
+    detect if caps lock is enabled.
+    @param {number} keycode The keycode of the event.
+    @param {object} modifiers The modifiers of the event.
+    @returns {string} The key string for the event.
+   */
+  function keyFromKeyCodeAndModifiers(keycode, modifiers) {
+    if (keycode > 64 && keycode < 91) {
+      if (modifiers.shiftKey) {
+        return String.fromCharCode(keycode);
+      } else {
+        return String.fromCharCode(keycode).toLocaleLowerCase();
+      }
+    }
+    var key = keyFromKeyCode[keycode];
+    if (key) {
+      return key;
+    }
+  }
+
+  /**
+   * Infers the keycode from the given key
+   * @param {string} key The KeyboardEvent#key string
+   * @returns {number} The keycode for the given key
+   */
+  function keyCodeFromKey(key) {
+    var keys = Object.keys(keyFromKeyCode);
+    var keyCode = keys.find(function (keyCode) {
+      return keyFromKeyCode[keyCode] === key;
+    });
+    if (!keyCode) {
+      keyCode = keys.find(function (keyCode) {
+        return keyFromKeyCode[keyCode] === key.toLowerCase();
+      });
+    }
+    return parseInt(keyCode);
+  }
+
+  /**
+    Triggers a keyboard event of given type in the target element.
+    It also requires the developer to provide either a string with the [`key`](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values)
+    or the numeric [`keyCode`](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode) of the pressed key.
+    Optionally the user can also provide a POJO with extra modifiers for the event.
+  
+    @public
+    @param {string|Element} target the element or selector to trigger the event on
+    @param {'keydown' | 'keyup' | 'keypress'} eventType the type of event to trigger
+    @param {number|string} key the `keyCode`(number) or `key`(string) of the event being triggered
+    @param {Object} [modifiers] the state of various modifier keys
+    @param {boolean} [modifiers.ctrlKey=false] if true the generated event will indicate the control key was pressed during the key event
+    @param {boolean} [modifiers.altKey=false] if true the generated event will indicate the alt key was pressed during the key event
+    @param {boolean} [modifiers.shiftKey=false] if true the generated event will indicate the shift key was pressed during the key event
+    @param {boolean} [modifiers.metaKey=false] if true the generated event will indicate the meta key was pressed during the key event
+    @return {Promise<void>} resolves when the application is settled
+  */
+  function triggerKeyEvent(target, eventType, key) {
+    var modifiers = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : DEFAULT_MODIFIERS;
+
+    return (0, _utils.nextTickPromise)().then(function () {
+      if (!target) {
+        throw new Error('Must pass an element or selector to `triggerKeyEvent`.');
+      }
+
+      var element = (0, _getElement.default)(target);
+      if (!element) {
+        throw new Error('Element not found when calling `triggerKeyEvent(\'' + target + '\', ...)`.');
+      }
+
+      if (!eventType) {
+        throw new Error('Must provide an `eventType` to `triggerKeyEvent`');
+      }
+
+      if (_fireEvent.KEYBOARD_EVENT_TYPES.indexOf(eventType) === -1) {
+        var validEventTypes = _fireEvent.KEYBOARD_EVENT_TYPES.join(', ');
+        throw new Error('Must provide an `eventType` of ' + validEventTypes + ' to `triggerKeyEvent` but you passed `' + eventType + '`.');
+      }
+
+      if (typeof key !== 'number' && typeof key !== 'string') {
+        throw new Error('Must provide a `key` or `keyCode` to `triggerKeyEvent`');
+      }
+      var props = void 0;
+      if (typeof key === 'number') {
+        props = { keyCode: key, which: key, key: keyFromKeyCodeAndModifiers(key, modifiers) };
+      } else {
+        var keyCode = keyCodeFromKey(key);
+        props = { keyCode: keyCode, which: keyCode, key: key };
+      }
+      var options = Ember.merge(props, modifiers);
+
+      (0, _fireEvent.default)(element, eventType, options);
+
+      return (0, _settled.default)();
+    });
+  }
+});
+define('@ember/test-helpers/dom/wait-for', ['exports', '@ember/test-helpers/wait-until', '@ember/test-helpers/dom/-get-element', '@ember/test-helpers/dom/-get-elements', '@ember/test-helpers/dom/-to-array', '@ember/test-helpers/-utils'], function (exports, _waitUntil, _getElement, _getElements, _toArray, _utils) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = waitFor;
+
+
+  /**
+    Used to wait for a particular selector to appear in the DOM. Due to the fact
+    that it does not wait for general settledness, this is quite useful for testing
+    interim DOM states (e.g. loading states, pending promises, etc).
+  
+    @param {string} selector the selector to wait for
+    @param {Object} [options] the options to be used
+    @param {number} [options.timeout=1000] the time to wait (in ms) for a match
+    @param {number} [options.count=null] the number of elements that should match the provided selector (null means one or more)
+    @returns {Element|Array<Element>} the element (or array of elements) that were being waited upon
+  */
+  function waitFor(selector) {
+    var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
+        _ref$timeout = _ref.timeout,
+        timeout = _ref$timeout === undefined ? 1000 : _ref$timeout,
+        _ref$count = _ref.count,
+        count = _ref$count === undefined ? null : _ref$count,
+        _ref$timeoutMessage = _ref.timeoutMessage,
+        timeoutMessage = _ref$timeoutMessage === undefined ? 'waitFor timed out' : _ref$timeoutMessage;
+
+    return (0, _utils.nextTickPromise)().then(function () {
+      if (!selector) {
+        throw new Error('Must pass a selector to `waitFor`.');
+      }
+
+      var callback = void 0;
+      if (count !== null) {
+        callback = function callback() {
+          var elements = (0, _getElements.default)(selector);
+          if (elements.length === count) {
+            return (0, _toArray.default)(elements);
+          }
+        };
+      } else {
+        callback = function callback() {
+          return (0, _getElement.default)(selector);
+        };
+      }
+      return (0, _waitUntil.default)(callback, { timeout: timeout, timeoutMessage: timeoutMessage });
+    });
+  }
+});
+define('@ember/test-helpers/global', ['exports'], function (exports) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  exports.default = function () {
+    if (typeof self !== 'undefined') {
+      return self;
+    } else if (typeof window !== 'undefined') {
+      return window;
+    } else if (typeof global !== 'undefined') {
+      return global;
+    } else {
+      return Function('return this')();
+    }
+  }();
+});
+define('@ember/test-helpers/has-ember-version', ['exports'], function (exports) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = hasEmberVersion;
+
+
+  /**
+    Checks if the currently running Ember version is greater than or equal to the
+    specified major and minor version numbers.
+  
+    @private
+    @param {number} major the major version number to compare
+    @param {number} minor the minor version number to compare
+    @returns {boolean} true if the Ember version is >= MAJOR.MINOR specified, false otherwise
+  */
+  function hasEmberVersion(major, minor) {
+    var numbers = Ember.VERSION.split('-')[0].split('.');
+    var actualMajor = parseInt(numbers[0], 10);
+    var actualMinor = parseInt(numbers[1], 10);
+    return actualMajor > major || actualMajor === major && actualMinor >= minor;
+  }
+});
+define('@ember/test-helpers/index', ['exports', '@ember/test-helpers/resolver', '@ember/test-helpers/application', '@ember/test-helpers/setup-context', '@ember/test-helpers/teardown-context', '@ember/test-helpers/setup-rendering-context', '@ember/test-helpers/teardown-rendering-context', '@ember/test-helpers/setup-application-context', '@ember/test-helpers/teardown-application-context', '@ember/test-helpers/settled', '@ember/test-helpers/wait-until', '@ember/test-helpers/validate-error-handler', '@ember/test-helpers/dom/click', '@ember/test-helpers/dom/tap', '@ember/test-helpers/dom/focus', '@ember/test-helpers/dom/blur', '@ember/test-helpers/dom/trigger-event', '@ember/test-helpers/dom/trigger-key-event', '@ember/test-helpers/dom/fill-in', '@ember/test-helpers/dom/wait-for', '@ember/test-helpers/dom/get-root-element', '@ember/test-helpers/dom/find', '@ember/test-helpers/dom/find-all'], function (exports, _resolver, _application, _setupContext, _teardownContext, _setupRenderingContext, _teardownRenderingContext, _setupApplicationContext, _teardownApplicationContext, _settled, _waitUntil, _validateErrorHandler, _click, _tap, _focus, _blur, _triggerEvent, _triggerKeyEvent, _fillIn, _waitFor, _getRootElement, _find, _findAll) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  Object.defineProperty(exports, 'setResolver', {
+    enumerable: true,
+    get: function () {
+      return _resolver.setResolver;
+    }
+  });
+  Object.defineProperty(exports, 'getResolver', {
+    enumerable: true,
+    get: function () {
+      return _resolver.getResolver;
+    }
+  });
+  Object.defineProperty(exports, 'getApplication', {
+    enumerable: true,
+    get: function () {
+      return _application.getApplication;
+    }
+  });
+  Object.defineProperty(exports, 'setApplication', {
+    enumerable: true,
+    get: function () {
+      return _application.setApplication;
+    }
+  });
+  Object.defineProperty(exports, 'setupContext', {
+    enumerable: true,
+    get: function () {
+      return _setupContext.default;
+    }
+  });
+  Object.defineProperty(exports, 'getContext', {
+    enumerable: true,
+    get: function () {
+      return _setupContext.getContext;
+    }
+  });
+  Object.defineProperty(exports, 'setContext', {
+    enumerable: true,
+    get: function () {
+      return _setupContext.setContext;
+    }
+  });
+  Object.defineProperty(exports, 'unsetContext', {
+    enumerable: true,
+    get: function () {
+      return _setupContext.unsetContext;
+    }
+  });
+  Object.defineProperty(exports, 'pauseTest', {
+    enumerable: true,
+    get: function () {
+      return _setupContext.pauseTest;
+    }
+  });
+  Object.defineProperty(exports, 'resumeTest', {
+    enumerable: true,
+    get: function () {
+      return _setupContext.resumeTest;
+    }
+  });
+  Object.defineProperty(exports, 'teardownContext', {
+    enumerable: true,
+    get: function () {
+      return _teardownContext.default;
+    }
+  });
+  Object.defineProperty(exports, 'setupRenderingContext', {
+    enumerable: true,
+    get: function () {
+      return _setupRenderingContext.default;
+    }
+  });
+  Object.defineProperty(exports, 'render', {
+    enumerable: true,
+    get: function () {
+      return _setupRenderingContext.render;
+    }
+  });
+  Object.defineProperty(exports, 'clearRender', {
+    enumerable: true,
+    get: function () {
+      return _setupRenderingContext.clearRender;
+    }
+  });
+  Object.defineProperty(exports, 'teardownRenderingContext', {
+    enumerable: true,
+    get: function () {
+      return _teardownRenderingContext.default;
+    }
+  });
+  Object.defineProperty(exports, 'setupApplicationContext', {
+    enumerable: true,
+    get: function () {
+      return _setupApplicationContext.default;
+    }
+  });
+  Object.defineProperty(exports, 'visit', {
+    enumerable: true,
+    get: function () {
+      return _setupApplicationContext.visit;
+    }
+  });
+  Object.defineProperty(exports, 'currentRouteName', {
+    enumerable: true,
+    get: function () {
+      return _setupApplicationContext.currentRouteName;
+    }
+  });
+  Object.defineProperty(exports, 'currentURL', {
+    enumerable: true,
+    get: function () {
+      return _setupApplicationContext.currentURL;
+    }
+  });
+  Object.defineProperty(exports, 'teardownApplicationContext', {
+    enumerable: true,
+    get: function () {
+      return _teardownApplicationContext.default;
+    }
+  });
+  Object.defineProperty(exports, 'settled', {
+    enumerable: true,
+    get: function () {
+      return _settled.default;
+    }
+  });
+  Object.defineProperty(exports, 'isSettled', {
+    enumerable: true,
+    get: function () {
+      return _settled.isSettled;
+    }
+  });
+  Object.defineProperty(exports, 'getSettledState', {
+    enumerable: true,
+    get: function () {
+      return _settled.getSettledState;
+    }
+  });
+  Object.defineProperty(exports, 'waitUntil', {
+    enumerable: true,
+    get: function () {
+      return _waitUntil.default;
+    }
+  });
+  Object.defineProperty(exports, 'validateErrorHandler', {
+    enumerable: true,
+    get: function () {
+      return _validateErrorHandler.default;
+    }
+  });
+  Object.defineProperty(exports, 'click', {
+    enumerable: true,
+    get: function () {
+      return _click.default;
+    }
+  });
+  Object.defineProperty(exports, 'tap', {
+    enumerable: true,
+    get: function () {
+      return _tap.default;
+    }
+  });
+  Object.defineProperty(exports, 'focus', {
+    enumerable: true,
+    get: function () {
+      return _focus.default;
+    }
+  });
+  Object.defineProperty(exports, 'blur', {
+    enumerable: true,
+    get: function () {
+      return _blur.default;
+    }
+  });
+  Object.defineProperty(exports, 'triggerEvent', {
+    enumerable: true,
+    get: function () {
+      return _triggerEvent.default;
+    }
+  });
+  Object.defineProperty(exports, 'triggerKeyEvent', {
+    enumerable: true,
+    get: function () {
+      return _triggerKeyEvent.default;
+    }
+  });
+  Object.defineProperty(exports, 'fillIn', {
+    enumerable: true,
+    get: function () {
+      return _fillIn.default;
+    }
+  });
+  Object.defineProperty(exports, 'waitFor', {
+    enumerable: true,
+    get: function () {
+      return _waitFor.default;
+    }
+  });
+  Object.defineProperty(exports, 'getRootElement', {
+    enumerable: true,
+    get: function () {
+      return _getRootElement.default;
+    }
+  });
+  Object.defineProperty(exports, 'find', {
+    enumerable: true,
+    get: function () {
+      return _find.default;
+    }
+  });
+  Object.defineProperty(exports, 'findAll', {
+    enumerable: true,
+    get: function () {
+      return _findAll.default;
+    }
+  });
+});
+define("@ember/test-helpers/resolver", ["exports"], function (exports) {
+  "use strict";
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.setResolver = setResolver;
+  exports.getResolver = getResolver;
+  var __resolver__;
+
+  /**
+    Stores the provided resolver instance so that tests being ran can resolve
+    objects in the same way as a normal application.
+  
+    Used by `setupContext` and `setupRenderingContext` as a fallback when `setApplication` was _not_ used.
+  
+    @public
+    @param {Ember.Resolver} resolver the resolver to be used for testing
+  */
+  function setResolver(resolver) {
+    __resolver__ = resolver;
+  }
+
+  /**
+    Retrieve the resolver instance stored by `setResolver`.
+  
+    @public
+    @returns {Ember.Resolver} the previously stored resolver
+  */
+  function getResolver() {
+    return __resolver__;
+  }
+});
+define('@ember/test-helpers/settled', ['exports', '@ember/test-helpers/-utils', '@ember/test-helpers/wait-until'], function (exports, _utils, _waitUntil) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports._teardownAJAXHooks = _teardownAJAXHooks;
+  exports._setupAJAXHooks = _setupAJAXHooks;
+  exports.getSettledState = getSettledState;
+  exports.isSettled = isSettled;
+  exports.default = settled;
+
+  var _slicedToArray = function () {
+    function sliceIterator(arr, i) {
+      var _arr = [];
+      var _n = true;
+      var _d = false;
+      var _e = undefined;
+
+      try {
+        for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+          _arr.push(_s.value);
+
+          if (i && _arr.length === i) break;
+        }
+      } catch (err) {
+        _d = true;
+        _e = err;
+      } finally {
+        try {
+          if (!_n && _i["return"]) _i["return"]();
+        } finally {
+          if (_d) throw _e;
+        }
+      }
+
+      return _arr;
+    }
+
+    return function (arr, i) {
+      if (Array.isArray(arr)) {
+        return arr;
+      } else if (Symbol.iterator in Object(arr)) {
+        return sliceIterator(arr, i);
+      } else {
+        throw new TypeError("Invalid attempt to destructure non-iterable instance");
+      }
+    };
+  }();
+
+  // Ember internally tracks AJAX requests in the same way that we do here for
+  // legacy style "acceptance" tests using the `ember-testing.js` asset provided
+  // by emberjs/ember.js itself. When `@ember/test-helpers`'s `settled` utility
+  // is used in a legacy acceptance test context any pending AJAX requests are
+  // not properly considered during the `isSettled` check below.
+  //
+  // This utilizes a local utility method present in Ember since around 2.8.0 to
+  // properly consider pending AJAX requests done within legacy acceptance tests.
+  var _internalPendingRequests = function () {
+    if (Ember.__loader.registry['ember-testing/test/pending_requests']) {
+      // Ember <= 3.1
+      return Ember.__loader.require('ember-testing/test/pending_requests').pendingRequests;
+    } else if (Ember.__loader.registry['ember-testing/lib/test/pending_requests']) {
+      // Ember >= 3.2
+      return Ember.__loader.require('ember-testing/lib/test/pending_requests').pendingRequests;
+    }
+
+    return function () {
+      return 0;
+    };
+  }();
+
+  var requests = void 0;
+
+  /**
+    @private
+    @returns {number} the count of pending requests
+  */
+  function pendingRequests() {
+    var localRequestsPending = requests !== undefined ? requests.length : 0;
+    var internalRequestsPending = _internalPendingRequests();
+
+    return localRequestsPending + internalRequestsPending;
+  }
+
+  /**
+    @private
+    @param {Event} event (unused)
+    @param {XMLHTTPRequest} xhr the XHR that has initiated a request
+  */
+  function incrementAjaxPendingRequests(event, xhr) {
+    requests.push(xhr);
+  }
+
+  /**
+    @private
+    @param {Event} event (unused)
+    @param {XMLHTTPRequest} xhr the XHR that has initiated a request
+  */
+  function decrementAjaxPendingRequests(event, xhr) {
+    // In most Ember versions to date (current version is 2.16) RSVP promises are
+    // configured to flush in the actions queue of the Ember run loop, however it
+    // is possible that in the future this changes to use "true" micro-task
+    // queues.
+    //
+    // The entire point here, is that _whenever_ promises are resolved will be
+    // before the next run of the JS event loop. Then in the next event loop this
+    // counter will decrement. In the specific case of AJAX, this means that any
+    // promises chained off of `$.ajax` will properly have their `.then` called
+    // _before_ this is decremented (and testing continues)
+    (0, _utils.nextTick)(function () {
+      for (var i = 0; i < requests.length; i++) {
+        if (xhr === requests[i]) {
+          requests.splice(i, 1);
+        }
+      }
+    }, 0);
+  }
+
+  /**
+    Clears listeners that were previously setup for `ajaxSend` and `ajaxComplete`.
+  
+    @private
+  */
+  function _teardownAJAXHooks() {
+    if (!Ember.$) {
+      return;
+    }
+
+    Ember.$(document).off('ajaxSend', incrementAjaxPendingRequests);
+    Ember.$(document).off('ajaxComplete', decrementAjaxPendingRequests);
+  }
+
+  /**
+    Sets up listeners for `ajaxSend` and `ajaxComplete`.
+  
+    @private
+  */
+  function _setupAJAXHooks() {
+    requests = [];
+
+    if (!Ember.$) {
+      return;
+    }
+
+    Ember.$(document).on('ajaxSend', incrementAjaxPendingRequests);
+    Ember.$(document).on('ajaxComplete', decrementAjaxPendingRequests);
+  }
+
+  var _internalCheckWaiters = void 0;
+  if (Ember.__loader.registry['ember-testing/test/waiters']) {
+    // Ember <= 3.1
+    _internalCheckWaiters = Ember.__loader.require('ember-testing/test/waiters').checkWaiters;
+  } else if (Ember.__loader.registry['ember-testing/lib/test/waiters']) {
+    // Ember >= 3.2
+    _internalCheckWaiters = Ember.__loader.require('ember-testing/lib/test/waiters').checkWaiters;
+  }
+
+  /**
+    @private
+    @returns {boolean} true if waiters are still pending
+  */
+  function checkWaiters() {
+    if (_internalCheckWaiters) {
+      return _internalCheckWaiters();
+    } else if (Ember.Test.waiters) {
+      if (Ember.Test.waiters.any(function (_ref) {
+        var _ref2 = _slicedToArray(_ref, 2),
+            context = _ref2[0],
+            callback = _ref2[1];
+
+        return !callback.call(context);
+      })) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+    Check various settledness metrics, and return an object with the following properties:
+  
+    * `hasRunLoop` - Checks if a run-loop has been started. If it has, this will
+      be `true` otherwise it will be `false`.
+    * `hasPendingTimers` - Checks if there are scheduled timers in the run-loop.
+      These pending timers are primarily registered by `Ember.run.schedule`. If
+      there are pending timers, this will be `true`, otherwise `false`.
+    * `hasPendingWaiters` - Checks if any registered test waiters are still
+      pending (e.g. the waiter returns `true`). If there are pending waiters,
+      this will be `true`, otherwise `false`.
+    * `hasPendingRequests` - Checks if there are pending AJAX requests (based on
+      `ajaxSend` / `ajaxComplete` events triggered by `jQuery.ajax`). If there
+      are pending requests, this will be `true`, otherwise `false`.
+    * `pendingRequestCount` - The count of pending AJAX requests.
+  
+    @public
+    @returns {Object} object with properties for each of the metrics used to determine settledness
+  */
+  function getSettledState() {
+    var pendingRequestCount = pendingRequests();
+
+    return {
+      hasPendingTimers: Boolean(Ember.run.hasScheduledTimers()),
+      hasRunLoop: Boolean(Ember.run.currentRunLoop),
+      hasPendingWaiters: checkWaiters(),
+      hasPendingRequests: pendingRequestCount > 0,
+      pendingRequestCount: pendingRequestCount
+    };
+  }
+
+  /**
+    Checks various settledness metrics (via `getSettledState()`) to determine if things are settled or not.
+  
+    Settled generally means that there are no pending timers, no pending waiters,
+    no pending AJAX requests, and no current run loop. However, new settledness
+    metrics may be added and used as they become available.
+  
+    @public
+    @returns {boolean} `true` if settled, `false` otherwise
+  */
+  function isSettled() {
+    var _getSettledState = getSettledState(),
+        hasPendingTimers = _getSettledState.hasPendingTimers,
+        hasRunLoop = _getSettledState.hasRunLoop,
+        hasPendingRequests = _getSettledState.hasPendingRequests,
+        hasPendingWaiters = _getSettledState.hasPendingWaiters;
+
+    if (hasPendingTimers || hasRunLoop || hasPendingRequests || hasPendingWaiters) {
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
+    Returns a promise that resolves when in a settled state (see `isSettled` for
+    a definition of "settled state").
+  
+    @public
+    @returns {Promise<void>} resolves when settled
+  */
+  function settled() {
+    return (0, _waitUntil.default)(isSettled, { timeout: Infinity });
+  }
+});
+define('@ember/test-helpers/setup-application-context', ['exports', '@ember/test-helpers/-utils', '@ember/test-helpers/setup-context', '@ember/test-helpers/has-ember-version', '@ember/test-helpers/settled'], function (exports, _utils, _setupContext, _hasEmberVersion, _settled) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.visit = visit;
+  exports.currentRouteName = currentRouteName;
+  exports.currentURL = currentURL;
+  exports.default = setupApplicationContext;
+
+
+  /**
+    Navigate the application to the provided URL.
+  
+    @public
+    @returns {Promise<void>} resolves when settled
+  */
+  function visit() {
+    var _arguments = arguments;
+
+    var context = (0, _setupContext.getContext)();
+    var owner = context.owner;
+
+
+    return (0, _utils.nextTickPromise)().then(function () {
+      return owner.visit.apply(owner, _arguments);
+    }).then(function () {
+      if (EmberENV._APPLICATION_TEMPLATE_WRAPPER !== false) {
+        context.element = document.querySelector('#ember-testing > .ember-view');
+      } else {
+        context.element = document.querySelector('#ember-testing');
+      }
+    }).then(_settled.default);
+  }
+
+  /**
+    @public
+    @returns {string} the currently active route name
+  */
+  /* globals EmberENV */
+  function currentRouteName() {
+    var _getContext = (0, _setupContext.getContext)(),
+        owner = _getContext.owner;
+
+    var router = owner.lookup('router:main');
+    return Ember.get(router, 'currentRouteName');
+  }
+
+  var HAS_CURRENT_URL_ON_ROUTER = (0, _hasEmberVersion.default)(2, 13);
+
+  /**
+    @public
+    @returns {string} the applications current url
+  */
+  function currentURL() {
+    var _getContext2 = (0, _setupContext.getContext)(),
+        owner = _getContext2.owner;
+
+    var router = owner.lookup('router:main');
+
+    if (HAS_CURRENT_URL_ON_ROUTER) {
+      return Ember.get(router, 'currentURL');
+    } else {
+      return Ember.get(router, 'location').getURL();
+    }
+  }
+
+  /**
+    Used by test framework addons to setup the provided context for working with
+    an application (e.g. routing).
+  
+    `setupContext` must have been ran on the provided context prior to calling
+    `setupApplicatinContext`.
+  
+    Sets up the basic framework used by application tests.
+  
+    @public
+    @param {Object} context the context to setup
+    @returns {Promise<Object>} resolves with the context that was setup
+  */
+  function setupApplicationContext() {
+    return (0, _utils.nextTickPromise)();
+  }
+});
+define('@ember/test-helpers/setup-context', ['exports', '@ember/test-helpers/build-owner', '@ember/test-helpers/settled', '@ember/test-helpers/global', '@ember/test-helpers/resolver', '@ember/test-helpers/application', '@ember/test-helpers/-utils'], function (exports, _buildOwner, _settled, _global, _resolver, _application, _utils) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.CLEANUP = undefined;
+  exports.setContext = setContext;
+  exports.getContext = getContext;
+  exports.unsetContext = unsetContext;
+  exports.pauseTest = pauseTest;
+  exports.resumeTest = resumeTest;
+
+  exports.default = function (context) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+    Ember.testing = true;
+    setContext(context);
+
+    var contextGuid = Ember.guidFor(context);
+    CLEANUP[contextGuid] = [];
+
+    return (0, _utils.nextTickPromise)().then(function () {
+      var application = (0, _application.getApplication)();
+      if (application) {
+        return application.boot();
+      }
+    }).then(function () {
+      var testElementContainer = document.getElementById('ember-testing-container');
+      var fixtureResetValue = testElementContainer.innerHTML;
+
+      // push this into the final cleanup bucket, to be ran _after_ the owner
+      // is destroyed and settled (e.g. flushed run loops, etc)
+      CLEANUP[contextGuid].push(function () {
+        testElementContainer.innerHTML = fixtureResetValue;
+      });
+
+      var resolver = options.resolver;
+
+      // This handles precendence, specifying a specific option of
+      // resolver always trumps whatever is auto-detected, then we fallback to
+      // the suite-wide registrations
+      //
+      // At some later time this can be extended to support specifying a custom
+      // engine or application...
+
+      if (resolver) {
+        return (0, _buildOwner.default)(null, resolver);
+      }
+
+      return (0, _buildOwner.default)((0, _application.getApplication)(), (0, _resolver.getResolver)());
+    }).then(function (owner) {
+      Object.defineProperty(context, 'owner', {
+        configurable: true,
+        enumerable: true,
+        value: owner,
+        writable: false
+      });
+
+      Object.defineProperty(context, 'set', {
+        configurable: true,
+        enumerable: true,
+        value: function value(key, _value) {
+          var ret = Ember.run(function () {
+            return Ember.set(context, key, _value);
+          });
+
+          return ret;
+        },
+
+        writable: false
+      });
+
+      Object.defineProperty(context, 'setProperties', {
+        configurable: true,
+        enumerable: true,
+        value: function value(hash) {
+          var ret = Ember.run(function () {
+            return Ember.setProperties(context, hash);
+          });
+
+          return ret;
+        },
+
+        writable: false
+      });
+
+      Object.defineProperty(context, 'get', {
+        configurable: true,
+        enumerable: true,
+        value: function value(key) {
+          return Ember.get(context, key);
+        },
+
+        writable: false
+      });
+
+      Object.defineProperty(context, 'getProperties', {
+        configurable: true,
+        enumerable: true,
+        value: function value() {
+          for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+          }
+
+          return Ember.getProperties(context, args);
+        },
+
+        writable: false
+      });
+
+      var resume = void 0;
+      context.resumeTest = function resumeTest() {
+        (true && !(resume) && Ember.assert('Testing has not been paused. There is nothing to resume.', resume));
+
+        resume();
+        _global.default.resumeTest = resume = undefined;
+      };
+
+      context.pauseTest = function pauseTest() {
+        console.info('Testing paused. Use `resumeTest()` to continue.'); // eslint-disable-line no-console
+
+        return new Ember.RSVP.Promise(function (resolve) {
+          resume = resolve;
+          _global.default.resumeTest = resumeTest;
+        }, 'TestAdapter paused promise');
+      };
+
+      (0, _settled._setupAJAXHooks)();
+
+      return context;
+    });
+  };
+
+  var __test_context__ = void 0;
+
+  /**
+    Stores the provided context as the "global testing context".
+  
+    Generally setup automatically by `setupContext`.
+  
+    @public
+    @param {Object} context the context to use
+  */
+  function setContext(context) {
+    __test_context__ = context;
+  }
+
+  /**
+    Retrive the "global testing context" as stored by `setContext`.
+  
+    @public
+    @returns {Object} the previously stored testing context
+  */
+  function getContext() {
+    return __test_context__;
+  }
+
+  /**
+    Clear the "global testing context".
+  
+    Generally invoked from `teardownContext`.
+  
+    @public
+  */
+  function unsetContext() {
+    __test_context__ = undefined;
+  }
+
+  /**
+   * Returns a promise to be used to pauses the current test (due to being
+   * returned from the test itself).  This is useful for debugging while testing
+   * or for test-driving.  It allows you to inspect the state of your application
+   * at any point.
+   *
+   * The test framework wrapper (e.g. `ember-qunit` or `ember-mocha`) should
+   * ensure that when `pauseTest()` is used, any framework specific test timeouts
+   * are disabled.
+   *
+   * @public
+   * @returns {Promise<void>} resolves _only_ when `resumeTest()` is invoked
+   * @example <caption>Usage via ember-qunit</caption>
+   *
+   * import { setupRenderingTest } from 'ember-qunit';
+   * import { render, click, pauseTest } from '@ember/test-helpers';
+   *
+   *
+   * module('awesome-sauce', function(hooks) {
+   *   setupRenderingTest(hooks);
+   *
+   *   test('does something awesome', async function(assert) {
+   *     await render(hbs`{{awesome-sauce}}`);
+   *
+   *     // added here to visualize / interact with the DOM prior
+   *     // to the interaction below
+   *     await pauseTest();
+   *
+   *     click('.some-selector');
+   *
+   *     assert.equal(this.element.textContent, 'this sauce is awesome!');
+   *   });
+   * });
+   */
+  function pauseTest() {
+    var context = getContext();
+
+    if (!context || typeof context.pauseTest !== 'function') {
+      throw new Error('Cannot call `pauseTest` without having first called `setupTest` or `setupRenderingTest`.');
+    }
+
+    return context.pauseTest();
+  }
+
+  /**
+    Resumes a test previously paused by `await pauseTest()`.
+  
+    @public
+  */
+  function resumeTest() {
+    var context = getContext();
+
+    if (!context || typeof context.resumeTest !== 'function') {
+      throw new Error('Cannot call `resumeTest` without having first called `setupTest` or `setupRenderingTest`.');
+    }
+
+    context.resumeTest();
+  }
+
+  var CLEANUP = exports.CLEANUP = Object.create(null);
+
+  /**
+    Used by test framework addons to setup the provided context for testing.
+  
+    Responsible for:
+  
+    - sets the "global testing context" to the provided context (`setContext`)
+    - create an owner object and set it on the provided context (e.g. `this.owner`)
+    - setup `this.set`, `this.setProperties`, `this.get`, and `this.getProperties` to the provided context
+    - setting up AJAX listeners
+    - setting up `pauseTest` (also available as `this.pauseTest()`) and `resumeTest` helpers
+  
+    @public
+    @param {Object} context the context to setup
+    @param {Object} [options] options used to override defaults
+    @param {Resolver} [options.resolver] a resolver to use for customizing normal resolution
+    @returns {Promise<Object>} resolves with the context that was setup
+  */
+});
+define('@ember/test-helpers/setup-rendering-context', ['exports', '@ember/test-helpers/global', '@ember/test-helpers/setup-context', '@ember/test-helpers/-utils', '@ember/test-helpers/settled', '@ember/test-helpers/dom/get-root-element'], function (exports, _global, _setupContext, _utils, _settled, _getRootElement) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.RENDERING_CLEANUP = undefined;
+  exports.render = render;
+  exports.clearRender = clearRender;
+  exports.default = setupRenderingContext;
+  /* globals EmberENV */
+  var RENDERING_CLEANUP = exports.RENDERING_CLEANUP = Object.create(null);
+  var OUTLET_TEMPLATE = Ember.HTMLBars.template({
+    "id": "4j+meOb4",
+    "block": "{\"symbols\":[],\"statements\":[[1,[20,\"outlet\"],false]],\"hasEval\":false}",
+    "meta": {}
+  });
+  var EMPTY_TEMPLATE = Ember.HTMLBars.template({
+    "id": "xOcW61lH",
+    "block": "{\"symbols\":[],\"statements\":[],\"hasEval\":false}",
+    "meta": {}
+  });
+
+  /**
+    @private
+    @param {Ember.ApplicationInstance} owner the current owner instance
+    @returns {Template} a template representing {{outlet}}
+  */
+  function lookupOutletTemplate(owner) {
+    var OutletTemplate = owner.lookup('template:-outlet');
+    if (!OutletTemplate) {
+      owner.register('template:-outlet', OUTLET_TEMPLATE);
+      OutletTemplate = owner.lookup('template:-outlet');
+    }
+
+    return OutletTemplate;
+  }
+
+  /**
+    @private
+    @param {string} [selector] the selector to search for relative to element
+    @returns {jQuery} a jQuery object representing the selector (or element itself if no selector)
+  */
+  function jQuerySelector(selector) {
+    var _getContext = (0, _setupContext.getContext)(),
+        element = _getContext.element;
+
+    // emulates Ember internal behavor of `this.$` in a component
+    // https://github.com/emberjs/ember.js/blob/v2.5.1/packages/ember-views/lib/views/states/has_element.js#L18
+    return selector ? _global.default.jQuery(selector, element) : _global.default.jQuery(element);
+  }
+
+  var templateId = 0;
+  /**
+    Renders the provided template and appends it to the DOM.
+  
+    @public
+    @param {CompiledTemplate} template the template to render
+    @returns {Promise<void>} resolves when settled
+  */
+  function render(template) {
+    var context = (0, _setupContext.getContext)();
+
+    if (!template) {
+      throw new Error('you must pass a template to `render()`');
+    }
+
+    return (0, _utils.nextTickPromise)().then(function () {
+      var owner = context.owner;
+
+
+      var toplevelView = owner.lookup('-top-level-view:main');
+      var OutletTemplate = lookupOutletTemplate(owner);
+      templateId += 1;
+      var templateFullName = 'template:-undertest-' + templateId;
+      owner.register(templateFullName, template);
+
+      var outletState = {
+        render: {
+          owner: owner,
+          into: undefined,
+          outlet: 'main',
+          name: 'application',
+          controller: undefined,
+          ViewClass: undefined,
+          template: OutletTemplate
+        },
+
+        outlets: {
+          main: {
+            render: {
+              owner: owner,
+              into: undefined,
+              outlet: 'main',
+              name: 'index',
+              controller: context,
+              ViewClass: undefined,
+              template: owner.lookup(templateFullName),
+              outlets: {}
+            },
+            outlets: {}
+          }
+        }
+      };
+      toplevelView.setOutletState(outletState);
+
+      // returning settled here because the actual rendering does not happen until
+      // the renderer detects it is dirty (which happens on backburner's end
+      // hook), see the following implementation details:
+      //
+      // * [view:outlet](https://github.com/emberjs/ember.js/blob/f94a4b6aef5b41b96ef2e481f35e07608df01440/packages/ember-glimmer/lib/views/outlet.js#L129-L145) manually dirties its own tag upon `setOutletState`
+      // * [backburner's custom end hook](https://github.com/emberjs/ember.js/blob/f94a4b6aef5b41b96ef2e481f35e07608df01440/packages/ember-glimmer/lib/renderer.js#L145-L159) detects that the current revision of the root is no longer the latest, and triggers a new rendering transaction
+      return (0, _settled.default)();
+    });
+  }
+
+  /**
+    Clears any templates previously rendered. This is commonly used for
+    confirming behavior that is triggered by teardown (e.g.
+    `willDestroyElement`).
+  
+    @public
+    @returns {Promise<void>} resolves when settled
+  */
+  function clearRender() {
+    var context = (0, _setupContext.getContext)();
+
+    if (!context || typeof context.clearRender !== 'function') {
+      throw new Error('Cannot call `clearRender` without having first called `setupRenderingContext`.');
+    }
+
+    return render(EMPTY_TEMPLATE);
+  }
+
+  /**
+    Used by test framework addons to setup the provided context for rendering.
+  
+    `setupContext` must have been ran on the provided context
+    prior to calling `setupRenderingContext`.
+  
+    Responsible for:
+  
+    - Setup the basic framework used for rendering by the
+      `render` helper.
+    - Ensuring the event dispatcher is properly setup.
+    - Setting `this.element` to the root element of the testing
+      container (things rendered via `render` will go _into_ this
+      element).
+  
+    @public
+    @param {Object} context the context to setup for rendering
+    @returns {Promise<Object>} resolves with the context that was setup
+  */
+  function setupRenderingContext(context) {
+    var contextGuid = Ember.guidFor(context);
+    RENDERING_CLEANUP[contextGuid] = [];
+
+    return (0, _utils.nextTickPromise)().then(function () {
+      var owner = context.owner;
+
+
+      // these methods being placed on the context itself will be deprecated in
+      // a future version (no giant rush) to remove some confusion about which
+      // is the "right" way to things...
+      Object.defineProperty(context, 'render', {
+        configurable: true,
+        enumerable: true,
+        value: render,
+        writable: false
+      });
+      Object.defineProperty(context, 'clearRender', {
+        configurable: true,
+        enumerable: true,
+        value: clearRender,
+        writable: false
+      });
+
+      if (_global.default.jQuery) {
+        Object.defineProperty(context, '$', {
+          configurable: true,
+          enumerable: true,
+          value: jQuerySelector,
+          writable: false
+        });
+      }
+
+      // When the host app uses `setApplication` (instead of `setResolver`) the event dispatcher has
+      // already been setup via `applicationInstance.boot()` in `./build-owner`. If using
+      // `setResolver` (instead of `setApplication`) a "mock owner" is created by extending
+      // `Ember._ContainerProxyMixin` and `Ember._RegistryProxyMixin` in this scenario we need to
+      // manually start the event dispatcher.
+      if (owner._emberTestHelpersMockOwner) {
+        var dispatcher = owner.lookup('event_dispatcher:main') || Ember.EventDispatcher.create();
+        dispatcher.setup({}, '#ember-testing');
+      }
+
+      var OutletView = owner.factoryFor ? owner.factoryFor('view:-outlet') : owner._lookupFactory('view:-outlet');
+      var toplevelView = OutletView.create();
+
+      owner.register('-top-level-view:main', {
+        create: function create() {
+          return toplevelView;
+        }
+      });
+
+      // initially render a simple empty template
+      return render(EMPTY_TEMPLATE).then(function () {
+        Ember.run(toplevelView, 'appendTo', (0, _getRootElement.default)());
+
+        return (0, _settled.default)();
+      });
+    }).then(function () {
+      Object.defineProperty(context, 'element', {
+        configurable: true,
+        enumerable: true,
+        // ensure the element is based on the wrapping toplevel view
+        // Ember still wraps the main application template with a
+        // normal tagged view
+        //
+        // In older Ember versions (2.4) the element itself is not stable,
+        // and therefore we cannot update the `this.element` until after the
+        // rendering is completed
+        value: EmberENV._APPLICATION_TEMPLATE_WRAPPER !== false ? (0, _getRootElement.default)().querySelector('.ember-view') : (0, _getRootElement.default)(),
+
+        writable: false
+      });
+
+      return context;
+    });
+  }
+});
+define('@ember/test-helpers/teardown-application-context', ['exports', '@ember/test-helpers/settled'], function (exports, _settled) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  exports.default = function () {
+    return (0, _settled.default)();
+  };
+});
+define('@ember/test-helpers/teardown-context', ['exports', '@ember/test-helpers/settled', '@ember/test-helpers/setup-context', '@ember/test-helpers/-utils'], function (exports, _settled, _setupContext, _utils) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = teardownContext;
+
+
+  /**
+    Used by test framework addons to tear down the provided context after testing is completed.
+  
+    Responsible for:
+  
+    - un-setting the "global testing context" (`unsetContext`)
+    - destroy the contexts owner object
+    - remove AJAX listeners
+  
+    @public
+    @param {Object} context the context to setup
+    @returns {Promise<void>} resolves when settled
+  */
+  function teardownContext(context) {
+    return (0, _utils.nextTickPromise)().then(function () {
+      var owner = context.owner;
+
+
+      (0, _settled._teardownAJAXHooks)();
+
+      Ember.run(owner, 'destroy');
+      Ember.testing = false;
+
+      (0, _setupContext.unsetContext)();
+
+      return (0, _settled.default)();
+    }).finally(function () {
+      var contextGuid = Ember.guidFor(context);
+
+      (0, _utils.runDestroyablesFor)(_setupContext.CLEANUP, contextGuid);
+
+      return (0, _settled.default)();
+    });
+  }
+});
+define('@ember/test-helpers/teardown-rendering-context', ['exports', '@ember/test-helpers/setup-rendering-context', '@ember/test-helpers/-utils', '@ember/test-helpers/settled'], function (exports, _setupRenderingContext, _utils, _settled) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = teardownRenderingContext;
+
+
+  /**
+    Used by test framework addons to tear down the provided context after testing is completed.
+  
+    Responsible for:
+  
+    - resetting the `ember-testing-container` to its original state (the value
+      when `setupRenderingContext` was called).
+  
+    @public
+    @param {Object} context the context to setup
+    @returns {Promise<void>} resolves when settled
+  */
+  function teardownRenderingContext(context) {
+    return (0, _utils.nextTickPromise)().then(function () {
+      var contextGuid = Ember.guidFor(context);
+
+      (0, _utils.runDestroyablesFor)(_setupRenderingContext.RENDERING_CLEANUP, contextGuid);
+
+      return (0, _settled.default)();
+    });
+  }
+});
+define('@ember/test-helpers/validate-error-handler', ['exports'], function (exports) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = validateErrorHandler;
+
+  var VALID = Object.freeze({ isValid: true, message: null });
+  var INVALID = Object.freeze({
+    isValid: false,
+    message: 'error handler should have re-thrown the provided error'
+  });
+
+  /**
+   * Validate the provided error handler to confirm that it properly re-throws
+   * errors when `Ember.testing` is true.
+   *
+   * This is intended to be used by test framework hosts (or other libraries) to
+   * ensure that `Ember.onerror` is properly configured. Without a check like
+   * this, `Ember.onerror` could _easily_ swallow all errors and make it _seem_
+   * like everything is just fine (and have green tests) when in reality
+   * everything is on fire...
+   *
+   * @public
+   * @param {Function} [callback=Ember.onerror] the callback to validate
+   * @returns {Object} object with `isValid` and `message`
+   *
+   * @example <caption>Example implementation for `ember-qunit`</caption>
+   *
+   * import { validateErrorHandler } from '@ember/test-helpers';
+   *
+   * test('Ember.onerror is functioning properly', function(assert) {
+   *   let result = validateErrorHandler();
+   *   assert.ok(result.isValid, result.message);
+   * });
+   */
+  function validateErrorHandler() {
+    var callback = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : Ember.onerror;
+
+    if (callback === undefined || callback === null) {
+      return VALID;
+    }
+
+    var error = new Error('Error handler validation error!');
+
+    var originalEmberTesting = Ember.testing;
+    Ember.testing = true;
+    try {
+      callback(error);
+    } catch (e) {
+      if (e === error) {
+        return VALID;
+      }
+    } finally {
+      Ember.testing = originalEmberTesting;
+    }
+
+    return INVALID;
+  }
+});
+define('@ember/test-helpers/wait-until', ['exports', '@ember/test-helpers/-utils'], function (exports, _utils) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = waitUntil;
+
+
+  var TIMEOUTS = [0, 1, 2, 5, 7];
+  var MAX_TIMEOUT = 10;
+
+  /**
+    Wait for the provided callback to return a truthy value.
+  
+    This does not leverage `settled()`, and as such can be used to manage async
+    while _not_ settled (e.g. "loading" or "pending" states).
+  
+    @public
+    @param {Function} callback the callback to use for testing when waiting should stop
+    @param {Object} [options] options used to override defaults
+    @param {number} [options.timeout=1000] the maximum amount of time to wait
+    @param {string} [options.timeoutMessage='waitUntil timed out'] the message to use in the reject on timeout
+    @returns {Promise} resolves with the callback value when it returns a truthy value
+  */
+  function waitUntil(callback) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+    var timeout = 'timeout' in options ? options.timeout : 1000;
+    var timeoutMessage = 'timeoutMessage' in options ? options.timeoutMessage : 'waitUntil timed out';
+
+    // creating this error eagerly so it has the proper invocation stack
+    var waitUntilTimedOut = new Error(timeoutMessage);
+
+    return new Ember.RSVP.Promise(function (resolve, reject) {
+      var time = 0;
+
+      // eslint-disable-next-line require-jsdoc
+      function scheduleCheck(timeoutsIndex) {
+        var interval = TIMEOUTS[timeoutsIndex];
+        if (interval === undefined) {
+          interval = MAX_TIMEOUT;
+        }
+
+        (0, _utils.futureTick)(function () {
+          time += interval;
+
+          var value = void 0;
+          try {
+            value = callback();
+          } catch (error) {
+            reject(error);
+          }
+
+          if (value) {
+            resolve(value);
+          } else if (time < timeout) {
+            scheduleCheck(timeoutsIndex + 1);
+          } else {
+            reject(waitUntilTimedOut);
+          }
+        }, interval);
+      }
+
+      scheduleCheck(0);
+    });
+  }
+});
+define('ember-cli-mirage/test-support/setup-mirage', ['exports', 'ember-cli-mirage/start-mirage'], function (exports, _startMirage) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = setupMirage;
+
+
+  //
+  // Used to set up mirage for a test. Must be called after one of the
+  // `ember-qunit` `setup*Test()` methods. It starts the server and sets
+  // `this.server` to point to it, and shuts the server down when the test
+  // finishes.
+  //
+  // NOTE: the `hooks = self` is for mocha support
+  //
+  function setupMirage() {
+    var hooks = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : self;
+
+    hooks.beforeEach(function () {
+      if (!this.owner) {
+        throw new Error('You must call one of the ember-qunit setupTest(),' + ' setupRenderingTest() or setupApplicationTest() methods before' + ' calling setupMirage()');
+      }
+
+      this.server = (0, _startMirage.default)(this.owner);
+    });
+
+    hooks.afterEach(function () {
+      this.server.shutdown();
+      delete this.server;
+    });
+  }
+});
 define('ember-cli-test-loader/test-support/index', ['exports'], function (exports) {
   /* globals requirejs, require */
   "use strict";
@@ -36866,30 +39535,6 @@ define('ember-exam/test-support/load', ['exports', 'ember-exam/test-support/-pri
     }
   }
 });
-define('ember-mocha', ['exports', 'ember-mocha/describe-module', 'ember-mocha/describe-component', 'ember-mocha/describe-model', 'ember-mocha/setup-test-factory', 'mocha', 'ember-test-helpers'], function (exports, _describeModule, _describeComponent, _describeModel, _setupTestFactory, _mocha, _emberTestHelpers) {
-  'use strict';
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.setResolver = exports.it = exports.setupModelTest = exports.setupComponentTest = exports.setupAcceptanceTest = exports.setupTest = exports.describeModel = exports.describeComponent = exports.describeModule = undefined;
-
-
-  var setupTest = (0, _setupTestFactory.default)(_emberTestHelpers.TestModule);
-  var setupAcceptanceTest = (0, _setupTestFactory.default)(_emberTestHelpers.TestModuleForAcceptance);
-  var setupComponentTest = (0, _setupTestFactory.default)(_emberTestHelpers.TestModuleForComponent);
-  var setupModelTest = (0, _setupTestFactory.default)(_emberTestHelpers.TestModuleForModel);
-
-  exports.describeModule = _describeModule.default;
-  exports.describeComponent = _describeComponent.default;
-  exports.describeModel = _describeModel.default;
-  exports.setupTest = setupTest;
-  exports.setupAcceptanceTest = setupAcceptanceTest;
-  exports.setupComponentTest = setupComponentTest;
-  exports.setupModelTest = setupModelTest;
-  exports.it = _mocha.it;
-  exports.setResolver = _emberTestHelpers.setResolver;
-});
 define('ember-mocha/describe-component', ['exports', 'ember-mocha/mocha-module', 'ember-test-helpers'], function (exports, _mochaModule, _emberTestHelpers) {
   'use strict';
 
@@ -36944,7 +39589,31 @@ define('ember-mocha/describe-module', ['exports', 'ember-mocha/mocha-module', 'e
 
   exports.default = describeModule;
 });
-define('ember-mocha/mocha-module', ['exports', 'mocha', 'ember-test-helpers'], function (exports, _mocha, _emberTestHelpers) {
+define('ember-mocha/index', ['exports', 'ember-mocha/describe-module', 'ember-mocha/describe-component', 'ember-mocha/describe-model', 'ember-mocha/setup-test-factory', 'mocha', '@ember/test-helpers', 'ember-test-helpers'], function (exports, _describeModule, _describeComponent, _describeModel, _setupTestFactory, _mocha, _testHelpers, _emberTestHelpers) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.setResolver = exports.it = exports.setupModelTest = exports.setupComponentTest = exports.setupAcceptanceTest = exports.setupTest = exports.describeModel = exports.describeComponent = exports.describeModule = undefined;
+
+
+  var setupTest = (0, _setupTestFactory.default)(_emberTestHelpers.TestModule);
+  var setupAcceptanceTest = (0, _setupTestFactory.default)(_emberTestHelpers.TestModuleForAcceptance);
+  var setupComponentTest = (0, _setupTestFactory.default)(_emberTestHelpers.TestModuleForComponent);
+  var setupModelTest = (0, _setupTestFactory.default)(_emberTestHelpers.TestModuleForModel);
+
+  exports.describeModule = _describeModule.default;
+  exports.describeComponent = _describeComponent.default;
+  exports.describeModel = _describeModel.default;
+  exports.setupTest = setupTest;
+  exports.setupAcceptanceTest = setupAcceptanceTest;
+  exports.setupComponentTest = setupComponentTest;
+  exports.setupModelTest = setupModelTest;
+  exports.it = _mocha.it;
+  exports.setResolver = _testHelpers.setResolver;
+});
+define('ember-mocha/mocha-module', ['exports', 'mocha', '@ember/test-helpers'], function (exports, _mocha, _testHelpers) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -36976,7 +39645,7 @@ define('ember-mocha/mocha-module', ['exports', 'mocha', 'ember-test-helpers'], f
         var _this = this;
 
         return module.setup().then(function () {
-          var context = (0, _emberTestHelpers.getContext)();
+          var context = (0, _testHelpers.getContext)();
           Object.keys(context).forEach(function (key) {
             _this[key] = context[key];
           });
@@ -37013,7 +39682,7 @@ define('ember-mocha/mocha-module', ['exports', 'mocha', 'ember-test-helpers'], f
     };
   }
 });
-define('ember-mocha/setup-test-factory', ['exports', 'mocha', 'ember-test-helpers'], function (exports, _mocha, _emberTestHelpers) {
+define('ember-mocha/setup-test-factory', ['exports', 'mocha', '@ember/test-helpers'], function (exports, _mocha, _testHelpers) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -37039,7 +39708,7 @@ define('ember-mocha/setup-test-factory', ['exports', 'mocha', 'ember-test-helper
         var _this = this;
 
         return module.setup().then(function () {
-          var context = (0, _emberTestHelpers.getContext)();
+          var context = (0, _testHelpers.getContext)();
           Object.keys(context).forEach(function (key) {
             _this[key] = context[key];
           });
@@ -37056,28 +39725,134 @@ define('ember-mocha/setup-test-factory', ['exports', 'mocha', 'ember-test-helper
     };
   };
 });
-define('ember-test-helpers', ['exports', 'ember-test-helpers/test-module', 'ember-test-helpers/test-module-for-acceptance', 'ember-test-helpers/test-module-for-integration', 'ember-test-helpers/test-module-for-component', 'ember-test-helpers/test-module-for-model', 'ember-test-helpers/test-context', 'ember-test-helpers/test-resolver'], function (exports, _testModule, _testModuleForAcceptance, _testModuleForIntegration, _testModuleForComponent, _testModuleForModel, _testContext, _testResolver) {
+define('ember-simple-auth/test-support/index', ['exports', '@ember/test-helpers', 'ember-simple-auth/authenticators/test'], function (exports, _testHelpers, _test) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.setResolver = exports.unsetContext = exports.setContext = exports.getContext = exports.TestModuleForModel = exports.TestModuleForComponent = exports.TestModuleForIntegration = exports.TestModuleForAcceptance = exports.TestModule = undefined;
+  exports.authenticateSession = authenticateSession;
+  exports.currentSession = currentSession;
+  exports.invalidateSession = invalidateSession;
 
 
-  Ember.testing = true;
+  var SESSION_SERVICE_KEY = 'service:session';
+  var TEST_CONTAINER_KEY = 'authenticator:test';
 
-  exports.TestModule = _testModule.default;
-  exports.TestModuleForAcceptance = _testModuleForAcceptance.default;
-  exports.TestModuleForIntegration = _testModuleForIntegration.default;
-  exports.TestModuleForComponent = _testModuleForComponent.default;
-  exports.TestModuleForModel = _testModuleForModel.default;
-  exports.getContext = _testContext.getContext;
-  exports.setContext = _testContext.setContext;
-  exports.unsetContext = _testContext.unsetContext;
-  exports.setResolver = _testResolver.setResolver;
+  function ensureAuthenticator(owner) {
+    var authenticator = owner.lookup(TEST_CONTAINER_KEY);
+    if (!authenticator) {
+      owner.register(TEST_CONTAINER_KEY, _test.default);
+    }
+  }
+
+  /**
+   * Authenticates the session.
+   *
+   * @param {Object} sessionData Optional argument used to mock an authenticator
+   * response (e.g. a token or user).
+   * @return {Promise}
+   * @public
+   */
+  function authenticateSession(sessionData) {
+    var _getContext = (0, _testHelpers.getContext)(),
+        owner = _getContext.owner;
+
+    var session = owner.lookup(SESSION_SERVICE_KEY);
+    ensureAuthenticator(owner);
+    return session.authenticate(TEST_CONTAINER_KEY, sessionData).then(function () {
+      return (0, _testHelpers.settled)();
+    });
+  }
+
+  /**
+   * Returns the current session.
+   *
+   * @return {Object} a session service.
+   * @public
+   */
+  function currentSession() {
+    var _getContext2 = (0, _testHelpers.getContext)(),
+        owner = _getContext2.owner;
+
+    return owner.lookup(SESSION_SERVICE_KEY);
+  }
+
+  /**
+   * Invalidates the session.
+   *
+   * @return {Promise}
+   * @public
+   */
+  function invalidateSession() {
+    var _getContext3 = (0, _testHelpers.getContext)(),
+        owner = _getContext3.owner;
+
+    var session = owner.lookup(SESSION_SERVICE_KEY);
+    var isAuthenticated = Ember.get(session, 'isAuthenticated');
+    return Ember.RSVP.resolve().then(function () {
+      if (isAuthenticated) {
+        return session.invalidate();
+      }
+    }).then(function () {
+      return (0, _testHelpers.settled)();
+    });
+  }
 });
-define('ember-test-helpers/-legacy-overrides', ['exports', 'ember-test-helpers/has-ember-version'], function (exports, _hasEmberVersion) {
+define('ember-test-helpers/has-ember-version', ['exports', '@ember/test-helpers/has-ember-version'], function (exports, _hasEmberVersion) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  Object.defineProperty(exports, 'default', {
+    enumerable: true,
+    get: function () {
+      return _hasEmberVersion.default;
+    }
+  });
+});
+define('ember-test-helpers/index', ['exports', '@ember/test-helpers', 'ember-test-helpers/legacy-0-6-x/test-module', 'ember-test-helpers/legacy-0-6-x/test-module-for-acceptance', 'ember-test-helpers/legacy-0-6-x/test-module-for-component', 'ember-test-helpers/legacy-0-6-x/test-module-for-model'], function (exports, _testHelpers, _testModule, _testModuleForAcceptance, _testModuleForComponent, _testModuleForModel) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  Object.keys(_testHelpers).forEach(function (key) {
+    if (key === "default" || key === "__esModule") return;
+    Object.defineProperty(exports, key, {
+      enumerable: true,
+      get: function () {
+        return _testHelpers[key];
+      }
+    });
+  });
+  Object.defineProperty(exports, 'TestModule', {
+    enumerable: true,
+    get: function () {
+      return _testModule.default;
+    }
+  });
+  Object.defineProperty(exports, 'TestModuleForAcceptance', {
+    enumerable: true,
+    get: function () {
+      return _testModuleForAcceptance.default;
+    }
+  });
+  Object.defineProperty(exports, 'TestModuleForComponent', {
+    enumerable: true,
+    get: function () {
+      return _testModuleForComponent.default;
+    }
+  });
+  Object.defineProperty(exports, 'TestModuleForModel', {
+    enumerable: true,
+    get: function () {
+      return _testModuleForModel.default;
+    }
+  });
+});
+define('ember-test-helpers/legacy-0-6-x/-legacy-overrides', ['exports', 'ember-test-helpers/has-ember-version'], function (exports, _hasEmberVersion) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -37101,7 +39876,7 @@ define('ember-test-helpers/-legacy-overrides', ['exports', 'ember-test-helpers/h
       module.teardownComponent();
 
       if (!template) {
-        throw new Error("in a component integration test you must pass a template to `render()`");
+        throw new Error('in a component integration test you must pass a template to `render()`');
       }
       if (Ember.isArray(template)) {
         template = template.join('');
@@ -37163,7 +39938,7 @@ define('ember-test-helpers/-legacy-overrides', ['exports', 'ember-test-helpers/h
     context.send = function (actionName) {
       var hook = module.actionHooks[actionName];
       if (!hook) {
-        throw new Error("integration testing template received unexpected action " + actionName);
+        throw new Error('integration testing template received unexpected action ' + actionName);
       }
       hook.apply(module, Array.prototype.slice.call(arguments, 1));
     };
@@ -37173,7 +39948,7 @@ define('ember-test-helpers/-legacy-overrides', ['exports', 'ember-test-helpers/h
     };
   }
 });
-define('ember-test-helpers/abstract-test-module', ['exports', 'ember-test-helpers/wait', 'ember-test-helpers/test-context'], function (exports, _wait, _testContext) {
+define('ember-test-helpers/legacy-0-6-x/abstract-test-module', ['exports', 'ember-test-helpers/legacy-0-6-x/ext/rsvp', '@ember/test-helpers/settled', '@ember/test-helpers'], function (exports, _rsvp, _settled, _testHelpers) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -37226,6 +40001,7 @@ define('ember-test-helpers/abstract-test-module', ['exports', 'ember-test-helper
       value: function setup(assert) {
         var _this = this;
 
+        Ember.testing = true;
         return this.invokeSteps(this.setupSteps, this, assert).then(function () {
           _this.contextualizeCallbacks();
           return _this.invokeSteps(_this.contextualizedSetupSteps, _this.context, assert);
@@ -37241,6 +40017,8 @@ define('ember-test-helpers/abstract-test-module', ['exports', 'ember-test-helper
         }).then(function () {
           _this2.cache = null;
           _this2.cachedCalls = null;
+        }).finally(function () {
+          Ember.testing = false;
         });
       }
     }, {
@@ -37257,6 +40035,7 @@ define('ember-test-helpers/abstract-test-module', ['exports', 'ember-test-helper
         this.setupSteps.push(this.setupContext);
         this.setupSteps.push(this.setupTestElements);
         this.setupSteps.push(this.setupAJAXListeners);
+        this.setupSteps.push(this.setupPromiseListeners);
 
         if (this.callbacks.setup) {
           this.contextualizedSetupSteps.push(this.callbacks.setup);
@@ -37298,6 +40077,7 @@ define('ember-test-helpers/abstract-test-module', ['exports', 'ember-test-helper
         this.teardownSteps.push(this.teardownContext);
         this.teardownSteps.push(this.teardownTestElements);
         this.teardownSteps.push(this.teardownAJAXListeners);
+        this.teardownSteps.push(this.teardownPromiseListeners);
 
         if (this.callbacks.afterTeardown) {
           this.teardownSteps.push(this.callbacks.afterTeardown);
@@ -37307,15 +40087,22 @@ define('ember-test-helpers/abstract-test-module', ['exports', 'ember-test-helper
     }, {
       key: 'setupTestElements',
       value: function setupTestElements() {
+        var testElementContainer = document.querySelector('#ember-testing-container');
+        if (!testElementContainer) {
+          testElementContainer = document.createElement('div');
+          testElementContainer.setAttribute('id', 'ember-testing-container');
+          document.body.appendChild(testElementContainer);
+        }
+
         var testEl = document.querySelector('#ember-testing');
         if (!testEl) {
           var element = document.createElement('div');
           element.setAttribute('id', 'ember-testing');
 
-          document.body.appendChild(element);
+          testElementContainer.appendChild(element);
           this.fixtureResetValue = '';
         } else {
-          this.fixtureResetValue = testEl.innerHTML;
+          this.fixtureResetValue = testElementContainer.innerHTML;
         }
       }
     }, {
@@ -37330,7 +40117,7 @@ define('ember-test-helpers/abstract-test-module', ['exports', 'ember-test-helper
         merge(context, options);
 
         this.setToString();
-        (0, _testContext.setContext)(context);
+        (0, _testHelpers.setContext)(context);
         this.context = context;
       }
     }, {
@@ -37345,7 +40132,7 @@ define('ember-test-helpers/abstract-test-module', ['exports', 'ember-test-helper
           return this.context;
         }
 
-        return this.context = (0, _testContext.getContext)() || {};
+        return this.context = (0, _testHelpers.getContext)() || {};
       }
     }, {
       key: 'setToString',
@@ -37365,17 +40152,27 @@ define('ember-test-helpers/abstract-test-module', ['exports', 'ember-test-helper
     }, {
       key: 'setupAJAXListeners',
       value: function setupAJAXListeners() {
-        (0, _wait._setupAJAXHooks)();
+        (0, _settled._setupAJAXHooks)();
       }
     }, {
       key: 'teardownAJAXListeners',
       value: function teardownAJAXListeners() {
-        (0, _wait._teardownAJAXHooks)();
+        (0, _settled._teardownAJAXHooks)();
+      }
+    }, {
+      key: 'setupPromiseListeners',
+      value: function setupPromiseListeners() {
+        (0, _rsvp._setupPromiseListeners)();
+      }
+    }, {
+      key: 'teardownPromiseListeners',
+      value: function teardownPromiseListeners() {
+        (0, _rsvp._teardownPromiseListeners)();
       }
     }, {
       key: 'teardownTestElements',
       value: function teardownTestElements() {
-        document.getElementById('ember-testing').innerHTML = this.fixtureResetValue;
+        document.getElementById('ember-testing-container').innerHTML = this.fixtureResetValue;
 
         // Ember 2.0.0 removed Ember.View as public API, so only do this when
         // Ember.View is present
@@ -37388,7 +40185,7 @@ define('ember-test-helpers/abstract-test-module', ['exports', 'ember-test-helper
       value: function teardownContext() {
         var context = this.context;
         this.context = undefined;
-        (0, _testContext.unsetContext)();
+        (0, _testHelpers.unsetContext)();
 
         if (context && context.dispatcher && !context.dispatcher.isDestroyed) {
           Ember.run(function () {
@@ -37403,7 +40200,7 @@ define('ember-test-helpers/abstract-test-module', ['exports', 'ember-test-helper
 
   exports.default = _class;
 });
-define('ember-test-helpers/build-registry', ['exports', 'require'], function (exports, _require2) {
+define('ember-test-helpers/legacy-0-6-x/build-registry', ['exports', 'require'], function (exports, _require2) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -37503,7 +40300,8 @@ define('ember-test-helpers/build-registry', ['exports', 'require'], function (ex
 
     return {
       registry: registry,
-      container: container
+      container: container,
+      owner: owner
     };
   };
 
@@ -37512,6 +40310,8 @@ define('ember-test-helpers/build-registry', ['exports', 'require'], function (ex
   } : function (obj) {
     return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
   };
+
+  /* globals global, self, requirejs */
 
   function exposeRegistryMethodsWithoutDeprecations(container) {
     var methods = ['register', 'unregister', 'resolve', 'normalize', 'typeInjection', 'injection', 'factoryInjection', 'factoryTypeInjection', 'has', 'options', 'optionsForType'];
@@ -37531,50 +40331,55 @@ define('ember-test-helpers/build-registry', ['exports', 'require'], function (ex
 
   var Owner = function () {
     if (Ember._RegistryProxyMixin && Ember._ContainerProxyMixin) {
-      return Ember.Object.extend(Ember._RegistryProxyMixin, Ember._ContainerProxyMixin);
+      return Ember.Object.extend(Ember._RegistryProxyMixin, Ember._ContainerProxyMixin, {
+        _emberTestHelpersMockOwner: true
+      });
     }
 
-    return Ember.Object.extend();
+    return Ember.Object.extend({
+      _emberTestHelpersMockOwner: true
+    });
   }();
 });
-define('ember-test-helpers/has-ember-version', ['exports'], function (exports) {
+define('ember-test-helpers/legacy-0-6-x/ext/rsvp', ['exports'], function (exports) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = hasEmberVersion;
-  function hasEmberVersion(major, minor) {
-    var numbers = Ember.VERSION.split('-')[0].split('.');
-    var actualMajor = parseInt(numbers[0], 10);
-    var actualMinor = parseInt(numbers[1], 10);
-    return actualMajor > major || actualMajor === major && actualMinor >= minor;
+  exports._setupPromiseListeners = _setupPromiseListeners;
+  exports._teardownPromiseListeners = _teardownPromiseListeners;
+
+
+  var originalAsync = void 0;
+
+  /**
+    Configures `RSVP` to resolve promises on the run-loop's action queue. This is
+    done by Ember internally since Ember 1.7 and it is only needed to
+    provide a consistent testing experience for users of Ember < 1.7.
+  
+    @private
+  */
+  function _setupPromiseListeners() {
+    originalAsync = Ember.RSVP.configure('async');
+
+    Ember.RSVP.configure('async', function (callback, promise) {
+      Ember.run.backburner.schedule('actions', function () {
+        callback(promise);
+      });
+    });
+  }
+
+  /**
+    Resets `RSVP`'s `async` to its prior value.
+  
+    @private
+  */
+  function _teardownPromiseListeners() {
+    Ember.RSVP.configure('async', originalAsync);
   }
 });
-define("ember-test-helpers/test-context", ["exports"], function (exports) {
-  "use strict";
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.setContext = setContext;
-  exports.getContext = getContext;
-  exports.unsetContext = unsetContext;
-  var __test_context__;
-
-  function setContext(context) {
-    __test_context__ = context;
-  }
-
-  function getContext() {
-    return __test_context__;
-  }
-
-  function unsetContext() {
-    __test_context__ = undefined;
-  }
-});
-define('ember-test-helpers/test-module-for-acceptance', ['exports', 'ember-test-helpers/abstract-test-module', 'ember-test-helpers/test-context'], function (exports, _abstractTestModule, _testContext) {
+define('ember-test-helpers/legacy-0-6-x/test-module-for-acceptance', ['exports', 'ember-test-helpers/legacy-0-6-x/abstract-test-module', '@ember/test-helpers'], function (exports, _abstractTestModule, _testHelpers) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -37672,7 +40477,7 @@ define('ember-test-helpers/test-module-for-acceptance', ['exports', 'ember-test-
       key: 'teardownContext',
       value: function teardownContext() {
         Ember.run(function () {
-          (0, _testContext.getContext)().application.destroy();
+          (0, _testHelpers.getContext)().application.destroy();
         });
 
         _get(_class.prototype.__proto__ || Object.getPrototypeOf(_class.prototype), 'teardownContext', this).call(this);
@@ -37701,7 +40506,7 @@ define('ember-test-helpers/test-module-for-acceptance', ['exports', 'ember-test-
 
   exports.default = _class;
 });
-define('ember-test-helpers/test-module-for-component', ['exports', 'ember-test-helpers/test-module', 'ember-test-helpers/has-ember-version', 'ember-test-helpers/-legacy-overrides'], function (exports, _testModule, _hasEmberVersion, _legacyOverrides) {
+define('ember-test-helpers/legacy-0-6-x/test-module-for-component', ['exports', 'ember-test-helpers/legacy-0-6-x/test-module', 'ember-test-helpers/has-ember-version', 'ember-test-helpers/legacy-0-6-x/-legacy-overrides'], function (exports, _testModule, _hasEmberVersion, _legacyOverrides) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -37797,8 +40602,6 @@ define('ember-test-helpers/test-module-for-component', ['exports', 'ember-test-h
 
   var isPreGlimmer = !(0, _hasEmberVersion.default)(1, 13);
 
-  var getOwner = Ember.getOwner;
-
   var _class = function (_TestModule) {
     _inherits(_class, _TestModule);
 
@@ -37825,7 +40628,10 @@ define('ember-test-helpers/test-module-for-component', ['exports', 'ember-test-h
       } else if (integrationOption) {
         _this2.isUnitTest = false;
       } else {
-        Ember.deprecate("the component:" + componentName + " test module is implicitly running in unit test mode, " + "which will change to integration test mode by default in an upcoming version of " + "ember-test-helpers. Add `unit: true` or a `needs:[]` list to explicitly opt in to unit " + "test mode.", false, { id: 'ember-test-helpers.test-module-for-component.test-type', until: '0.6.0' });
+        Ember.deprecate('the component:' + componentName + ' test module is implicitly running in unit test mode, ' + 'which will change to integration test mode by default in an upcoming version of ' + 'ember-test-helpers. Add `unit: true` or a `needs:[]` list to explicitly opt in to unit ' + 'test mode.', false, {
+          id: 'ember-test-helpers.test-module-for-component.test-type',
+          until: '0.6.0'
+        });
         _this2.isUnitTest = true;
       }
 
@@ -37887,6 +40693,10 @@ define('ember-test-helpers/test-module-for-component', ['exports', 'ember-test-h
           thingToRegisterWith.register(layoutName, layout);
           thingToRegisterWith.injection(this.subjectName, 'layout', layoutName);
         }
+        var eventDispatcher = resolver.resolve('event_dispatcher:main');
+        if (eventDispatcher) {
+          thingToRegisterWith.register('event_dispatcher:main', eventDispatcher);
+        }
 
         context.dispatcher = this.container.lookup('event_dispatcher:main') || Ember.EventDispatcher.create();
         context.dispatcher.setup({}, '#ember-testing');
@@ -37911,7 +40721,10 @@ define('ember-test-helpers/test-module-for-component', ['exports', 'ember-test-h
         };
 
         this.callbacks.append = function () {
-          Ember.deprecate('this.append() is deprecated. Please use this.render() or this.$() instead.', false, { id: 'ember-test-helpers.test-module-for-component.append', until: '0.6.0' });
+          Ember.deprecate('this.append() is deprecated. Please use this.render() or this.$() instead.', false, {
+            id: 'ember-test-helpers.test-module-for-component.append',
+            until: '0.6.0'
+          });
           return context.$();
         };
 
@@ -37976,7 +40789,7 @@ define('ember-test-helpers/test-module-for-component', ['exports', 'ember-test-h
     var hasOutletTemplate = !!OutletTemplate;
     var outletState = {
       render: {
-        owner: getOwner ? getOwner(module.container) : undefined,
+        owner: Ember.getOwner ? Ember.getOwner(module.container) : undefined,
         into: undefined,
         outlet: 'main',
         name: 'application',
@@ -37999,7 +40812,7 @@ define('ember-test-helpers/test-module-for-component', ['exports', 'ember-test-h
 
     context.render = function (template) {
       if (!template) {
-        throw new Error("in a component integration test you must pass a template to `render()`");
+        throw new Error('in a component integration test you must pass a template to `render()`');
       }
       if (Ember.isArray(template)) {
         template = template.join('');
@@ -38011,7 +40824,7 @@ define('ember-test-helpers/test-module-for-component', ['exports', 'ember-test-h
       var templateFullName = 'template:-undertest-' + ++templateId;
       this.registry.register(templateFullName, template);
       var stateToRender = {
-        owner: getOwner ? getOwner(module.container) : undefined,
+        owner: Ember.getOwner ? Ember.getOwner(module.container) : undefined,
         into: undefined,
         outlet: 'main',
         name: 'index',
@@ -38038,10 +40851,14 @@ define('ember-test-helpers/test-module-for-component', ['exports', 'ember-test-h
         hasRendered = true;
       }
 
-      // ensure the element is based on the wrapping toplevel view
-      // Ember still wraps the main application template with a
-      // normal tagged view
-      context._element = element = document.querySelector('#ember-testing > .ember-view');
+      if (EmberENV._APPLICATION_TEMPLATE_WRAPPER !== false) {
+        // ensure the element is based on the wrapping toplevel view
+        // Ember still wraps the main application template with a
+        // normal tagged view
+        context._element = element = document.querySelector('#ember-testing > .ember-view');
+      } else {
+        context._element = element = document.querySelector('#ember-testing');
+      }
     };
 
     context.$ = function (selector) {
@@ -38086,7 +40903,7 @@ define('ember-test-helpers/test-module-for-component', ['exports', 'ember-test-h
     context.send = function (actionName) {
       var hook = module.actionHooks[actionName];
       if (!hook) {
-        throw new Error("integration testing template received unexpected action " + actionName);
+        throw new Error('integration testing template received unexpected action ' + actionName);
       }
       hook.apply(module.context, Array.prototype.slice.call(arguments, 1));
     };
@@ -38110,301 +40927,7 @@ define('ember-test-helpers/test-module-for-component', ['exports', 'ember-test-h
   }
   exports.setupComponentIntegrationTest = _setupComponentIntegrationTest;
 });
-define('ember-test-helpers/test-module-for-integration', ['exports', 'ember-test-helpers/abstract-test-module', 'ember-test-helpers/test-resolver', 'ember-test-helpers/build-registry', 'ember-test-helpers/has-ember-version', 'ember-test-helpers/-legacy-overrides', 'ember-test-helpers/test-module-for-component'], function (exports, _abstractTestModule, _testResolver, _buildRegistry, _hasEmberVersion, _legacyOverrides, _testModuleForComponent) {
-  'use strict';
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-
-  function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
-    }
-  }
-
-  var _createClass = function () {
-    function defineProperties(target, props) {
-      for (var i = 0; i < props.length; i++) {
-        var descriptor = props[i];
-        descriptor.enumerable = descriptor.enumerable || false;
-        descriptor.configurable = true;
-        if ("value" in descriptor) descriptor.writable = true;
-        Object.defineProperty(target, descriptor.key, descriptor);
-      }
-    }
-
-    return function (Constructor, protoProps, staticProps) {
-      if (protoProps) defineProperties(Constructor.prototype, protoProps);
-      if (staticProps) defineProperties(Constructor, staticProps);
-      return Constructor;
-    };
-  }();
-
-  function _possibleConstructorReturn(self, call) {
-    if (!self) {
-      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-    }
-
-    return call && (typeof call === "object" || typeof call === "function") ? call : self;
-  }
-
-  var _get = function get(object, property, receiver) {
-    if (object === null) object = Function.prototype;
-    var desc = Object.getOwnPropertyDescriptor(object, property);
-
-    if (desc === undefined) {
-      var parent = Object.getPrototypeOf(object);
-
-      if (parent === null) {
-        return undefined;
-      } else {
-        return get(parent, property, receiver);
-      }
-    } else if ("value" in desc) {
-      return desc.value;
-    } else {
-      var getter = desc.get;
-
-      if (getter === undefined) {
-        return undefined;
-      }
-
-      return getter.call(receiver);
-    }
-  };
-
-  function _inherits(subClass, superClass) {
-    if (typeof superClass !== "function" && superClass !== null) {
-      throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-    }
-
-    subClass.prototype = Object.create(superClass && superClass.prototype, {
-      constructor: {
-        value: subClass,
-        enumerable: false,
-        writable: true,
-        configurable: true
-      }
-    });
-    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-  }
-
-  var isPreGlimmer = !(0, _hasEmberVersion.default)(1, 13);
-
-  var _class = function (_AbstractTestModule) {
-    _inherits(_class, _AbstractTestModule);
-
-    function _class() {
-      _classCallCheck(this, _class);
-
-      var _this2 = _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).apply(this, arguments));
-
-      _this2.resolver = _this2.callbacks.resolver || (0, _testResolver.getResolver)();
-      return _this2;
-    }
-
-    _createClass(_class, [{
-      key: 'initSetupSteps',
-      value: function initSetupSteps() {
-        this.setupSteps = [];
-        this.contextualizedSetupSteps = [];
-
-        if (this.callbacks.beforeSetup) {
-          this.setupSteps.push(this.callbacks.beforeSetup);
-          delete this.callbacks.beforeSetup;
-        }
-
-        this.setupSteps.push(this.setupContainer);
-        this.setupSteps.push(this.setupContext);
-        this.setupSteps.push(this.setupTestElements);
-        this.setupSteps.push(this.setupAJAXListeners);
-        this.setupSteps.push(this.setupComponentIntegrationTest);
-
-        if (Ember.View && Ember.View.views) {
-          this.setupSteps.push(this._aliasViewRegistry);
-        }
-
-        if (this.callbacks.setup) {
-          this.contextualizedSetupSteps.push(this.callbacks.setup);
-          delete this.callbacks.setup;
-        }
-      }
-    }, {
-      key: 'initTeardownSteps',
-      value: function initTeardownSteps() {
-        this.teardownSteps = [];
-        this.contextualizedTeardownSteps = [];
-
-        if (this.callbacks.teardown) {
-          this.contextualizedTeardownSteps.push(this.callbacks.teardown);
-          delete this.callbacks.teardown;
-        }
-
-        this.teardownSteps.push(this.teardownContainer);
-        this.teardownSteps.push(this.teardownContext);
-        this.teardownSteps.push(this.teardownAJAXListeners);
-        this.teardownSteps.push(this.teardownComponent);
-
-        if (Ember.View && Ember.View.views) {
-          this.teardownSteps.push(this._resetViewRegistry);
-        }
-
-        this.teardownSteps.push(this.teardownTestElements);
-
-        if (this.callbacks.afterTeardown) {
-          this.teardownSteps.push(this.callbacks.afterTeardown);
-          delete this.callbacks.afterTeardown;
-        }
-      }
-    }, {
-      key: 'setupContainer',
-      value: function setupContainer() {
-        var resolver = this.resolver;
-        var items = (0, _buildRegistry.default)(resolver);
-
-        this.container = items.container;
-        this.registry = items.registry;
-
-        if ((0, _hasEmberVersion.default)(1, 13)) {
-          var thingToRegisterWith = this.registry || this.container;
-          var router = resolver.resolve('router:main');
-          router = router || Ember.Router.extend();
-          thingToRegisterWith.register('router:main', router);
-        }
-      }
-    }, {
-      key: 'setupContext',
-      value: function setupContext() {
-        var subjectName = this.subjectName;
-        var container = this.container;
-
-        var factory = function factory() {
-          return container.factoryFor ? container.factoryFor(subjectName) : container.lookupFactory(subjectName);
-        };
-
-        _get(_class.prototype.__proto__ || Object.getPrototypeOf(_class.prototype), 'setupContext', this).call(this, {
-          container: this.container,
-          registry: this.registry,
-          factory: factory,
-          register: function register() {
-            var target = this.registry || this.container;
-            return target.register.apply(target, arguments);
-          }
-        });
-
-        var context = this.context;
-
-        if (Ember.setOwner) {
-          Ember.setOwner(context, this.container.owner);
-        }
-
-        if (Ember.inject) {
-          var keys = (Object.keys || Ember.keys)(Ember.inject);
-          keys.forEach(function (typeName) {
-            context.inject[typeName] = function (name, opts) {
-              var alias = opts && opts.as || name;
-              Ember.run(function () {
-                Ember.set(context, alias, context.container.lookup(typeName + ':' + name));
-              });
-            };
-          });
-        }
-
-        // only setup the injection if we are running against a version
-        // of Ember that has `-view-registry:main` (Ember >= 1.12)
-        if (this.container.factoryFor ? this.container.factoryFor('-view-registry:main') : this.container.lookupFactory('-view-registry:main')) {
-          (this.registry || this.container).injection('component', '_viewRegistry', '-view-registry:main');
-        }
-      }
-    }, {
-      key: 'setupComponentIntegrationTest',
-      value: function setupComponentIntegrationTest() {
-        if (isPreGlimmer) {
-          return _legacyOverrides.preGlimmerSetupIntegrationForComponent.apply(this, arguments);
-        } else {
-          return _testModuleForComponent.setupComponentIntegrationTest.apply(this, arguments);
-        }
-      }
-    }, {
-      key: 'teardownComponent',
-      value: function teardownComponent() {
-        var component = this.component;
-        if (component) {
-          Ember.run(function () {
-            component.destroy();
-          });
-        }
-      }
-    }, {
-      key: 'teardownContainer',
-      value: function teardownContainer() {
-        var container = this.container;
-        Ember.run(function () {
-          container.destroy();
-        });
-      }
-    }, {
-      key: 'contextualizeCallbacks',
-      value: function contextualizeCallbacks() {
-        var callbacks = this.callbacks;
-        var context = this.context;
-
-        this.cache = this.cache || {};
-        this.cachedCalls = this.cachedCalls || {};
-
-        var keys = (Object.keys || Ember.keys)(callbacks);
-        var keysLength = keys.length;
-
-        if (keysLength) {
-          for (var i = 0; i < keysLength; i++) {
-            this._contextualizeCallback(context, keys[i], context);
-          }
-        }
-      }
-    }, {
-      key: '_contextualizeCallback',
-      value: function _contextualizeCallback(context, key, callbackContext) {
-        var _this = this;
-        var callbacks = this.callbacks;
-        var factory = context.factory;
-
-        context[key] = function (options) {
-          if (_this.cachedCalls[key]) {
-            return _this.cache[key];
-          }
-
-          var result = callbacks[key].call(callbackContext, options, factory());
-
-          _this.cache[key] = result;
-          _this.cachedCalls[key] = true;
-
-          return result;
-        };
-      }
-    }, {
-      key: '_aliasViewRegistry',
-      value: function _aliasViewRegistry() {
-        this._originalGlobalViewRegistry = Ember.View.views;
-        var viewRegistry = this.container.lookup('-view-registry:main');
-
-        if (viewRegistry) {
-          Ember.View.views = viewRegistry;
-        }
-      }
-    }, {
-      key: '_resetViewRegistry',
-      value: function _resetViewRegistry() {
-        Ember.View.views = this._originalGlobalViewRegistry;
-      }
-    }]);
-
-    return _class;
-  }(_abstractTestModule.default);
-
-  exports.default = _class;
-});
-define('ember-test-helpers/test-module-for-model', ['exports', 'require', 'ember-test-helpers/test-module'], function (exports, _require2, _testModule) {
+define('ember-test-helpers/legacy-0-6-x/test-module-for-model', ['exports', 'require', 'ember-test-helpers/legacy-0-6-x/test-module'], function (exports, _require2, _testModule) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -38522,7 +41045,7 @@ define('ember-test-helpers/test-module-for-model', ['exports', 'require', 'ember
 
   exports.default = _class;
 });
-define('ember-test-helpers/test-module', ['exports', 'ember-test-helpers/abstract-test-module', 'ember-test-helpers/test-resolver', 'ember-test-helpers/build-registry', 'ember-test-helpers/has-ember-version'], function (exports, _abstractTestModule, _testResolver, _buildRegistry, _hasEmberVersion) {
+define('ember-test-helpers/legacy-0-6-x/test-module', ['exports', 'ember-test-helpers/legacy-0-6-x/abstract-test-module', '@ember/test-helpers', 'ember-test-helpers/legacy-0-6-x/build-registry', '@ember/test-helpers/has-ember-version'], function (exports, _abstractTestModule, _testHelpers, _buildRegistry, _hasEmberVersion) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -38625,7 +41148,7 @@ define('ember-test-helpers/test-module', ['exports', 'ember-test-helpers/abstrac
 
       _this2.subjectName = subjectName;
       _this2.description = description || subjectName;
-      _this2.resolver = _this2.callbacks.resolver || (0, _testResolver.getResolver)();
+      _this2.resolver = _this2.callbacks.resolver || (0, _testHelpers.getResolver)();
 
       if (_this2.callbacks.integration && _this2.callbacks.needs) {
         throw new Error("cannot declare 'integration: true' and 'needs' in the same module");
@@ -38645,7 +41168,7 @@ define('ember-test-helpers/test-module', ['exports', 'ember-test-helpers/abstrac
       key: 'initIntegration',
       value: function initIntegration(options) {
         if (options.integration === 'legacy') {
-          throw new Error('`integration: \'legacy\'` is only valid for component tests.');
+          throw new Error("`integration: 'legacy'` is only valid for component tests.");
         }
         this.isIntegration = true;
       }
@@ -38678,6 +41201,7 @@ define('ember-test-helpers/test-module', ['exports', 'ember-test-helpers/abstrac
         this.setupSteps.push(this.setupContext);
         this.setupSteps.push(this.setupTestElements);
         this.setupSteps.push(this.setupAJAXListeners);
+        this.setupSteps.push(this.setupPromiseListeners);
 
         if (this.callbacks.setup) {
           this.contextualizedSetupSteps.push(this.callbacks.setup);
@@ -38700,6 +41224,7 @@ define('ember-test-helpers/test-module', ['exports', 'ember-test-helpers/abstrac
         this.teardownSteps.push(this.teardownContext);
         this.teardownSteps.push(this.teardownTestElements);
         this.teardownSteps.push(this.teardownAJAXListeners);
+        this.teardownSteps.push(this.teardownPromiseListeners);
 
         if (this.callbacks.afterTeardown) {
           this.teardownSteps.push(this.callbacks.afterTeardown);
@@ -38748,7 +41273,7 @@ define('ember-test-helpers/test-module', ['exports', 'ember-test-helpers/abstrac
         var context = this.context;
 
         if (Ember.inject) {
-          var keys = (Object.keys || Ember.keys)(Ember.inject);
+          var keys = (Object.keys || keys)(Ember.inject);
 
           keys.forEach(function (typeName) {
             context.inject[typeName] = function (name, opts) {
@@ -38793,7 +41318,7 @@ define('ember-test-helpers/test-module', ['exports', 'ember-test-helpers/abstrac
         this.cache = this.cache || {};
         this.cachedCalls = this.cachedCalls || {};
 
-        var keys = (Object.keys || Ember.keys)(callbacks);
+        var keys = (Object.keys || keys)(callbacks);
         var keysLength = keys.length;
 
         if (keysLength) {
@@ -38842,7 +41367,10 @@ define('ember-test-helpers/test-module', ['exports', 'ember-test-helpers/abstrac
         if (typeof proxy[key] === 'undefined') {
           Object.defineProperty(proxy, key, {
             get: function get() {
-              Ember.deprecate('Accessing the test module property "' + key + '" from a callback is deprecated.', false, { id: 'ember-test-helpers.test-module.callback-context', until: '0.6.0' });
+              Ember.deprecate('Accessing the test module property "' + key + '" from a callback is deprecated.', false, {
+                id: 'ember-test-helpers.test-module.callback-context',
+                until: '0.6.0'
+              });
               return obj[key];
             }
           });
@@ -38899,164 +41427,92 @@ define('ember-test-helpers/test-module', ['exports', 'ember-test-helpers/abstrac
 
   exports.default = _class;
 });
-define('ember-test-helpers/test-resolver', ['exports'], function (exports) {
+define('ember-test-helpers/wait', ['exports', '@ember/test-helpers/settled', '@ember/test-helpers'], function (exports, _settled, _testHelpers) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.setResolver = setResolver;
-  exports.getResolver = getResolver;
-  var __resolver__;
-
-  function setResolver(resolver) {
-    __resolver__ = resolver;
-  }
-
-  function getResolver() {
-    if (__resolver__ == null) {
-      throw new Error('you must set a resolver with `testResolver.set(resolver)`');
+  exports._teardownPromiseListeners = exports._teardownAJAXHooks = exports._setupPromiseListeners = exports._setupAJAXHooks = undefined;
+  Object.defineProperty(exports, '_setupAJAXHooks', {
+    enumerable: true,
+    get: function () {
+      return _settled._setupAJAXHooks;
     }
-
-    return __resolver__;
-  }
-});
-define('ember-test-helpers/wait', ['exports'], function (exports) {
-  'use strict';
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
   });
-  exports._teardownAJAXHooks = _teardownAJAXHooks;
-  exports._setupAJAXHooks = _setupAJAXHooks;
+  Object.defineProperty(exports, '_setupPromiseListeners', {
+    enumerable: true,
+    get: function () {
+      return _settled._setupPromiseListeners;
+    }
+  });
+  Object.defineProperty(exports, '_teardownAJAXHooks', {
+    enumerable: true,
+    get: function () {
+      return _settled._teardownAJAXHooks;
+    }
+  });
+  Object.defineProperty(exports, '_teardownPromiseListeners', {
+    enumerable: true,
+    get: function () {
+      return _settled._teardownPromiseListeners;
+    }
+  });
   exports.default = wait;
 
-  var _slicedToArray = function () {
-    function sliceIterator(arr, i) {
-      var _arr = [];
-      var _n = true;
-      var _d = false;
-      var _e = undefined;
+  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+    return typeof obj;
+  } : function (obj) {
+    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+  };
 
-      try {
-        for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
-          _arr.push(_s.value);
+  /**
+    Returns a promise that resolves when in a settled state (see `isSettled` for
+    a definition of "settled state").
+  
+    @private
+    @deprecated
+    @param {Object} [options={}] the options to be used for waiting
+    @param {boolean} [options.waitForTimers=true] should timers be waited upon
+    @param {boolean} [options.waitForAjax=true] should $.ajax requests be waited upon
+    @param {boolean} [options.waitForWaiters=true] should test waiters be waited upon
+    @returns {Promise<void>} resolves when settled
+  */
+  function wait() {
+    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-          if (i && _arr.length === i) break;
-        }
-      } catch (err) {
-        _d = true;
-        _e = err;
-      } finally {
-        try {
-          if (!_n && _i["return"]) _i["return"]();
-        } finally {
-          if (_d) throw _e;
-        }
+    if ((typeof options === 'undefined' ? 'undefined' : _typeof(options)) !== 'object' || options === null) {
+      options = {};
+    }
+
+    return (0, _testHelpers.waitUntil)(function () {
+      var waitForTimers = 'waitForTimers' in options ? options.waitForTimers : true;
+      var waitForAJAX = 'waitForAJAX' in options ? options.waitForAJAX : true;
+      var waitForWaiters = 'waitForWaiters' in options ? options.waitForWaiters : true;
+
+      var _getSettledState = (0, _testHelpers.getSettledState)(),
+          hasPendingTimers = _getSettledState.hasPendingTimers,
+          hasRunLoop = _getSettledState.hasRunLoop,
+          hasPendingRequests = _getSettledState.hasPendingRequests,
+          hasPendingWaiters = _getSettledState.hasPendingWaiters;
+
+      if (waitForTimers && (hasPendingTimers || hasRunLoop)) {
+        return false;
       }
 
-      return _arr;
-    }
-
-    return function (arr, i) {
-      if (Array.isArray(arr)) {
-        return arr;
-      } else if (Symbol.iterator in Object(arr)) {
-        return sliceIterator(arr, i);
-      } else {
-        throw new TypeError("Invalid attempt to destructure non-iterable instance");
+      if (waitForAJAX && hasPendingRequests) {
+        return false;
       }
-    };
-  }();
 
-  var jQuery = Ember.$; /* globals self */
-
-  var requests;
-  function incrementAjaxPendingRequests(_, xhr) {
-    requests.push(xhr);
-  }
-
-  function decrementAjaxPendingRequests(_, xhr) {
-    for (var i = 0; i < requests.length; i++) {
-      if (xhr === requests[i]) {
-        requests.splice(i, 1);
+      if (waitForWaiters && hasPendingWaiters) {
+        return false;
       }
-    }
-  }
 
-  function _teardownAJAXHooks() {
-    if (!jQuery) {
-      return;
-    }
-
-    jQuery(document).off('ajaxSend', incrementAjaxPendingRequests);
-    jQuery(document).off('ajaxComplete', decrementAjaxPendingRequests);
-  }
-
-  function _setupAJAXHooks() {
-    requests = [];
-
-    if (!jQuery) {
-      return;
-    }
-
-    jQuery(document).on('ajaxSend', incrementAjaxPendingRequests);
-    jQuery(document).on('ajaxComplete', decrementAjaxPendingRequests);
-  }
-
-  var _internalCheckWaiters;
-  if (Ember.__loader.registry['ember-testing/test/waiters']) {
-    _internalCheckWaiters = Ember.__loader.require('ember-testing/test/waiters').checkWaiters;
-  }
-
-  function checkWaiters() {
-    if (_internalCheckWaiters) {
-      return _internalCheckWaiters();
-    } else if (Ember.Test.waiters) {
-      if (Ember.Test.waiters.any(function (_ref) {
-        var _ref2 = _slicedToArray(_ref, 2),
-            context = _ref2[0],
-            callback = _ref2[1];
-
-        return !callback.call(context);
-      })) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  function wait(_options) {
-    var options = _options || {};
-    var waitForTimers = options.hasOwnProperty('waitForTimers') ? options.waitForTimers : true;
-    var waitForAJAX = options.hasOwnProperty('waitForAJAX') ? options.waitForAJAX : true;
-    var waitForWaiters = options.hasOwnProperty('waitForWaiters') ? options.waitForWaiters : true;
-
-    return new Ember.RSVP.Promise(function (resolve) {
-      var watcher = self.setInterval(function () {
-        if (waitForTimers && (Ember.run.hasScheduledTimers() || Ember.run.currentRunLoop)) {
-          return;
-        }
-
-        if (waitForAJAX && requests && requests.length > 0) {
-          return;
-        }
-
-        if (waitForWaiters && checkWaiters()) {
-          return;
-        }
-
-        // Stop polling
-        self.clearInterval(watcher);
-
-        // Synchronously resolve the promise
-        Ember.run(null, resolve);
-      }, 10);
-    });
+      return true;
+    }, { timeout: Infinity });
   }
 });
-define('mocha', ['exports'], function (exports) {
+define('mocha/index', ['exports'], function (exports) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
