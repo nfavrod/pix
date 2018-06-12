@@ -15324,14 +15324,9 @@ define('pix-live/tests/unit/models/behaviors/assessment-progression/ProgressWith
   }();
 
   (0, _mocha.describe)('Unit | Model | Behavior | assessment-progression | ProgressWithCheckpoints', function () {
-    (0, _mocha.it)('should exists', function () {
-      var result = _ProgressWithCheckpoints.default;
-      (0, _chai.expect)(result).to.be.ok;
-    });
-
     (0, _mocha.describe)('#answersSinceLastCheckpoints(answers)', function () {
 
-      (0, _mocha.it)('should be an array', function () {
+      (0, _mocha.it)('should return an empty array when no answers has been given', function () {
         // given
         var answers = [];
 
@@ -15342,7 +15337,7 @@ define('pix-live/tests/unit/models/behaviors/assessment-progression/ProgressWith
         (0, _chai.expect)(answersSinceLastCheckpoints).to.deep.equal([]);
       });
 
-      (0, _mocha.it)('should return answers', function () {
+      (0, _mocha.it)('should return the one answer when only one answer has been given', function () {
         // given
         var answers = ['irrelevant content'];
 
@@ -15353,7 +15348,7 @@ define('pix-live/tests/unit/models/behaviors/assessment-progression/ProgressWith
         (0, _chai.expect)(answersSinceLastCheckpoints).to.deep.equal(answers);
       });
 
-      (0, _mocha.it)('should only return the last answers', function () {
+      (0, _mocha.it)('should return the last 2 answers when there is 7 answers', function () {
         // given
         var answers = _lodash.default.times(7, function () {
           return 'irrelevant content';
@@ -15371,7 +15366,7 @@ define('pix-live/tests/unit/models/behaviors/assessment-progression/ProgressWith
         (0, _chai.expect)(answersSinceLastCheckpoints).to.deep.equal([answer6, answer7]);
       });
 
-      (0, _mocha.it)('should only return the last 5 answers', function () {
+      (0, _mocha.it)('should return the last 5 answers when there is 10 answers', function () {
         // given
         var answers = _lodash.default.times(10, function () {
           return 'irrelevant content';
@@ -15390,6 +15385,20 @@ define('pix-live/tests/unit/models/behaviors/assessment-progression/ProgressWith
 
         // then
         (0, _chai.expect)(answersSinceLastCheckpoints).to.deep.equal([answer6, answer7, answer8, answer9, answer10]);
+      });
+
+      (0, _mocha.it)('should return the last 1 answer when there is 11 answers', function () {
+        // given
+        var answers = _lodash.default.times(11, function () {
+          return 'irrelevant content';
+        });
+        var answer11 = answers[10];
+
+        // when
+        var answersSinceLastCheckpoints = _ProgressWithCheckpoints.default.answersSinceLastCheckpoints(answers);
+
+        // then
+        (0, _chai.expect)(answersSinceLastCheckpoints).to.deep.equal([answer11]);
       });
     });
 
@@ -15476,11 +15485,13 @@ define('pix-live/tests/unit/models/behaviors/assessment-progression/ProgressWith
   (0, _mocha.describe)('Unit | Model | Behavior | assessment-progression | ProgressWithoutCheckpoints', function () {
 
     (0, _mocha.describe)('#answersSinceLastCheckpoints(answers)', function () {
-      (0, _mocha.it)('should throw an error', function () {
+      (0, _mocha.it)('should always throw an error as there is no checkpoints', function () {
         // given
 
         (0, _chai.expect)(function () {
+          // when
           _ProgressWithoutCheckpoints.default.answersSinceLastCheckpoints();
+          // then
         }).to.throw;
       });
     });
