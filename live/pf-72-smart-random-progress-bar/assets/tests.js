@@ -3556,6 +3556,10 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
+    it('components/user-certifications-detail-result.js', function () {
+      // test passed
+    });
+
     it('components/user-certifications-panel.js', function () {
       // test passed
     });
@@ -10809,6 +10813,101 @@ define('pix-live/tests/integration/components/user-certifications-detail-header-
     });
   });
 });
+define('pix-live/tests/integration/components/user-certifications-detail-result-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+  'use strict';
+
+  (0, _mocha.describe)('Integration | Component | user certifications detail result', function () {
+    (0, _emberMocha.setupComponentTest)('user-certifications-detail-result', {
+      integration: true
+    });
+
+    var certification = void 0;
+
+    (0, _mocha.it)('renders', function () {
+      this.render(Ember.HTMLBars.template({
+        "id": "HmYHEg+5",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"user-certifications-detail-result\",null,[[\"certification\"],[[22,[\"certification\"]]]]],false]],\"hasEval\":false}",
+        "meta": {}
+      }));
+      (0, _chai.expect)(this.$()).to.have.length(1);
+    });
+
+    context('when certification is complete', function () {
+
+      beforeEach(function () {
+        // given
+        certification = Ember.Object.create({
+          id: 1,
+          birthdate: new Date('2000-01-22T15:15:52.504Z'),
+          firstName: 'Jean',
+          lastName: 'Bon',
+          date: new Date('2018-02-15T15:15:52.504Z'),
+          certificationCenter: 'Université de Lyon',
+          isPublished: true,
+          pixScore: 654,
+          status: 'validated',
+          commentForCandidate: 'Comment for candidate'
+        });
+        this.set('certification', certification);
+
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "HmYHEg+5",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"user-certifications-detail-result\",null,[[\"certification\"],[[22,[\"certification\"]]]]],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+      });
+
+      // then
+      (0, _mocha.it)('should show the pix score', function () {
+        (0, _chai.expect)(this.$('.user-certifications-detail-result__pix-score')).to.have.lengthOf(1);
+        (0, _chai.expect)(this.$('.user-certifications-detail-result__pix-score').text()).to.include('654');
+      });
+
+      (0, _mocha.it)('should show the comment for candidate', function () {
+        (0, _chai.expect)(this.$('.user-certifications-detail-result__comment-jury')).to.have.lengthOf(1);
+        (0, _chai.expect)(this.$('.user-certifications-detail-result__comment-jury').text()).to.include('Comment for candidate');
+      });
+    });
+
+    context('when certification has no comment for user', function () {
+
+      beforeEach(function () {
+        // given
+        certification = Ember.Object.create({
+          id: 1,
+          birthdate: new Date('2000-01-22T15:15:52.504Z'),
+          firstName: 'Jean',
+          lastName: 'Bon',
+          date: new Date('2018-02-15T15:15:52.504Z'),
+          certificationCenter: 'Université de Lyon',
+          isPublished: true,
+          pixScore: 654,
+          status: 'validated',
+          commentForCandidate: null
+        });
+        this.set('certification', certification);
+
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "HmYHEg+5",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"user-certifications-detail-result\",null,[[\"certification\"],[[22,[\"certification\"]]]]],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+      });
+
+      // then
+      (0, _mocha.it)('should show the pix score', function () {
+        (0, _chai.expect)(this.$('.user-certifications-detail-result__pix-score')).to.have.lengthOf(1);
+        (0, _chai.expect)(this.$('.user-certifications-detail-result__pix-score').text()).to.include('654');
+      });
+
+      (0, _mocha.it)('should not show the comment for candidate', function () {
+        (0, _chai.expect)(this.$('.user-certifications-detail-result__comment-jury')).to.have.lengthOf(0);
+      });
+    });
+  });
+});
 define('pix-live/tests/integration/components/user-certifications-panel-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
   'use strict';
 
@@ -11512,6 +11611,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
     });
 
     it('integration/components/user-certifications-detail-header-test.js', function () {
+      // test passed
+    });
+
+    it('integration/components/user-certifications-detail-result-test.js', function () {
       // test passed
     });
 
@@ -15276,7 +15379,7 @@ define('pix-live/tests/unit/models/assessment-test', ['chai', 'mocha', 'ember-mo
           // when
           var assessment = store.createRecord('assessment');
           // then
-          (0, _chai.expect)(assessment.get('progressionBehavior')).to.be.ok;
+          (0, _chai.expect)(assessment._progressionBehavior).to.be.ok;
         });
       });
     });
@@ -15326,6 +15429,10 @@ define('pix-live/tests/unit/models/behaviors/assessment-progression/ProgressWith
   (0, _mocha.describe)('Unit | Model | Behavior | assessment-progression | ProgressWithCheckpoints', function () {
     (0, _mocha.describe)('#answersSinceLastCheckpoints(answers)', function () {
 
+      function newAnswer() {
+        return Ember.Object.create();
+      }
+
       (0, _mocha.it)('should return an empty array when no answers has been given', function () {
         // given
         var answers = [];
@@ -15339,7 +15446,7 @@ define('pix-live/tests/unit/models/behaviors/assessment-progression/ProgressWith
 
       (0, _mocha.it)('should return the one answer when only one answer has been given', function () {
         // given
-        var answers = ['irrelevant content'];
+        var answers = [newAnswer()];
 
         // when
         var answersSinceLastCheckpoints = _ProgressWithCheckpoints.default.answersSinceLastCheckpoints(answers);
@@ -15350,9 +15457,7 @@ define('pix-live/tests/unit/models/behaviors/assessment-progression/ProgressWith
 
       (0, _mocha.it)('should return the last 2 answers when there is 7 answers', function () {
         // given
-        var answers = _lodash.default.times(7, function () {
-          return 'irrelevant content';
-        });
+        var answers = _lodash.default.times(7, newAnswer);
 
         var _answers$slice = answers.slice(5),
             _answers$slice2 = _slicedToArray(_answers$slice, 2),
@@ -15368,9 +15473,7 @@ define('pix-live/tests/unit/models/behaviors/assessment-progression/ProgressWith
 
       (0, _mocha.it)('should return the last 5 answers when there is 10 answers', function () {
         // given
-        var answers = _lodash.default.times(10, function () {
-          return 'irrelevant content';
-        });
+        var answers = _lodash.default.times(10, newAnswer);
 
         var _answers$slice3 = answers.slice(5),
             _answers$slice4 = _slicedToArray(_answers$slice3, 5),
@@ -15389,9 +15492,7 @@ define('pix-live/tests/unit/models/behaviors/assessment-progression/ProgressWith
 
       (0, _mocha.it)('should return the last 1 answer when there is 11 answers', function () {
         // given
-        var answers = _lodash.default.times(11, function () {
-          return 'irrelevant content';
-        });
+        var answers = _lodash.default.times(11, newAnswer);
         var answer11 = answers[10];
 
         // when
