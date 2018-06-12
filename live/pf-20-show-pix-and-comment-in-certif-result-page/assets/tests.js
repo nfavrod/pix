@@ -3636,6 +3636,18 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
+    it('models/behaviors/assessment-progression/ProgressWithCheckpoints.js', function () {
+      // test passed
+    });
+
+    it('models/behaviors/assessment-progression/ProgressWithoutCheckpoints.js', function () {
+      // test passed
+    });
+
+    it('models/behaviors/assessment-progression/index.js', function () {
+      // test passed
+    });
+
     it('models/certification.js', function () {
       // test passed
     });
@@ -3984,7 +3996,7 @@ define('pix-live/tests/helpers/ember-simple-auth', ['exports', 'ember-simple-aut
   exports.invalidateSession = invalidateSession;
 
 
-  var TEST_CONTAINER_KEY = 'authenticator:test'; /* global wait */
+  var TEST_CONTAINER_KEY = 'authenticator:test';
 
   function ensureAuthenticator(app, container) {
     var authenticator = container.lookup(TEST_CONTAINER_KEY);
@@ -3999,7 +4011,7 @@ define('pix-live/tests/helpers/ember-simple-auth', ['exports', 'ember-simple-aut
     var session = container.lookup('service:session');
     ensureAuthenticator(app, container);
     session.authenticate(TEST_CONTAINER_KEY, sessionData);
-    return wait();
+    return app.testHelpers.wait();
   }
 
   function currentSession(app) {
@@ -4011,7 +4023,7 @@ define('pix-live/tests/helpers/ember-simple-auth', ['exports', 'ember-simple-aut
     if (session.get('isAuthenticated')) {
       session.invalidate();
     }
-    return wait();
+    return app.testHelpers.wait();
   }
 });
 define('pix-live/tests/helpers/resolver', ['exports', 'pix-live/resolver', 'pix-live/config/environment'], function (exports, _resolver, _environment) {
@@ -4173,8 +4185,8 @@ define('pix-live/tests/integration/components/certification-banner-test', ['chai
       (0, _mocha.it)('should render component container', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "SzIDYsnG",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"certification-banner\"],false]],\"hasEval\":false}",
+          "id": "zUGlg/t9",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"certification-banner\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -4186,8 +4198,8 @@ define('pix-live/tests/integration/components/certification-banner-test', ['chai
         // when
         this.set('user', user);
         this.render(Ember.HTMLBars.template({
-          "id": "SHNdCrAu",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"certification-banner\",null,[[\"user\"],[[20,[\"user\"]]]]],false]],\"hasEval\":false}",
+          "id": "N3YzSJ8n",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"certification-banner\",null,[[\"user\"],[[22,[\"user\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -4200,8 +4212,8 @@ define('pix-live/tests/integration/components/certification-banner-test', ['chai
         // when
         this.set('certificationNumber', certificationNumber);
         this.render(Ember.HTMLBars.template({
-          "id": "Q0133kHb",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"certification-banner\",null,[[\"user\",\"certificationNumber\"],[[20,[\"user\"]],[20,[\"certificationNumber\"]]]]],false]],\"hasEval\":false}",
+          "id": "wiDu5aao",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"certification-banner\",null,[[\"user\",\"certificationNumber\"],[[22,[\"user\"]],[22,[\"certificationNumber\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -4232,8 +4244,8 @@ define('pix-live/tests/integration/components/certification-results-page-test', 
       (0, _mocha.it)('should also render a certification banner', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "x+9f/CUC",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"certification-results-page\",null,[[\"user\",\"certificationNumber\"],[[20,[\"user\"]],[20,[\"certificationNumber\"]]]]],false]],\"hasEval\":false}",
+          "id": "xGrlHSN6",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"certification-results-page\",null,[[\"user\",\"certificationNumber\"],[[22,[\"user\"]],[22,[\"certificationNumber\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -4252,8 +4264,8 @@ define('pix-live/tests/integration/components/certification-results-page-test', 
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "x+9f/CUC",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"certification-results-page\",null,[[\"user\",\"certificationNumber\"],[[20,[\"user\"]],[20,[\"certificationNumber\"]]]]],false]],\"hasEval\":false}",
+          "id": "xGrlHSN6",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"certification-results-page\",null,[[\"user\",\"certificationNumber\"],[[22,[\"user\"]],[22,[\"certificationNumber\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -4305,8 +4317,8 @@ define('pix-live/tests/integration/components/certifications-list-item-test', ['
 
     (0, _mocha.it)('renders', function () {
       this.render(Ember.HTMLBars.template({
-        "id": "WFVlC5r9",
-        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"certifications-list-item\",null,[[\"certification\"],[[20,[\"certification\"]]]]],false]],\"hasEval\":false}",
+        "id": "fhVSqzst",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"certifications-list-item\",null,[[\"certification\"],[[22,[\"certification\"]]]]],false]],\"hasEval\":false}",
         "meta": {}
       }));
       (0, _chai.expect)(this.$()).to.have.length(1);
@@ -4328,8 +4340,8 @@ define('pix-live/tests/integration/components/certifications-list-item-test', ['
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "WFVlC5r9",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"certifications-list-item\",null,[[\"certification\"],[[20,[\"certification\"]]]]],false]],\"hasEval\":false}",
+          "id": "fhVSqzst",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"certifications-list-item\",null,[[\"certification\"],[[22,[\"certification\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
       });
@@ -4363,8 +4375,8 @@ define('pix-live/tests/integration/components/certifications-list-item-test', ['
 
           // when
           this.render(Ember.HTMLBars.template({
-            "id": "WFVlC5r9",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"certifications-list-item\",null,[[\"certification\"],[[20,[\"certification\"]]]]],false]],\"hasEval\":false}",
+            "id": "fhVSqzst",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"certifications-list-item\",null,[[\"certification\"],[[22,[\"certification\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
         });
@@ -4423,8 +4435,8 @@ define('pix-live/tests/integration/components/certifications-list-item-test', ['
 
           // when
           this.render(Ember.HTMLBars.template({
-            "id": "WFVlC5r9",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"certifications-list-item\",null,[[\"certification\"],[[20,[\"certification\"]]]]],false]],\"hasEval\":false}",
+            "id": "fhVSqzst",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"certifications-list-item\",null,[[\"certification\"],[[22,[\"certification\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
         });
@@ -4483,8 +4495,8 @@ define('pix-live/tests/integration/components/certifications-list-item-test', ['
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "WFVlC5r9",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"certifications-list-item\",null,[[\"certification\"],[[20,[\"certification\"]]]]],false]],\"hasEval\":false}",
+          "id": "fhVSqzst",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"certifications-list-item\",null,[[\"certification\"],[[22,[\"certification\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
       });
@@ -4521,8 +4533,8 @@ define('pix-live/tests/integration/components/certifications-list-test', ['chai'
 
     (0, _mocha.it)('renders', function () {
       this.render(Ember.HTMLBars.template({
-        "id": "nAEOGlii",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"certifications-list\"],false]],\"hasEval\":false}",
+        "id": "k+lNMloH",
+        "block": "{\"symbols\":[],\"statements\":[[1,[20,\"certifications-list\"],false]],\"hasEval\":false}",
         "meta": {}
       }));
       (0, _chai.expect)(this.$()).to.have.length(1);
@@ -4553,8 +4565,8 @@ define('pix-live/tests/integration/components/certifications-list-test', ['chai'
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "oTzuNFhK",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"certifications-list\",null,[[\"certifications\"],[[20,[\"certifications\"]]]]],false]],\"hasEval\":false}",
+          "id": "bn3SwIKo",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"certifications-list\",null,[[\"certifications\"],[[22,[\"certifications\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -4578,8 +4590,8 @@ define('pix-live/tests/integration/components/challenge-actions-test', ['chai', 
 
     (0, _mocha.it)('renders', function () {
       this.render(Ember.HTMLBars.template({
-        "id": "drTmBW/o",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"challenge-actions\"],false]],\"hasEval\":false}",
+        "id": "FGPVIZes",
+        "block": "{\"symbols\":[],\"statements\":[[1,[20,\"challenge-actions\"],false]],\"hasEval\":false}",
         "meta": {}
       }));
       (0, _chai.expect)(this.$()).to.have.lengthOf(1);
@@ -4590,8 +4602,8 @@ define('pix-live/tests/integration/components/challenge-actions-test', ['chai', 
       (0, _mocha.it)('should be displayed and enable by default but not loader', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "drTmBW/o",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"challenge-actions\"],false]],\"hasEval\":false}",
+          "id": "FGPVIZes",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"challenge-actions\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
         // then
@@ -4605,8 +4617,8 @@ define('pix-live/tests/integration/components/challenge-actions-test', ['chai', 
           return new Ember.RSVP.Promise(function () {});
         });
         this.render(Ember.HTMLBars.template({
-          "id": "FDBJOTJO",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"challenge-actions\",null,[[\"answerValidated\"],[[25,\"action\",[[19,0,[]],[20,[\"externalAction\"]]],null]]]],false]],\"hasEval\":false}",
+          "id": "PHwTiH3b",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"challenge-actions\",null,[[\"answerValidated\"],[[26,\"action\",[[21,0,[]],[22,[\"externalAction\"]]],null]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -4624,8 +4636,8 @@ define('pix-live/tests/integration/components/challenge-actions-test', ['chai', 
           return Ember.RSVP.reject('Some error');
         });
         this.render(Ember.HTMLBars.template({
-          "id": "FDBJOTJO",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"challenge-actions\",null,[[\"answerValidated\"],[[25,\"action\",[[19,0,[]],[20,[\"externalAction\"]]],null]]]],false]],\"hasEval\":false}",
+          "id": "PHwTiH3b",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"challenge-actions\",null,[[\"answerValidated\"],[[26,\"action\",[[21,0,[]],[22,[\"externalAction\"]]],null]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -4643,8 +4655,8 @@ define('pix-live/tests/integration/components/challenge-actions-test', ['chai', 
       (0, _mocha.it)('should be displayed and enable by default', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "drTmBW/o",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"challenge-actions\"],false]],\"hasEval\":false}",
+          "id": "FGPVIZes",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"challenge-actions\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
         // then
@@ -4657,8 +4669,8 @@ define('pix-live/tests/integration/components/challenge-actions-test', ['chai', 
           return new Ember.RSVP.Promise(function () {});
         });
         this.render(Ember.HTMLBars.template({
-          "id": "B9/Sx9KI",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"challenge-actions\",null,[[\"challengeSkipped\"],[[25,\"action\",[[19,0,[]],[20,[\"externalAction\"]]],null]]]],false]],\"hasEval\":false}",
+          "id": "A6aQqnYf",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"challenge-actions\",null,[[\"challengeSkipped\"],[[26,\"action\",[[21,0,[]],[22,[\"externalAction\"]]],null]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -4715,8 +4727,8 @@ define('pix-live/tests/integration/components/challenge-embed-simulator-test', [
       (0, _mocha.it)('should be displayed when component has just been rendered', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "MAVropgo",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"challenge-embed-simulator\"],false]],\"hasEval\":false}",
+          "id": "XG/ULGuO",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"challenge-embed-simulator\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -4727,8 +4739,8 @@ define('pix-live/tests/integration/components/challenge-embed-simulator-test', [
       (0, _mocha.it)('should contain a button to launch the simulator', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "MAVropgo",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"challenge-embed-simulator\"],false]],\"hasEval\":false}",
+          "id": "XG/ULGuO",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"challenge-embed-simulator\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -4743,8 +4755,8 @@ define('pix-live/tests/integration/components/challenge-embed-simulator-test', [
       (0, _mocha.it)('should have text "Je lance le simulateur"', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "MAVropgo",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"challenge-embed-simulator\"],false]],\"hasEval\":false}",
+          "id": "XG/ULGuO",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"challenge-embed-simulator\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -4760,8 +4772,8 @@ define('pix-live/tests/integration/components/challenge-embed-simulator-test', [
               case 0:
                 // given
                 this.render(Ember.HTMLBars.template({
-                  "id": "MAVropgo",
-                  "block": "{\"symbols\":[],\"statements\":[[1,[18,\"challenge-embed-simulator\"],false]],\"hasEval\":false}",
+                  "id": "XG/ULGuO",
+                  "block": "{\"symbols\":[],\"statements\":[[1,[20,\"challenge-embed-simulator\"],false]],\"hasEval\":false}",
                   "meta": {}
                 }));
 
@@ -4787,8 +4799,8 @@ define('pix-live/tests/integration/components/challenge-embed-simulator-test', [
       (0, _mocha.it)('should have text "Recharger le simulateur"', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "MAVropgo",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"challenge-embed-simulator\"],false]],\"hasEval\":false}",
+          "id": "XG/ULGuO",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"challenge-embed-simulator\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -4808,8 +4820,8 @@ define('pix-live/tests/integration/components/challenge-embed-simulator-test', [
 
                 this.set('stubReloadSimulator', stubReloadSimulator);
                 this.render(Ember.HTMLBars.template({
-                  "id": "7oXhQ+wW",
-                  "block": "{\"symbols\":[],\"statements\":[[1,[25,\"challenge-embed-simulator\",null,[[\"_reloadSimulator\"],[[20,[\"stubReloadSimulator\"]]]]],false]],\"hasEval\":false}",
+                  "id": "cUy/T6Xp",
+                  "block": "{\"symbols\":[],\"statements\":[[1,[26,\"challenge-embed-simulator\",null,[[\"_reloadSimulator\"],[[22,[\"stubReloadSimulator\"]]]]],false]],\"hasEval\":false}",
                   "meta": {}
                 }));
 
@@ -4835,8 +4847,8 @@ define('pix-live/tests/integration/components/challenge-embed-simulator-test', [
       (0, _mocha.it)('should be active when component is first rendered', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "MAVropgo",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"challenge-embed-simulator\"],false]],\"hasEval\":false}",
+          "id": "XG/ULGuO",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"challenge-embed-simulator\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -4848,8 +4860,8 @@ define('pix-live/tests/integration/components/challenge-embed-simulator-test', [
       (0, _mocha.it)('should be removed when simulator was launched', function () {
         // given
         this.render(Ember.HTMLBars.template({
-          "id": "MAVropgo",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"challenge-embed-simulator\"],false]],\"hasEval\":false}",
+          "id": "XG/ULGuO",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"challenge-embed-simulator\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -4878,8 +4890,8 @@ define('pix-live/tests/integration/components/challenge-embed-simulator-test', [
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "sHoTmuyI",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"challenge-embed-simulator\",null,[[\"embedDocument\"],[[20,[\"embedDocument\"]]]]],false]],\"hasEval\":false}",
+          "id": "FgVgGaDv",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"challenge-embed-simulator\",null,[[\"embedDocument\"],[[22,[\"embedDocument\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -4911,8 +4923,8 @@ define('pix-live/tests/integration/components/challenge-item-qmail-test', ['chai
     (0, _mocha.it)('renders', function () {
       // When
       this.render(Ember.HTMLBars.template({
-        "id": "Yi9RmO0k",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"challenge-item-qmail\"],false]],\"hasEval\":false}",
+        "id": "OjLZbs9Z",
+        "block": "{\"symbols\":[],\"statements\":[[1,[20,\"challenge-item-qmail\"],false]],\"hasEval\":false}",
         "meta": {}
       }));
 
@@ -4938,8 +4950,8 @@ define('pix-live/tests/integration/components/challenge-item-qmail-test', ['chai
 
       // When
       this.render(Ember.HTMLBars.template({
-        "id": "K7gjaZVh",
-        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"challenge-item-qmail\",null,[[\"challenge\",\"assessment\"],[[20,[\"challenge\"]],[20,[\"assessment\"]]]]],false]],\"hasEval\":false}",
+        "id": "lr+W21e4",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"challenge-item-qmail\",null,[[\"challenge\",\"assessment\"],[[22,[\"challenge\"]],[22,[\"assessment\"]]]]],false]],\"hasEval\":false}",
         "meta": {}
       }));
 
@@ -4957,8 +4969,8 @@ define('pix-live/tests/integration/components/challenge-item-qmail-test', ['chai
 
         // When
         this.render(Ember.HTMLBars.template({
-          "id": "K7gjaZVh",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"challenge-item-qmail\",null,[[\"challenge\",\"assessment\"],[[20,[\"challenge\"]],[20,[\"assessment\"]]]]],false]],\"hasEval\":false}",
+          "id": "lr+W21e4",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"challenge-item-qmail\",null,[[\"challenge\",\"assessment\"],[[22,[\"challenge\"]],[22,[\"assessment\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -4976,8 +4988,8 @@ define('pix-live/tests/integration/components/challenge-item-qmail-test', ['chai
 
         // When
         this.render(Ember.HTMLBars.template({
-          "id": "K7gjaZVh",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"challenge-item-qmail\",null,[[\"challenge\",\"assessment\"],[[20,[\"challenge\"]],[20,[\"assessment\"]]]]],false]],\"hasEval\":false}",
+          "id": "lr+W21e4",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"challenge-item-qmail\",null,[[\"challenge\",\"assessment\"],[[22,[\"challenge\"]],[22,[\"assessment\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -5004,8 +5016,8 @@ define('pix-live/tests/integration/components/challenge-item-qmail-test', ['chai
 
       // When
       this.render(Ember.HTMLBars.template({
-        "id": "K7gjaZVh",
-        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"challenge-item-qmail\",null,[[\"challenge\",\"assessment\"],[[20,[\"challenge\"]],[20,[\"assessment\"]]]]],false]],\"hasEval\":false}",
+        "id": "lr+W21e4",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"challenge-item-qmail\",null,[[\"challenge\",\"assessment\"],[[22,[\"challenge\"]],[22,[\"assessment\"]]]]],false]],\"hasEval\":false}",
         "meta": {}
       }));
 
@@ -5025,8 +5037,8 @@ define('pix-live/tests/integration/components/challenge-item-qmail-test', ['chai
 
         // When
         this.render(Ember.HTMLBars.template({
-          "id": "Nto5AJr7",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"challenge-item-qmail\",null,[[\"challenge\",\"assessment\",\"errorMessage\"],[[20,[\"challenge\"]],[20,[\"assessment\"]],[20,[\"errorMessage\"]]]]],false]],\"hasEval\":false}",
+          "id": "y2djsNI1",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"challenge-item-qmail\",null,[[\"challenge\",\"assessment\",\"errorMessage\"],[[22,[\"challenge\"]],[22,[\"assessment\"]],[22,[\"errorMessage\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -5043,8 +5055,8 @@ define('pix-live/tests/integration/components/challenge-item-qmail-test', ['chai
 
         // When
         this.render(Ember.HTMLBars.template({
-          "id": "K7gjaZVh",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"challenge-item-qmail\",null,[[\"challenge\",\"assessment\"],[[20,[\"challenge\"]],[20,[\"assessment\"]]]]],false]],\"hasEval\":false}",
+          "id": "lr+W21e4",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"challenge-item-qmail\",null,[[\"challenge\",\"assessment\"],[[22,[\"challenge\"]],[22,[\"assessment\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -5074,8 +5086,8 @@ define('pix-live/tests/integration/components/challenge-statement-test', ['chai'
 
     function renderChallengeStatement(component) {
       return component.render(Ember.HTMLBars.template({
-        "id": "xFEOk7in",
-        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"challenge-statement\",null,[[\"challenge\",\"assessment\"],[[20,[\"challenge\"]],[20,[\"assessment\"]]]]],false]],\"hasEval\":false}",
+        "id": "XtKxonq2",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"challenge-statement\",null,[[\"challenge\",\"assessment\"],[[22,[\"challenge\"]],[22,[\"assessment\"]]]]],false]],\"hasEval\":false}",
         "meta": {}
       }));
     }
@@ -5377,8 +5389,8 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
       (0, _mocha.it)('renders', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "Dd9zQ240",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"correction\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
+          "id": "0838/MfH",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[22,[\"answer\"]],[22,[\"challenge\"]],[22,[\"correction\"]],[22,[\"index\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
         // then
@@ -5388,8 +5400,8 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
       (0, _mocha.it)('should render challenge result in the header', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "Dd9zQ240",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"correction\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
+          "id": "0838/MfH",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[22,[\"answer\"]],[22,[\"challenge\"]],[22,[\"correction\"]],[22,[\"index\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
         // then
@@ -5399,8 +5411,8 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
       (0, _mocha.it)('should render challenge instruction', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "Dd9zQ240",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"correction\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
+          "id": "0838/MfH",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[22,[\"answer\"]],[22,[\"challenge\"]],[22,[\"correction\"]],[22,[\"index\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
         // then
@@ -5410,8 +5422,8 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
       (0, _mocha.it)('should not render corrected answers when challenge has no type', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "Dd9zQ240",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"correction\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
+          "id": "0838/MfH",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[22,[\"answer\"]],[22,[\"challenge\"]],[22,[\"correction\"]],[22,[\"index\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
         // then
@@ -5424,8 +5436,8 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
         this.set('challenge', challenge);
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "Dd9zQ240",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"correction\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
+          "id": "0838/MfH",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[22,[\"answer\"]],[22,[\"challenge\"]],[22,[\"correction\"]],[22,[\"index\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
         // then
@@ -5440,8 +5452,8 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
         this.set('correction', correction);
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "Dd9zQ240",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"correction\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
+          "id": "0838/MfH",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[22,[\"answer\"]],[22,[\"challenge\"]],[22,[\"correction\"]],[22,[\"index\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
         // then
@@ -5454,8 +5466,8 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
         this.set('challenge', challenge);
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "Dd9zQ240",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"correction\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
+          "id": "0838/MfH",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[22,[\"answer\"]],[22,[\"challenge\"]],[22,[\"correction\"]],[22,[\"index\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
         // then
@@ -5465,8 +5477,8 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
       (0, _mocha.it)('should render a feedback panel already opened', function () {
         //when
         this.render(Ember.HTMLBars.template({
-          "id": "Dd9zQ240",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"correction\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
+          "id": "0838/MfH",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[22,[\"answer\"]],[22,[\"challenge\"]],[22,[\"correction\"]],[22,[\"index\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
         //then
@@ -5478,8 +5490,8 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
       (0, _mocha.it)('should have a max width of 900px and a margin auto in order to quit by clicking beside', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "8IA3gQhk",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"solution\"]],[20,[\"index\"]]],null],false]],\"hasEval\":false}",
+          "id": "+TsCFy9D",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"comparison-window\",[[22,[\"answer\"]],[22,[\"challenge\"]],[22,[\"solution\"]],[22,[\"index\"]]],null],false]],\"hasEval\":false}",
           "meta": {}
         }));
         // then
@@ -5494,8 +5506,8 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
 
           // when
           this.render(Ember.HTMLBars.template({
-            "id": "Dd9zQ240",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[20,[\"answer\"]],[20,[\"challenge\"]],[20,[\"correction\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
+            "id": "0838/MfH",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"comparison-window\",null,[[\"answer\",\"challenge\",\"correction\",\"index\"],[[22,[\"answer\"]],[22,[\"challenge\"]],[22,[\"correction\"]],[22,[\"index\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -5513,8 +5525,8 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "JwDJ+hAw",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"comparison-window\",null,[[\"answer\",\"correction\"],[[20,[\"answer\"]],[20,[\"correction\"]]]]],false]],\"hasEval\":false}",
+          "id": "GbeILlfh",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"comparison-window\",null,[[\"answer\",\"correction\"],[[22,[\"answer\"]],[22,[\"correction\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -5536,8 +5548,8 @@ define('pix-live/tests/integration/components/competence-area-list-test', ['chai
       (0, _mocha.it)('renders', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "9c5X+hfd",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"competence-area-list\"],false]],\"hasEval\":false}",
+          "id": "/7hwPyPc",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"competence-area-list\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -5548,8 +5560,8 @@ define('pix-live/tests/integration/components/competence-area-list-test', ['chai
       (0, _mocha.it)('should render a wrapper', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "9c5X+hfd",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"competence-area-list\"],false]],\"hasEval\":false}",
+          "id": "/7hwPyPc",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"competence-area-list\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -5567,8 +5579,8 @@ define('pix-live/tests/integration/components/competence-area-list-test', ['chai
 
           // when
           this.render(Ember.HTMLBars.template({
-            "id": "nWqwf4iy",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"competence-area-list\",null,[[\"competences\"],[[20,[\"competences\"]]]]],false]],\"hasEval\":false}",
+            "id": "aiJzR/re",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"competence-area-list\",null,[[\"competences\"],[[22,[\"competences\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -5583,8 +5595,8 @@ define('pix-live/tests/integration/components/competence-area-list-test', ['chai
 
           // when
           this.render(Ember.HTMLBars.template({
-            "id": "nWqwf4iy",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"competence-area-list\",null,[[\"competences\"],[[20,[\"competences\"]]]]],false]],\"hasEval\":false}",
+            "id": "aiJzR/re",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"competence-area-list\",null,[[\"competences\"],[[22,[\"competences\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -5601,8 +5613,8 @@ define('pix-live/tests/integration/components/competence-area-list-test', ['chai
           // when
           this.set('competences', competencesWithSameArea);
           this.render(Ember.HTMLBars.template({
-            "id": "nWqwf4iy",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"competence-area-list\",null,[[\"competences\"],[[20,[\"competences\"]]]]],false]],\"hasEval\":false}",
+            "id": "aiJzR/re",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"competence-area-list\",null,[[\"competences\"],[[22,[\"competences\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
           // then
@@ -5623,8 +5635,8 @@ define('pix-live/tests/integration/components/competence-by-area-item-test', ['c
     (0, _mocha.it)('should render', function () {
       // when
       this.render(Ember.HTMLBars.template({
-        "id": "f1j3xkR5",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"competence-by-area-item\"],false]],\"hasEval\":false}",
+        "id": "smZvtOBB",
+        "block": "{\"symbols\":[],\"statements\":[[1,[20,\"competence-by-area-item\"],false]],\"hasEval\":false}",
         "meta": {}
       }));
 
@@ -5639,8 +5651,8 @@ define('pix-live/tests/integration/components/competence-by-area-item-test', ['c
       this.set('competenceArea', areaWithOnlyOneCompetence);
       // when
       this.render(Ember.HTMLBars.template({
-        "id": "vlS7E1p+",
-        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"competence-by-area-item\",null,[[\"competenceArea\"],[[20,[\"competenceArea\"]]]]],false]],\"hasEval\":false}",
+        "id": "WufLpiCZ",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"competence-by-area-item\",null,[[\"competenceArea\"],[[22,[\"competenceArea\"]]]]],false]],\"hasEval\":false}",
         "meta": {}
       }));
       // then
@@ -5659,8 +5671,8 @@ define('pix-live/tests/integration/components/competence-by-area-item-test', ['c
       this.set('competenceArea', areaWithManyCompetences);
       // when
       this.render(Ember.HTMLBars.template({
-        "id": "vlS7E1p+",
-        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"competence-by-area-item\",null,[[\"competenceArea\"],[[20,[\"competenceArea\"]]]]],false]],\"hasEval\":false}",
+        "id": "WufLpiCZ",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"competence-by-area-item\",null,[[\"competenceArea\"],[[22,[\"competenceArea\"]]]]],false]],\"hasEval\":false}",
         "meta": {}
       }));
 
@@ -5677,8 +5689,8 @@ define('pix-live/tests/integration/components/competence-by-area-item-test', ['c
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "vlS7E1p+",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"competence-by-area-item\",null,[[\"competenceArea\"],[[20,[\"competenceArea\"]]]]],false]],\"hasEval\":false}",
+          "id": "WufLpiCZ",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"competence-by-area-item\",null,[[\"competenceArea\"],[[22,[\"competenceArea\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -5694,8 +5706,8 @@ define('pix-live/tests/integration/components/competence-by-area-item-test', ['c
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "vlS7E1p+",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"competence-by-area-item\",null,[[\"competenceArea\"],[[20,[\"competenceArea\"]]]]],false]],\"hasEval\":false}",
+          "id": "WufLpiCZ",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"competence-by-area-item\",null,[[\"competenceArea\"],[[22,[\"competenceArea\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -5715,8 +5727,8 @@ define('pix-live/tests/integration/components/competence-level-progress-bar-test
 
     (0, _mocha.it)('renders', function () {
       this.render(Ember.HTMLBars.template({
-        "id": "vvxLRPPr",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"competence-level-progress-bar\"],false]],\"hasEval\":false}",
+        "id": "9OZsiqOi",
+        "block": "{\"symbols\":[],\"statements\":[[1,[20,\"competence-level-progress-bar\"],false]],\"hasEval\":false}",
         "meta": {}
       }));
       (0, _chai.expect)(this.$()).to.have.length(1);
@@ -5733,8 +5745,8 @@ define('pix-live/tests/integration/components/competence-level-progress-bar-test
 
           //When
           this.render(Ember.HTMLBars.template({
-            "id": "6QNEzXyL",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"competence-level-progress-bar\",null,[[\"level\"],[[20,[\"level\"]]]]],false]],\"hasEval\":false}",
+            "id": "APMmrrl/",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"competence-level-progress-bar\",null,[[\"level\"],[[22,[\"level\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -5749,8 +5761,8 @@ define('pix-live/tests/integration/components/competence-level-progress-bar-test
 
           //When
           this.render(Ember.HTMLBars.template({
-            "id": "6QNEzXyL",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"competence-level-progress-bar\",null,[[\"level\"],[[20,[\"level\"]]]]],false]],\"hasEval\":false}",
+            "id": "APMmrrl/",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"competence-level-progress-bar\",null,[[\"level\"],[[22,[\"level\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -5770,8 +5782,8 @@ define('pix-live/tests/integration/components/competence-level-progress-bar-test
 
           // when
           this.render(Ember.HTMLBars.template({
-            "id": "6QNEzXyL",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"competence-level-progress-bar\",null,[[\"level\"],[[20,[\"level\"]]]]],false]],\"hasEval\":false}",
+            "id": "APMmrrl/",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"competence-level-progress-bar\",null,[[\"level\"],[[22,[\"level\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -5789,8 +5801,8 @@ define('pix-live/tests/integration/components/competence-level-progress-bar-test
 
           //When
           this.render(Ember.HTMLBars.template({
-            "id": "6QNEzXyL",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"competence-level-progress-bar\",null,[[\"level\"],[[20,[\"level\"]]]]],false]],\"hasEval\":false}",
+            "id": "APMmrrl/",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"competence-level-progress-bar\",null,[[\"level\"],[[22,[\"level\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -5805,8 +5817,8 @@ define('pix-live/tests/integration/components/competence-level-progress-bar-test
 
           // when
           this.render(Ember.HTMLBars.template({
-            "id": "6QNEzXyL",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"competence-level-progress-bar\",null,[[\"level\"],[[20,[\"level\"]]]]],false]],\"hasEval\":false}",
+            "id": "APMmrrl/",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"competence-level-progress-bar\",null,[[\"level\"],[[22,[\"level\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -5829,8 +5841,8 @@ define('pix-live/tests/integration/components/competence-level-progress-bar-test
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "lq7j5+91",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"competence-level-progress-bar\",null,[[\"name\",\"level\",\"courseId\"],[[20,[\"name\"]],[20,[\"level\"]],[20,[\"courseId\"]]]]],false]],\"hasEval\":false}",
+          "id": "ye05m5D9",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"competence-level-progress-bar\",null,[[\"name\",\"level\",\"courseId\"],[[22,[\"name\"]],[22,[\"level\"]],[22,[\"courseId\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -5851,8 +5863,8 @@ define('pix-live/tests/integration/components/competence-level-progress-bar-test
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "2taiFyvd",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"competence-level-progress-bar\",null,[[\"level\",\"courseId\",\"name\"],[[20,[\"level\"]],[20,[\"courseId\"]],[20,[\"name\"]]]]],false]],\"hasEval\":false}",
+          "id": "aohEqJPD",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"competence-level-progress-bar\",null,[[\"level\",\"courseId\",\"name\"],[[22,[\"level\"]],[22,[\"courseId\"]],[22,[\"name\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -5869,8 +5881,8 @@ define('pix-live/tests/integration/components/competence-level-progress-bar-test
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "qM+MaEgs",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"competence-level-progress-bar\",null,[[\"level\",\"name\"],[[20,[\"level\"]],[20,[\"name\"]]]]],false]],\"hasEval\":false}",
+          "id": "+LVGtCG5",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"competence-level-progress-bar\",null,[[\"level\",\"name\"],[[22,[\"level\"]],[22,[\"name\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -5893,8 +5905,8 @@ define('pix-live/tests/integration/components/competence-level-progress-bar-test
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "uMDOWlqy",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"competence-level-progress-bar\",null,[[\"status\",\"assessmentId\",\"name\"],[[20,[\"status\"]],[20,[\"assessmentId\"]],[20,[\"name\"]]]]],false]],\"hasEval\":false}",
+          "id": "twl7Jbbb",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"competence-level-progress-bar\",null,[[\"status\",\"assessmentId\",\"name\"],[[22,[\"status\"]],[22,[\"assessmentId\"]],[22,[\"name\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -5921,8 +5933,8 @@ define('pix-live/tests/integration/components/competence-level-progress-bar-test
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "07CjnPD7",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"competence-level-progress-bar\",null,[[\"status\",\"name\",\"courseId\",\"level\"],[[20,[\"status\"]],[20,[\"name\"]],[20,[\"courseId\"]],[20,[\"level\"]]]]],false]],\"hasEval\":false}",
+          "id": "tGTIXVXz",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"competence-level-progress-bar\",null,[[\"status\",\"name\",\"courseId\",\"level\"],[[22,[\"status\"]],[22,[\"name\"]],[22,[\"courseId\"]],[22,[\"level\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -5945,8 +5957,8 @@ define('pix-live/tests/integration/components/corner-ribbon-test', ['chai', 'emb
 
     (0, _emberMocha.it)('renders', function () {
       this.render(Ember.HTMLBars.template({
-        "id": "Cg4x7wWg",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"corner-ribbon\"],false]],\"hasEval\":false}",
+        "id": "/zS1lFSh",
+        "block": "{\"symbols\":[],\"statements\":[[1,[20,\"corner-ribbon\"],false]],\"hasEval\":false}",
         "meta": {}
       }));
       (0, _chai.expect)(this.$()).to.have.lengthOf(1);
@@ -5966,8 +5978,8 @@ define('pix-live/tests/integration/components/course-item-test', ['chai', 'mocha
 
       (0, _mocha.it)('renders', function () {
         this.render(Ember.HTMLBars.template({
-          "id": "f8cJ0rAq",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"course-item\"],false]],\"hasEval\":false}",
+          "id": "+u7rJ92b",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"course-item\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
         (0, _chai.expect)(this.$()).to.have.lengthOf(1);
@@ -5980,8 +5992,8 @@ define('pix-live/tests/integration/components/course-item-test', ['chai', 'mocha
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "gHXI9QBp",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"course-item\",null,[[\"course\"],[[20,[\"course\"]]]]],false]],\"hasEval\":false}",
+          "id": "qObt1oep",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"course-item\",null,[[\"course\"],[[22,[\"course\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -5997,8 +6009,8 @@ define('pix-live/tests/integration/components/course-item-test', ['chai', 'mocha
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "gHXI9QBp",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"course-item\",null,[[\"course\"],[[20,[\"course\"]]]]],false]],\"hasEval\":false}",
+          "id": "qObt1oep",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"course-item\",null,[[\"course\"],[[22,[\"course\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -6014,8 +6026,8 @@ define('pix-live/tests/integration/components/course-item-test', ['chai', 'mocha
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "gHXI9QBp",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"course-item\",null,[[\"course\"],[[20,[\"course\"]]]]],false]],\"hasEval\":false}",
+          "id": "qObt1oep",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"course-item\",null,[[\"course\"],[[22,[\"course\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -6031,8 +6043,8 @@ define('pix-live/tests/integration/components/course-item-test', ['chai', 'mocha
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "gHXI9QBp",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"course-item\",null,[[\"course\"],[[20,[\"course\"]]]]],false]],\"hasEval\":false}",
+          "id": "qObt1oep",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"course-item\",null,[[\"course\"],[[22,[\"course\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -6048,8 +6060,8 @@ define('pix-live/tests/integration/components/course-item-test', ['chai', 'mocha
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "gHXI9QBp",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"course-item\",null,[[\"course\"],[[20,[\"course\"]]]]],false]],\"hasEval\":false}",
+          "id": "qObt1oep",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"course-item\",null,[[\"course\"],[[22,[\"course\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -6065,8 +6077,8 @@ define('pix-live/tests/integration/components/course-item-test', ['chai', 'mocha
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "gHXI9QBp",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"course-item\",null,[[\"course\"],[[20,[\"course\"]]]]],false]],\"hasEval\":false}",
+          "id": "qObt1oep",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"course-item\",null,[[\"course\"],[[22,[\"course\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -6082,8 +6094,8 @@ define('pix-live/tests/integration/components/course-item-test', ['chai', 'mocha
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "gHXI9QBp",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"course-item\",null,[[\"course\"],[[20,[\"course\"]]]]],false]],\"hasEval\":false}",
+          "id": "qObt1oep",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"course-item\",null,[[\"course\"],[[22,[\"course\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -6099,8 +6111,8 @@ define('pix-live/tests/integration/components/course-item-test', ['chai', 'mocha
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "gHXI9QBp",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"course-item\",null,[[\"course\"],[[20,[\"course\"]]]]],false]],\"hasEval\":false}",
+          "id": "qObt1oep",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"course-item\",null,[[\"course\"],[[22,[\"course\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -6123,8 +6135,8 @@ define('pix-live/tests/integration/components/course-item-test', ['chai', 'mocha
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "c7zP18Rz",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"course-item\",null,[[\"course\",\"startCourse\"],[[20,[\"course\"]],\"actionHandler\"]]],false]],\"hasEval\":false}",
+          "id": "zj+045fL",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"course-item\",null,[[\"course\",\"startCourse\"],[[22,[\"course\"]],\"actionHandler\"]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -6149,8 +6161,8 @@ define('pix-live/tests/integration/components/course-list-test', ['chai', 'mocha
 
       (0, _mocha.it)('renders', function () {
         this.render(Ember.HTMLBars.template({
-          "id": "1q2q8BdB",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"course-list\"],false]],\"hasEval\":false}",
+          "id": "sREK9E3T",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"course-list\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
         (0, _chai.expect)(this.$()).to.have.lengthOf(1);
@@ -6163,8 +6175,8 @@ define('pix-live/tests/integration/components/course-list-test', ['chai', 'mocha
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "5+uQjYHz",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"course-list\",null,[[\"courses\"],[[20,[\"courses\"]]]]],false]],\"hasEval\":false}",
+          "id": "LIIWMNsc",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"course-list\",null,[[\"courses\"],[[22,[\"courses\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -6192,8 +6204,8 @@ define('pix-live/tests/integration/components/feature-item-test', ['chai', 'moch
     (0, _mocha.it)('renders', function () {
       this.set('feature', feature);
       this.render(Ember.HTMLBars.template({
-        "id": "uAICdtuJ",
-        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"feature-item\",null,[[\"feature\"],[[20,[\"feature\"]]]]],false]],\"hasEval\":false}",
+        "id": "nDAOySl8",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"feature-item\",null,[[\"feature\"],[[22,[\"feature\"]]]]],false]],\"hasEval\":false}",
         "meta": {}
       }));
       (0, _chai.expect)(this.$()).to.have.lengthOf(1);
@@ -6202,8 +6214,8 @@ define('pix-live/tests/integration/components/feature-item-test', ['chai', 'moch
     (0, _mocha.it)('should render an icon', function () {
       this.set('feature', feature);
       this.render(Ember.HTMLBars.template({
-        "id": "uAICdtuJ",
-        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"feature-item\",null,[[\"feature\"],[[20,[\"feature\"]]]]],false]],\"hasEval\":false}",
+        "id": "nDAOySl8",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"feature-item\",null,[[\"feature\"],[[22,[\"feature\"]]]]],false]],\"hasEval\":false}",
         "meta": {}
       }));
 
@@ -6215,8 +6227,8 @@ define('pix-live/tests/integration/components/feature-item-test', ['chai', 'moch
     (0, _mocha.it)('should render an title', function () {
       this.set('feature', feature);
       this.render(Ember.HTMLBars.template({
-        "id": "uAICdtuJ",
-        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"feature-item\",null,[[\"feature\"],[[20,[\"feature\"]]]]],false]],\"hasEval\":false}",
+        "id": "nDAOySl8",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"feature-item\",null,[[\"feature\"],[[22,[\"feature\"]]]]],false]],\"hasEval\":false}",
         "meta": {}
       }));
 
@@ -6228,8 +6240,8 @@ define('pix-live/tests/integration/components/feature-item-test', ['chai', 'moch
     (0, _mocha.it)('should render an description', function () {
       this.set('feature', feature);
       this.render(Ember.HTMLBars.template({
-        "id": "uAICdtuJ",
-        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"feature-item\",null,[[\"feature\"],[[20,[\"feature\"]]]]],false]],\"hasEval\":false}",
+        "id": "nDAOySl8",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"feature-item\",null,[[\"feature\"],[[22,[\"feature\"]]]]],false]],\"hasEval\":false}",
         "meta": {}
       }));
 
@@ -6250,8 +6262,8 @@ define('pix-live/tests/integration/components/feature-list-test', ['chai', 'moch
 
     (0, _mocha.it)('renders', function () {
       this.render(Ember.HTMLBars.template({
-        "id": "/BQ0rxBJ",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"feature-list\"],false]],\"hasEval\":false}",
+        "id": "G1MwHfG2",
+        "block": "{\"symbols\":[],\"statements\":[[1,[20,\"feature-list\"],false]],\"hasEval\":false}",
         "meta": {}
       }));
       (0, _chai.expect)(this.$()).to.have.lengthOf(1);
@@ -6260,8 +6272,8 @@ define('pix-live/tests/integration/components/feature-list-test', ['chai', 'moch
     (0, _mocha.it)('should always render 5 feature-items', function () {
       // when
       this.render(Ember.HTMLBars.template({
-        "id": "/BQ0rxBJ",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"feature-list\"],false]],\"hasEval\":false}",
+        "id": "G1MwHfG2",
+        "block": "{\"symbols\":[],\"statements\":[[1,[20,\"feature-list\"],false]],\"hasEval\":false}",
         "meta": {}
       }));
 
@@ -6351,8 +6363,8 @@ define('pix-live/tests/integration/components/feedback-panel-test', ['chai', 'mo
       (0, _mocha.it)('should display the feedback Panel', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "mlLkZiBp",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"feedback-panel\"],false]],\"hasEval\":false}",
+          "id": "Os/nbpth",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"feedback-panel\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
         // then
@@ -6365,8 +6377,8 @@ define('pix-live/tests/integration/components/feedback-panel-test', ['chai', 'mo
 
       beforeEach(function () {
         this.render(Ember.HTMLBars.template({
-          "id": "mlLkZiBp",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"feedback-panel\"],false]],\"hasEval\":false}",
+          "id": "Os/nbpth",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"feedback-panel\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
       });
@@ -6425,8 +6437,8 @@ define('pix-live/tests/integration/components/feedback-panel-test', ['chai', 'mo
         this.inject.service('store', { as: 'store' });
 
         this.render(Ember.HTMLBars.template({
-          "id": "l1lRWj4E",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"feedback-panel\",null,[[\"assessment\",\"challenge\",\"collapsible\"],[[20,[\"assessment\"]],[20,[\"challenge\"]],false]]],false]],\"hasEval\":false}",
+          "id": "RB+q5xsU",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"feedback-panel\",null,[[\"assessment\",\"challenge\",\"collapsible\"],[[22,[\"assessment\"]],[22,[\"challenge\"]],false]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
       });
@@ -6501,8 +6513,8 @@ define('pix-live/tests/integration/components/feedback-panel-test', ['chai', 'mo
       (0, _mocha.it)('should not be visible if feedback-panel is not collapsible', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "l1lRWj4E",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"feedback-panel\",null,[[\"assessment\",\"challenge\",\"collapsible\"],[[20,[\"assessment\"]],[20,[\"challenge\"]],false]]],false]],\"hasEval\":false}",
+          "id": "RB+q5xsU",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"feedback-panel\",null,[[\"assessment\",\"challenge\",\"collapsible\"],[[22,[\"assessment\"]],[22,[\"challenge\"]],false]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -6513,8 +6525,8 @@ define('pix-live/tests/integration/components/feedback-panel-test', ['chai', 'mo
       (0, _mocha.it)('should not be visible if status is not FORM_OPENED', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "+4pLFbg7",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"feedback-panel\",null,[[\"assessment\",\"challenge\",\"collapsible\",\"_status\"],[[20,[\"assessment\"]],[20,[\"challenge\"]],true,\"FORM_CLOSED\"]]],false]],\"hasEval\":false}",
+          "id": "T3O1sxkP",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"feedback-panel\",null,[[\"assessment\",\"challenge\",\"collapsible\",\"_status\"],[[22,[\"assessment\"]],[22,[\"challenge\"]],true,\"FORM_CLOSED\"]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -6529,8 +6541,8 @@ define('pix-live/tests/integration/components/feedback-panel-test', ['chai', 'mo
               case 0:
                 // given
                 this.render(Ember.HTMLBars.template({
-                  "id": "8ijbH09E",
-                  "block": "{\"symbols\":[],\"statements\":[[1,[25,\"feedback-panel\",null,[[\"assessment\",\"challenge\"],[[20,[\"assessment\"]],[20,[\"challenge\"]]]]],false]],\"hasEval\":false}",
+                  "id": "TWRiVsPI",
+                  "block": "{\"symbols\":[],\"statements\":[[1,[26,\"feedback-panel\",null,[[\"assessment\",\"challenge\"],[[22,[\"assessment\"]],[22,[\"challenge\"]]]]],false]],\"hasEval\":false}",
                   "meta": {}
                 }));
 
@@ -6551,8 +6563,8 @@ define('pix-live/tests/integration/components/feedback-panel-test', ['chai', 'mo
       (0, _mocha.it)('should contain "cancel" button with label "Annuler" and placeholder "Votre message"', function () {
         // given
         this.render(Ember.HTMLBars.template({
-          "id": "8ijbH09E",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"feedback-panel\",null,[[\"assessment\",\"challenge\"],[[20,[\"assessment\"]],[20,[\"challenge\"]]]]],false]],\"hasEval\":false}",
+          "id": "TWRiVsPI",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"feedback-panel\",null,[[\"assessment\",\"challenge\"],[[22,[\"assessment\"]],[22,[\"challenge\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -6568,8 +6580,8 @@ define('pix-live/tests/integration/components/feedback-panel-test', ['chai', 'mo
       (0, _mocha.it)('clicking on "cancel" button should close the "form" view and and display the "link" view', function () {
         // given
         this.render(Ember.HTMLBars.template({
-          "id": "8ijbH09E",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"feedback-panel\",null,[[\"assessment\",\"challenge\"],[[20,[\"assessment\"]],[20,[\"challenge\"]]]]],false]],\"hasEval\":false}",
+          "id": "TWRiVsPI",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"feedback-panel\",null,[[\"assessment\",\"challenge\"],[[22,[\"assessment\"]],[22,[\"challenge\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -6586,8 +6598,8 @@ define('pix-live/tests/integration/components/feedback-panel-test', ['chai', 'mo
       (0, _mocha.it)('should display error if "content" is empty', function () {
         // given
         this.render(Ember.HTMLBars.template({
-          "id": "+2QWKOZD",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"feedback-panel\",null,[[\"collapsible\"],[false]]],false]],\"hasEval\":false}",
+          "id": "JqGiGkM7",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"feedback-panel\",null,[[\"collapsible\"],[false]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -6602,8 +6614,8 @@ define('pix-live/tests/integration/components/feedback-panel-test', ['chai', 'mo
       (0, _mocha.it)('should display error if "content" is blank', function () {
         // given
         this.render(Ember.HTMLBars.template({
-          "id": "+2QWKOZD",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"feedback-panel\",null,[[\"collapsible\"],[false]]],false]],\"hasEval\":false}",
+          "id": "JqGiGkM7",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"feedback-panel\",null,[[\"collapsible\"],[false]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
         setContent(this, '');
@@ -6619,8 +6631,8 @@ define('pix-live/tests/integration/components/feedback-panel-test', ['chai', 'mo
       (0, _mocha.it)('should display error if "email" is set but invalid', function () {
         // given
         this.render(Ember.HTMLBars.template({
-          "id": "+2QWKOZD",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"feedback-panel\",null,[[\"collapsible\"],[false]]],false]],\"hasEval\":false}",
+          "id": "JqGiGkM7",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"feedback-panel\",null,[[\"collapsible\"],[false]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
         setEmail(this, 'wrong_email');
@@ -6636,8 +6648,8 @@ define('pix-live/tests/integration/components/feedback-panel-test', ['chai', 'mo
       (0, _mocha.it)('should not display error if "form" view (with error) was closed and re-opened', function () {
         // given
         this.render(Ember.HTMLBars.template({
-          "id": "mlLkZiBp",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"feedback-panel\"],false]],\"hasEval\":false}",
+          "id": "Os/nbpth",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"feedback-panel\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -6658,8 +6670,8 @@ define('pix-live/tests/integration/components/feedback-panel-test', ['chai', 'mo
       (0, _mocha.it)('should display an error even if the user did not focus on email or content', function () {
         // given
         this.render(Ember.HTMLBars.template({
-          "id": "+2QWKOZD",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"feedback-panel\",null,[[\"collapsible\"],[false]]],false]],\"hasEval\":false}",
+          "id": "JqGiGkM7",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"feedback-panel\",null,[[\"collapsible\"],[false]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -6686,8 +6698,8 @@ define('pix-live/tests/integration/components/follower-form-test', ['chai', 'moc
 
     (0, _mocha.it)('renders', function () {
       this.render(Ember.HTMLBars.template({
-        "id": "rbScXj64",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"follower-form\"],false]],\"hasEval\":false}",
+        "id": "xg+aX64H",
+        "block": "{\"symbols\":[],\"statements\":[[1,[20,\"follower-form\"],false]],\"hasEval\":false}",
         "meta": {}
       }));
       (0, _chai.expect)(this.$()).to.have.lengthOf(1);
@@ -6697,8 +6709,8 @@ define('pix-live/tests/integration/components/follower-form-test', ['chai', 'moc
       (0, _mocha.it)('should render submit button', function () {
         //When
         this.render(Ember.HTMLBars.template({
-          "id": "rbScXj64",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"follower-form\"],false]],\"hasEval\":false}",
+          "id": "xg+aX64H",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"follower-form\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
         //then
@@ -6708,8 +6720,8 @@ define('pix-live/tests/integration/components/follower-form-test', ['chai', 'moc
       (0, _mocha.it)('should return true if input exist', function () {
         //When
         this.render(Ember.HTMLBars.template({
-          "id": "rbScXj64",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"follower-form\"],false]],\"hasEval\":false}",
+          "id": "xg+aX64H",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"follower-form\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
         //then
@@ -6774,8 +6786,8 @@ define('pix-live/tests/integration/components/follower-form-test', ['chai', 'moc
         this.inject.service('store', { as: 'store' });
 
         this.render(Ember.HTMLBars.template({
-          "id": "rbScXj64",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"follower-form\"],false]],\"hasEval\":false}",
+          "id": "xg+aX64H",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"follower-form\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -6804,8 +6816,8 @@ define('pix-live/tests/integration/components/follower-form-test', ['chai', 'moc
         this.register('service:store', storeStubRejection);
 
         this.render(Ember.HTMLBars.template({
-          "id": "rbScXj64",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"follower-form\"],false]],\"hasEval\":false}",
+          "id": "xg+aX64H",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"follower-form\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -6859,8 +6871,8 @@ define('pix-live/tests/integration/components/form-textfield-test', ['chai', 'mo
 
         // When
         this.render(Ember.HTMLBars.template({
-          "id": "OdF/tY35",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"form-textfield\",null,[[\"label\",\"validationStatus\",\"textfieldName\"],[[20,[\"label\"]],[20,[\"validationStatus\"]],[20,[\"textfieldName\"]]]]],false]],\"hasEval\":false}",
+          "id": "2hH5S/4J",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"form-textfield\",null,[[\"label\",\"validationStatus\",\"textfieldName\"],[[22,[\"label\"]],[22,[\"validationStatus\"]],[22,[\"textfieldName\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
       });
@@ -6908,8 +6920,8 @@ define('pix-live/tests/integration/components/form-textfield-test', ['chai', 'mo
         this.set('textfieldName', 'firstname');
 
         this.render(Ember.HTMLBars.template({
-          "id": "KbT9+T8t",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"form-textfield\",null,[[\"label\",\"validationStatus\",\"textfieldName\",\"validate\"],[[20,[\"label\"]],[20,[\"validationStatus\"]],[20,[\"textfieldName\"]],\"validate\"]]],false]],\"hasEval\":false}",
+          "id": "oBFmnFaB",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"form-textfield\",null,[[\"label\",\"validationStatus\",\"textfieldName\",\"validate\"],[[22,[\"label\"]],[22,[\"validationStatus\"]],[22,[\"textfieldName\"]],\"validate\"]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
         // when
@@ -6931,8 +6943,8 @@ define('pix-live/tests/integration/components/form-textfield-test', ['chai', 'mo
 
           // When
           this.render(Ember.HTMLBars.template({
-            "id": "GdmtLDrn",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"form-textfield\",null,[[\"label\",\"validationStatus\",\"validationMessage\",\"textfieldName\"],[[20,[\"label\"]],[20,[\"validationStatus\"]],[20,[\"validationMessage\"]],[20,[\"textfieldName\"]]]]],false]],\"hasEval\":false}",
+            "id": "tn1t1AhB",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"form-textfield\",null,[[\"label\",\"validationStatus\",\"validationMessage\",\"textfieldName\"],[[22,[\"label\"]],[22,[\"validationStatus\"]],[22,[\"validationMessage\"]],[22,[\"textfieldName\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
         });
@@ -6964,8 +6976,8 @@ define('pix-live/tests/integration/components/form-textfield-test', ['chai', 'mo
 
         // When
         this.render(Ember.HTMLBars.template({
-          "id": "GdmtLDrn",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"form-textfield\",null,[[\"label\",\"validationStatus\",\"validationMessage\",\"textfieldName\"],[[20,[\"label\"]],[20,[\"validationStatus\"]],[20,[\"validationMessage\"]],[20,[\"textfieldName\"]]]]],false]],\"hasEval\":false}",
+          "id": "tn1t1AhB",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"form-textfield\",null,[[\"label\",\"validationStatus\",\"validationMessage\",\"textfieldName\"],[[22,[\"label\"]],[22,[\"validationStatus\"]],[22,[\"validationMessage\"]],[22,[\"textfieldName\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
         this.set('validationMessage', '');
@@ -7002,8 +7014,8 @@ define('pix-live/tests/integration/components/form-textfield-test', ['chai', 'mo
 
         // When
         this.render(Ember.HTMLBars.template({
-          "id": "GdmtLDrn",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"form-textfield\",null,[[\"label\",\"validationStatus\",\"validationMessage\",\"textfieldName\"],[[20,[\"label\"]],[20,[\"validationStatus\"]],[20,[\"validationMessage\"]],[20,[\"textfieldName\"]]]]],false]],\"hasEval\":false}",
+          "id": "tn1t1AhB",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"form-textfield\",null,[[\"label\",\"validationStatus\",\"validationMessage\",\"textfieldName\"],[[22,[\"label\"]],[22,[\"validationStatus\"]],[22,[\"validationMessage\"]],[22,[\"textfieldName\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
       });
@@ -7058,8 +7070,8 @@ define('pix-live/tests/integration/components/g-recaptcha-test', ['chai', 'mocha
 
     (0, _mocha.it)('renders', function () {
       this.render(Ember.HTMLBars.template({
-        "id": "rKDV9x6j",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"g-recaptcha\"],false]],\"hasEval\":false}",
+        "id": "e/iQNCpC",
+        "block": "{\"symbols\":[],\"statements\":[[1,[20,\"g-recaptcha\"],false]],\"hasEval\":false}",
         "meta": {}
       }));
       (0, _chai.expect)(this.$()).to.have.lengthOf(1);
@@ -7069,8 +7081,8 @@ define('pix-live/tests/integration/components/g-recaptcha-test', ['chai', 'mocha
     (0, _mocha.it)('should append recaptcha element to container element', function () {
       // when
       this.render(Ember.HTMLBars.template({
-        "id": "rKDV9x6j",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"g-recaptcha\"],false]],\"hasEval\":false}",
+        "id": "e/iQNCpC",
+        "block": "{\"symbols\":[],\"statements\":[[1,[20,\"g-recaptcha\"],false]],\"hasEval\":false}",
         "meta": {}
       }));
       // then
@@ -7090,8 +7102,8 @@ define('pix-live/tests/integration/components/logged-user-profile-banner-test', 
     (0, _mocha.it)('should display a banner', function () {
       // when
       this.render(Ember.HTMLBars.template({
-        "id": "YZH61OIE",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"logged-user-profile-banner\"],false]],\"hasEval\":false}",
+        "id": "0xq4mCQn",
+        "block": "{\"symbols\":[],\"statements\":[[1,[20,\"logged-user-profile-banner\"],false]],\"hasEval\":false}",
         "meta": {}
       }));
 
@@ -7103,8 +7115,8 @@ define('pix-live/tests/integration/components/logged-user-profile-banner-test', 
     (0, _mocha.it)('should have a content text container', function () {
       // when
       this.render(Ember.HTMLBars.template({
-        "id": "YZH61OIE",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"logged-user-profile-banner\"],false]],\"hasEval\":false}",
+        "id": "0xq4mCQn",
+        "block": "{\"symbols\":[],\"statements\":[[1,[20,\"logged-user-profile-banner\"],false]],\"hasEval\":false}",
         "meta": {}
       }));
 
@@ -7115,8 +7127,8 @@ define('pix-live/tests/integration/components/logged-user-profile-banner-test', 
     (0, _mocha.it)('should a button cta to scroll to profile section', function () {
       // when
       this.render(Ember.HTMLBars.template({
-        "id": "YZH61OIE",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"logged-user-profile-banner\"],false]],\"hasEval\":false}",
+        "id": "0xq4mCQn",
+        "block": "{\"symbols\":[],\"statements\":[[1,[20,\"logged-user-profile-banner\"],false]],\"hasEval\":false}",
         "meta": {}
       }));
 
@@ -7137,8 +7149,8 @@ define('pix-live/tests/integration/components/medal-item-test', ['chai', 'mocha'
 
     (0, _mocha.it)('renders', function () {
       this.render(Ember.HTMLBars.template({
-        "id": "pQozpuot",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"medal-item\"],false]],\"hasEval\":false}",
+        "id": "pugPIg+W",
+        "block": "{\"symbols\":[],\"statements\":[[1,[20,\"medal-item\"],false]],\"hasEval\":false}",
         "meta": {}
       }));
       (0, _chai.expect)(this.$()).to.have.lengthOf(1);
@@ -7151,8 +7163,8 @@ define('pix-live/tests/integration/components/medal-item-test', ['chai', 'mocha'
 
       // when
       this.render(Ember.HTMLBars.template({
-        "id": "bcm9pOMH",
-        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"medal-item\",null,[[\"pixScore\"],[[20,[\"pixScore\"]]]]],false]],\"hasEval\":false}",
+        "id": "esquTp73",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"medal-item\",null,[[\"pixScore\"],[[22,[\"pixScore\"]]]]],false]],\"hasEval\":false}",
         "meta": {}
       }));
 
@@ -7163,8 +7175,8 @@ define('pix-live/tests/integration/components/medal-item-test', ['chai', 'mocha'
     (0, _mocha.it)('should contain an image of a medal with the text pix', function () {
       // when
       this.render(Ember.HTMLBars.template({
-        "id": "bcm9pOMH",
-        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"medal-item\",null,[[\"pixScore\"],[[20,[\"pixScore\"]]]]],false]],\"hasEval\":false}",
+        "id": "esquTp73",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"medal-item\",null,[[\"pixScore\"],[[22,[\"pixScore\"]]]]],false]],\"hasEval\":false}",
         "meta": {}
       }));
 
@@ -7185,8 +7197,8 @@ define('pix-live/tests/integration/components/modal-mobile-test', ['chai', 'moch
 
     (0, _mocha.it)('renders', function () {
       this.render(Ember.HTMLBars.template({
-        "id": "DK2TnrEu",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"modal-mobile\"],false]],\"hasEval\":false}",
+        "id": "eUa2fUH+",
+        "block": "{\"symbols\":[],\"statements\":[[1,[20,\"modal-mobile\"],false]],\"hasEval\":false}",
         "meta": {}
       }));
       (0, _chai.expect)(this.$()).to.have.lengthOf(1);
@@ -7195,8 +7207,8 @@ define('pix-live/tests/integration/components/modal-mobile-test', ['chai', 'moch
     (0, _mocha.it)('should display a title with a "warning" icon', function () {
       // when
       this.render(Ember.HTMLBars.template({
-        "id": "DK2TnrEu",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"modal-mobile\"],false]],\"hasEval\":false}",
+        "id": "eUa2fUH+",
+        "block": "{\"symbols\":[],\"statements\":[[1,[20,\"modal-mobile\"],false]],\"hasEval\":false}",
         "meta": {}
       }));
 
@@ -7208,8 +7220,8 @@ define('pix-live/tests/integration/components/modal-mobile-test', ['chai', 'moch
     (0, _mocha.it)('should display a message', function () {
       // when
       this.render(Ember.HTMLBars.template({
-        "id": "DK2TnrEu",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"modal-mobile\"],false]],\"hasEval\":false}",
+        "id": "eUa2fUH+",
+        "block": "{\"symbols\":[],\"statements\":[[1,[20,\"modal-mobile\"],false]],\"hasEval\":false}",
         "meta": {}
       }));
 
@@ -7230,8 +7242,8 @@ define('pix-live/tests/integration/components/navbar-desktop-nav-menu-test', ['c
     (0, _mocha.it)('should be rendered', function () {
       // when
       this.render(Ember.HTMLBars.template({
-        "id": "iuKDPTNa",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"navbar-desktop-menu\"],false]],\"hasEval\":false}",
+        "id": "++6Jsyrm",
+        "block": "{\"symbols\":[],\"statements\":[[1,[20,\"navbar-desktop-menu\"],false]],\"hasEval\":false}",
         "meta": {}
       }));
 
@@ -7258,8 +7270,8 @@ define('pix-live/tests/integration/components/navbar-header-test', ['chai', 'moc
       (0, _mocha.it)('should be rendered', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "AV5n+32Z",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"navbar-header\"],false]],\"hasEval\":false}",
+          "id": "0KrF0oSl",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"navbar-header\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -7270,8 +7282,8 @@ define('pix-live/tests/integration/components/navbar-header-test', ['chai', 'moc
       (0, _mocha.it)('should display the Pix logo', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "AV5n+32Z",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"navbar-header\"],false]],\"hasEval\":false}",
+          "id": "0KrF0oSl",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"navbar-header\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -7283,8 +7295,8 @@ define('pix-live/tests/integration/components/navbar-header-test', ['chai', 'moc
       (0, _mocha.it)('should display link to inscription page', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "AV5n+32Z",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"navbar-header\"],false]],\"hasEval\":false}",
+          "id": "0KrF0oSl",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"navbar-header\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -7295,8 +7307,8 @@ define('pix-live/tests/integration/components/navbar-header-test', ['chai', 'moc
       (0, _mocha.it)('should display link to connection page', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "AV5n+32Z",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"navbar-header\"],false]],\"hasEval\":false}",
+          "id": "0KrF0oSl",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"navbar-header\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -7311,8 +7323,8 @@ define('pix-live/tests/integration/components/navbar-header-test', ['chai', 'moc
 
           // when
           this.render(Ember.HTMLBars.template({
-            "id": "8c1xZQ7e",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"navbar-header\",null,[[\"media\"],[[20,[\"media\"]]]]],false]],\"hasEval\":false}",
+            "id": "APqCazdZ",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"navbar-header\",null,[[\"media\"],[[22,[\"media\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -7329,8 +7341,8 @@ define('pix-live/tests/integration/components/navbar-header-test', ['chai', 'moc
 
           // when
           this.render(Ember.HTMLBars.template({
-            "id": "8c1xZQ7e",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"navbar-header\",null,[[\"media\"],[[20,[\"media\"]]]]],false]],\"hasEval\":false}",
+            "id": "APqCazdZ",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"navbar-header\",null,[[\"media\"],[[22,[\"media\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -7355,8 +7367,8 @@ define('pix-live/tests/integration/components/navbar-header-test', ['chai', 'moc
         this.inject.service('session', { as: 'session' });
 
         this.render(Ember.HTMLBars.template({
-          "id": "AV5n+32Z",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"navbar-header\"],false]],\"hasEval\":false}",
+          "id": "0KrF0oSl",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"navbar-header\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
       });
@@ -7387,8 +7399,8 @@ define('pix-live/tests/integration/components/navbar-header-test', ['chai', 'moc
 
           // when
           this.render(Ember.HTMLBars.template({
-            "id": "8c1xZQ7e",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"navbar-header\",null,[[\"media\"],[[20,[\"media\"]]]]],false]],\"hasEval\":false}",
+            "id": "APqCazdZ",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"navbar-header\",null,[[\"media\"],[[22,[\"media\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -7404,8 +7416,8 @@ define('pix-live/tests/integration/components/navbar-header-test', ['chai', 'moc
 
           // when
           this.render(Ember.HTMLBars.template({
-            "id": "8c1xZQ7e",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"navbar-header\",null,[[\"media\"],[[20,[\"media\"]]]]],false]],\"hasEval\":false}",
+            "id": "APqCazdZ",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"navbar-header\",null,[[\"media\"],[[22,[\"media\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -7427,8 +7439,8 @@ define('pix-live/tests/integration/components/navbar-mobile-menu-test', ['chai',
     (0, _mocha.it)('should be rendered', function () {
       // when
       this.render(Ember.HTMLBars.template({
-        "id": "3ynOjF+/",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"navbar-mobile-menu\"],false]],\"hasEval\":false}",
+        "id": "UkEXF6Fl",
+        "block": "{\"symbols\":[],\"statements\":[[1,[20,\"navbar-mobile-menu\"],false]],\"hasEval\":false}",
         "meta": {}
       }));
 
@@ -7441,8 +7453,8 @@ define('pix-live/tests/integration/components/navbar-mobile-menu-test', ['chai',
       (0, _mocha.it)('should close the side-menu', function () {
         // given
         this.render(Ember.HTMLBars.template({
-          "id": "3ynOjF+/",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"navbar-mobile-menu\"],false]],\"hasEval\":false}",
+          "id": "UkEXF6Fl",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"navbar-mobile-menu\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -7478,8 +7490,8 @@ define('pix-live/tests/integration/components/navbar-mobile-menu-test', ['chai',
         this.set('menu', menu);
 
         this.render(Ember.HTMLBars.template({
-          "id": "YOYytkKr",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"navbar-mobile-menu\",null,[[\"menu\"],[[20,[\"menu\"]]]]],false]],\"hasEval\":false}",
+          "id": "yLgqj0QS",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"navbar-mobile-menu\",null,[[\"menu\"],[[22,[\"menu\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -7503,8 +7515,8 @@ define('pix-live/tests/integration/components/navbar-mobile-nav-menu-test', ['ch
     (0, _mocha.it)('should be rendered', function () {
       // when
       this.render(Ember.HTMLBars.template({
-        "id": "3ynOjF+/",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"navbar-mobile-menu\"],false]],\"hasEval\":false}",
+        "id": "UkEXF6Fl",
+        "block": "{\"symbols\":[],\"statements\":[[1,[20,\"navbar-mobile-menu\"],false]],\"hasEval\":false}",
         "meta": {}
       }));
 
@@ -7523,8 +7535,8 @@ define('pix-live/tests/integration/components/no-certification-panel-test', ['ch
 
     (0, _mocha.it)('renders', function () {
       this.render(Ember.HTMLBars.template({
-        "id": "/tL/48tR",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"no-certification-panel\"],false]],\"hasEval\":false}",
+        "id": "xZYoYie5",
+        "block": "{\"symbols\":[],\"statements\":[[1,[20,\"no-certification-panel\"],false]],\"hasEval\":false}",
         "meta": {}
       }));
       (0, _chai.expect)(this.$()).to.have.length(1);
@@ -7544,8 +7556,8 @@ define('pix-live/tests/integration/components/partners-enrollment-panel-test', [
       (0, _mocha.it)('should render', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "rQ2sgNQ/",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"partners-enrollment-panel\"],false]],\"hasEval\":false}",
+          "id": "KwiLYs0g",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"partners-enrollment-panel\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -7561,8 +7573,8 @@ define('pix-live/tests/integration/components/partners-enrollment-panel-test', [
         (0, _mocha.it)('should display a ' + type, function () {
           // given
           this.render(Ember.HTMLBars.template({
-            "id": "rQ2sgNQ/",
-            "block": "{\"symbols\":[],\"statements\":[[1,[18,\"partners-enrollment-panel\"],false]],\"hasEval\":false}",
+            "id": "KwiLYs0g",
+            "block": "{\"symbols\":[],\"statements\":[[1,[20,\"partners-enrollment-panel\"],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -7575,8 +7587,8 @@ define('pix-live/tests/integration/components/partners-enrollment-panel-test', [
         // given
         this.set('_enrollment', { title: 'toto' });
         this.render(Ember.HTMLBars.template({
-          "id": "rQ2sgNQ/",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"partners-enrollment-panel\"],false]],\"hasEval\":false}",
+          "id": "KwiLYs0g",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"partners-enrollment-panel\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -7597,8 +7609,8 @@ define('pix-live/tests/integration/components/password-reset-form-test', ['chai'
 
     (0, _mocha.it)('renders', function () {
       this.render(Ember.HTMLBars.template({
-        "id": "AsAWcmkf",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"password-reset-form\"],false]],\"hasEval\":false}",
+        "id": "XOrG/jRe",
+        "block": "{\"symbols\":[],\"statements\":[[1,[20,\"password-reset-form\"],false]],\"hasEval\":false}",
         "meta": {}
       }));
       (0, _chai.expect)(this.$()).to.have.length(1);
@@ -7607,8 +7619,8 @@ define('pix-live/tests/integration/components/password-reset-form-test', ['chai'
     (0, _mocha.it)('renders all the necessary elements of the form ', function () {
       // when
       this.render(Ember.HTMLBars.template({
-        "id": "AsAWcmkf",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"password-reset-form\"],false]],\"hasEval\":false}",
+        "id": "XOrG/jRe",
+        "block": "{\"symbols\":[],\"statements\":[[1,[20,\"password-reset-form\"],false]],\"hasEval\":false}",
         "meta": {}
       }));
 
@@ -7629,8 +7641,8 @@ define('pix-live/tests/integration/components/password-reset-form-test', ['chai'
 
       // when
       this.render(Ember.HTMLBars.template({
-        "id": "n/Zp3O/7",
-        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"password-reset-form\",null,[[\"_displayErrorMessage\"],[[20,[\"_displayErrorMessage\"]]]]],false]],\"hasEval\":false}",
+        "id": "FFwvuFak",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"password-reset-form\",null,[[\"_displayErrorMessage\"],[[22,[\"_displayErrorMessage\"]]]]],false]],\"hasEval\":false}",
         "meta": {}
       }));
 
@@ -7644,8 +7656,8 @@ define('pix-live/tests/integration/components/password-reset-form-test', ['chai'
 
       // when
       this.render(Ember.HTMLBars.template({
-        "id": "c0myJN1a",
-        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"password-reset-form\",null,[[\"_displaySuccessMessage\"],[[20,[\"_displaySuccessMessage\"]]]]],false]],\"hasEval\":false}",
+        "id": "iLG59q7r",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"password-reset-form\",null,[[\"_displaySuccessMessage\"],[[22,[\"_displaySuccessMessage\"]]]]],false]],\"hasEval\":false}",
         "meta": {}
       }));
 
@@ -7672,8 +7684,8 @@ define('pix-live/tests/integration/components/pix-content-backdrop-test', ['chai
     (0, _mocha.it)('should be rendered', function () {
       // when
       this.render(Ember.HTMLBars.template({
-        "id": "LSowFm0k",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"pix-content-backdrop\"],false]],\"hasEval\":false}",
+        "id": "4TmS64bG",
+        "block": "{\"symbols\":[],\"statements\":[[1,[20,\"pix-content-backdrop\"],false]],\"hasEval\":false}",
         "meta": {}
       }));
 
@@ -7686,8 +7698,8 @@ define('pix-live/tests/integration/components/pix-content-backdrop-test', ['chai
         // given
         this.set('sideMenu.progress', 10);
         this.render(Ember.HTMLBars.template({
-          "id": "BLm3nrrA",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"content-backdrop\"],false]],\"hasEval\":false}",
+          "id": "vXYbi+3m",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"content-backdrop\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -7713,8 +7725,8 @@ define('pix-live/tests/integration/components/pix-logo-test', ['chai', 'mocha', 
 
     (0, _mocha.beforeEach)(function () {
       this.render(Ember.HTMLBars.template({
-        "id": "b2v7xgk5",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"pix-logo\"],false]],\"hasEval\":false}",
+        "id": "mFkMZQqg",
+        "block": "{\"symbols\":[],\"statements\":[[1,[20,\"pix-logo\"],false]],\"hasEval\":false}",
         "meta": {}
       }));
     });
@@ -7753,8 +7765,8 @@ define('pix-live/tests/integration/components/profile-panel-test', ['chai', 'moc
       (0, _mocha.it)('should be rendered', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "5+6XzRcc",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"profile-panel\"],false]],\"hasEval\":false}",
+          "id": "gRVZSKnH",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"profile-panel\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -7765,8 +7777,8 @@ define('pix-live/tests/integration/components/profile-panel-test', ['chai', 'moc
       (0, _mocha.it)('should render a wrapper', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "5+6XzRcc",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"profile-panel\"],false]],\"hasEval\":false}",
+          "id": "gRVZSKnH",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"profile-panel\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -7778,8 +7790,8 @@ define('pix-live/tests/integration/components/profile-panel-test', ['chai', 'moc
       (0, _mocha.it)('should render a profile header', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "5+6XzRcc",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"profile-panel\"],false]],\"hasEval\":false}",
+          "id": "gRVZSKnH",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"profile-panel\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -7793,8 +7805,8 @@ define('pix-live/tests/integration/components/profile-panel-test', ['chai', 'moc
       (0, _mocha.it)('should render a competence profile block', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "5+6XzRcc",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"profile-panel\"],false]],\"hasEval\":false}",
+          "id": "gRVZSKnH",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"profile-panel\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -7811,8 +7823,8 @@ define('pix-live/tests/integration/components/profile-panel-test', ['chai', 'moc
           this.set('totalPixScore', totalPixScore);
           // when
           this.render(Ember.HTMLBars.template({
-            "id": "B6tANSOq",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"profile-panel\",null,[[\"totalPixScore\"],[[20,[\"totalPixScore\"]]]]],false]],\"hasEval\":false}",
+            "id": "a2NrNqOS",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"profile-panel\",null,[[\"totalPixScore\"],[[22,[\"totalPixScore\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -7834,8 +7846,8 @@ define('pix-live/tests/integration/components/qcm-proposals-test', ['chai', 'moc
 
     (0, _mocha.it)('renders', function () {
       this.render(Ember.HTMLBars.template({
-        "id": "TjwrvDRZ",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"qcm-proposals\"],false]],\"hasEval\":false}",
+        "id": "4vd/Qf9U",
+        "block": "{\"symbols\":[],\"statements\":[[1,[20,\"qcm-proposals\"],false]],\"hasEval\":false}",
         "meta": {}
       }));
       (0, _chai.expect)(this.$()).to.have.lengthOf(1);
@@ -7876,8 +7888,8 @@ define('pix-live/tests/integration/components/qcm-solution-panel-test', ['chai',
 
       (0, _mocha.it)('Should renders', function () {
         this.render(Ember.HTMLBars.template({
-          "id": "/1+HUo2o",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"qcm-solution-panel\"],false]],\"hasEval\":false}",
+          "id": "v4zhTfuk",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"qcm-solution-panel\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
         (0, _chai.expect)(this.$()).to.have.lengthOf(1);
@@ -7913,8 +7925,8 @@ define('pix-live/tests/integration/components/qcm-solution-panel-test', ['chai',
 
           // When
           this.render(Ember.HTMLBars.template({
-            "id": "EI/CIXHK",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"qcm-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[20,[\"challenge\"]],[20,[\"answer\"]],[20,[\"solution\"]]]]],false]],\"hasEval\":false}",
+            "id": "IAdqwsjv",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"qcm-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[22,[\"challenge\"]],[22,[\"answer\"]],[22,[\"solution\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -7935,8 +7947,8 @@ define('pix-live/tests/integration/components/qcm-solution-panel-test', ['chai',
 
           // When
           this.render(Ember.HTMLBars.template({
-            "id": "EI/CIXHK",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"qcm-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[20,[\"challenge\"]],[20,[\"answer\"]],[20,[\"solution\"]]]]],false]],\"hasEval\":false}",
+            "id": "IAdqwsjv",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"qcm-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[22,[\"challenge\"]],[22,[\"answer\"]],[22,[\"solution\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -7955,8 +7967,8 @@ define('pix-live/tests/integration/components/qcm-solution-panel-test', ['chai',
 
           // When
           this.render(Ember.HTMLBars.template({
-            "id": "EI/CIXHK",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"qcm-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[20,[\"challenge\"]],[20,[\"answer\"]],[20,[\"solution\"]]]]],false]],\"hasEval\":false}",
+            "id": "IAdqwsjv",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"qcm-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[22,[\"challenge\"]],[22,[\"answer\"]],[22,[\"solution\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -7975,8 +7987,8 @@ define('pix-live/tests/integration/components/qcm-solution-panel-test', ['chai',
 
           // When
           this.render(Ember.HTMLBars.template({
-            "id": "EI/CIXHK",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"qcm-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[20,[\"challenge\"]],[20,[\"answer\"]],[20,[\"solution\"]]]]],false]],\"hasEval\":false}",
+            "id": "IAdqwsjv",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"qcm-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[22,[\"challenge\"]],[22,[\"answer\"]],[22,[\"solution\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -7994,8 +8006,8 @@ define('pix-live/tests/integration/components/qcm-solution-panel-test', ['chai',
 
           // When
           this.render(Ember.HTMLBars.template({
-            "id": "EI/CIXHK",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"qcm-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[20,[\"challenge\"]],[20,[\"answer\"]],[20,[\"solution\"]]]]],false]],\"hasEval\":false}",
+            "id": "IAdqwsjv",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"qcm-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[22,[\"challenge\"]],[22,[\"answer\"]],[22,[\"solution\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -8047,8 +8059,8 @@ define('pix-live/tests/integration/components/qcu-proposals-test', ['chai', 'moc
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "2wMU8yls",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"qcu-proposals\",null,[[\"answers\",\"proposals\",\"answerChanged\"],[[20,[\"answers\"]],[20,[\"proposals\"]],\"answerChanged\"]]],false]],\"hasEval\":false}",
+          "id": "B/cvknX9",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"qcu-proposals\",null,[[\"answers\",\"proposals\",\"answerChanged\"],[[22,[\"answers\"]],[22,[\"proposals\"]],\"answerChanged\"]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -8101,8 +8113,8 @@ define('pix-live/tests/integration/components/qcu-solution-panel-test', ['chai',
 
       (0, _mocha.it)('Should renders', function () {
         this.render(Ember.HTMLBars.template({
-          "id": "B8Fg07WY",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"qcu-solution-panel\"],false]],\"hasEval\":false}",
+          "id": "xT8/mIpq",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"qcu-solution-panel\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
         (0, _chai.expect)(this.$()).to.have.lengthOf(1);
@@ -8130,8 +8142,8 @@ define('pix-live/tests/integration/components/qcu-solution-panel-test', ['chai',
           this.set('challenge', challenge);
           // When
           this.render(Ember.HTMLBars.template({
-            "id": "+OJcUAys",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"qcu-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[20,[\"challenge\"]],[20,[\"answer\"]],[20,[\"solution\"]]]]],false]],\"hasEval\":false}",
+            "id": "lnXPBaRA",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"qcu-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[22,[\"challenge\"]],[22,[\"answer\"]],[22,[\"solution\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -8154,8 +8166,8 @@ define('pix-live/tests/integration/components/qcu-solution-panel-test', ['chai',
 
           // When
           this.render(Ember.HTMLBars.template({
-            "id": "+OJcUAys",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"qcu-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[20,[\"challenge\"]],[20,[\"answer\"]],[20,[\"solution\"]]]]],false]],\"hasEval\":false}",
+            "id": "lnXPBaRA",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"qcu-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[22,[\"challenge\"]],[22,[\"answer\"]],[22,[\"solution\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -8174,8 +8186,8 @@ define('pix-live/tests/integration/components/qcu-solution-panel-test', ['chai',
 
           // When
           this.render(Ember.HTMLBars.template({
-            "id": "+OJcUAys",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"qcu-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[20,[\"challenge\"]],[20,[\"answer\"]],[20,[\"solution\"]]]]],false]],\"hasEval\":false}",
+            "id": "lnXPBaRA",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"qcu-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[22,[\"challenge\"]],[22,[\"answer\"]],[22,[\"solution\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -8195,8 +8207,8 @@ define('pix-live/tests/integration/components/qcu-solution-panel-test', ['chai',
 
           // When
           this.render(Ember.HTMLBars.template({
-            "id": "+OJcUAys",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"qcu-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[20,[\"challenge\"]],[20,[\"answer\"]],[20,[\"solution\"]]]]],false]],\"hasEval\":false}",
+            "id": "lnXPBaRA",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"qcu-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[22,[\"challenge\"]],[22,[\"answer\"]],[22,[\"solution\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -8214,8 +8226,8 @@ define('pix-live/tests/integration/components/qcu-solution-panel-test', ['chai',
 
           // When
           this.render(Ember.HTMLBars.template({
-            "id": "+OJcUAys",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"qcu-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[20,[\"challenge\"]],[20,[\"answer\"]],[20,[\"solution\"]]]]],false]],\"hasEval\":false}",
+            "id": "lnXPBaRA",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"qcu-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[22,[\"challenge\"]],[22,[\"answer\"]],[22,[\"solution\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -8240,8 +8252,8 @@ define('pix-live/tests/integration/components/qroc-proposal-test', ['chai', 'moc
 
     (0, _mocha.it)('renders', function () {
       this.render(Ember.HTMLBars.template({
-        "id": "BWv3gn47",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"qroc-proposal\"],false]],\"hasEval\":false}",
+        "id": "h9snJVQm",
+        "block": "{\"symbols\":[],\"statements\":[[1,[20,\"qroc-proposal\"],false]],\"hasEval\":false}",
         "meta": {}
       }));
       (0, _chai.expect)(this.$()).to.have.lengthOf(1);
@@ -8256,8 +8268,8 @@ define('pix-live/tests/integration/components/qroc-proposal-test', ['chai', 'moc
         this.set('answerValue', 'myValue');
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "WIpsT+mT",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"qroc-proposal\",null,[[\"proposals\",\"answerValue\"],[[20,[\"proposals\"]],[20,[\"answerValue\"]]]]],false]],\"hasEval\":false}",
+          "id": "U/fqmYMC",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"qroc-proposal\",null,[[\"proposals\",\"answerValue\"],[[22,[\"proposals\"]],[22,[\"answerValue\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
         // then
@@ -8280,8 +8292,8 @@ define('pix-live/tests/integration/components/qroc-proposal-test', ['chai', 'moc
           this.set('answerValue', input);
           // when
           this.render(Ember.HTMLBars.template({
-            "id": "WIpsT+mT",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"qroc-proposal\",null,[[\"proposals\",\"answerValue\"],[[20,[\"proposals\"]],[20,[\"answerValue\"]]]]],false]],\"hasEval\":false}",
+            "id": "U/fqmYMC",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"qroc-proposal\",null,[[\"proposals\",\"answerValue\"],[[22,[\"proposals\"]],[22,[\"answerValue\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
           // then
@@ -8306,8 +8318,8 @@ define('pix-live/tests/integration/components/qroc-solution-panel-test', ['chai'
 
     (0, _mocha.it)('renders', function () {
       this.render(Ember.HTMLBars.template({
-        "id": "gD2Zw7AP",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"qroc-solution-panel\"],false]],\"hasEval\":false}",
+        "id": "HyqACjez",
+        "block": "{\"symbols\":[],\"statements\":[[1,[20,\"qroc-solution-panel\"],false]],\"hasEval\":false}",
         "meta": {}
       }));
       (0, _chai.expect)(this.$()).to.have.lengthOf(1);
@@ -8316,8 +8328,8 @@ define('pix-live/tests/integration/components/qroc-solution-panel-test', ['chai'
     (0, _mocha.it)('should disabled all inputs', function () {
       // given
       this.render(Ember.HTMLBars.template({
-        "id": "gD2Zw7AP",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"qroc-solution-panel\"],false]],\"hasEval\":false}",
+        "id": "HyqACjez",
+        "block": "{\"symbols\":[],\"statements\":[[1,[20,\"qroc-solution-panel\"],false]],\"hasEval\":false}",
         "meta": {}
       }));
       var input = this.$('input');
@@ -8335,8 +8347,8 @@ define('pix-live/tests/integration/components/qroc-solution-panel-test', ['chai'
         // given
         this.set('answer', answer);
         this.render(Ember.HTMLBars.template({
-          "id": "rVyYCapZ",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"qroc-solution-panel\",null,[[\"answer\"],[[20,[\"answer\"]]]]],false]],\"hasEval\":false}",
+          "id": "mTi81JFa",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"qroc-solution-panel\",null,[[\"answer\"],[[22,[\"answer\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
         // when
@@ -8360,8 +8372,8 @@ define('pix-live/tests/integration/components/qroc-solution-panel-test', ['chai'
 
         this.set('answer', answer);
         this.render(Ember.HTMLBars.template({
-          "id": "rVyYCapZ",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"qroc-solution-panel\",null,[[\"answer\"],[[20,[\"answer\"]]]]],false]],\"hasEval\":false}",
+          "id": "mTi81JFa",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"qroc-solution-panel\",null,[[\"answer\"],[[22,[\"answer\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
       });
@@ -8394,8 +8406,8 @@ define('pix-live/tests/integration/components/qroc-solution-panel-test', ['chai'
           this.set('answer', answer);
           this.set('isResultWithoutAnswer', true);
           this.render(Ember.HTMLBars.template({
-            "id": "rVyYCapZ",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"qroc-solution-panel\",null,[[\"answer\"],[[20,[\"answer\"]]]]],false]],\"hasEval\":false}",
+            "id": "mTi81JFa",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"qroc-solution-panel\",null,[[\"answer\"],[[22,[\"answer\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
         });
@@ -8449,8 +8461,8 @@ define('pix-live/tests/integration/components/qrocm-ind-solution-panel-test', ['
 
     (0, _mocha.it)('renders', function () {
       this.render(Ember.HTMLBars.template({
-        "id": "vJDetYEF",
-        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"qrocm-ind-solution-panel\",null,[[\"answer\",\"solution\",\"challenge\"],[[20,[\"answer\"]],[20,[\"solution\"]],[20,[\"challenge\"]]]]],false]],\"hasEval\":false}",
+        "id": "pFdexXhV",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"qrocm-ind-solution-panel\",null,[[\"answer\",\"solution\",\"challenge\"],[[22,[\"answer\"]],[22,[\"solution\"]],[22,[\"challenge\"]]]]],false]],\"hasEval\":false}",
         "meta": {}
       }));
       (0, _chai.expect)(this.$()).to.have.lengthOf(1);
@@ -8459,8 +8471,8 @@ define('pix-live/tests/integration/components/qrocm-ind-solution-panel-test', ['
     (0, _mocha.it)('should disabled all inputs', function () {
       // given
       this.render(Ember.HTMLBars.template({
-        "id": "vJDetYEF",
-        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"qrocm-ind-solution-panel\",null,[[\"answer\",\"solution\",\"challenge\"],[[20,[\"answer\"]],[20,[\"solution\"]],[20,[\"challenge\"]]]]],false]],\"hasEval\":false}",
+        "id": "pFdexXhV",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"qrocm-ind-solution-panel\",null,[[\"answer\",\"solution\",\"challenge\"],[[22,[\"answer\"]],[22,[\"solution\"]],[22,[\"challenge\"]]]]],false]],\"hasEval\":false}",
         "meta": {}
       }));
       var input = this.$('input');
@@ -8471,8 +8483,8 @@ define('pix-live/tests/integration/components/qrocm-ind-solution-panel-test', ['
     (0, _mocha.it)('should contains three labels', function () {
       // given
       this.render(Ember.HTMLBars.template({
-        "id": "vJDetYEF",
-        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"qrocm-ind-solution-panel\",null,[[\"answer\",\"solution\",\"challenge\"],[[20,[\"answer\"]],[20,[\"solution\"]],[20,[\"challenge\"]]]]],false]],\"hasEval\":false}",
+        "id": "pFdexXhV",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"qrocm-ind-solution-panel\",null,[[\"answer\",\"solution\",\"challenge\"],[[22,[\"answer\"]],[22,[\"solution\"]],[22,[\"challenge\"]]]]],false]],\"hasEval\":false}",
         "meta": {}
       }));
       var labels = this.$(LABEL);
@@ -8487,8 +8499,8 @@ define('pix-live/tests/integration/components/qrocm-ind-solution-panel-test', ['
         (0, _mocha.it)('should display the right answer in green bold', function () {
           // given
           this.render(Ember.HTMLBars.template({
-            "id": "a4XTaIUS",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"qrocm-ind-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[20,[\"challenge\"]],[20,[\"answer\"]],[20,[\"solution\"]]]]],false]],\"hasEval\":false}",
+            "id": "Bfxlrfmo",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"qrocm-ind-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[22,[\"challenge\"]],[22,[\"answer\"]],[22,[\"solution\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
           var answerBlock = this.$(FIRST_CORRECTION_BLOCK);
@@ -8506,8 +8518,8 @@ define('pix-live/tests/integration/components/qrocm-ind-solution-panel-test', ['
         (0, _mocha.it)('should not display the solution', function () {
           // given
           this.render(Ember.HTMLBars.template({
-            "id": "a4XTaIUS",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"qrocm-ind-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[20,[\"challenge\"]],[20,[\"answer\"]],[20,[\"solution\"]]]]],false]],\"hasEval\":false}",
+            "id": "Bfxlrfmo",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"qrocm-ind-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[22,[\"challenge\"]],[22,[\"answer\"]],[22,[\"solution\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
           var solutionBlock = this.$(FIRST_CORRECTION_BLOCK + ' ' + SOLUTION_BLOCK);
@@ -8522,8 +8534,8 @@ define('pix-live/tests/integration/components/qrocm-ind-solution-panel-test', ['
         (0, _mocha.it)('should display the wrong answer in the second div line-throughed bold', function () {
           // given
           this.render(Ember.HTMLBars.template({
-            "id": "a4XTaIUS",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"qrocm-ind-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[20,[\"challenge\"]],[20,[\"answer\"]],[20,[\"solution\"]]]]],false]],\"hasEval\":false}",
+            "id": "Bfxlrfmo",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"qrocm-ind-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[22,[\"challenge\"]],[22,[\"answer\"]],[22,[\"solution\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
           var answerBlock = this.$(SECOND_CORRECTION_BLOCK);
@@ -8541,8 +8553,8 @@ define('pix-live/tests/integration/components/qrocm-ind-solution-panel-test', ['
         (0, _mocha.it)('should display one solution in bold green below the input', function () {
           // given
           this.render(Ember.HTMLBars.template({
-            "id": "a4XTaIUS",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"qrocm-ind-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[20,[\"challenge\"]],[20,[\"answer\"]],[20,[\"solution\"]]]]],false]],\"hasEval\":false}",
+            "id": "Bfxlrfmo",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"qrocm-ind-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[22,[\"challenge\"]],[22,[\"answer\"]],[22,[\"solution\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
           var solutionBlock = this.$(SECOND_CORRECTION_BLOCK + ' ' + SOLUTION_BLOCK);
@@ -8561,8 +8573,8 @@ define('pix-live/tests/integration/components/qrocm-ind-solution-panel-test', ['
         (0, _mocha.it)('should display the empty answer in the third div with "pas de réponse" in italic', function () {
           // given
           this.render(Ember.HTMLBars.template({
-            "id": "a4XTaIUS",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"qrocm-ind-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[20,[\"challenge\"]],[20,[\"answer\"]],[20,[\"solution\"]]]]],false]],\"hasEval\":false}",
+            "id": "Bfxlrfmo",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"qrocm-ind-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[22,[\"challenge\"]],[22,[\"answer\"]],[22,[\"solution\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
           var answerBlock = this.$(THIRD_CORRECTION_BLOCK);
@@ -8580,8 +8592,8 @@ define('pix-live/tests/integration/components/qrocm-ind-solution-panel-test', ['
         (0, _mocha.it)('should display one solution in bold green below the input', function () {
           // given
           this.render(Ember.HTMLBars.template({
-            "id": "a4XTaIUS",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"qrocm-ind-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[20,[\"challenge\"]],[20,[\"answer\"]],[20,[\"solution\"]]]]],false]],\"hasEval\":false}",
+            "id": "Bfxlrfmo",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"qrocm-ind-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[22,[\"challenge\"]],[22,[\"answer\"]],[22,[\"solution\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
           var solutionBlock = this.$(THIRD_CORRECTION_BLOCK + ' ' + SOLUTION_BLOCK);
@@ -8608,8 +8620,8 @@ define('pix-live/tests/integration/components/qrocm-proposal-test', ['chai', 'mo
 
     (0, _mocha.it)('renders', function () {
       this.render(Ember.HTMLBars.template({
-        "id": "wOWe8uzB",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"qrocm-proposal\"],false]],\"hasEval\":false}",
+        "id": "SggpZMke",
+        "block": "{\"symbols\":[],\"statements\":[[1,[20,\"qrocm-proposal\"],false]],\"hasEval\":false}",
         "meta": {}
       }));
 
@@ -8631,8 +8643,8 @@ define('pix-live/tests/integration/components/reset-password-form-test', ['chai'
 
       (0, _mocha.it)('should be rendered', function () {
         this.render(Ember.HTMLBars.template({
-          "id": "A4Ro+tal",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"reset-password-form\"],false]],\"hasEval\":false}",
+          "id": "7YnSJIXU",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"reset-password-form\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
         (0, _chai.expect)(this.$()).to.have.length(1);
@@ -8646,8 +8658,8 @@ define('pix-live/tests/integration/components/reset-password-form-test', ['chai'
           (0, _mocha.it)('should contains  a item with class: ' + item, function () {
             // when
             this.render(Ember.HTMLBars.template({
-              "id": "A4Ro+tal",
-              "block": "{\"symbols\":[],\"statements\":[[1,[18,\"reset-password-form\"],false]],\"hasEval\":false}",
+              "id": "7YnSJIXU",
+              "block": "{\"symbols\":[],\"statements\":[[1,[20,\"reset-password-form\"],false]],\"hasEval\":false}",
               "meta": {}
             }));
 
@@ -8663,8 +8675,8 @@ define('pix-live/tests/integration/components/reset-password-form-test', ['chai'
 
           // when
           this.render(Ember.HTMLBars.template({
-            "id": "JkAk7cEc",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"reset-password-form\",null,[[\"user\"],[[20,[\"user\"]]]]],false]],\"hasEval\":false}",
+            "id": "ORS3+Boe",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"reset-password-form\",null,[[\"user\"],[[22,[\"user\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -8678,8 +8690,8 @@ define('pix-live/tests/integration/components/reset-password-form-test', ['chai'
         (0, _mocha.it)('should be rendered', function () {
           // when
           this.render(Ember.HTMLBars.template({
-            "id": "A4Ro+tal",
-            "block": "{\"symbols\":[],\"statements\":[[1,[18,\"reset-password-form\"],false]],\"hasEval\":false}",
+            "id": "7YnSJIXU",
+            "block": "{\"symbols\":[],\"statements\":[[1,[20,\"reset-password-form\"],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -8714,8 +8726,8 @@ define('pix-live/tests/integration/components/reset-password-form-test', ['chai'
             var validPassword = 'Pix 1 2 3!';
 
             this.render(Ember.HTMLBars.template({
-              "id": "JkAk7cEc",
-              "block": "{\"symbols\":[],\"statements\":[[1,[25,\"reset-password-form\",null,[[\"user\"],[[20,[\"user\"]]]]],false]],\"hasEval\":false}",
+              "id": "ORS3+Boe",
+              "block": "{\"symbols\":[],\"statements\":[[1,[26,\"reset-password-form\",null,[[\"user\"],[[22,[\"user\"]]]]],false]],\"hasEval\":false}",
               "meta": {}
             }));
 
@@ -8743,8 +8755,8 @@ define('pix-live/tests/integration/components/reset-password-form-test', ['chai'
             var validPassword = 'Pix 1 2 3!';
 
             this.render(Ember.HTMLBars.template({
-              "id": "JkAk7cEc",
-              "block": "{\"symbols\":[],\"statements\":[[1,[25,\"reset-password-form\",null,[[\"user\"],[[20,[\"user\"]]]]],false]],\"hasEval\":false}",
+              "id": "ORS3+Boe",
+              "block": "{\"symbols\":[],\"statements\":[[1,[26,\"reset-password-form\",null,[[\"user\"],[[22,[\"user\"]]]]],false]],\"hasEval\":false}",
               "meta": {}
             }));
 
@@ -8806,8 +8818,8 @@ define('pix-live/tests/integration/components/result-item-test', ['chai', 'mocha
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "CPzQ7S2z",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"result-item\",null,[[\"answer\",\"index\"],[[20,[\"answer\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
+          "id": "BsDmVw9e",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"result-item\",null,[[\"answer\",\"index\"],[[22,[\"answer\"]],[22,[\"index\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -8821,8 +8833,8 @@ define('pix-live/tests/integration/components/result-item-test', ['chai', 'mocha
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "CPzQ7S2z",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"result-item\",null,[[\"answer\",\"index\"],[[20,[\"answer\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
+          "id": "BsDmVw9e",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"result-item\",null,[[\"answer\",\"index\"],[[22,[\"answer\"]],[22,[\"index\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -8837,8 +8849,8 @@ define('pix-live/tests/integration/components/result-item-test', ['chai', 'mocha
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "CPzQ7S2z",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"result-item\",null,[[\"answer\",\"index\"],[[20,[\"answer\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
+          "id": "BsDmVw9e",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"result-item\",null,[[\"answer\",\"index\"],[[22,[\"answer\"]],[22,[\"index\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -8853,8 +8865,8 @@ define('pix-live/tests/integration/components/result-item-test', ['chai', 'mocha
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "CPzQ7S2z",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"result-item\",null,[[\"answer\",\"index\"],[[20,[\"answer\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
+          "id": "BsDmVw9e",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"result-item\",null,[[\"answer\",\"index\"],[[22,[\"answer\"]],[22,[\"index\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -8868,8 +8880,8 @@ define('pix-live/tests/integration/components/result-item-test', ['chai', 'mocha
         this.set('answer', answer);
 
         this.render(Ember.HTMLBars.template({
-          "id": "CPzQ7S2z",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"result-item\",null,[[\"answer\",\"index\"],[[20,[\"answer\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
+          "id": "BsDmVw9e",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"result-item\",null,[[\"answer\",\"index\"],[[22,[\"answer\"]],[22,[\"index\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
         // Then
@@ -8882,8 +8894,8 @@ define('pix-live/tests/integration/components/result-item-test', ['chai', 'mocha
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "CPzQ7S2z",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"result-item\",null,[[\"answer\",\"index\"],[[20,[\"answer\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
+          "id": "BsDmVw9e",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"result-item\",null,[[\"answer\",\"index\"],[[22,[\"answer\"]],[22,[\"index\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -8897,8 +8909,8 @@ define('pix-live/tests/integration/components/result-item-test', ['chai', 'mocha
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "CPzQ7S2z",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"result-item\",null,[[\"answer\",\"index\"],[[20,[\"answer\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
+          "id": "BsDmVw9e",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"result-item\",null,[[\"answer\",\"index\"],[[22,[\"answer\"]],[22,[\"index\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -8910,8 +8922,8 @@ define('pix-live/tests/integration/components/result-item-test', ['chai', 'mocha
         // given
         this.set('answer', null);
         this.render(Ember.HTMLBars.template({
-          "id": "CPzQ7S2z",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"result-item\",null,[[\"answer\",\"index\"],[[20,[\"answer\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
+          "id": "BsDmVw9e",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"result-item\",null,[[\"answer\",\"index\"],[[22,[\"answer\"]],[22,[\"index\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -8928,8 +8940,8 @@ define('pix-live/tests/integration/components/result-item-test', ['chai', 'mocha
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "CPzQ7S2z",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"result-item\",null,[[\"answer\",\"index\"],[[20,[\"answer\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
+          "id": "BsDmVw9e",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"result-item\",null,[[\"answer\",\"index\"],[[22,[\"answer\"]],[22,[\"index\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -8946,8 +8958,8 @@ define('pix-live/tests/integration/components/result-item-test', ['chai', 'mocha
 
           // when
           this.render(Ember.HTMLBars.template({
-            "id": "CPzQ7S2z",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"result-item\",null,[[\"answer\",\"index\"],[[20,[\"answer\"]],[20,[\"index\"]]]]],false]],\"hasEval\":false}",
+            "id": "BsDmVw9e",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"result-item\",null,[[\"answer\",\"index\"],[[22,[\"answer\"]],[22,[\"index\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -8973,8 +8985,8 @@ define('pix-live/tests/integration/components/score-pastille-test', ['chai', 'mo
       (0, _mocha.it)('should render component', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "0UCahRWj",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"score-pastille\"],false]],\"hasEval\":false}",
+          "id": "mCpZJYGc",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"score-pastille\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -8987,8 +8999,8 @@ define('pix-live/tests/integration/components/score-pastille-test', ['chai', 'mo
         (0, _mocha.it)('should display two dashes, when no pixScore provided', function () {
           // when
           this.render(Ember.HTMLBars.template({
-            "id": "0UCahRWj",
-            "block": "{\"symbols\":[],\"statements\":[[1,[18,\"score-pastille\"],false]],\"hasEval\":false}",
+            "id": "mCpZJYGc",
+            "block": "{\"symbols\":[],\"statements\":[[1,[20,\"score-pastille\"],false]],\"hasEval\":false}",
             "meta": {}
           }));
           // then
@@ -9002,8 +9014,8 @@ define('pix-live/tests/integration/components/score-pastille-test', ['chai', 'mo
         this.set('pixScore', pixScore);
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "Ao4/cO7W",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"score-pastille\",null,[[\"pixScore\"],[[20,[\"pixScore\"]]]]],false]],\"hasEval\":false}",
+          "id": "cSf25bbZ",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"score-pastille\",null,[[\"pixScore\"],[[22,[\"pixScore\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
         // then
@@ -9041,8 +9053,8 @@ define('pix-live/tests/integration/components/scoring-panel-tantpix-test', ['cha
     (0, _mocha.describe)('On Component rendering:', function () {
       beforeEach(function () {
         this.render(Ember.HTMLBars.template({
-          "id": "LWcKSbxD",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"scoring-panel-tantpix\"],false]],\"hasEval\":false}",
+          "id": "/BmqXzAn",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"scoring-panel-tantpix\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
       });
@@ -9157,8 +9169,8 @@ define('pix-live/tests/integration/components/scoring-panel-test', ['chai', 'moc
 
     (0, _mocha.it)('renders', function () {
       this.render(Ember.HTMLBars.template({
-        "id": "tQyqF4zz",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"scoring-panel\"],false]],\"hasEval\":false}",
+        "id": "hMhkU5QF",
+        "block": "{\"symbols\":[],\"statements\":[[1,[20,\"scoring-panel\"],false]],\"hasEval\":false}",
         "meta": {}
       }));
       (0, _chai.expect)(this.$()).to.have.lengthOf(1);
@@ -9169,8 +9181,8 @@ define('pix-live/tests/integration/components/scoring-panel-test', ['chai', 'moc
       (0, _mocha.beforeEach)(function () {
         this.set('assessment', assessmentWithNoTrophyAndNoPix);
         this.render(Ember.HTMLBars.template({
-          "id": "obxMGzIf",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"scoring-panel\",null,[[\"assessment\"],[[20,[\"assessment\"]]]]],false]],\"hasEval\":false}",
+          "id": "ir6H0Itw",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"scoring-panel\",null,[[\"assessment\"],[[22,[\"assessment\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
       });
@@ -9192,8 +9204,8 @@ define('pix-live/tests/integration/components/scoring-panel-test', ['chai', 'moc
       (0, _mocha.beforeEach)(function () {
         this.set('assessment', assessmentWithTrophy);
         this.render(Ember.HTMLBars.template({
-          "id": "obxMGzIf",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"scoring-panel\",null,[[\"assessment\"],[[20,[\"assessment\"]]]]],false]],\"hasEval\":false}",
+          "id": "ir6H0Itw",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"scoring-panel\",null,[[\"assessment\"],[[22,[\"assessment\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
       });
@@ -9224,8 +9236,8 @@ define('pix-live/tests/integration/components/scoring-panel-test', ['chai', 'moc
       (0, _mocha.beforeEach)(function () {
         this.set('assessment', assessmentWithNoTrophyAndSomePix);
         this.render(Ember.HTMLBars.template({
-          "id": "obxMGzIf",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"scoring-panel\",null,[[\"assessment\"],[[20,[\"assessment\"]]]]],false]],\"hasEval\":false}",
+          "id": "ir6H0Itw",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"scoring-panel\",null,[[\"assessment\"],[[22,[\"assessment\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
       });
@@ -9291,8 +9303,8 @@ define('pix-live/tests/integration/components/share-profile-test', ['chai', 'moc
       (0, _mocha.it)('should open profile sharing modal on "organization code entry" view', function () {
         // given
         this.render(Ember.HTMLBars.template({
-          "id": "LvTy9kIy",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"share-profile\"],false]],\"hasEval\":false}",
+          "id": "9/T3LrRX",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"share-profile\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
         (0, _chai.expect)(Ember.$('.pix-modal')).to.have.lengthOf(0);
@@ -9313,8 +9325,8 @@ define('pix-live/tests/integration/components/share-profile-test', ['chai', 'moc
       (0, _mocha.it)('should be the modal default view', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "i4MD9OgK",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"share-profile\",null,[[\"_showingModal\"],[true]]],false]],\"hasEval\":false}",
+          "id": "RWf38gUt",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"share-profile\",null,[[\"_showingModal\"],[true]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -9325,8 +9337,8 @@ define('pix-live/tests/integration/components/share-profile-test', ['chai', 'moc
       (0, _mocha.it)('should contain a text input for the organization code', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "i4MD9OgK",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"share-profile\",null,[[\"_showingModal\"],[true]]],false]],\"hasEval\":false}",
+          "id": "RWf38gUt",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"share-profile\",null,[[\"_showingModal\"],[true]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -9337,8 +9349,8 @@ define('pix-live/tests/integration/components/share-profile-test', ['chai', 'moc
       (0, _mocha.it)('should contain a "Continue" button to find the organization', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "i4MD9OgK",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"share-profile\",null,[[\"_showingModal\"],[true]]],false]],\"hasEval\":false}",
+          "id": "RWf38gUt",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"share-profile\",null,[[\"_showingModal\"],[true]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -9349,8 +9361,8 @@ define('pix-live/tests/integration/components/share-profile-test', ['chai', 'moc
       (0, _mocha.it)('should contain a "Cancel" button to cancel the profile sharing', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "i4MD9OgK",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"share-profile\",null,[[\"_showingModal\"],[true]]],false]],\"hasEval\":false}",
+          "id": "RWf38gUt",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"share-profile\",null,[[\"_showingModal\"],[true]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -9365,8 +9377,8 @@ define('pix-live/tests/integration/components/share-profile-test', ['chai', 'moc
           return Ember.RSVP.resolve(organization);
         });
         this.render(Ember.HTMLBars.template({
-          "id": "dpsdCfFG",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"share-profile\",null,[[\"_showingModal\",\"_code\",\"searchForOrganization\"],[true,\"ABCD01\",[20,[\"searchForOrganization\"]]]]],false]],\"hasEval\":false}",
+          "id": "XFw9LsWL",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"share-profile\",null,[[\"_showingModal\",\"_code\",\"searchForOrganization\"],[true,\"ABCD01\",[22,[\"searchForOrganization\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -9385,8 +9397,8 @@ define('pix-live/tests/integration/components/share-profile-test', ['chai', 'moc
           return Ember.RSVP.resolve(null);
         });
         this.render(Ember.HTMLBars.template({
-          "id": "BlZpkv+e",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"share-profile\",null,[[\"_showingModal\",\"searchForOrganization\"],[true,[20,[\"searchForOrganization\"]]]]],false]],\"hasEval\":false}",
+          "id": "58y3pCYv",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"share-profile\",null,[[\"_showingModal\",\"searchForOrganization\"],[true,[22,[\"searchForOrganization\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -9403,8 +9415,8 @@ define('pix-live/tests/integration/components/share-profile-test', ['chai', 'moc
       (0, _mocha.it)('should close the modal when clicking on "Cancel" button', function () {
         // given
         this.render(Ember.HTMLBars.template({
-          "id": "i4MD9OgK",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"share-profile\",null,[[\"_showingModal\"],[true]]],false]],\"hasEval\":false}",
+          "id": "RWf38gUt",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"share-profile\",null,[[\"_showingModal\"],[true]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -9426,8 +9438,8 @@ define('pix-live/tests/integration/components/share-profile-test', ['chai', 'moc
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "9nF6Qqrz",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"share-profile\",null,[[\"_showingModal\",\"_view\",\"_organization\"],[true,\"sharing-confirmation\",[20,[\"organization\"]]]]],false]],\"hasEval\":false}",
+          "id": "6Jhef89P",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"share-profile\",null,[[\"_showingModal\",\"_view\",\"_organization\"],[true,\"sharing-confirmation\",[22,[\"organization\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -9443,8 +9455,8 @@ define('pix-live/tests/integration/components/share-profile-test', ['chai', 'moc
 
           // when
           this.render(Ember.HTMLBars.template({
-            "id": "9nF6Qqrz",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"share-profile\",null,[[\"_showingModal\",\"_view\",\"_organization\"],[true,\"sharing-confirmation\",[20,[\"organization\"]]]]],false]],\"hasEval\":false}",
+            "id": "6Jhef89P",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"share-profile\",null,[[\"_showingModal\",\"_view\",\"_organization\"],[true,\"sharing-confirmation\",[22,[\"organization\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
         });
@@ -9468,8 +9480,8 @@ define('pix-live/tests/integration/components/share-profile-test', ['chai', 'moc
 
           // when
           this.render(Ember.HTMLBars.template({
-            "id": "9nF6Qqrz",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"share-profile\",null,[[\"_showingModal\",\"_view\",\"_organization\"],[true,\"sharing-confirmation\",[20,[\"organization\"]]]]],false]],\"hasEval\":false}",
+            "id": "6Jhef89P",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"share-profile\",null,[[\"_showingModal\",\"_view\",\"_organization\"],[true,\"sharing-confirmation\",[22,[\"organization\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
         });
@@ -9493,8 +9505,8 @@ define('pix-live/tests/integration/components/share-profile-test', ['chai', 'moc
 
           // when
           this.render(Ember.HTMLBars.template({
-            "id": "9nF6Qqrz",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"share-profile\",null,[[\"_showingModal\",\"_view\",\"_organization\"],[true,\"sharing-confirmation\",[20,[\"organization\"]]]]],false]],\"hasEval\":false}",
+            "id": "6Jhef89P",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"share-profile\",null,[[\"_showingModal\",\"_view\",\"_organization\"],[true,\"sharing-confirmation\",[22,[\"organization\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
         });
@@ -9513,8 +9525,8 @@ define('pix-live/tests/integration/components/share-profile-test', ['chai', 'moc
       (0, _mocha.it)('should contain a "Confirm" button to valid the profile sharing', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "kuJ99qjz",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"share-profile\",null,[[\"_showingModal\",\"_view\"],[true,\"sharing-confirmation\"]]],false]],\"hasEval\":false}",
+          "id": "TEn8vGi+",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"share-profile\",null,[[\"_showingModal\",\"_view\"],[true,\"sharing-confirmation\"]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -9525,8 +9537,8 @@ define('pix-live/tests/integration/components/share-profile-test', ['chai', 'moc
       (0, _mocha.it)('should contain a "Cancel" button to cancel the profile sharing for the given organization', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "kuJ99qjz",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"share-profile\",null,[[\"_showingModal\",\"_view\"],[true,\"sharing-confirmation\"]]],false]],\"hasEval\":false}",
+          "id": "TEn8vGi+",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"share-profile\",null,[[\"_showingModal\",\"_view\"],[true,\"sharing-confirmation\"]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -9537,8 +9549,8 @@ define('pix-live/tests/integration/components/share-profile-test', ['chai', 'moc
       (0, _mocha.it)('should return back to "organization code entry" view when clicking on "Cancel" button', function () {
         // given
         this.render(Ember.HTMLBars.template({
-          "id": "kuJ99qjz",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"share-profile\",null,[[\"_showingModal\",\"_view\"],[true,\"sharing-confirmation\"]]],false]],\"hasEval\":false}",
+          "id": "TEn8vGi+",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"share-profile\",null,[[\"_showingModal\",\"_view\"],[true,\"sharing-confirmation\"]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -9558,8 +9570,8 @@ define('pix-live/tests/integration/components/share-profile-test', ['chai', 'moc
           return Ember.RSVP.resolve(null);
         });
         this.render(Ember.HTMLBars.template({
-          "id": "lHHdhVfw",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"share-profile\",null,[[\"_showingModal\",\"_view\",\"_organization\",\"shareProfileSnapshot\"],[true,\"sharing-confirmation\",[20,[\"organization\"]],[20,[\"shareProfileSnapshot\"]]]]],false]],\"hasEval\":false}",
+          "id": "kTtx1dyQ",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"share-profile\",null,[[\"_showingModal\",\"_view\",\"_organization\",\"shareProfileSnapshot\"],[true,\"sharing-confirmation\",[22,[\"organization\"]],[22,[\"shareProfileSnapshot\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -9578,8 +9590,8 @@ define('pix-live/tests/integration/components/share-profile-test', ['chai', 'moc
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "9nF6Qqrz",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"share-profile\",null,[[\"_showingModal\",\"_view\",\"_organization\"],[true,\"sharing-confirmation\",[20,[\"organization\"]]]]],false]],\"hasEval\":false}",
+          "id": "6Jhef89P",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"share-profile\",null,[[\"_showingModal\",\"_view\",\"_organization\"],[true,\"sharing-confirmation\",[22,[\"organization\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -9593,8 +9605,8 @@ define('pix-live/tests/integration/components/share-profile-test', ['chai', 'moc
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "9nF6Qqrz",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"share-profile\",null,[[\"_showingModal\",\"_view\",\"_organization\"],[true,\"sharing-confirmation\",[20,[\"organization\"]]]]],false]],\"hasEval\":false}",
+          "id": "6Jhef89P",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"share-profile\",null,[[\"_showingModal\",\"_view\",\"_organization\"],[true,\"sharing-confirmation\",[22,[\"organization\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -9608,8 +9620,8 @@ define('pix-live/tests/integration/components/share-profile-test', ['chai', 'moc
       (0, _mocha.it)('should contain a "Close" button that hide the modal', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "InyMCgqA",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"share-profile\",null,[[\"_showingModal\",\"_view\"],[true,\"success-notification\"]]],false]],\"hasEval\":false}",
+          "id": "WtJ1y6q8",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"share-profile\",null,[[\"_showingModal\",\"_view\"],[true,\"success-notification\"]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -9620,8 +9632,8 @@ define('pix-live/tests/integration/components/share-profile-test', ['chai', 'moc
       (0, _mocha.it)('should close the modal when clicking on "Cancel" button', function () {
         // given
         this.render(Ember.HTMLBars.template({
-          "id": "InyMCgqA",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"share-profile\",null,[[\"_showingModal\",\"_view\"],[true,\"success-notification\"]]],false]],\"hasEval\":false}",
+          "id": "WtJ1y6q8",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"share-profile\",null,[[\"_showingModal\",\"_view\"],[true,\"success-notification\"]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -9640,8 +9652,8 @@ define('pix-live/tests/integration/components/share-profile-test', ['chai', 'moc
       (0, _mocha.it)('should open the modal on default "organization code entry" view even if modal was previously closed on "sharing confirmation" view', function () {
         // given
         this.render(Ember.HTMLBars.template({
-          "id": "kuJ99qjz",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"share-profile\",null,[[\"_showingModal\",\"_view\"],[true,\"sharing-confirmation\"]]],false]],\"hasEval\":false}",
+          "id": "TEn8vGi+",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"share-profile\",null,[[\"_showingModal\",\"_view\"],[true,\"sharing-confirmation\"]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
         Ember.run(function () {
@@ -9660,8 +9672,8 @@ define('pix-live/tests/integration/components/share-profile-test', ['chai', 'moc
       (0, _mocha.it)('should open the modal on default "organization code entry" view even if modal was previously closed on "success notification" view', function () {
         // given
         this.render(Ember.HTMLBars.template({
-          "id": "InyMCgqA",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"share-profile\",null,[[\"_showingModal\",\"_view\"],[true,\"success-notification\"]]],false]],\"hasEval\":false}",
+          "id": "WtJ1y6q8",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"share-profile\",null,[[\"_showingModal\",\"_view\"],[true,\"success-notification\"]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
         Ember.run(function () {
@@ -9680,8 +9692,8 @@ define('pix-live/tests/integration/components/share-profile-test', ['chai', 'moc
       (0, _mocha.it)('should display the code input filled with the previously set organization code even after canceling sharing (step 2)', function () {
         // given
         this.render(Ember.HTMLBars.template({
-          "id": "kg75epFD",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"share-profile\",null,[[\"_showingModal\",\"_code\",\"_view\"],[true,\"ORGA00\",\"sharing-confirmation\"]]],false]],\"hasEval\":false}",
+          "id": "1Xnrf1kt",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"share-profile\",null,[[\"_showingModal\",\"_code\",\"_view\"],[true,\"ORGA00\",\"sharing-confirmation\"]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -9708,8 +9720,8 @@ define('pix-live/tests/integration/components/share-profile-test', ['chai', 'moc
         this.set('campaignCode', 'campaign_code');
 
         this.render(Ember.HTMLBars.template({
-          "id": "Vw/aWSXl",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"share-profile\",null,[[\"_showingModal\",\"_view\",\"_code\",\"_organization\",\"_organizationNotFound\",\"_studentCode\",\"_campaignCode\"],[[20,[\"showingModal\"]],[20,[\"view\"]],[20,[\"code\"]],[20,[\"organization\"]],[20,[\"organizationNotFound\"]],[20,[\"studentCode\"]],[20,[\"campaignCode\"]]]]],false]],\"hasEval\":false}",
+          "id": "hIH/O9rq",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"share-profile\",null,[[\"_showingModal\",\"_view\",\"_code\",\"_organization\",\"_organizationNotFound\",\"_studentCode\",\"_campaignCode\"],[[22,[\"showingModal\"]],[22,[\"view\"]],[22,[\"code\"]],[22,[\"organization\"]],[22,[\"organizationNotFound\"]],[22,[\"studentCode\"]],[22,[\"campaignCode\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
       });
@@ -9763,99 +9775,115 @@ define('pix-live/tests/integration/components/signin-form-test', ['chai', 'mocha
       integration: true
     });
 
-    var expectedEmail = 'email@example.fr';
-    var expectedPassword = 'azerty';
+    (0, _mocha.describe)('Rendering', function () {
 
-    (0, _mocha.it)('should give email and password to action given in parameter', function (done) {
-      // Expect
-      this.on('onSubmitAction', function (email, password) {
-        (0, _chai.expect)(email).to.equal(expectedEmail);
-        (0, _chai.expect)(password).to.equal(expectedPassword);
-        done();
-        return Promise.resolve();
+      (0, _mocha.it)('should display an input for email field', function () {
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "zgFhKRfr",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"signin-form\"],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+
+        // then
+        (0, _chai.expect)(document.querySelector('input#pix-email')).to.exist;
       });
 
-      // Given
-      this.render(Ember.HTMLBars.template({
-        "id": "r2GvpNJE",
-        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"signin-form\",null,[[\"onSubmit\"],[[25,\"action\",[[19,0,[]],\"onSubmitAction\"],null]]]],false]],\"hasEval\":false}",
-        "meta": {}
-      }));
+      (0, _mocha.it)('should display an input for password field', function () {
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "zgFhKRfr",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"signin-form\"],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
 
-      _fillSigninForm(this, expectedEmail, expectedPassword);
-
-      // When
-      this.$('button[type=submit]').click();
-    });
-
-    (0, _mocha.it)('should also use action on submit', function (done) {
-      // Expect
-      this.on('onSubmitAction', function (email, password) {
-        (0, _chai.expect)(email).to.equal(expectedEmail);
-        (0, _chai.expect)(password).to.equal(expectedPassword);
-        done();
-        return Promise.resolve();
+        // then
+        (0, _chai.expect)(document.querySelector('input#pix-password')).to.exist;
       });
 
-      this.render(Ember.HTMLBars.template({
-        "id": "r2GvpNJE",
-        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"signin-form\",null,[[\"onSubmit\"],[[25,\"action\",[[19,0,[]],\"onSubmitAction\"],null]]]],false]],\"hasEval\":false}",
-        "meta": {}
-      }));
-      _fillSigninForm(this, expectedEmail, expectedPassword);
+      (0, _mocha.it)('should display a submit button to authenticate', function () {
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "zgFhKRfr",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"signin-form\"],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
 
-      // When
-      this.$('.signin-form__form form').submit();
-    });
-
-    (0, _mocha.it)('should display an error', function () {
-      // Expect
-      this.on('onSubmitAction', function () {
-        return Promise.resolve();
+        // then
+        (0, _chai.expect)(document.querySelector('button.signin-form__submit_button')).to.exist;
       });
 
-      this.render(Ember.HTMLBars.template({
-        "id": "r2GvpNJE",
-        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"signin-form\",null,[[\"onSubmit\"],[[25,\"action\",[[19,0,[]],\"onSubmitAction\"],null]]]],false]],\"hasEval\":false}",
-        "meta": {}
-      }));
-      _fillSigninForm(this, expectedEmail, expectedPassword);
+      (0, _mocha.it)('should display a link to password reset view', function () {
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "zgFhKRfr",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"signin-form\"],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
 
-      // When
-      this.$('.signin-form__form form').submit();
-
-      // Then
-      (0, _chai.expect)(this.$('.signin-form__errors')).to.have.lengthOf(0);
-    });
-
-    (0, _mocha.it)('should hide the error message if it was previously displayed', function () {
-      // Expect
-      this.on('onSubmitAction', function () {
-        return Promise.resolve();
+        // then
+        (0, _chai.expect)(document.querySelector('a.signin-form__forgotten-password-link')).to.exist;
       });
-      this.render(Ember.HTMLBars.template({
-        "id": "2OKSvaj1",
-        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"signin-form\",null,[[\"onSubmit\",\"displayErrorMessage\"],[[25,\"action\",[[19,0,[]],\"onSubmitAction\"],null],\"true\"]]],false]],\"hasEval\":false}",
-        "meta": {}
-      }));
 
-      (0, _chai.expect)(this.$('.signin-form__errors')).to.have.lengthOf(1);
-      _fillSigninForm(this, expectedEmail, expectedPassword);
+      (0, _mocha.it)('should not display any error by default', function () {
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "zgFhKRfr",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"signin-form\"],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
 
-      // When
-      this.$('.signin-form__form form').submit();
+        // then
+        (0, _chai.expect)(document.querySelector('div.signin-form__errors')).to.not.exist;
+      });
 
-      // Then
-      (0, _chai.expect)(this.$('.signin-form__errors')).to.have.lengthOf(0);
+      (0, _mocha.it)('should display an error if authentication failed', function () {
+        // given
+        this.set('displayErrorMessage', true);
+
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "/Jdozj5I",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"signin-form\",null,[[\"displayErrorMessage\"],[[22,[\"displayErrorMessage\"]]]]],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+
+        // then
+        (0, _chai.expect)(document.querySelector('div.signin-form__errors')).to.exist;
+      });
     });
 
-    function _fillSigninForm(context, email, password) {
-      context.$('#pix-email').val(email);
-      context.$('#pix-email').change();
+    (0, _mocha.describe)('Behaviours', function () {
 
-      context.$('#pix-password').val(password);
-      context.$('#pix-password').change();
-    }
+      (0, _mocha.it)('should authenticate user when she submitted sign-in form', function () {
+        // given
+        var expectedEmail = 'email@example.fr';
+        var expectedPassword = 'azerty';
+
+        this.on('onSubmitAction', function (email, password) {
+          // then
+          (0, _chai.expect)(email).to.equal(expectedEmail);
+          (0, _chai.expect)(password).to.equal(expectedPassword);
+          return Promise.resolve();
+        });
+
+        this.render(Ember.HTMLBars.template({
+          "id": "JsK0rrho",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"signin-form\",null,[[\"onSubmit\"],[[26,\"action\",[[21,0,[]],\"onSubmitAction\"],null]]]],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+
+        this.$('input#pix-email').val(expectedEmail);
+        this.$('input#pix-email').change();
+        this.$('input#pix-password').val(expectedPassword);
+        this.$('input#pix-password').change();
+
+        // when
+        Ember.run(function () {
+          return document.querySelector('button.signin-form__submit_button').click();
+        });
+      });
+    });
   });
 });
 define('pix-live/tests/integration/components/signup-form-test', ['chai', 'mocha', 'ember-mocha', 'ember-test-helpers/wait', 'sinon'], function (_chai, _mocha, _emberMocha, _wait, _sinon) {
@@ -9906,8 +9934,8 @@ define('pix-live/tests/integration/components/signup-form-test', ['chai', 'mocha
       beforeEach(function () {
         this.set('user', userEmpty);
         this.render(Ember.HTMLBars.template({
-          "id": "w4e6yuCa",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"signup-form\",null,[[\"user\"],[[20,[\"user\"]]]]],false]],\"hasEval\":false}",
+          "id": "gZ69YMmP",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"signup-form\",null,[[\"user\"],[[22,[\"user\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
       });
@@ -9984,8 +10012,8 @@ define('pix-live/tests/integration/components/signup-form-test', ['chai', 'mocha
 
           this.set('user', user);
           this.render(Ember.HTMLBars.template({
-            "id": "fFQuFBXW",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"signup-form\",null,[[\"user\",\"signup\"],[[20,[\"user\"]],\"signup\"]]],false]],\"hasEval\":false}",
+            "id": "i7xQL8Je",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"signup-form\",null,[[\"user\",\"signup\"],[[22,[\"user\"]],\"signup\"]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -10017,8 +10045,8 @@ define('pix-live/tests/integration/components/signup-form-test', ['chai', 'mocha
           });
           this.set('user', user);
           this.render(Ember.HTMLBars.template({
-            "id": "FuMyfcf2",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"signup-form\",null,[[\"user\",\"signup\",\"redirectToProfileRoute\"],[[20,[\"user\"]],\"signup\",[25,\"action\",[[19,0,[]],[20,[\"redirectToProfileRoute\"]]],null]]]],false]],\"hasEval\":false}",
+            "id": "Npp31Ttk",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"signup-form\",null,[[\"user\",\"signup\",\"redirectToProfileRoute\"],[[22,[\"user\"]],\"signup\",[26,\"action\",[[21,0,[]],[22,[\"redirectToProfileRoute\"]]],null]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -10041,8 +10069,8 @@ define('pix-live/tests/integration/components/signup-form-test', ['chai', 'mocha
           // given
           this.set('user', userEmpty);
           this.render(Ember.HTMLBars.template({
-            "id": "w4e6yuCa",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"signup-form\",null,[[\"user\"],[[20,[\"user\"]]]]],false]],\"hasEval\":false}",
+            "id": "gZ69YMmP",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"signup-form\",null,[[\"user\"],[[22,[\"user\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -10067,8 +10095,8 @@ define('pix-live/tests/integration/components/signup-form-test', ['chai', 'mocha
           // given
           this.set('user', userEmpty);
           this.render(Ember.HTMLBars.template({
-            "id": "w4e6yuCa",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"signup-form\",null,[[\"user\"],[[20,[\"user\"]]]]],false]],\"hasEval\":false}",
+            "id": "gZ69YMmP",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"signup-form\",null,[[\"user\"],[[22,[\"user\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -10093,8 +10121,8 @@ define('pix-live/tests/integration/components/signup-form-test', ['chai', 'mocha
           // given
           this.set('user', userEmpty);
           this.render(Ember.HTMLBars.template({
-            "id": "w4e6yuCa",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"signup-form\",null,[[\"user\"],[[20,[\"user\"]]]]],false]],\"hasEval\":false}",
+            "id": "gZ69YMmP",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"signup-form\",null,[[\"user\"],[[22,[\"user\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -10119,8 +10147,8 @@ define('pix-live/tests/integration/components/signup-form-test', ['chai', 'mocha
           // given
           this.set('user', userEmpty);
           this.render(Ember.HTMLBars.template({
-            "id": "w4e6yuCa",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"signup-form\",null,[[\"user\"],[[20,[\"user\"]]]]],false]],\"hasEval\":false}",
+            "id": "gZ69YMmP",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"signup-form\",null,[[\"user\"],[[22,[\"user\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -10162,8 +10190,8 @@ define('pix-live/tests/integration/components/signup-form-test', ['chai', 'mocha
 
           this.set('user', userWithCguNotAccepted);
           this.render(Ember.HTMLBars.template({
-            "id": "w4e6yuCa",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"signup-form\",null,[[\"user\"],[[20,[\"user\"]]]]],false]],\"hasEval\":false}",
+            "id": "gZ69YMmP",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"signup-form\",null,[[\"user\"],[[22,[\"user\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -10193,8 +10221,8 @@ define('pix-live/tests/integration/components/signup-form-test', ['chai', 'mocha
 
           this.set('user', userThatThrowAnErrorDuringSaving);
           this.render(Ember.HTMLBars.template({
-            "id": "w4e6yuCa",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"signup-form\",null,[[\"user\"],[[20,[\"user\"]]]]],false]],\"hasEval\":false}",
+            "id": "gZ69YMmP",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"signup-form\",null,[[\"user\"],[[22,[\"user\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -10230,8 +10258,8 @@ define('pix-live/tests/integration/components/signup-form-test', ['chai', 'mocha
 
           this.set('user', userWithCaptchaNotValid);
           this.render(Ember.HTMLBars.template({
-            "id": "w4e6yuCa",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"signup-form\",null,[[\"user\"],[[20,[\"user\"]]]]],false]],\"hasEval\":false}",
+            "id": "gZ69YMmP",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"signup-form\",null,[[\"user\"],[[22,[\"user\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -10252,8 +10280,8 @@ define('pix-live/tests/integration/components/signup-form-test', ['chai', 'mocha
           // given
           this.set('user', userEmpty);
           this.render(Ember.HTMLBars.template({
-            "id": "w4e6yuCa",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"signup-form\",null,[[\"user\"],[[20,[\"user\"]]]]],false]],\"hasEval\":false}",
+            "id": "gZ69YMmP",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"signup-form\",null,[[\"user\"],[[22,[\"user\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -10278,8 +10306,8 @@ define('pix-live/tests/integration/components/signup-form-test', ['chai', 'mocha
           // given
           this.set('user', userEmpty);
           this.render(Ember.HTMLBars.template({
-            "id": "w4e6yuCa",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"signup-form\",null,[[\"user\"],[[20,[\"user\"]]]]],false]],\"hasEval\":false}",
+            "id": "gZ69YMmP",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"signup-form\",null,[[\"user\"],[[22,[\"user\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -10304,8 +10332,8 @@ define('pix-live/tests/integration/components/signup-form-test', ['chai', 'mocha
           // given
           this.set('user', userEmpty);
           this.render(Ember.HTMLBars.template({
-            "id": "w4e6yuCa",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"signup-form\",null,[[\"user\"],[[20,[\"user\"]]]]],false]],\"hasEval\":false}",
+            "id": "gZ69YMmP",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"signup-form\",null,[[\"user\"],[[22,[\"user\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -10330,8 +10358,8 @@ define('pix-live/tests/integration/components/signup-form-test', ['chai', 'mocha
           // given
           this.set('user', userEmpty);
           this.render(Ember.HTMLBars.template({
-            "id": "w4e6yuCa",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"signup-form\",null,[[\"user\"],[[20,[\"user\"]]]]],false]],\"hasEval\":false}",
+            "id": "gZ69YMmP",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"signup-form\",null,[[\"user\"],[[22,[\"user\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -10364,8 +10392,8 @@ define('pix-live/tests/integration/components/signup-form-test', ['chai', 'mocha
 
           this.set('user', userWithCguAccepted);
           this.render(Ember.HTMLBars.template({
-            "id": "w4e6yuCa",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"signup-form\",null,[[\"user\"],[[20,[\"user\"]]]]],false]],\"hasEval\":false}",
+            "id": "gZ69YMmP",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"signup-form\",null,[[\"user\"],[[22,[\"user\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -10396,8 +10424,8 @@ define('pix-live/tests/integration/components/signup-form-test', ['chai', 'mocha
 
           this.set('user', validUser);
           this.render(Ember.HTMLBars.template({
-            "id": "w4e6yuCa",
-            "block": "{\"symbols\":[],\"statements\":[[1,[25,\"signup-form\",null,[[\"user\"],[[20,[\"user\"]]]]],false]],\"hasEval\":false}",
+            "id": "gZ69YMmP",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"signup-form\",null,[[\"user\"],[[22,[\"user\"]]]]],false]],\"hasEval\":false}",
             "meta": {}
           }));
 
@@ -10427,8 +10455,8 @@ define('pix-live/tests/integration/components/snapshot-list-test', ['chai', 'moc
       this.set('organization', organization);
 
       this.render(Ember.HTMLBars.template({
-        "id": "6zi033fZ",
-        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"snapshot-list\",null,[[\"organization\"],[[20,[\"organization\"]]]]],false]],\"hasEval\":false}",
+        "id": "p5VmGKSX",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"snapshot-list\",null,[[\"organization\"],[[22,[\"organization\"]]]]],false]],\"hasEval\":false}",
         "meta": {}
       }));
       (0, _chai.expect)(this.$()).to.have.lengthOf(1);
@@ -10441,8 +10469,8 @@ define('pix-live/tests/integration/components/snapshot-list-test', ['chai', 'moc
 
       // When
       this.render(Ember.HTMLBars.template({
-        "id": "6zi033fZ",
-        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"snapshot-list\",null,[[\"organization\"],[[20,[\"organization\"]]]]],false]],\"hasEval\":false}",
+        "id": "p5VmGKSX",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"snapshot-list\",null,[[\"organization\"],[[22,[\"organization\"]]]]],false]],\"hasEval\":false}",
         "meta": {}
       }));
 
@@ -10459,8 +10487,8 @@ define('pix-live/tests/integration/components/snapshot-list-test', ['chai', 'moc
 
       // When
       this.render(Ember.HTMLBars.template({
-        "id": "oLGFvCmq",
-        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"snapshot-list\",null,[[\"snapshots\"],[[20,[\"snapshots\"]]]]],false]],\"hasEval\":false}",
+        "id": "Sv2L/qyM",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"snapshot-list\",null,[[\"snapshots\"],[[22,[\"snapshots\"]]]]],false]],\"hasEval\":false}",
         "meta": {}
       }));
 
@@ -10485,8 +10513,8 @@ define('pix-live/tests/integration/components/snapshot-list-test', ['chai', 'moc
 
       // When
       this.render(Ember.HTMLBars.template({
-        "id": "oLGFvCmq",
-        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"snapshot-list\",null,[[\"snapshots\"],[[20,[\"snapshots\"]]]]],false]],\"hasEval\":false}",
+        "id": "Sv2L/qyM",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"snapshot-list\",null,[[\"snapshots\"],[[22,[\"snapshots\"]]]]],false]],\"hasEval\":false}",
         "meta": {}
       }));
 
@@ -10517,8 +10545,8 @@ define('pix-live/tests/integration/components/timeout-jauge-test', ['chai', 'moc
       (0, _mocha.it)('It renders', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "trJ8ho0B",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"timeout-jauge\"],false]],\"hasEval\":false}",
+          "id": "oanh/Lvm",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"timeout-jauge\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -10529,8 +10557,8 @@ define('pix-live/tests/integration/components/timeout-jauge-test', ['chai', 'moc
       (0, _mocha.it)('It renders a red clock if time is over', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "HC0bjM9i",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"timeout-jauge\",null,[[\"allotedTime\"],[0]]],false]],\"hasEval\":false}",
+          "id": "vD7/COLa",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"timeout-jauge\",null,[[\"allotedTime\"],[0]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -10542,8 +10570,8 @@ define('pix-live/tests/integration/components/timeout-jauge-test', ['chai', 'moc
       (0, _mocha.it)('It renders a black clock if time is not over', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "jN4p/Xyt",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"timeout-jauge\",null,[[\"allotedTime\"],[1]]],false]],\"hasEval\":false}",
+          "id": "dw/dHkCm",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"timeout-jauge\",null,[[\"allotedTime\"],[1]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -10564,8 +10592,8 @@ define('pix-live/tests/integration/components/trophy-item-test', ['chai', 'mocha
 
     (0, _mocha.it)('renders', function () {
       this.render(Ember.HTMLBars.template({
-        "id": "7zYrijVt",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"trophy-item\"],false]],\"hasEval\":false}",
+        "id": "ZCiIyxsU",
+        "block": "{\"symbols\":[],\"statements\":[[1,[20,\"trophy-item\"],false]],\"hasEval\":false}",
         "meta": {}
       }));
       (0, _chai.expect)(this.$()).to.have.lengthOf(1);
@@ -10578,8 +10606,8 @@ define('pix-live/tests/integration/components/trophy-item-test', ['chai', 'mocha
 
       // when
       this.render(Ember.HTMLBars.template({
-        "id": "B7tX/3Bs",
-        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"trophy-item\",null,[[\"level\"],[[20,[\"level\"]]]]],false]],\"hasEval\":false}",
+        "id": "ObvL1nCA",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"trophy-item\",null,[[\"level\"],[[22,[\"level\"]]]]],false]],\"hasEval\":false}",
         "meta": {}
       }));
 
@@ -10590,8 +10618,8 @@ define('pix-live/tests/integration/components/trophy-item-test', ['chai', 'mocha
     (0, _mocha.it)('should contain an image of a trophy with the text "NIVEAU"', function () {
       // when
       this.render(Ember.HTMLBars.template({
-        "id": "7zYrijVt",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"trophy-item\"],false]],\"hasEval\":false}",
+        "id": "ZCiIyxsU",
+        "block": "{\"symbols\":[],\"statements\":[[1,[20,\"trophy-item\"],false]],\"hasEval\":false}",
         "meta": {}
       }));
 
@@ -10616,8 +10644,8 @@ define('pix-live/tests/integration/components/tutorial-panel-test', ['chai', 'mo
 
       // when
       this.render(Ember.HTMLBars.template({
-        "id": "+3Mqi4nc",
-        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\"],[[20,[\"hint\"]],[20,[\"resultItemStatus\"]]]]],false]],\"hasEval\":false}",
+        "id": "Pzg1dvfo",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]]]]],false]],\"hasEval\":false}",
         "meta": {}
       }));
 
@@ -10634,8 +10662,8 @@ define('pix-live/tests/integration/components/tutorial-panel-test', ['chai', 'mo
 
       // when
       this.render(Ember.HTMLBars.template({
-        "id": "+3Mqi4nc",
-        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\"],[[20,[\"hint\"]],[20,[\"resultItemStatus\"]]]]],false]],\"hasEval\":false}",
+        "id": "Pzg1dvfo",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]]]]],false]],\"hasEval\":false}",
         "meta": {}
       }));
 
@@ -10658,8 +10686,8 @@ define('pix-live/tests/integration/components/tutorial-panel-test', ['chai', 'mo
 
       // when
       this.render(Ember.HTMLBars.template({
-        "id": "+3Mqi4nc",
-        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\"],[[20,[\"hint\"]],[20,[\"resultItemStatus\"]]]]],false]],\"hasEval\":false}",
+        "id": "Pzg1dvfo",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]]]]],false]],\"hasEval\":false}",
         "meta": {}
       }));
 
@@ -10684,8 +10712,8 @@ define('pix-live/tests/integration/components/user-certifications-detail-header-
 
     (0, _mocha.it)('renders', function () {
       this.render(Ember.HTMLBars.template({
-        "id": "cCCETgrR",
-        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"user-certifications-detail-header\",null,[[\"certification\"],[[20,[\"certification\"]]]]],false]],\"hasEval\":false}",
+        "id": "PbJxkuhB",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"user-certifications-detail-header\",null,[[\"certification\"],[[22,[\"certification\"]]]]],false]],\"hasEval\":false}",
         "meta": {}
       }));
       (0, _chai.expect)(this.$()).to.have.length(1);
@@ -10711,8 +10739,8 @@ define('pix-live/tests/integration/components/user-certifications-detail-header-
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "cCCETgrR",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"user-certifications-detail-header\",null,[[\"certification\"],[[20,[\"certification\"]]]]],false]],\"hasEval\":false}",
+          "id": "PbJxkuhB",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"user-certifications-detail-header\",null,[[\"certification\"],[[22,[\"certification\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
       });
@@ -10760,8 +10788,8 @@ define('pix-live/tests/integration/components/user-certifications-detail-header-
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "cCCETgrR",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"user-certifications-detail-header\",null,[[\"certification\"],[[20,[\"certification\"]]]]],false]],\"hasEval\":false}",
+          "id": "PbJxkuhB",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"user-certifications-detail-header\",null,[[\"certification\"],[[22,[\"certification\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
       });
@@ -10797,8 +10825,8 @@ define('pix-live/tests/integration/components/user-certifications-detail-result-
 
     (0, _mocha.it)('renders', function () {
       this.render(Ember.HTMLBars.template({
-        "id": "2qOxtlZw",
-        "block": "{\"symbols\":[],\"statements\":[[1,[25,\"user-certifications-detail-result\",null,[[\"certification\"],[[20,[\"certification\"]]]]],false]],\"hasEval\":false}",
+        "id": "HmYHEg+5",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"user-certifications-detail-result\",null,[[\"certification\"],[[22,[\"certification\"]]]]],false]],\"hasEval\":false}",
         "meta": {}
       }));
       (0, _chai.expect)(this.$()).to.have.length(1);
@@ -10824,8 +10852,8 @@ define('pix-live/tests/integration/components/user-certifications-detail-result-
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "2qOxtlZw",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"user-certifications-detail-result\",null,[[\"certification\"],[[20,[\"certification\"]]]]],false]],\"hasEval\":false}",
+          "id": "HmYHEg+5",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"user-certifications-detail-result\",null,[[\"certification\"],[[22,[\"certification\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
       });
@@ -10862,8 +10890,8 @@ define('pix-live/tests/integration/components/user-certifications-detail-result-
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "2qOxtlZw",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"user-certifications-detail-result\",null,[[\"certification\"],[[20,[\"certification\"]]]]],false]],\"hasEval\":false}",
+          "id": "HmYHEg+5",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"user-certifications-detail-result\",null,[[\"certification\"],[[22,[\"certification\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
       });
@@ -10890,8 +10918,8 @@ define('pix-live/tests/integration/components/user-certifications-panel-test', [
 
     (0, _mocha.it)('renders', function () {
       this.render(Ember.HTMLBars.template({
-        "id": "mUkUKjVm",
-        "block": "{\"symbols\":[],\"statements\":[[1,[18,\"user-certifications-panel\"],false]],\"hasEval\":false}",
+        "id": "zAW7+kT5",
+        "block": "{\"symbols\":[],\"statements\":[[1,[20,\"user-certifications-panel\"],false]],\"hasEval\":false}",
         "meta": {}
       }));
       (0, _chai.expect)(this.$()).to.have.length(1);
@@ -10902,8 +10930,8 @@ define('pix-live/tests/integration/components/user-certifications-panel-test', [
       (0, _mocha.it)('should render a panel which indicate there is no certifications', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "mUkUKjVm",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"user-certifications-panel\"],false]],\"hasEval\":false}",
+          "id": "zAW7+kT5",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"user-certifications-panel\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -10933,8 +10961,8 @@ define('pix-live/tests/integration/components/user-certifications-panel-test', [
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "HJ+dR9Wp",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"user-certifications-panel\",null,[[\"certifications\"],[[20,[\"certifications\"]]]]],false]],\"hasEval\":false}",
+          "id": "QaUfVABS",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"user-certifications-panel\",null,[[\"certifications\"],[[22,[\"certifications\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -10975,8 +11003,8 @@ define('pix-live/tests/integration/components/user-logged-menu-test', ['chai', '
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "pah6OdLO",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"user-logged-menu\"],false]],\"hasEval\":false}",
+          "id": "vp78/w3R",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"user-logged-menu\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
       });
@@ -10996,8 +11024,8 @@ define('pix-live/tests/integration/components/user-logged-menu-test', ['chai', '
       (0, _mocha.it)('should hide user menu, when no action on user-name', function () {
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "pah6OdLO",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"user-logged-menu\"],false]],\"hasEval\":false}",
+          "id": "vp78/w3R",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"user-logged-menu\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -11010,8 +11038,8 @@ define('pix-live/tests/integration/components/user-logged-menu-test', ['chai', '
 
         // given
         this.render(Ember.HTMLBars.template({
-          "id": "pah6OdLO",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"user-logged-menu\"],false]],\"hasEval\":false}",
+          "id": "vp78/w3R",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"user-logged-menu\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -11031,8 +11059,8 @@ define('pix-live/tests/integration/components/user-logged-menu-test', ['chai', '
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "ALHibUpB",
-          "block": "{\"symbols\":[],\"statements\":[[1,[25,\"user-logged-menu\",null,[[\"_canDisplayMenu\"],[true]]],false]],\"hasEval\":false}",
+          "id": "43HdFCSf",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"user-logged-menu\",null,[[\"_canDisplayMenu\"],[true]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -11049,8 +11077,8 @@ define('pix-live/tests/integration/components/user-logged-menu-test', ['chai', '
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "pah6OdLO",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"user-logged-menu\"],false]],\"hasEval\":false}",
+          "id": "vp78/w3R",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"user-logged-menu\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
         this.$('.logged-user-name').click();
@@ -11104,8 +11132,8 @@ define('pix-live/tests/integration/components/user-logged-menu-test', ['chai', '
 
             // when
             this.render(Ember.HTMLBars.template({
-              "id": "pah6OdLO",
-              "block": "{\"symbols\":[],\"statements\":[[1,[18,\"user-logged-menu\"],false]],\"hasEval\":false}",
+              "id": "vp78/w3R",
+              "block": "{\"symbols\":[],\"statements\":[[1,[20,\"user-logged-menu\"],false]],\"hasEval\":false}",
               "meta": {}
             }));
             this.$('.logged-user-name').click();
@@ -11129,8 +11157,8 @@ define('pix-live/tests/integration/components/user-logged-menu-test', ['chai', '
 
             // when
             this.render(Ember.HTMLBars.template({
-              "id": "pah6OdLO",
-              "block": "{\"symbols\":[],\"statements\":[[1,[18,\"user-logged-menu\"],false]],\"hasEval\":false}",
+              "id": "vp78/w3R",
+              "block": "{\"symbols\":[],\"statements\":[[1,[20,\"user-logged-menu\"],false]],\"hasEval\":false}",
               "meta": {}
             }));
             this.$('.logged-user-name').click();
@@ -11154,8 +11182,8 @@ define('pix-live/tests/integration/components/user-logged-menu-test', ['chai', '
 
           // when
           this.render(Ember.HTMLBars.template({
-            "id": "pah6OdLO",
-            "block": "{\"symbols\":[],\"statements\":[[1,[18,\"user-logged-menu\"],false]],\"hasEval\":false}",
+            "id": "vp78/w3R",
+            "block": "{\"symbols\":[],\"statements\":[[1,[20,\"user-logged-menu\"],false]],\"hasEval\":false}",
             "meta": {}
           }));
           this.$('.logged-user-name__link').click();
@@ -11185,8 +11213,8 @@ define('pix-live/tests/integration/components/user-logged-menu-test', ['chai', '
 
         // when
         this.render(Ember.HTMLBars.template({
-          "id": "pah6OdLO",
-          "block": "{\"symbols\":[],\"statements\":[[1,[18,\"user-logged-menu\"],false]],\"hasEval\":false}",
+          "id": "vp78/w3R",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"user-logged-menu\"],false]],\"hasEval\":false}",
           "meta": {}
         }));
 
@@ -11775,6 +11803,14 @@ define('pix-live/tests/tests.lint-test', [], function () {
     });
 
     it('unit/models/assessment-test.js', function () {
+      // test passed
+    });
+
+    it('unit/models/behaviors/assessment-progression/ProgressWithCheckpoints-test.js', function () {
+      // test passed
+    });
+
+    it('unit/models/behaviors/assessment-progression/ProgressWithoutCheckpoints-test.js', function () {
       // test passed
     });
 
@@ -15286,10 +15322,12 @@ define('pix-live/tests/unit/models/area-test', ['chai', 'mocha', 'ember-mocha'],
 define('pix-live/tests/unit/models/assessment-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
   'use strict';
 
+  var SMART_PLACEMENT_TYPE = 'SMART_PLACEMENT';
+
   (0, _mocha.describe)('Unit | Model | Assessment', function () {
 
     (0, _emberMocha.setupModelTest)('assessment', {
-      needs: ['model:course', 'model:answer']
+      needs: ['model:course', 'model:challenge', 'model:answer', 'model:assessment-result']
     });
 
     (0, _mocha.it)('exists', function () {
@@ -15305,7 +15343,7 @@ define('pix-live/tests/unit/models/assessment-test', ['chai', 'mocha', 'ember-mo
         Ember.run(function () {
           // given
           var store = _this.store();
-          var assessment = store.createRecord('assessment', { type: 'SMART_PLACEMENT' });
+          var assessment = store.createRecord('assessment', { type: SMART_PLACEMENT_TYPE });
 
           // when
           var hasCheckpoints = assessment.get('hasCheckpoints');
@@ -15320,8 +15358,8 @@ define('pix-live/tests/unit/models/assessment-test', ['chai', 'mocha', 'ember-mo
 
         Ember.run(function () {
           // given
-          var store = _this2.store();
-          var assessment = store.createRecord('assessment', { type: 'DEMO' });
+          var assessment = _this2.subject();
+          assessment.set('type', 'DEMO');
 
           // when
           var hasCheckpoints = assessment.get('hasCheckpoints');
@@ -15332,91 +15370,309 @@ define('pix-live/tests/unit/models/assessment-test', ['chai', 'mocha', 'ember-mo
       });
     });
 
-    (0, _mocha.describe)('Computed property #answersSinceLastCheckpoints', function () {
-
-      (0, _mocha.it)('should be an array', function () {
+    (0, _mocha.describe)('on ready event', function () {
+      (0, _mocha.it)('should instanciate an assessment progression behavior', function () {
         var _this3 = this;
 
         Ember.run(function () {
-          // given
           var store = _this3.store();
-          var assessment = store.createRecord('assessment', { type: 'SMART_PLACEMENT' });
+          // when
+          var assessment = store.createRecord('assessment');
+          // then
+          (0, _chai.expect)(assessment.get('progressionBehavior')).to.be.ok;
+        });
+      });
+    });
+  });
+});
+define('pix-live/tests/unit/models/behaviors/assessment-progression/ProgressWithCheckpoints-test', ['chai', 'mocha', 'lodash', 'pix-live/models/behaviors/assessment-progression/ProgressWithCheckpoints'], function (_chai, _mocha, _lodash, _ProgressWithCheckpoints) {
+  'use strict';
+
+  var _slicedToArray = function () {
+    function sliceIterator(arr, i) {
+      var _arr = [];
+      var _n = true;
+      var _d = false;
+      var _e = undefined;
+
+      try {
+        for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+          _arr.push(_s.value);
+
+          if (i && _arr.length === i) break;
+        }
+      } catch (err) {
+        _d = true;
+        _e = err;
+      } finally {
+        try {
+          if (!_n && _i["return"]) _i["return"]();
+        } finally {
+          if (_d) throw _e;
+        }
+      }
+
+      return _arr;
+    }
+
+    return function (arr, i) {
+      if (Array.isArray(arr)) {
+        return arr;
+      } else if (Symbol.iterator in Object(arr)) {
+        return sliceIterator(arr, i);
+      } else {
+        throw new TypeError("Invalid attempt to destructure non-iterable instance");
+      }
+    };
+  }();
+
+  (0, _mocha.describe)('Unit | Model | Behavior | assessment-progression | ProgressWithCheckpoints', function () {
+    (0, _mocha.describe)('#answersSinceLastCheckpoints(answers)', function () {
+
+      (0, _mocha.it)('should return an empty array when no answers has been given', function () {
+        // given
+        var answers = [];
+
+        // when
+        var answersSinceLastCheckpoints = _ProgressWithCheckpoints.default.answersSinceLastCheckpoints(answers);
+
+        // then
+        (0, _chai.expect)(answersSinceLastCheckpoints).to.deep.equal([]);
+      });
+
+      (0, _mocha.it)('should return the one answer when only one answer has been given', function () {
+        // given
+        var answers = ['irrelevant content'];
+
+        // when
+        var answersSinceLastCheckpoints = _ProgressWithCheckpoints.default.answersSinceLastCheckpoints(answers);
+
+        // then
+        (0, _chai.expect)(answersSinceLastCheckpoints).to.deep.equal(answers);
+      });
+
+      (0, _mocha.it)('should return the last 2 answers when there is 7 answers', function () {
+        // given
+        var answers = _lodash.default.times(7, function () {
+          return 'irrelevant content';
+        });
+
+        var _answers$slice = answers.slice(5),
+            _answers$slice2 = _slicedToArray(_answers$slice, 2),
+            answer6 = _answers$slice2[0],
+            answer7 = _answers$slice2[1];
+
+        // when
+        var answersSinceLastCheckpoints = _ProgressWithCheckpoints.default.answersSinceLastCheckpoints(answers);
+
+        // then
+        (0, _chai.expect)(answersSinceLastCheckpoints).to.deep.equal([answer6, answer7]);
+      });
+
+      (0, _mocha.it)('should return the last 5 answers when there is 10 answers', function () {
+        // given
+        var answers = _lodash.default.times(10, function () {
+          return 'irrelevant content';
+        });
+
+        var _answers$slice3 = answers.slice(5),
+            _answers$slice4 = _slicedToArray(_answers$slice3, 5),
+            answer6 = _answers$slice4[0],
+            answer7 = _answers$slice4[1],
+            answer8 = _answers$slice4[2],
+            answer9 = _answers$slice4[3],
+            answer10 = _answers$slice4[4];
+
+        // when
+        var answersSinceLastCheckpoints = _ProgressWithCheckpoints.default.answersSinceLastCheckpoints(answers);
+
+        // then
+        (0, _chai.expect)(answersSinceLastCheckpoints).to.deep.equal([answer6, answer7, answer8, answer9, answer10]);
+      });
+
+      (0, _mocha.it)('should return the last 1 answer when there is 11 answers', function () {
+        // given
+        var answers = _lodash.default.times(11, function () {
+          return 'irrelevant content';
+        });
+        var answer11 = answers[10];
+
+        // when
+        var answersSinceLastCheckpoints = _ProgressWithCheckpoints.default.answersSinceLastCheckpoints(answers);
+
+        // then
+        (0, _chai.expect)(answersSinceLastCheckpoints).to.deep.equal([answer11]);
+      });
+    });
+
+    (0, _mocha.describe)('Computed property #progress', function () {
+
+      (0, _mocha.describe)('#currentStep property', function () {
+        (0, _mocha.it)('should start at 1', function () {
+          // given
+          var nbAnswers = 0;
 
           // when
-          var answersSinceLastCheckpoints = assessment.get('answersSinceLastCheckpoints');
+          var result = _ProgressWithCheckpoints.default.progress(nbAnswers);
 
           // then
-          (0, _chai.expect)(answersSinceLastCheckpoints).to.deep.equal([]);
+          (0, _chai.expect)(result).to.have.property('currentStep', 1);
+        });
+
+        (0, _mocha.it)('should be 2 if we answered once', function () {
+          // given
+          var nbAnswers = 1;
+
+          // when
+          var result = _ProgressWithCheckpoints.default.progress(nbAnswers);
+
+          // then
+          (0, _chai.expect)(result).to.have.property('currentStep', 2);
+        });
+
+        (0, _mocha.it)('should be 3 if we answered twice', function () {
+          // given
+          var nbAnswers = 2;
+
+          // when
+          var result = _ProgressWithCheckpoints.default.progress(nbAnswers);
+
+          // then
+          (0, _chai.expect)(result).to.have.property('currentStep', 3);
+        });
+
+        (0, _mocha.it)('should reset to 1 at the 5th answer', function () {
+          // given
+          var nbAnswers = 5;
+
+          // when
+          var result = _ProgressWithCheckpoints.default.progress(nbAnswers);
+
+          // then
+          (0, _chai.expect)(result).to.have.property('currentStep', 1);
         });
       });
 
-      (0, _mocha.it)('should return answers', function () {
-        var _this4 = this;
-
-        Ember.run(function () {
+      (0, _mocha.describe)('#maxStep property', function () {
+        (0, _mocha.it)('should always equal 5', function () {
           // given
-          var store = _this4.store();
-          var answer = store.createRecord('answer', {});
-          var assessment = store.createRecord('assessment', { type: 'SMART_PLACEMENT', answers: [answer] });
 
           // when
-          var answersSinceLastCheckpoints = assessment.get('answersSinceLastCheckpoints');
+          var result = _ProgressWithCheckpoints.default.progress(0);
 
           // then
-          (0, _chai.expect)(answersSinceLastCheckpoints).to.deep.equal([answer]);
+          (0, _chai.expect)(result).to.have.property('maxStep', 5);
         });
       });
 
-      (0, _mocha.it)('should only return the last answers', function () {
-        var _this5 = this;
-
-        Ember.run(function () {
+      (0, _mocha.describe)('#stepPercentage property', function () {
+        (0, _mocha.it)('should be the completion percentage of the two other properties', function () {
           // given
-          var store = _this5.store();
-          var answer1 = store.createRecord('answer', {});
-          var answer2 = store.createRecord('answer', {});
-          var answer3 = store.createRecord('answer', {});
-          var answer4 = store.createRecord('answer', {});
-          var answer5 = store.createRecord('answer', {});
-          var answer6 = store.createRecord('answer', {});
-          var answer7 = store.createRecord('answer', {});
-          var assessment = store.createRecord('assessment', {
-            type: 'SMART_PLACEMENT', answers: [answer1, answer2, answer3, answer4, answer5, answer6, answer7]
-          });
+          var nbAnswers = 0;
+          var nbChallenges = 5;
+          var expectedCompletionPercentage = (1 + nbAnswers) / nbChallenges * 100;
 
           // when
-          var answersSinceLastCheckpoints = assessment.get('answersSinceLastCheckpoints');
+          var result = _ProgressWithCheckpoints.default.progress(nbAnswers);
 
           // then
-          (0, _chai.expect)(answersSinceLastCheckpoints).to.deep.equal([answer6, answer7]);
+          (0, _chai.expect)(result).to.have.property('stepPercentage', expectedCompletionPercentage);
+        });
+      });
+    });
+  });
+});
+define('pix-live/tests/unit/models/behaviors/assessment-progression/ProgressWithoutCheckpoints-test', ['chai', 'mocha', 'pix-live/models/behaviors/assessment-progression/ProgressWithoutCheckpoints'], function (_chai, _mocha, _ProgressWithoutCheckpoints) {
+  'use strict';
+
+  (0, _mocha.describe)('Unit | Model | Behavior | assessment-progression | ProgressWithoutCheckpoints', function () {
+
+    (0, _mocha.describe)('#answersSinceLastCheckpoints(answers)', function () {
+      (0, _mocha.it)('should always throw an error as there is no checkpoints', function () {
+        // given
+
+        (0, _chai.expect)(function () {
+          // when
+          _ProgressWithoutCheckpoints.default.answersSinceLastCheckpoints();
+          // then
+        }).to.throw;
+      });
+    });
+
+    (0, _mocha.describe)('Computed property #progress', function () {
+
+      (0, _mocha.describe)('#currentStep property', function () {
+        (0, _mocha.it)('should start at 1', function () {
+          // given
+          var nbAnswers = 0;
+
+          // when
+          var result = _ProgressWithoutCheckpoints.default.progress(nbAnswers);
+
+          // then
+          (0, _chai.expect)(result).to.have.property('currentStep', 1);
+        });
+
+        (0, _mocha.it)('should be 2 if we answered once', function () {
+          // given
+          var nbAnswers = 1;
+
+          // when
+          var result = _ProgressWithoutCheckpoints.default.progress(nbAnswers);
+
+          // then
+          (0, _chai.expect)(result).to.have.property('currentStep', 2);
+        });
+
+        (0, _mocha.it)('should be 3 if we answered twice', function () {
+          // given
+          var nbAnswers = 2;
+
+          // when
+          var result = _ProgressWithoutCheckpoints.default.progress(nbAnswers);
+
+          // then
+          (0, _chai.expect)(result).to.have.property('currentStep', 3);
+        });
+
+        (0, _mocha.it)('should continue to 6 at the 5th answer', function () {
+          // given
+          var nbAnswers = 5;
+
+          // when
+          var result = _ProgressWithoutCheckpoints.default.progress(nbAnswers);
+
+          // then
+          (0, _chai.expect)(result).to.have.property('currentStep', 6);
         });
       });
 
-      (0, _mocha.it)('should only return the last 5 answers', function () {
-        var _this6 = this;
-
-        Ember.run(function () {
+      (0, _mocha.describe)('#maxStep property', function () {
+        (0, _mocha.it)('should equal the number of challenges of the course', function () {
           // given
-          var store = _this6.store();
-          var answer1 = store.createRecord('answer', {});
-          var answer2 = store.createRecord('answer', {});
-          var answer3 = store.createRecord('answer', {});
-          var answer4 = store.createRecord('answer', {});
-          var answer5 = store.createRecord('answer', {});
-          var answer6 = store.createRecord('answer', {});
-          var answer7 = store.createRecord('answer', {});
-          var answer8 = store.createRecord('answer', {});
-          var answer9 = store.createRecord('answer', {});
-          var answer10 = store.createRecord('answer', {});
-          var assessment = store.createRecord('assessment', {
-            type: 'SMART_PLACEMENT', answers: [answer1, answer2, answer3, answer4, answer5, answer6, answer7, answer8, answer9, answer10]
-          });
+          var nbAnswers = 0;
+          var nbChallenges = 12;
 
           // when
-          var answersSinceLastCheckpoints = assessment.get('answersSinceLastCheckpoints');
+          var result = _ProgressWithoutCheckpoints.default.progress(nbAnswers, nbChallenges);
 
           // then
-          (0, _chai.expect)(answersSinceLastCheckpoints).to.deep.equal([answer6, answer7, answer8, answer9, answer10]);
+          (0, _chai.expect)(result).to.have.property('maxStep', 12);
+        });
+      });
+
+      (0, _mocha.describe)('#stepPercentage property', function () {
+        (0, _mocha.it)('should be the completion percentage of the two other properties', function () {
+          // given
+          var nbAnswers = 0;
+          var nbChallenges = 6;
+          var expectedCompletionPercentage = (1 + nbAnswers) / nbChallenges * 100;
+
+          // when
+          var result = _ProgressWithoutCheckpoints.default.progress(nbAnswers, nbChallenges);
+
+          // then
+          (0, _chai.expect)(result).to.have.property('stepPercentage', expectedCompletionPercentage);
         });
       });
     });
@@ -15427,8 +15683,7 @@ define('pix-live/tests/unit/models/certification-test', ['chai', 'mocha', 'ember
 
   (0, _mocha.describe)('Unit | Model | certification', function () {
     (0, _emberMocha.setupModelTest)('certification', {
-      // Specify the other units that are required for this test.
-      needs: []
+      needs: ['model:user']
     });
 
     // Replace this with your real tests.
@@ -15849,7 +16104,7 @@ define('pix-live/tests/unit/models/snapshot-test', ['chai', 'mocha', 'ember-moch
   (0, _mocha.describe)('Unit | Model | snapshot', function () {
     (0, _emberMocha.setupModelTest)('snapshot', {
       // Specify the other units that are required for this test.
-      needs: ['model:organization']
+      needs: ['model:organization', 'model:user']
     });
 
     // Replace this with your real tests.
@@ -16890,25 +17145,22 @@ define('pix-live/tests/unit/routes/certifications/resume-test', ['mocha', 'ember
     });
   });
 });
-define('pix-live/tests/unit/routes/certifications/start-test', ['chai', 'mocha', 'ember-mocha', 'sinon'], function (_chai, _mocha, _emberMocha, _sinon) {
+define('pix-live/tests/unit/routes/certifications/start-test', ['mocha', 'ember-mocha', 'sinon'], function (_mocha, _emberMocha, _sinon) {
   'use strict';
 
   (0, _mocha.describe)('Unit | Route | certification test', function () {
+
     (0, _emberMocha.setupTest)('route:certifications.start', {
       needs: ['service:current-routed-modal', 'service:session']
     });
 
     var route = void 0;
 
-    (0, _mocha.it)('exists', function () {
-      route = this.subject();
-      (0, _chai.expect)(route).to.be.ok;
-    });
-
     (0, _mocha.describe)('#error', function () {
 
       (0, _mocha.it)('should redirect to index if error is not 403', function () {
         // given
+        route = this.subject();
         route.transitionTo = _sinon.default.stub();
         var error = { errors: [{ status: '404' }] };
 
@@ -16921,9 +17173,9 @@ define('pix-live/tests/unit/routes/certifications/start-test', ['chai', 'mocha',
       });
 
       (0, _mocha.it)('should return the start-error page if error is 403', function () {
-        route.render = _sinon.default.stub();
-
         // given
+        route = this.subject();
+        route.render = _sinon.default.stub();
         route.transitionTo = _sinon.default.stub();
         var error = { errors: [{ status: '403' }] };
 
@@ -16940,6 +17192,7 @@ define('pix-live/tests/unit/routes/certifications/start-test', ['chai', 'mocha',
 
       (0, _mocha.it)('should replace current route with courses.create-assessment', function () {
         // given
+        route = this.subject();
         route.replaceWith = _sinon.default.stub();
 
         // when
@@ -18526,6 +18779,25 @@ define('pix-live/tests/unit/utils/value-as-array-of-boolean-test', ['chai', 'moc
     });
   });
 });
+define('pix-live/config/environment', [], function() {
+  var prefix = 'pix-live';
+try {
+  var metaName = prefix + '/config/environment';
+  var rawConfig = document.querySelector('meta[name="' + metaName + '"]').getAttribute('content');
+  var config = JSON.parse(unescape(rawConfig));
+
+  var exports = { 'default': config };
+
+  Object.defineProperty(exports, '__esModule', { value: true });
+
+  return exports;
+}
+catch(err) {
+  throw new Error('Could not read config from meta tag with name "' + metaName + '".');
+}
+
+});
+
 require('pix-live/tests/test-helper');
 EmberENV.TESTS_FILE_LOADED = true;
 //# sourceMappingURL=tests.map
