@@ -531,8 +531,9 @@ define('pix-live/components/challenge-item-qcu', ['exports', 'pix-live/component
     },
 
     _getAnswerValue: function _getAnswerValue() {
+
       return this.$('.challenge-proposals input:radio:checked').map(function () {
-        return this.value;
+        return this.getAttribute('data-value');
       }).get().join('');
     },
     _getErrorMessage: function _getErrorMessage() {
@@ -2892,6 +2893,17 @@ define('pix-live/components/user-certifications-detail-header', ['exports'], fun
   });
   exports.default = Ember.Component.extend({
     classNames: ['user-certifications-detail-header'],
+    certification: null
+  });
+});
+define('pix-live/components/user-certifications-detail-result', ['exports'], function (exports) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = Ember.Component.extend({
+    classNames: ['user-certifications-detail-result'],
     certification: null
   });
 });
@@ -6226,7 +6238,7 @@ define('pix-live/models/assessment-result', ['exports', 'ember-data'], function 
 
   });
 });
-define('pix-live/models/assessment', ['exports', 'ember-data', 'pix-live/config/environment'], function (exports, _emberData, _environment) {
+define('pix-live/models/assessment', ['exports', 'ember-data', 'pix-live/models/behaviors/assessment-progression'], function (exports, _emberData, _assessmentProgression) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -6238,44 +6250,114 @@ define('pix-live/models/assessment', ['exports', 'ember-data', 'pix-live/config/
       hasMany = _emberData.default.hasMany;
   exports.default = Model.extend({
 
-    course: belongsTo('course', { inverse: null }),
     answers: hasMany('answer'),
+    course: belongsTo('course', { inverse: null }),
+    certificationNumber: attr('string'),
+    estimatedLevel: attr('number'),
+    firstChallenge: Ember.computed.alias('course.challenges.firstObject'),
+    hasCheckpoints: Ember.computed.equal('type', 'SMART_PLACEMENT'),
+    isCertification: Ember.computed.equal('type', 'CERTIFICATION'),
+    pixScore: attr('number'),
+    result: belongsTo('assessment-result'),
+    type: attr('string'),
     userName: attr('string'),
     userEmail: attr('string'),
-    firstChallenge: Ember.computed.alias('course.challenges.firstObject'),
-    estimatedLevel: attr('number'),
-    pixScore: attr('number'),
-    type: attr('string'),
-    certificationNumber: attr('string'),
-    isCertification: Ember.computed.equal('type', 'CERTIFICATION'),
 
-    hasCheckpoints: Ember.computed.equal('type', 'SMART_PLACEMENT'),
+    ready: function ready() {
+      this._progressionBehavior = (0, _assessmentProgression.getProgressionBehaviorFromAssessmentType)(this.get('type'));
+    },
+
+
     answersSinceLastCheckpoints: Ember.computed('answers.[]', function () {
-
-      var howManyAnswersSinceTheLastCheckpoint = this.get('answers.length') % _environment.default.APP.NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT;
-      var sliceAnswersFrom = howManyAnswersSinceTheLastCheckpoint === 0 ? -_environment.default.APP.NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT : -howManyAnswersSinceTheLastCheckpoint;
-
-      return this.get('answers').slice(sliceAnswersFrom);
+      var answers = this.get('answers').toArray();
+      return this._progressionBehavior.answersSinceLastCheckpoints(answers);
     }),
 
-    result: belongsTo('assessment-result'),
-
     progress: Ember.computed('answers', 'course', function () {
-      var maxStep = this.get('course.nbChallenges');
-      var answersCount = this.get('answers.length');
-      var currentStep = _getCurrentStep(answersCount, maxStep);
-      var stepPercentage = currentStep / maxStep * 100;
-
-      return { currentStep: currentStep, maxStep: maxStep, stepPercentage: stepPercentage };
+      return this._progressionBehavior.progress(this.get('answers.length'), this.get('course.nbChallenges'));
     })
+  });
+});
+define('pix-live/models/behaviors/assessment-progression/ProgressWithCheckpoints', ['exports', 'pix-live/config/environment'], function (exports, _environment) {
+  'use strict';
 
+  Object.defineProperty(exports, "__esModule", {
+    value: true
   });
 
 
-  function _getCurrentStep(answersCount, maxStep) {
-    var step = answersCount + 1;
+  var CHECKPOINTS_MAX_STEP = _environment.default.APP.NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT;
 
-    return step > maxStep ? maxStep : step;
+  exports.default = {
+    progress: function progress(nbAnswers, nbChallenges) {
+      var maxStep = CHECKPOINTS_MAX_STEP;
+      var currentStep = this._getCurrentStep(nbAnswers, nbChallenges);
+      var stepPercentage = currentStep / maxStep * 100;
+
+      return { currentStep: currentStep, maxStep: maxStep, stepPercentage: stepPercentage };
+    },
+    answersSinceLastCheckpoints: function answersSinceLastCheckpoints(answers) {
+      var howManyAnswersSinceTheLastCheckpoint = this._howManyAnswersSinceTheLastCheckpoint(answers.length);
+      var sliceAnswersFrom = howManyAnswersSinceTheLastCheckpoint === 0 ? -CHECKPOINTS_MAX_STEP : -howManyAnswersSinceTheLastCheckpoint;
+
+      return answers.slice(sliceAnswersFrom);
+    },
+    _getCurrentStep: function _getCurrentStep() {
+      var answersCount = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+      var _maxStep = arguments[1];
+
+      return 1 + this._howManyAnswersSinceTheLastCheckpoint(answersCount);
+    },
+    _howManyAnswersSinceTheLastCheckpoint: function _howManyAnswersSinceTheLastCheckpoint(nbAnswers) {
+      return nbAnswers % CHECKPOINTS_MAX_STEP;
+    }
+  };
+});
+define('pix-live/models/behaviors/assessment-progression/ProgressWithoutCheckpoints', ['exports'], function (exports) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = {
+    progress: function progress(nbAnswers, nbChallenges) {
+      var maxStep = nbChallenges;
+      var currentStep = this._getCurrentStep(nbAnswers, nbChallenges);
+      var stepPercentage = currentStep / maxStep * 100;
+
+      return { currentStep: currentStep, maxStep: maxStep, stepPercentage: stepPercentage };
+    },
+    answersSinceLastCheckpoints: function answersSinceLastCheckpoints() {
+      throw new Error('This is an Assessment without checkpoints !');
+    },
+    _getCurrentStep: function _getCurrentStep() {
+      var answersCount = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+      var maxStep = arguments[1];
+
+      var step = answersCount + 1;
+
+      if (maxStep == null) {
+        return step;
+      } else {
+        return Math.min(step, maxStep);
+      }
+    }
+  };
+});
+define('pix-live/models/behaviors/assessment-progression/index', ['exports', 'pix-live/models/behaviors/assessment-progression/ProgressWithCheckpoints', 'pix-live/models/behaviors/assessment-progression/ProgressWithoutCheckpoints'], function (exports, _ProgressWithCheckpoints, _ProgressWithoutCheckpoints) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.getProgressionBehaviorFromAssessmentType = getProgressionBehaviorFromAssessmentType;
+  function getProgressionBehaviorFromAssessmentType(assessmentType) {
+    switch (assessmentType) {
+      case 'SMART_PLACEMENT':
+        return _ProgressWithCheckpoints.default;
+      default:
+        return _ProgressWithoutCheckpoints.default;
+    }
   }
 });
 define('pix-live/models/certification', ['exports', 'ember-data'], function (exports, _emberData) {
@@ -8331,7 +8413,7 @@ define("pix-live/templates/components/qcu-proposals", ["exports"], function (exp
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "nILevhr1", "block": "{\"symbols\":[\"labeledRadio\",\"index\"],\"statements\":[[6,\"form\"],[11,\"onchange\",[27,[[26,\"action\",[[21,0,[]],\"radioClicked\"],null]]]],[8],[0,\"\\n\"],[4,\"each\",[[22,[\"labeledRadios\"]]],null,{\"statements\":[[6,\"p\"],[10,\"class\",\"proposal-paragraph\"],[8],[0,\"\\n\\n\"],[0,\"  \"],[6,\"input\"],[10,\"name\",\"radio\"],[11,\"value\",[27,[[26,\"inc\",[[21,2,[]]],null]]]],[11,\"id\",[27,[\"radio_\",[26,\"inc\",[[21,2,[]]],null]]]],[11,\"checked\",[21,1,[\"1\"]]],[11,\"onclick\",[26,\"action\",[[21,0,[]],\"radioClicked\",[21,2,[]]],null]],[10,\"type\",\"radio\"],[8],[9],[0,\"\\n\\n\"],[0,\"  \"],[6,\"label\"],[11,\"for\",[27,[\"radio_\",[26,\"inc\",[[21,2,[]]],null]]]],[10,\"class\",\"label-checkbox-proposal\"],[8],[0,\"\\n\\n\"],[0,\"    \"],[6,\"span\"],[10,\"class\",\"sr-only\"],[8],[0,\"La réponse à la question est : \"],[9],[6,\"span\"],[10,\"class\",\"proposal-text\"],[8],[1,[21,1,[\"0\"]],false],[9],[0,\"\\n  \"],[9],[0,\"\\n\"],[9],[0,\"\\n\"]],\"parameters\":[1,2]},null],[9]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/qcu-proposals.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "3yweuqic", "block": "{\"symbols\":[\"labeledRadio\",\"index\"],\"statements\":[[6,\"form\"],[11,\"onchange\",[27,[[26,\"action\",[[21,0,[]],\"radioClicked\"],null]]]],[8],[0,\"\\n\"],[4,\"each\",[[22,[\"labeledRadios\"]]],null,{\"statements\":[[6,\"p\"],[10,\"class\",\"proposal-paragraph\"],[8],[0,\"\\n\\n\"],[0,\"  \"],[6,\"input\"],[10,\"name\",\"radio\"],[11,\"value\",[27,[[26,\"inc\",[[21,2,[]]],null]]]],[11,\"data-value\",[27,[[26,\"inc\",[[21,2,[]]],null]]]],[11,\"id\",[27,[\"radio_\",[26,\"inc\",[[21,2,[]]],null]]]],[11,\"checked\",[21,1,[\"1\"]]],[11,\"onclick\",[26,\"action\",[[21,0,[]],\"radioClicked\",[21,2,[]]],null]],[10,\"type\",\"radio\"],[8],[9],[0,\"\\n\\n\"],[0,\"  \"],[6,\"label\"],[11,\"for\",[27,[\"radio_\",[26,\"inc\",[[21,2,[]]],null]]]],[10,\"class\",\"label-checkbox-proposal\"],[8],[0,\"\\n\\n\"],[0,\"    \"],[6,\"span\"],[10,\"class\",\"sr-only\"],[8],[0,\"La réponse à la question est : \"],[9],[6,\"span\"],[10,\"class\",\"proposal-text\"],[8],[1,[21,1,[\"0\"]],false],[9],[0,\"\\n  \"],[9],[0,\"\\n\"],[9],[0,\"\\n\"]],\"parameters\":[1,2]},null],[9],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/qcu-proposals.hbs" } });
 });
 define("pix-live/templates/components/qcu-solution-panel", ["exports"], function (exports) {
   "use strict";
@@ -8525,6 +8607,14 @@ define("pix-live/templates/components/user-certifications-detail-header", ["expo
   });
   exports.default = Ember.HTMLBars.template({ "id": "zsKF7aEr", "block": "{\"symbols\":[],\"statements\":[[6,\"img\"],[11,\"src\",[27,[[20,\"rootURL\"],\"/images/icons/icon-certification.svg\"]]],[10,\"alt\",\"\"],[10,\"class\",\"user-certifications-detail-header__icon\"],[8],[9],[0,\"\\n\\n\"],[6,\"div\"],[10,\"class\",\"user-certifications-detail-header__data-box\"],[8],[0,\"\\n  \"],[6,\"p\"],[10,\"class\",\"user-certifications-detail-header__data-box-title\"],[8],[0,\"\\n    \"],[6,\"span\"],[10,\"class\",\"user-certifications-detail-header__data-box-title-big\"],[8],[0,\"CERTIFICAT\"],[9],[0,\"\\n\"],[4,\"if\",[[22,[\"certification\",\"date\"]]],null,{\"statements\":[[0,\"      obtenu le \"],[1,[26,\"moment-format\",[[22,[\"certification\",\"date\"]],\"LL\"],[[\"locale\"],[\"fr\"]]],false],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"  \"],[9],[0,\"\\n\"],[4,\"if\",[[22,[\"certification\",\"lastName\"]]],null,{\"statements\":[[0,\"    \"],[6,\"p\"],[8],[0,\"Nom : \"],[1,[22,[\"certification\",\"firstName\"]],false],[0,\" \"],[1,[22,[\"certification\",\"lastName\"]],false],[9],[0,\"\\n\"]],\"parameters\":[]},null],[4,\"if\",[[22,[\"certification\",\"birthdate\"]]],null,{\"statements\":[[0,\"    \"],[6,\"p\"],[8],[0,\"Date de naissance : \"],[1,[26,\"moment-format\",[[22,[\"certification\",\"birthdate\"]],\"LL\"],[[\"locale\"],[\"fr\"]]],false],[9],[0,\"\\n\"]],\"parameters\":[]},null],[4,\"if\",[[22,[\"certification\",\"certificationCenter\"]]],null,{\"statements\":[[0,\"    \"],[6,\"p\"],[8],[0,\"Centre de certification : \"],[1,[22,[\"certification\",\"certificationCenter\"]],false],[9],[0,\"\\n\"]],\"parameters\":[]},null],[9],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/user-certifications-detail-header.hbs" } });
 });
+define("pix-live/templates/components/user-certifications-detail-result", ["exports"], function (exports) {
+  "use strict";
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = Ember.HTMLBars.template({ "id": "nJS9Zg/D", "block": "{\"symbols\":[],\"statements\":[[6,\"div\"],[10,\"class\",\"user-certifications-detail-result__pix-score\"],[8],[0,\"\\n  \"],[6,\"div\"],[10,\"class\",\"user-certifications-detail-result__badge-pix-score\"],[8],[0,\"\\n    \"],[6,\"span\"],[8],[1,[22,[\"certification\",\"pixScore\"]],false],[9],[0,\"\\n  \"],[9],[0,\"\\n  \"],[6,\"div\"],[10,\"class\",\"user-certifications-detail-result__pix-certified\"],[8],[0,\"\\n    Pix certifiés\\n  \"],[9],[0,\"\\n\"],[9],[0,\"\\n\\n\"],[6,\"div\"],[8],[0,\"\\n  \"],[6,\"div\"],[10,\"class\",\"user-certifications-detail-result__separation\"],[8],[9],[0,\"\\n  \"],[6,\"div\"],[10,\"class\",\"user-certifications-detail-result__text-pix-certified\"],[8],[0,\"\\n    Votre score certifié a été calculé en fonction de vos réponses lors du passage de la certification.\\n    Il peut donc différer de votre nombre de Pix affiché dans votre profil.\\n  \"],[9],[0,\"\\n\"],[9],[0,\"\\n\\n\"],[6,\"div\"],[8],[0,\"\\n  \"],[6,\"hr\"],[8],[9],[0,\"\\n\"],[4,\"if\",[[22,[\"certification\",\"commentForCandidate\"]]],null,{\"statements\":[[0,\"    \"],[6,\"div\"],[10,\"class\",\"user-certifications-detail-result__title-comment-jury\"],[8],[0,\"Intervention du jury\"],[9],[0,\"\\n    \"],[6,\"div\"],[10,\"class\",\"user-certifications-detail-result__comment-jury\"],[8],[0,\"\\n      \"],[1,[22,[\"certification\",\"commentForCandidate\"]],false],[0,\"\\n    \"],[9],[0,\"\\n\"]],\"parameters\":[]},null],[9],[0,\"\\n\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/user-certifications-detail-result.hbs" } });
+});
 define("pix-live/templates/components/user-certifications-panel", ["exports"], function (exports) {
   "use strict";
 
@@ -8691,7 +8781,7 @@ define("pix-live/templates/user-certifications/get", ["exports"], function (expo
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "X1jej5Od", "block": "{\"symbols\":[],\"statements\":[[4,\"link-to\",[\"user-certifications\"],[[\"class\"],[\"user-certifications-page-get_link-to\"]],{\"statements\":[[0,\"‹‹ Retour à la liste\"]],\"parameters\":[]},null],[0,\"\\n\"],[1,[26,\"user-certifications-detail-header\",null,[[\"certification\"],[[22,[\"model\"]]]]],false]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/user-certifications/get.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "eSDzojpp", "block": "{\"symbols\":[],\"statements\":[[4,\"link-to\",[\"user-certifications\"],[[\"class\"],[\"user-certifications-page-get_link-to\"]],{\"statements\":[[0,\"‹‹ Retour à la liste\"]],\"parameters\":[]},null],[0,\"\\n\"],[1,[26,\"user-certifications-detail-header\",null,[[\"certification\"],[[22,[\"model\"]]]]],false],[0,\"\\n\\n\"],[1,[26,\"user-certifications-detail-result\",null,[[\"certification\"],[[22,[\"model\"]]]]],false]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/user-certifications/get.hbs" } });
 });
 define("pix-live/templates/user-certifications/index", ["exports"], function (exports) {
   "use strict";
@@ -9488,6 +9578,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.51.0+a19fc3be"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.51.1+010dd2df"});
 }
 //# sourceMappingURL=pix-live.map
