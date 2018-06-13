@@ -531,8 +531,9 @@ define('pix-live/components/challenge-item-qcu', ['exports', 'pix-live/component
     },
 
     _getAnswerValue: function _getAnswerValue() {
+
       return this.$('.challenge-proposals input:radio:checked').map(function () {
-        return this.value;
+        return this.getAttribute('data-value');
       }).get().join('');
     },
     _getErrorMessage: function _getErrorMessage() {
@@ -8331,7 +8332,7 @@ define("pix-live/templates/components/qcu-proposals", ["exports"], function (exp
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "nILevhr1", "block": "{\"symbols\":[\"labeledRadio\",\"index\"],\"statements\":[[6,\"form\"],[11,\"onchange\",[27,[[26,\"action\",[[21,0,[]],\"radioClicked\"],null]]]],[8],[0,\"\\n\"],[4,\"each\",[[22,[\"labeledRadios\"]]],null,{\"statements\":[[6,\"p\"],[10,\"class\",\"proposal-paragraph\"],[8],[0,\"\\n\\n\"],[0,\"  \"],[6,\"input\"],[10,\"name\",\"radio\"],[11,\"value\",[27,[[26,\"inc\",[[21,2,[]]],null]]]],[11,\"id\",[27,[\"radio_\",[26,\"inc\",[[21,2,[]]],null]]]],[11,\"checked\",[21,1,[\"1\"]]],[11,\"onclick\",[26,\"action\",[[21,0,[]],\"radioClicked\",[21,2,[]]],null]],[10,\"type\",\"radio\"],[8],[9],[0,\"\\n\\n\"],[0,\"  \"],[6,\"label\"],[11,\"for\",[27,[\"radio_\",[26,\"inc\",[[21,2,[]]],null]]]],[10,\"class\",\"label-checkbox-proposal\"],[8],[0,\"\\n\\n\"],[0,\"    \"],[6,\"span\"],[10,\"class\",\"sr-only\"],[8],[0,\"La réponse à la question est : \"],[9],[6,\"span\"],[10,\"class\",\"proposal-text\"],[8],[1,[21,1,[\"0\"]],false],[9],[0,\"\\n  \"],[9],[0,\"\\n\"],[9],[0,\"\\n\"]],\"parameters\":[1,2]},null],[9]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/qcu-proposals.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "3yweuqic", "block": "{\"symbols\":[\"labeledRadio\",\"index\"],\"statements\":[[6,\"form\"],[11,\"onchange\",[27,[[26,\"action\",[[21,0,[]],\"radioClicked\"],null]]]],[8],[0,\"\\n\"],[4,\"each\",[[22,[\"labeledRadios\"]]],null,{\"statements\":[[6,\"p\"],[10,\"class\",\"proposal-paragraph\"],[8],[0,\"\\n\\n\"],[0,\"  \"],[6,\"input\"],[10,\"name\",\"radio\"],[11,\"value\",[27,[[26,\"inc\",[[21,2,[]]],null]]]],[11,\"data-value\",[27,[[26,\"inc\",[[21,2,[]]],null]]]],[11,\"id\",[27,[\"radio_\",[26,\"inc\",[[21,2,[]]],null]]]],[11,\"checked\",[21,1,[\"1\"]]],[11,\"onclick\",[26,\"action\",[[21,0,[]],\"radioClicked\",[21,2,[]]],null]],[10,\"type\",\"radio\"],[8],[9],[0,\"\\n\\n\"],[0,\"  \"],[6,\"label\"],[11,\"for\",[27,[\"radio_\",[26,\"inc\",[[21,2,[]]],null]]]],[10,\"class\",\"label-checkbox-proposal\"],[8],[0,\"\\n\\n\"],[0,\"    \"],[6,\"span\"],[10,\"class\",\"sr-only\"],[8],[0,\"La réponse à la question est : \"],[9],[6,\"span\"],[10,\"class\",\"proposal-text\"],[8],[1,[21,1,[\"0\"]],false],[9],[0,\"\\n  \"],[9],[0,\"\\n\"],[9],[0,\"\\n\"]],\"parameters\":[1,2]},null],[9],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/qcu-proposals.hbs" } });
 });
 define("pix-live/templates/components/qcu-solution-panel", ["exports"], function (exports) {
   "use strict";
@@ -9488,6 +9489,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.51.0+cad1df48"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.51.1+f48e4dde"});
 }
 //# sourceMappingURL=pix-live.map
