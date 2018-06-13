@@ -3660,6 +3660,72 @@ input.qcm-panel__proposal-checkbox {
   font-size: 2.8rem;
   font-weight: 600; }
 
+.user-certifications-detail-result {
+  font-family: "Lato", Arial, sans-serif;
+  background-color: #ffffff;
+  margin-top: 1.87rem;
+  padding: 1.87rem;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direct: column;
+  color: #3e4149;
+  font-family: "Lato", Arial, sans-serif;
+  font-size: 2rem;
+  line-height: 3rem; }
+  @media (min-width: 980px) {
+    .user-certifications-detail-result {
+      width: 30%; } }
+
+.user-certifications-detail-result__pix-score {
+  margin-bottom: 1.25rem;
+  width: 27rem; }
+
+.user-certifications-detail-result__badge-pix-score {
+  width: 13rem;
+  height: 13rem;
+  padding-top: 4.7rem;
+  float: left;
+  background: url("/images/pix-pastille-certif.svg") no-repeat;
+  background-size: cover;
+  text-align: center;
+  display: table; }
+  .user-certifications-detail-result__badge-pix-score span {
+    height: 1.75rem;
+    width: 2.81rem;
+    color: #4A4A4A;
+    font-family: "Lato", Arial, sans-serif;
+    font-size: 3rem;
+    font-weight: bold;
+    line-height: 2.06rem;
+    text-align: center; }
+
+.user-certifications-detail-result__pix-certified {
+  color: #4A4A4A;
+  font-family: "Lato", Arial, sans-serif;
+  font-size: 2.5rem;
+  font-weight: bold;
+  line-height: 1.75rem;
+  margin-top: 4.8rem;
+  text-align: right; }
+
+.user-certifications-detail-result__separation {
+  clear: both;
+  position: absolute;
+  height: 14rem;
+  margin-top: 0.8rem;
+  width: 0.25rem;
+  background: black; }
+
+.user-certifications-detail-result__text-pix-certified {
+  margin-left: 1.25rem; }
+
+.user-certifications-detail-result__title-comment-jury {
+  color: #7D808A;
+  font-family: "Raleway", Arial, sans-serif;
+  font-size: 2rem;
+  font-weight: 500;
+  line-height: 2rem; }
+
 .user-certifications-detail-profile {
   width: 95%;
   margin-top: 30px; }

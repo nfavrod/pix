@@ -3568,6 +3568,10 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
+    it('components/user-certifications-detail-result.js', function () {
+      // test passed
+    });
+
     it('components/user-certifications-panel.js', function () {
       // test passed
     });
@@ -3641,6 +3645,18 @@ define('pix-live/tests/app.lint-test', [], function () {
     });
 
     it('models/assessment.js', function () {
+      // test passed
+    });
+
+    it('models/behaviors/assessment-progression/ProgressWithCheckpoints.js', function () {
+      // test passed
+    });
+
+    it('models/behaviors/assessment-progression/ProgressWithoutCheckpoints.js', function () {
+      // test passed
+    });
+
+    it('models/behaviors/assessment-progression/index.js', function () {
       // test passed
     });
 
@@ -11091,6 +11107,101 @@ define('pix-live/tests/integration/components/user-certifications-detail-profile
     });
   });
 });
+define('pix-live/tests/integration/components/user-certifications-detail-result-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+  'use strict';
+
+  (0, _mocha.describe)('Integration | Component | user certifications detail result', function () {
+    (0, _emberMocha.setupComponentTest)('user-certifications-detail-result', {
+      integration: true
+    });
+
+    var certification = void 0;
+
+    (0, _mocha.it)('renders', function () {
+      this.render(Ember.HTMLBars.template({
+        "id": "HmYHEg+5",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"user-certifications-detail-result\",null,[[\"certification\"],[[22,[\"certification\"]]]]],false]],\"hasEval\":false}",
+        "meta": {}
+      }));
+      (0, _chai.expect)(this.$()).to.have.length(1);
+    });
+
+    context('when certification is complete', function () {
+
+      beforeEach(function () {
+        // given
+        certification = Ember.Object.create({
+          id: 1,
+          birthdate: new Date('2000-01-22T15:15:52.504Z'),
+          firstName: 'Jean',
+          lastName: 'Bon',
+          date: new Date('2018-02-15T15:15:52.504Z'),
+          certificationCenter: 'Université de Lyon',
+          isPublished: true,
+          pixScore: 654,
+          status: 'validated',
+          commentForCandidate: 'Comment for candidate'
+        });
+        this.set('certification', certification);
+
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "HmYHEg+5",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"user-certifications-detail-result\",null,[[\"certification\"],[[22,[\"certification\"]]]]],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+      });
+
+      // then
+      (0, _mocha.it)('should show the pix score', function () {
+        (0, _chai.expect)(this.$('.user-certifications-detail-result__pix-score')).to.have.lengthOf(1);
+        (0, _chai.expect)(this.$('.user-certifications-detail-result__pix-score').text()).to.include('654');
+      });
+
+      (0, _mocha.it)('should show the comment for candidate', function () {
+        (0, _chai.expect)(this.$('.user-certifications-detail-result__comment-jury')).to.have.lengthOf(1);
+        (0, _chai.expect)(this.$('.user-certifications-detail-result__comment-jury').text()).to.include('Comment for candidate');
+      });
+    });
+
+    context('when certification has no comment for user', function () {
+
+      beforeEach(function () {
+        // given
+        certification = Ember.Object.create({
+          id: 1,
+          birthdate: new Date('2000-01-22T15:15:52.504Z'),
+          firstName: 'Jean',
+          lastName: 'Bon',
+          date: new Date('2018-02-15T15:15:52.504Z'),
+          certificationCenter: 'Université de Lyon',
+          isPublished: true,
+          pixScore: 654,
+          status: 'validated',
+          commentForCandidate: null
+        });
+        this.set('certification', certification);
+
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "HmYHEg+5",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"user-certifications-detail-result\",null,[[\"certification\"],[[22,[\"certification\"]]]]],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+      });
+
+      // then
+      (0, _mocha.it)('should show the pix score', function () {
+        (0, _chai.expect)(this.$('.user-certifications-detail-result__pix-score')).to.have.lengthOf(1);
+        (0, _chai.expect)(this.$('.user-certifications-detail-result__pix-score').text()).to.include('654');
+      });
+
+      (0, _mocha.it)('should not show the comment for candidate', function () {
+        (0, _chai.expect)(this.$('.user-certifications-detail-result__comment-jury')).to.have.lengthOf(0);
+      });
+    });
+  });
+});
 define('pix-live/tests/integration/components/user-certifications-panel-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
   'use strict';
 
@@ -11809,6 +11920,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
+    it('integration/components/user-certifications-detail-result-test.js', function () {
+      // test passed
+    });
+
     it('integration/components/user-certifications-panel-test.js', function () {
       // test passed
     });
@@ -11994,6 +12109,14 @@ define('pix-live/tests/tests.lint-test', [], function () {
     });
 
     it('unit/models/assessment-test.js', function () {
+      // test passed
+    });
+
+    it('unit/models/behaviors/assessment-progression/ProgressWithCheckpoints-test.js', function () {
+      // test passed
+    });
+
+    it('unit/models/behaviors/assessment-progression/ProgressWithoutCheckpoints-test.js', function () {
       // test passed
     });
 
@@ -15505,6 +15628,8 @@ define('pix-live/tests/unit/models/area-test', ['chai', 'mocha', 'ember-mocha'],
 define('pix-live/tests/unit/models/assessment-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
   'use strict';
 
+  var SMART_PLACEMENT_TYPE = 'SMART_PLACEMENT';
+
   (0, _mocha.describe)('Unit | Model | Assessment', function () {
 
     (0, _emberMocha.setupModelTest)('assessment', {
@@ -15523,8 +15648,8 @@ define('pix-live/tests/unit/models/assessment-test', ['chai', 'mocha', 'ember-mo
 
         Ember.run(function () {
           // given
-          var assessment = _this.subject();
-          assessment.set('type', 'SMART_PLACEMENT');
+          var store = _this.store();
+          var assessment = store.createRecord('assessment', { type: SMART_PLACEMENT_TYPE });
 
           // when
           var hasCheckpoints = assessment.get('hasCheckpoints');
@@ -15551,90 +15676,307 @@ define('pix-live/tests/unit/models/assessment-test', ['chai', 'mocha', 'ember-mo
       });
     });
 
-    (0, _mocha.describe)('Computed property #answersSinceLastCheckpoints', function () {
-
-      (0, _mocha.it)('should be an array', function () {
+    (0, _mocha.describe)('on ready event', function () {
+      (0, _mocha.it)('should instanciate an assessment progression behavior', function () {
         var _this3 = this;
 
         Ember.run(function () {
+          var store = _this3.store();
+          // when
+          var assessment = store.createRecord('assessment');
+          // then
+          (0, _chai.expect)(assessment._progressionBehavior).to.be.ok;
+        });
+      });
+    });
+  });
+});
+define('pix-live/tests/unit/models/behaviors/assessment-progression/ProgressWithCheckpoints-test', ['chai', 'mocha', 'lodash', 'pix-live/models/behaviors/assessment-progression/ProgressWithCheckpoints'], function (_chai, _mocha, _lodash, _ProgressWithCheckpoints) {
+  'use strict';
+
+  var _slicedToArray = function () {
+    function sliceIterator(arr, i) {
+      var _arr = [];
+      var _n = true;
+      var _d = false;
+      var _e = undefined;
+
+      try {
+        for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+          _arr.push(_s.value);
+
+          if (i && _arr.length === i) break;
+        }
+      } catch (err) {
+        _d = true;
+        _e = err;
+      } finally {
+        try {
+          if (!_n && _i["return"]) _i["return"]();
+        } finally {
+          if (_d) throw _e;
+        }
+      }
+
+      return _arr;
+    }
+
+    return function (arr, i) {
+      if (Array.isArray(arr)) {
+        return arr;
+      } else if (Symbol.iterator in Object(arr)) {
+        return sliceIterator(arr, i);
+      } else {
+        throw new TypeError("Invalid attempt to destructure non-iterable instance");
+      }
+    };
+  }();
+
+  (0, _mocha.describe)('Unit | Model | Behavior | assessment-progression | ProgressWithCheckpoints', function () {
+    (0, _mocha.describe)('#answersSinceLastCheckpoints(answers)', function () {
+
+      function newAnswer() {
+        return Ember.Object.create();
+      }
+
+      (0, _mocha.it)('should return an empty array when no answers has been given', function () {
+        // given
+        var answers = [];
+
+        // when
+        var answersSinceLastCheckpoints = _ProgressWithCheckpoints.default.answersSinceLastCheckpoints(answers);
+
+        // then
+        (0, _chai.expect)(answersSinceLastCheckpoints).to.deep.equal([]);
+      });
+
+      (0, _mocha.it)('should return the one answer when only one answer has been given', function () {
+        // given
+        var answers = [newAnswer()];
+
+        // when
+        var answersSinceLastCheckpoints = _ProgressWithCheckpoints.default.answersSinceLastCheckpoints(answers);
+
+        // then
+        (0, _chai.expect)(answersSinceLastCheckpoints).to.deep.equal(answers);
+      });
+
+      (0, _mocha.it)('should return the last 2 answers when there is 7 answers', function () {
+        // given
+        var answers = _lodash.default.times(7, newAnswer);
+
+        var _answers$slice = answers.slice(5),
+            _answers$slice2 = _slicedToArray(_answers$slice, 2),
+            answer6 = _answers$slice2[0],
+            answer7 = _answers$slice2[1];
+
+        // when
+        var answersSinceLastCheckpoints = _ProgressWithCheckpoints.default.answersSinceLastCheckpoints(answers);
+
+        // then
+        (0, _chai.expect)(answersSinceLastCheckpoints).to.deep.equal([answer6, answer7]);
+      });
+
+      (0, _mocha.it)('should return the last 5 answers when there is 10 answers', function () {
+        // given
+        var answers = _lodash.default.times(10, newAnswer);
+
+        var _answers$slice3 = answers.slice(5),
+            _answers$slice4 = _slicedToArray(_answers$slice3, 5),
+            answer6 = _answers$slice4[0],
+            answer7 = _answers$slice4[1],
+            answer8 = _answers$slice4[2],
+            answer9 = _answers$slice4[3],
+            answer10 = _answers$slice4[4];
+
+        // when
+        var answersSinceLastCheckpoints = _ProgressWithCheckpoints.default.answersSinceLastCheckpoints(answers);
+
+        // then
+        (0, _chai.expect)(answersSinceLastCheckpoints).to.deep.equal([answer6, answer7, answer8, answer9, answer10]);
+      });
+
+      (0, _mocha.it)('should return the last 1 answer when there is 11 answers', function () {
+        // given
+        var answers = _lodash.default.times(11, newAnswer);
+        var answer11 = answers[10];
+
+        // when
+        var answersSinceLastCheckpoints = _ProgressWithCheckpoints.default.answersSinceLastCheckpoints(answers);
+
+        // then
+        (0, _chai.expect)(answersSinceLastCheckpoints).to.deep.equal([answer11]);
+      });
+    });
+
+    (0, _mocha.describe)('Computed property #progress', function () {
+
+      (0, _mocha.describe)('#currentStep property', function () {
+        (0, _mocha.it)('should start at 1', function () {
           // given
-          var assessment = _this3.subject();
-          assessment.set('type', 'SMART_PLACEMENT');
+          var nbAnswers = 0;
 
           // when
-          var answersSinceLastCheckpoints = assessment.get('answersSinceLastCheckpoints');
+          var result = _ProgressWithCheckpoints.default.progress(nbAnswers);
 
           // then
-          (0, _chai.expect)(Ember.isArray(answersSinceLastCheckpoints)).to.be.true;
+          (0, _chai.expect)(result).to.have.property('currentStep', 1);
+        });
+
+        (0, _mocha.it)('should be 2 if we answered once', function () {
+          // given
+          var nbAnswers = 1;
+
+          // when
+          var result = _ProgressWithCheckpoints.default.progress(nbAnswers);
+
+          // then
+          (0, _chai.expect)(result).to.have.property('currentStep', 2);
+        });
+
+        (0, _mocha.it)('should be 3 if we answered twice', function () {
+          // given
+          var nbAnswers = 2;
+
+          // when
+          var result = _ProgressWithCheckpoints.default.progress(nbAnswers);
+
+          // then
+          (0, _chai.expect)(result).to.have.property('currentStep', 3);
+        });
+
+        (0, _mocha.it)('should reset to 1 at the 5th answer', function () {
+          // given
+          var nbAnswers = 5;
+
+          // when
+          var result = _ProgressWithCheckpoints.default.progress(nbAnswers);
+
+          // then
+          (0, _chai.expect)(result).to.have.property('currentStep', 1);
         });
       });
 
-      (0, _mocha.it)('should return answers', function () {
-        var _this4 = this;
-
-        Ember.run(function () {
-          var store = _this4.store();
-          var answer = store.createRecord('answer', {});
-          var assessment = store.createRecord('assessment', { type: 'SMART_PLACEMENT', answers: [answer] });
+      (0, _mocha.describe)('#maxStep property', function () {
+        (0, _mocha.it)('should always equal 5', function () {
+          // given
 
           // when
-          var answersSinceLastCheckpoints = assessment.get('answersSinceLastCheckpoints');
+          var result = _ProgressWithCheckpoints.default.progress(0);
 
           // then
-          (0, _chai.expect)(answersSinceLastCheckpoints).to.deep.equal([answer]);
+          (0, _chai.expect)(result).to.have.property('maxStep', 5);
         });
       });
 
-      (0, _mocha.it)('should only return the last answers', function () {
-        var _this5 = this;
-
-        Ember.run(function () {
+      (0, _mocha.describe)('#stepPercentage property', function () {
+        (0, _mocha.it)('should be the completion percentage of the two other properties', function () {
           // given
-          var store = _this5.store();
-          var answer1 = store.createRecord('answer', {});
-          var answer2 = store.createRecord('answer', {});
-          var answer3 = store.createRecord('answer', {});
-          var answer4 = store.createRecord('answer', {});
-          var answer5 = store.createRecord('answer', {});
-          var answer6 = store.createRecord('answer', {});
-          var answer7 = store.createRecord('answer', {});
-          var assessment = store.createRecord('assessment', {
-            type: 'SMART_PLACEMENT', answers: [answer1, answer2, answer3, answer4, answer5, answer6, answer7]
-          });
+          var nbAnswers = 0;
+          var nbChallenges = 5;
+          var expectedCompletionPercentage = (1 + nbAnswers) / nbChallenges * 100;
 
           // when
-          var answersSinceLastCheckpoints = assessment.get('answersSinceLastCheckpoints');
+          var result = _ProgressWithCheckpoints.default.progress(nbAnswers);
 
           // then
-          (0, _chai.expect)(answersSinceLastCheckpoints).to.deep.equal([answer6, answer7]);
+          (0, _chai.expect)(result).to.have.property('stepPercentage', expectedCompletionPercentage);
+        });
+      });
+    });
+  });
+});
+define('pix-live/tests/unit/models/behaviors/assessment-progression/ProgressWithoutCheckpoints-test', ['chai', 'mocha', 'pix-live/models/behaviors/assessment-progression/ProgressWithoutCheckpoints'], function (_chai, _mocha, _ProgressWithoutCheckpoints) {
+  'use strict';
+
+  (0, _mocha.describe)('Unit | Model | Behavior | assessment-progression | ProgressWithoutCheckpoints', function () {
+
+    (0, _mocha.describe)('#answersSinceLastCheckpoints(answers)', function () {
+      (0, _mocha.it)('should always throw an error as there is no checkpoints', function () {
+        // given
+
+        (0, _chai.expect)(function () {
+          // when
+          _ProgressWithoutCheckpoints.default.answersSinceLastCheckpoints();
+          // then
+        }).to.throw;
+      });
+    });
+
+    (0, _mocha.describe)('Computed property #progress', function () {
+
+      (0, _mocha.describe)('#currentStep property', function () {
+        (0, _mocha.it)('should start at 1', function () {
+          // given
+          var nbAnswers = 0;
+
+          // when
+          var result = _ProgressWithoutCheckpoints.default.progress(nbAnswers);
+
+          // then
+          (0, _chai.expect)(result).to.have.property('currentStep', 1);
+        });
+
+        (0, _mocha.it)('should be 2 if we answered once', function () {
+          // given
+          var nbAnswers = 1;
+
+          // when
+          var result = _ProgressWithoutCheckpoints.default.progress(nbAnswers);
+
+          // then
+          (0, _chai.expect)(result).to.have.property('currentStep', 2);
+        });
+
+        (0, _mocha.it)('should be 3 if we answered twice', function () {
+          // given
+          var nbAnswers = 2;
+
+          // when
+          var result = _ProgressWithoutCheckpoints.default.progress(nbAnswers);
+
+          // then
+          (0, _chai.expect)(result).to.have.property('currentStep', 3);
+        });
+
+        (0, _mocha.it)('should continue to 6 at the 5th answer', function () {
+          // given
+          var nbAnswers = 5;
+
+          // when
+          var result = _ProgressWithoutCheckpoints.default.progress(nbAnswers);
+
+          // then
+          (0, _chai.expect)(result).to.have.property('currentStep', 6);
         });
       });
 
-      (0, _mocha.it)('should only return the last 5 answers', function () {
-        var _this6 = this;
-
-        Ember.run(function () {
+      (0, _mocha.describe)('#maxStep property', function () {
+        (0, _mocha.it)('should equal the number of challenges of the course', function () {
           // given
-          var store = _this6.store();
-          var answer1 = store.createRecord('answer', {});
-          var answer2 = store.createRecord('answer', {});
-          var answer3 = store.createRecord('answer', {});
-          var answer4 = store.createRecord('answer', {});
-          var answer5 = store.createRecord('answer', {});
-          var answer6 = store.createRecord('answer', {});
-          var answer7 = store.createRecord('answer', {});
-          var answer8 = store.createRecord('answer', {});
-          var answer9 = store.createRecord('answer', {});
-          var answer10 = store.createRecord('answer', {});
-          var assessment = store.createRecord('assessment', {
-            type: 'SMART_PLACEMENT', answers: [answer1, answer2, answer3, answer4, answer5, answer6, answer7, answer8, answer9, answer10]
-          });
+          var nbAnswers = 0;
+          var nbChallenges = 12;
 
           // when
-          var answersSinceLastCheckpoints = assessment.get('answersSinceLastCheckpoints');
+          var result = _ProgressWithoutCheckpoints.default.progress(nbAnswers, nbChallenges);
 
           // then
-          (0, _chai.expect)(answersSinceLastCheckpoints).to.deep.equal([answer6, answer7, answer8, answer9, answer10]);
+          (0, _chai.expect)(result).to.have.property('maxStep', 12);
+        });
+      });
+
+      (0, _mocha.describe)('#stepPercentage property', function () {
+        (0, _mocha.it)('should be the completion percentage of the two other properties', function () {
+          // given
+          var nbAnswers = 0;
+          var nbChallenges = 6;
+          var expectedCompletionPercentage = (1 + nbAnswers) / nbChallenges * 100;
+
+          // when
+          var result = _ProgressWithoutCheckpoints.default.progress(nbAnswers, nbChallenges);
+
+          // then
+          (0, _chai.expect)(result).to.have.property('stepPercentage', expectedCompletionPercentage);
         });
       });
     });
@@ -16066,7 +16408,7 @@ define('pix-live/tests/unit/models/snapshot-test', ['chai', 'mocha', 'ember-moch
   (0, _mocha.describe)('Unit | Model | snapshot', function () {
     (0, _emberMocha.setupModelTest)('snapshot', {
       // Specify the other units that are required for this test.
-      needs: ['model:organization']
+      needs: ['model:organization', 'model:user']
     });
 
     // Replace this with your real tests.
