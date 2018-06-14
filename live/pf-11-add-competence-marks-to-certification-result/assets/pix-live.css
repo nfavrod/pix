@@ -3663,18 +3663,18 @@ input.qcm-panel__proposal-checkbox {
 .user-certifications-detail-result {
   font-family: "Lato", Arial, sans-serif;
   background-color: #ffffff;
-  margin-top: 1.87rem;
-  padding: 1.87rem;
+  margin-top: 4rem;
+  margin-left: 1rem;
+  padding: 0.3rem 0.3rem 2.5rem 0.3rem;
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
-  flex-direct: column;
+  justify-content: flex-start;
+  flex-shrink: 3;
   color: #3e4149;
   font-family: "Lato", Arial, sans-serif;
-  font-size: 2rem;
-  line-height: 3rem; }
-  @media (min-width: 980px) {
-    .user-certifications-detail-result {
-      width: 30%; } }
+  font-size: 1.8rem;
+  line-height: 2.6rem; }
 
 .user-certifications-detail-result__pix-score {
   margin-bottom: 1.25rem;
@@ -3722,23 +3722,23 @@ input.qcm-panel__proposal-checkbox {
 .user-certifications-detail-result__title-comment-jury {
   color: #7D808A;
   font-family: "Raleway", Arial, sans-serif;
-  font-size: 2rem;
+  font-size: 1.6rem;
   font-weight: 500;
-  line-height: 2rem; }
+  line-height: 2.6rem; }
 
 .user-certifications-detail-profile {
-  width: 95%;
-  margin-top: 30px; }
+  width: 100%;
+  margin-top: 3rem;
+  padding: 0 0 0 1rem;
+  flex-shrink: 1; }
   @media (min-width: 980px) {
     .user-certifications-detail-profile {
-      width: 60%;
       justify-content: flex-start; } }
 
 .user-certifications-detail-area {
-  width: 100%;
   background-color: #ffffff;
-  margin: 10px;
-  padding: 3px 3px 25px 3px; }
+  margin: 1rem;
+  padding: 0.3rem; }
   @media (min-width: 980px) {
     .user-certifications-detail-area {
       justify-content: flex-start; } }
@@ -3748,15 +3748,15 @@ input.qcm-panel__proposal-checkbox {
   background-color: #e6e6e6;
   color: #3e4149;
   font-family: "Raleway", Arial, sans-serif;
-  font-size: 18px;
+  font-size: 1.8rem;
   font-weight: 600;
   letter-spacing: 1px;
-  line-height: 21px;
-  padding: 19px 0px 19px 36px;
+  line-height: 2.1rem;
+  padding: 1.9rem 0 1.9rem 1.9rem;
   text-transform: uppercase; }
   @media (min-width: 980px) {
     .user-certifications-detail-area__box-name {
-      height: 59px; } }
+      height: 5.9rem; } }
 
 .user-certifications-detail-competence {
   height: 50px;
@@ -5956,6 +5956,15 @@ hr.project-page__presentation-header-line {
   @media (min-width: 980px) {
     .user-certifications-page__title {
       justify-content: flex-start; } }
+
+.user-certifications-page__detail-content {
+  display: flex;
+  flex-direction: column; }
+  @media (min-width: 980px) {
+    .user-certifications-page__detail-content {
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-content: flex-start; } }
 
 .user-certifications-page-get_link-to {
   display: flex;
