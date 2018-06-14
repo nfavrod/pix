@@ -2893,7 +2893,11 @@ define('pix-live/components/user-certifications-detail-area', ['exports'], funct
   });
   exports.default = Ember.Component.extend({
     classNames: ['user-certifications-detail-area'],
-    area: null
+    area: null,
+
+    sortedCompetences: Ember.computed('area.competences.[]', function () {
+      return this.get('area.competences').sortBy('index');
+    })
   });
 });
 define('pix-live/components/user-certifications-detail-competence', ['exports'], function (exports) {
@@ -2928,7 +2932,11 @@ define('pix-live/components/user-certifications-detail-profile', ['exports'], fu
   });
   exports.default = Ember.Component.extend({
     classNames: ['user-certifications-detail-profile'],
-    certification: null
+    resultCompetenceTree: null,
+
+    sortedAreas: Ember.computed('resultCompetenceTree.areas.[]', function () {
+      return this.get('resultCompetenceTree.areas').sortBy('code');
+    })
   });
 });
 define('pix-live/components/user-certifications-detail-result', ['exports'], function (exports) {
@@ -6445,9 +6453,13 @@ define('pix-live/models/area', ['exports', 'ember-data'], function (exports, _em
     value: true
   });
   var attr = _emberData.default.attr,
-      Model = _emberData.default.Model;
+      Model = _emberData.default.Model,
+      hasMany = _emberData.default.hasMany;
   exports.default = Model.extend({
-    name: attr('string')
+    name: attr('string'),
+    title: attr('string'),
+    competences: hasMany('competence'),
+    code: attr('number')
   });
 });
 define('pix-live/models/assessment-result', ['exports', 'ember-data'], function (exports, _emberData) {
@@ -6605,7 +6617,7 @@ define('pix-live/models/certification', ['exports', 'ember-data'], function (exp
     status: attr('string'),
     user: belongsTo('user'),
     commentForCandidate: attr('string'),
-    certifiedProfile: attr()
+    resultCompetenceTree: belongsTo('resultCompetenceTree')
   });
 });
 define('pix-live/models/challenge', ['exports', 'ember-data'], function (exports, _emberData) {
@@ -6652,7 +6664,7 @@ define('pix-live/models/competence', ['exports', 'ember-data'], function (export
       belongsTo = _emberData.default.belongsTo;
   exports.default = Model.extend({
     name: attr('string'),
-    area: belongsTo('area', { inverse: null }),
+    area: belongsTo('area'),
     user: belongsTo('user'),
     index: attr('number'),
     level: attr('number'),
@@ -6751,6 +6763,18 @@ define('pix-live/models/password-reset-demand', ['exports', 'ember-data'], funct
   exports.default = _emberData.default.Model.extend({
     email: _emberData.default.attr('string'),
     temporaryKey: _emberData.default.attr('string')
+  });
+});
+define('pix-live/models/result-competence-tree', ['exports', 'ember-data'], function (exports, _emberData) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  var hasMany = _emberData.default.hasMany,
+      Model = _emberData.default.Model;
+  exports.default = Model.extend({
+    areas: hasMany('area', { inverse: null })
   });
 });
 define('pix-live/models/snapshot', ['exports', 'ember-data'], function (exports, _emberData) {
@@ -8830,7 +8854,7 @@ define("pix-live/templates/components/user-certifications-detail-area", ["export
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "6BbbXvf4", "block": "{\"symbols\":[\"competence\",\"index\"],\"statements\":[[6,\"div\"],[8],[0,\"\\n  \"],[6,\"div\"],[10,\"class\",\"user-certifications-detail-area__box-name\"],[8],[0,\"\\n    \"],[1,[22,[\"area\",\"area-name\"]],false],[0,\"\\n  \"],[9],[0,\"\\n\"],[4,\"each\",[[22,[\"area\",\"competences\"]]],null,{\"statements\":[[0,\"\\n    \"],[1,[26,\"user-certifications-detail-competence\",null,[[\"competence\"],[[21,1,[]]]]],false],[0,\"\\n\\n\"]],\"parameters\":[1,2]},null],[0,\"\\n\"],[9],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/user-certifications-detail-area.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "O1lwbNKb", "block": "{\"symbols\":[\"competence\",\"index\"],\"statements\":[[6,\"div\"],[8],[0,\"\\n  \"],[6,\"div\"],[10,\"class\",\"user-certifications-detail-area__box-name\"],[8],[0,\"\\n    \"],[1,[22,[\"area\",\"title\"]],false],[0,\"\\n  \"],[9],[0,\"\\n\"],[4,\"each\",[[22,[\"sortedCompetences\"]]],null,{\"statements\":[[0,\"\\n    \"],[1,[26,\"user-certifications-detail-competence\",null,[[\"competence\"],[[21,1,[]]]]],false],[0,\"\\n\\n\"]],\"parameters\":[1,2]},null],[0,\"\\n\"],[9],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/user-certifications-detail-area.hbs" } });
 });
 define("pix-live/templates/components/user-certifications-detail-competence", ["exports"], function (exports) {
   "use strict";
@@ -8838,7 +8862,7 @@ define("pix-live/templates/components/user-certifications-detail-competence", ["
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "3afCOO4g", "block": "{\"symbols\":[\"level\",\"index\"],\"statements\":[[6,\"div\"],[8],[0,\"\\n  \"],[6,\"div\"],[10,\"class\",\"user-certifications-detail-competence__box-name\"],[8],[0,\"\\n    \"],[1,[22,[\"competence\",\"competenceName\"]],false],[0,\"\\n\"],[4,\"if\",[[26,\"gte\",[[22,[\"competence\",\"level\"]],1],null]],null,{\"statements\":[[0,\"      \"],[6,\"div\"],[10,\"class\",\"user-certifications-detail-competence__box-level\"],[8],[1,[22,[\"competence\",\"level\"]],false],[9],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n  \"],[9],[0,\"\\n\\n  \"],[6,\"div\"],[10,\"class\",\"user-certifications-detail-competence__levels-bar-block\"],[8],[0,\"\\n\"],[4,\"each\",[[22,[\"levels\"]]],null,{\"statements\":[[4,\"if\",[[26,\"gte\",[[22,[\"competence\",\"level\"]],[21,1,[]]],null]],null,{\"statements\":[[0,\"        \"],[6,\"div\"],[10,\"class\",\"user-certifications-detail-competence__validate-level user-certifications-detail-competence__level-bar\"],[8],[9],[0,\"\\n\"]],\"parameters\":[]},{\"statements\":[[0,\"        \"],[6,\"div\"],[10,\"class\",\"user-certifications-detail-competence__not-validate-level user-certifications-detail-competence__level-bar\"],[8],[9],[0,\"\\n\"]],\"parameters\":[]}]],\"parameters\":[1,2]},null],[0,\"  \"],[9],[0,\"\\n\\n\"],[9],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/user-certifications-detail-competence.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "DnqIACuf", "block": "{\"symbols\":[\"level\",\"index\"],\"statements\":[[6,\"div\"],[8],[0,\"\\n  \"],[6,\"div\"],[10,\"class\",\"user-certifications-detail-competence__box-name\"],[8],[0,\"\\n    \"],[1,[22,[\"competence\",\"name\"]],false],[0,\"\\n\"],[4,\"if\",[[26,\"gte\",[[22,[\"competence\",\"level\"]],1],null]],null,{\"statements\":[[0,\"      \"],[6,\"div\"],[10,\"class\",\"user-certifications-detail-competence__box-level\"],[8],[1,[22,[\"competence\",\"level\"]],false],[9],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n  \"],[9],[0,\"\\n\\n  \"],[2,\"A extraire dans un composant level-bar. Là c'est pas clair ce qu'il se passe...\"],[0,\"\\n  \"],[6,\"div\"],[10,\"class\",\"user-certifications-detail-competence__levels-bar-block\"],[8],[0,\"\\n\"],[4,\"each\",[[22,[\"levels\"]]],null,{\"statements\":[[4,\"if\",[[26,\"gte\",[[22,[\"competence\",\"level\"]],[21,1,[]]],null]],null,{\"statements\":[[0,\"        \"],[6,\"div\"],[10,\"class\",\"user-certifications-detail-competence__validate-level user-certifications-detail-competence__level-bar\"],[8],[9],[0,\"\\n\"]],\"parameters\":[]},{\"statements\":[[0,\"        \"],[6,\"div\"],[10,\"class\",\"user-certifications-detail-competence__not-validate-level user-certifications-detail-competence__level-bar\"],[8],[9],[0,\"\\n\"]],\"parameters\":[]}]],\"parameters\":[1,2]},null],[0,\"  \"],[9],[0,\"\\n\\n\"],[9],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/user-certifications-detail-competence.hbs" } });
 });
 define("pix-live/templates/components/user-certifications-detail-header", ["exports"], function (exports) {
   "use strict";
@@ -8854,7 +8878,7 @@ define("pix-live/templates/components/user-certifications-detail-profile", ["exp
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "zZvxXMOu", "block": "{\"symbols\":[\"area\",\"index\"],\"statements\":[[6,\"div\"],[8],[0,\"\\n\"],[4,\"each\",[[22,[\"certification\",\"certifiedProfile\"]]],null,{\"statements\":[[0,\"\\n  \"],[1,[26,\"user-certifications-detail-area\",null,[[\"area\"],[[21,1,[]]]]],false],[0,\"\\n\\n\"]],\"parameters\":[1,2]},null],[0,\"\\n\"],[9],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/user-certifications-detail-profile.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "roH4MGON", "block": "{\"symbols\":[\"area\",\"index\"],\"statements\":[[6,\"div\"],[8],[0,\"\\n\"],[4,\"each\",[[22,[\"sortedAreas\"]]],null,{\"statements\":[[0,\"\\n  \"],[1,[26,\"user-certifications-detail-area\",null,[[\"area\"],[[21,1,[]]]]],false],[0,\"\\n\\n\"]],\"parameters\":[1,2]},null],[0,\"\\n\"],[9],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/user-certifications-detail-profile.hbs" } });
 });
 define("pix-live/templates/components/user-certifications-detail-result", ["exports"], function (exports) {
   "use strict";
@@ -9030,7 +9054,7 @@ define("pix-live/templates/user-certifications/get", ["exports"], function (expo
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "CgPhGDav", "block": "{\"symbols\":[],\"statements\":[[4,\"link-to\",[\"user-certifications\"],[[\"class\"],[\"user-certifications-page-get_link-to\"]],{\"statements\":[[0,\"‹‹ Retour à la liste\"]],\"parameters\":[]},null],[0,\"\\n\"],[1,[26,\"user-certifications-detail-header\",null,[[\"certification\"],[[22,[\"model\"]]]]],false],[0,\"\\n\\n\"],[1,[26,\"user-certifications-detail-result\",null,[[\"certification\"],[[22,[\"model\"]]]]],false],[0,\"\\n\\n\"],[1,[26,\"user-certifications-detail-profile\",null,[[\"certification\"],[[22,[\"model\"]]]]],false],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/user-certifications/get.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "I2Guf3Z1", "block": "{\"symbols\":[],\"statements\":[[4,\"link-to\",[\"user-certifications\"],[[\"class\"],[\"user-certifications-page-get_link-to\"]],{\"statements\":[[0,\"‹‹ Retour à la liste\"]],\"parameters\":[]},null],[0,\"\\n\"],[1,[26,\"user-certifications-detail-header\",null,[[\"certification\"],[[22,[\"model\"]]]]],false],[0,\"\\n\\n\"],[1,[26,\"user-certifications-detail-result\",null,[[\"certification\"],[[22,[\"model\"]]]]],false],[0,\"\\n\\n\"],[1,[26,\"user-certifications-detail-profile\",null,[[\"resultCompetenceTree\"],[[22,[\"model\",\"resultCompetenceTree\"]]]]],false],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/user-certifications/get.hbs" } });
 });
 define("pix-live/templates/user-certifications/index", ["exports"], function (exports) {
   "use strict";
@@ -9827,6 +9851,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.51.1+58a5361c"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.51.1+d1af9e37"});
 }
 //# sourceMappingURL=pix-live.map
