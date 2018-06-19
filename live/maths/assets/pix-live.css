@@ -2069,7 +2069,7 @@ h1.course-banner__name {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: 0px 26px; }
+  padding: 0 26px; }
   @media (min-width: 980px) {
     .navbar-header__container {
       justify-content: space-between;
@@ -3631,13 +3631,11 @@ input.qcm-panel__proposal-checkbox {
 .user-certifications-detail-header {
   font-family: "Lato", Arial, sans-serif;
   display: flex;
-  flex-flow: row;
-  flex-wrap: wrap;
-  justify-content: center;
-  padding-top: 5rem; }
+  flex-direction: row;
+  margin: 0 10px 40px; }
   @media (min-width: 980px) {
     .user-certifications-detail-header {
-      justify-content: flex-start; } }
+      margin: 0 0 40px; } }
 
 .user-certifications-detail-header__data-box {
   padding-left: 3.2rem;
@@ -3645,7 +3643,7 @@ input.qcm-panel__proposal-checkbox {
   font-size: 1.8rem;
   line-height: 2rem; }
   .user-certifications-detail-header__data-box p {
-    margin-bottom: 0rem;
+    margin-bottom: 0;
     padding-bottom: 0.5rem; }
 
 .user-certifications-detail-header__data-box-title {
@@ -3659,6 +3657,153 @@ input.qcm-panel__proposal-checkbox {
   line-height: 3.2rem;
   font-size: 2.8rem;
   font-weight: 600; }
+
+.user-certifications-detail-result {
+  font-family: "Lato", Arial, sans-serif;
+  background-color: #ffffff;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  flex-shrink: 3;
+  color: #3e4149;
+  font-size: 1.8rem;
+  line-height: 2.6rem;
+  margin-bottom: 40px; }
+  @media (min-width: 980px) {
+    .user-certifications-detail-result {
+      margin-right: 20px; } }
+
+.user-certifications-detail-result__pix-score {
+  margin-bottom: 1.25rem;
+  width: 27rem; }
+
+.user-certifications-detail-result__badge-pix-score {
+  width: 13rem;
+  height: 13rem;
+  padding-top: 4.7rem;
+  float: left;
+  background: url("/images/pix-pastille-certif.svg") no-repeat;
+  background-size: cover;
+  text-align: center;
+  display: table; }
+  .user-certifications-detail-result__badge-pix-score span {
+    height: 1.75rem;
+    width: 2.81rem;
+    color: #4A4A4A;
+    font-family: "Lato", Arial, sans-serif;
+    font-size: 3rem;
+    font-weight: bold;
+    line-height: 2.06rem;
+    text-align: center; }
+
+.user-certifications-detail-result__pix-certified {
+  color: #4A4A4A;
+  font-family: "Lato", Arial, sans-serif;
+  font-size: 2.5rem;
+  font-weight: bold;
+  line-height: 1.75rem;
+  margin-top: 4.8rem;
+  text-align: right; }
+
+.user-certifications-detail-result__separation {
+  clear: both;
+  position: absolute;
+  height: 14rem;
+  margin-top: 0.8rem;
+  width: 0.25rem;
+  background: black; }
+
+.user-certifications-detail-result__text-pix-certified {
+  padding-left: 1.25rem;
+  border-left-style: solid;
+  border-left-color: #3e4149;
+  border-left-width: 3px; }
+
+.user-certifications-detail-result__title-comment-jury {
+  color: #7D808A;
+  font-family: "Raleway", Arial, sans-serif;
+  font-size: 1.6rem;
+  font-weight: 500;
+  line-height: 2.6rem; }
+
+.user-certifications-detail-profile {
+  width: 100%;
+  flex-shrink: 1;
+  margin-bottom: 40px; }
+  @media (min-width: 980px) {
+    .user-certifications-detail-profile {
+      justify-content: flex-start; } }
+
+.user-certifications-detail-area {
+  background-color: #ffffff;
+  margin-bottom: 10px;
+  padding: 2px 2px 20px; }
+  .user-certifications-detail-area:first-child {
+    margin-top: 0; }
+  .user-certifications-detail-area:last-child {
+    margin-bottom: 0; }
+  @media (min-width: 980px) {
+    .user-certifications-detail-area {
+      justify-content: flex-start; } }
+
+.user-certifications-detail-area__box-name {
+  width: 100%;
+  background-color: #e6e6e6;
+  color: #3e4149;
+  font-family: "Raleway", Arial, sans-serif;
+  font-size: 1.8rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  line-height: 2.1rem;
+  padding: 20px 40px;
+  text-transform: uppercase; }
+  @media (min-width: 980px) {
+    .user-certifications-detail-area__box-name {
+      height: 5.9rem; } }
+
+.user-certifications-detail-competence {
+  padding: 20px 40px;
+  width: 100%; }
+
+.user-certifications-detail-competence__box-name {
+  color: #3e4149;
+  font-family: "Lato", Arial, sans-serif;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+  line-height: 19px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center; }
+
+.user-certifications-detail-competence__box-level {
+  height: 25px;
+  float: right;
+  width: 25px;
+  text-align: center;
+  color: #3e4149;
+  font-family: "Lato", Arial, sans-serif;
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 24px; }
+
+.user-certifications-detail-competence__level-bar {
+  margin: 0.4%;
+  float: left;
+  width: 11.7%;
+  height: 5px; }
+  .user-certifications-detail-competence__level-bar:first-child {
+    margin-left: 0; }
+  .user-certifications-detail-competence__level-bar:last-child {
+    margin-right: 0; }
+
+.user-certifications-detail-competence__validate-level {
+  background: #ffbe00; }
+
+.user-certifications-detail-competence__not-validate-level {
+  background: #D8D8D8; }
 
 .index-page-patners-enrollment {
   background-image: linear-gradient(to bottom, #446eff, #133dd2); }
@@ -5797,7 +5942,11 @@ hr.project-page__presentation-header-line {
   max-width: 1200px;
   min-height: 500px;
   margin: 0 auto;
-  margin-bottom: 40px; }
+  padding: 0 10px; }
+  @media (min-width: 980px) {
+    .user-certifications-page__container {
+      justify-content: flex-start;
+      padding: 0; } }
 
 .user-certifications-page__title {
   display: flex;
@@ -5814,9 +5963,27 @@ hr.project-page__presentation-header-line {
     .user-certifications-page__title {
       justify-content: flex-start; } }
 
-.user-certifications-page-get_link-to {
+.user-certifications-page__detail-content {
   display: flex;
-  padding-top: 1rem; }
+  flex-direction: column;
+  margin: 0 10px; }
+  @media (min-width: 980px) {
+    .user-certifications-page__detail-content {
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-content: flex-start;
+      align-items: flex-start;
+      margin: 0; } }
+
+.user-certifications-page-get__top-bar {
+  margin: 0 10px 40px; }
+  @media (min-width: 980px) {
+    .user-certifications-page-get__top-bar {
+      margin: 0 0 40px; } }
+
+.user-certifications-page-get_link-to {
+  display: inline-block;
+  padding: 20px 0; }
 
 .assessment-challenge__continue-wrapper {
   text-align: center; }
