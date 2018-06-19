@@ -3700,6 +3700,10 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
+    it('models/skill-review.js', function () {
+      // test passed
+    });
+
     it('models/snapshot.js', function () {
       // test passed
     });
@@ -3753,6 +3757,10 @@ define('pix-live/tests/app.lint-test', [], function () {
     });
 
     it('routes/campaigns/create-assessment.js', function () {
+      // test passed
+    });
+
+    it('routes/campaigns/skill-reviews.js', function () {
       // test passed
     });
 
@@ -12184,6 +12192,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
+    it('unit/models/skill-review-test.js', function () {
+      // test passed
+    });
+
     it('unit/models/snapshot-test.js', function () {
       // test passed
     });
@@ -16451,6 +16463,51 @@ define('pix-live/tests/unit/models/result-competence-tree-test', ['chai', 'mocha
     });
   });
 });
+define('pix-live/tests/unit/models/skill-review-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+  'use strict';
+
+  (0, _mocha.describe)('Unit | Model | skill review', function () {
+    (0, _emberMocha.setupModelTest)('skill-review', {
+      // Specify the other units that are required for this test.
+      needs: []
+    });
+
+    (0, _mocha.describe)('Computed property #profileMasteryInPourcent', function () {
+
+      (0, _mocha.it)('should compute a property in %', function () {
+        var _this = this;
+
+        Ember.run(function () {
+          // given
+          var store = _this.store();
+          var skillReview = store.createRecord('skill-review', { profileMastery: 0.6815 });
+
+          // when
+          var profileMasteryInPourcent = skillReview.get('profileMasteryInPourcent');
+
+          // then
+          (0, _chai.expect)(profileMasteryInPourcent).to.equal(68.2);
+        });
+      });
+
+      (0, _mocha.it)('should round the property%', function () {
+        var _this2 = this;
+
+        Ember.run(function () {
+          // given
+          var store = _this2.store();
+          var skillReview = store.createRecord('skill-review', { profileMastery: 0.651 });
+
+          // when
+          var profileMasteryInPourcent = skillReview.get('profileMasteryInPourcent');
+
+          // then
+          (0, _chai.expect)(profileMasteryInPourcent).to.equal(65.1);
+        });
+      });
+    });
+  });
+});
 define('pix-live/tests/unit/models/snapshot-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
   'use strict';
 
@@ -16934,13 +16991,26 @@ define('pix-live/tests/unit/routes/assessments/rating-test', ['chai', 'mocha', '
       context('when the assessment is a certification', function () {
         (0, _mocha.it)('should redirect to the certification end page', function () {
           // given
-          var assessment = Ember.Object.create({ type: 'CERTIFICATION', answers: [answerToChallengeOne] });
+          var assessment = Ember.Object.create({ id: 12, type: 'CERTIFICATION', answers: [answerToChallengeOne] });
 
           // when
           route.afterModel(assessment);
 
           // then
           _sinon.default.assert.calledWith(route.transitionTo, 'certifications.results');
+        });
+      });
+
+      context('when the assessment is a SMART_PLACEMENT', function () {
+        (0, _mocha.it)('should redirect to the certification end page', function () {
+          // given
+          var assessment = Ember.Object.create({ id: 12, type: 'SMART_PLACEMENT', answers: [answerToChallengeOne] });
+
+          // when
+          route.afterModel(assessment);
+
+          // then
+          _sinon.default.assert.calledWith(route.transitionTo, 'campaigns.skill-review', { 'skill-review_id': assessment.get('id') });
         });
       });
 
