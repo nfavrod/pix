@@ -4272,7 +4272,34 @@ define('pix-live/tests/integration/components/certification-results-page-test', 
         (0, _chai.expect)(this.$('.certification-banner__container .certification-banner__certification-number').text().trim()).to.equal('#' + certificationNumber);
       });
 
-      (0, _mocha.it)('should have a button to logout', function () {
+      (0, _mocha.it)('should not be able to click on validation button when the verification is unchecked ', function () {
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "xGrlHSN6",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"certification-results-page\",null,[[\"user\",\"certificationNumber\"],[[22,[\"user\"]],[22,[\"certificationNumber\"]]]]],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+
+        // then
+        (0, _chai.expect)(this.$('.result-content__validation-button')).to.have.lengthOf(0);
+        (0, _chai.expect)(this.$('.result-content__button-blocked')).to.have.lengthOf(1);
+      });
+
+      (0, _mocha.it)('should be able to click on validation when we check to show the last message', function () {
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "xGrlHSN6",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"certification-results-page\",null,[[\"user\",\"certificationNumber\"],[[22,[\"user\"]],[22,[\"certificationNumber\"]]]]],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+        this.$('#validSupervisor').click();
+        this.$('.result-content__validation-button').click();
+
+        // then
+        (0, _chai.expect)(this.$('.result-content__panel-description').text()).to.contains('Vos résultats seront prochainement disponibles depuis votre compte.');
+      });
+
+      (0, _mocha.it)('should have a button to logout at the end of certification', function () {
         // given
         Ember.LinkComponent.reopen({
           href: Ember.computed.alias('qualifiedRouteName')
@@ -4284,10 +4311,13 @@ define('pix-live/tests/integration/components/certification-results-page-test', 
           "block": "{\"symbols\":[],\"statements\":[[1,[26,\"certification-results-page\",null,[[\"user\",\"certificationNumber\"],[[22,[\"user\"]],[22,[\"certificationNumber\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
+        this.$('#validSupervisor').click();
+        this.$('.result-content__validation-button').click();
 
         // then
-        (0, _chai.expect)(this.$('.warning-logout-button')).to.have.lengthOf(1);
-        (0, _chai.expect)(this.$('.warning-logout-button').attr('href')).to.equal('logout');
+        (0, _chai.expect)(this.$('.result-content__logout-button')).to.have.lengthOf(1);
+        (0, _chai.expect)(this.$('.result-content__logout-button').text()).to.equal('Se déconnecter');
+        (0, _chai.expect)(this.$('.result-content__logout-button').attr('href')).to.equal('logout');
       });
     });
   });
