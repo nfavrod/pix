@@ -4239,9 +4239,6 @@ define('pix-live/tests/integration/components/certification-results-page-test', 
       (0, _mocha.beforeEach)(function () {
         this.set('user', user);
         this.set('certificationNumber', certificationNumber);
-        Ember.LinkComponent.reopen({
-          href: Ember.computed.alias('qualifiedRouteName')
-        });
       });
 
       (0, _mocha.it)('should also render a certification banner', function () {
@@ -4287,6 +4284,11 @@ define('pix-live/tests/integration/components/certification-results-page-test', 
       });
 
       (0, _mocha.it)('should have a button to logout at the end of certification', function () {
+        // given
+        Ember.LinkComponent.reopen({
+          href: Ember.computed.alias('qualifiedRouteName')
+        });
+
         // when
         this.render(Ember.HTMLBars.template({
           "id": "xGrlHSN6",
@@ -4298,6 +4300,7 @@ define('pix-live/tests/integration/components/certification-results-page-test', 
 
         // then
         (0, _chai.expect)(this.$('.result-content__logout-button')).to.have.lengthOf(1);
+        (0, _chai.expect)(this.$('.result-content__logout-button').text()).to.equal('Se déconnecter');
         (0, _chai.expect)(this.$('.result-content__logout-button').attr('href')).to.equal('logout');
       });
     });
