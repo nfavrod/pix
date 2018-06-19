@@ -3552,7 +3552,19 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
+    it('components/user-certifications-detail-area.js', function () {
+      // test passed
+    });
+
+    it('components/user-certifications-detail-competence.js', function () {
+      // test passed
+    });
+
     it('components/user-certifications-detail-header.js', function () {
+      // test passed
+    });
+
+    it('components/user-certifications-detail-profile.js', function () {
       // test passed
     });
 
@@ -3681,6 +3693,10 @@ define('pix-live/tests/app.lint-test', [], function () {
     });
 
     it('models/password-reset-demand.js', function () {
+      // test passed
+    });
+
+    it('models/result-competence-tree.js', function () {
       // test passed
     });
 
@@ -10730,6 +10746,247 @@ define('pix-live/tests/integration/components/tutorial-panel-test', ['chai', 'mo
     });
   });
 });
+define('pix-live/tests/integration/components/user-certifications-detail-area-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+  'use strict';
+
+  (0, _mocha.describe)('Integration | Component | user certifications detail area', function () {
+    (0, _emberMocha.setupComponentTest)('user-certifications-detail-area', {
+      integration: true
+    });
+
+    var area = void 0;
+
+    beforeEach(function () {
+      area = Ember.Object.create({
+        code: 3,
+        id: 'recs7Gpf90ln8NCv7',
+        name: '3. Création de contenu',
+        title: 'Création de contenu',
+        competences: Ember.A([{
+          'index': 1.1,
+          'level': 5,
+          'name': 'Mener une recherche et une veille d’information',
+          'score': 41
+        }, {
+          'index': 1.2,
+          'level': -1,
+          'name': 'Gérer des données',
+          'score': 0
+        }, {
+          'index': 1.3,
+          'level': 3,
+          'name': 'Traiter des données',
+          'score': 20
+        }])
+      });
+      this.set('area', area);
+    });
+
+    (0, _mocha.it)('renders', function () {
+      this.render(Ember.HTMLBars.template({
+        "id": "3bTqclx5",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"user-certifications-detail-area\",null,[[\"area\"],[[22,[\"area\"]]]]],false]],\"hasEval\":false}",
+        "meta": {}
+      }));
+      (0, _chai.expect)(this.$()).to.have.length(1);
+    });
+
+    context('when has a list of competences', function () {
+
+      beforeEach(function () {
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "3bTqclx5",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"user-certifications-detail-area\",null,[[\"area\"],[[22,[\"area\"]]]]],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+      });
+
+      // then
+      (0, _mocha.it)('should show the title of area', function () {
+        // given
+        var divOfName = '.user-certifications-detail-area__box-name';
+
+        // then
+        (0, _chai.expect)(this.$(divOfName).text()).to.include(area.get('title'));
+      });
+
+      (0, _mocha.it)('should include one competences detail per competence', function () {
+        // given
+        var divOfCompetence = '.user-certifications-detail-competence';
+
+        // then
+        (0, _chai.expect)(this.$(divOfCompetence)).to.have.lengthOf(area.get('competences.length'));
+      });
+    });
+  });
+});
+define('pix-live/tests/integration/components/user-certifications-detail-competence-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+  'use strict';
+
+  (0, _mocha.describe)('Integration | Component | user certifications detail competence', function () {
+    (0, _emberMocha.setupComponentTest)('user-certifications-detail-competence', {
+      integration: true
+    });
+
+    var competence = void 0;
+
+    beforeEach(function () {
+      competence = Ember.Object.create({
+        'index': 1.2,
+        'level': -1,
+        'name': 'Mener une recherche et une veille d’information',
+        'score': 0
+      });
+    });
+
+    (0, _mocha.it)('renders', function () {
+      this.set('competence', competence);
+
+      this.render(Ember.HTMLBars.template({
+        "id": "9JSnV81X",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"user-certifications-detail-competence\",null,[[\"competence\"],[[22,[\"competence\"]]]]],false]],\"hasEval\":false}",
+        "meta": {}
+      }));
+      (0, _chai.expect)(this.$()).to.have.length(1);
+    });
+
+    context('when competence has level -1', function () {
+
+      beforeEach(function () {
+        // given
+        this.set('competence', competence);
+
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "9JSnV81X",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"user-certifications-detail-competence\",null,[[\"competence\"],[[22,[\"competence\"]]]]],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+      });
+
+      // then
+      (0, _mocha.it)('should show the name of competence', function () {
+        // given
+        var divOfName = '.user-certifications-detail-competence__box-name';
+
+        // then
+        (0, _chai.expect)(this.$(divOfName).text()).to.include(competence.name);
+      });
+
+      (0, _mocha.it)('should not show the level of competence', function () {
+        // given
+        var divOfLevel = '.user-certifications-detail-competence__box-level';
+
+        // then
+        (0, _chai.expect)(this.$(divOfLevel)).to.have.lengthOf(0);
+      });
+
+      (0, _mocha.it)('should show all level bar in grey', function () {
+        // given
+        var divOfBarUnvalidatedLevel = '.user-certifications-detail-competence__not-validate-level';
+
+        // then
+        (0, _chai.expect)(this.$(divOfBarUnvalidatedLevel)).to.have.lengthOf(8);
+      });
+    });
+
+    context('when competence has level 0', function () {
+
+      beforeEach(function () {
+        // given
+        competence = Ember.Object.create({
+          'index': 1.2,
+          'level': 0,
+          'name': 'Mener une recherche et une veille d’information',
+          'score': 0
+        });
+        this.set('competence', competence);
+
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "9JSnV81X",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"user-certifications-detail-competence\",null,[[\"competence\"],[[22,[\"competence\"]]]]],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+      });
+
+      // then
+      (0, _mocha.it)('should show the name of competence', function () {
+        // given
+        var divOfName = '.user-certifications-detail-competence__box-name';
+
+        // then
+        (0, _chai.expect)(this.$(divOfName).text()).to.include(competence.name);
+      });
+
+      (0, _mocha.it)('should not show the level of competence', function () {
+        // given
+        var divOfLevel = '.user-certifications-detail-competence__box-level';
+
+        // then
+        (0, _chai.expect)(this.$(divOfLevel)).to.have.lengthOf(0);
+      });
+
+      (0, _mocha.it)('should show all level bar in grey', function () {
+        // given
+        var divOfBarUnvalidatedLevel = '.user-certifications-detail-competence__not-validate-level';
+
+        // then
+        (0, _chai.expect)(this.$(divOfBarUnvalidatedLevel)).to.have.lengthOf(8);
+      });
+    });
+
+    context('when competence has level 5', function () {
+
+      beforeEach(function () {
+        // given
+        competence = Ember.Object.create({
+          'index': 1.2,
+          'level': 5,
+          'name': 'Mener une recherche et une veille d’information',
+          'score': 41
+        });
+        this.set('competence', competence);
+
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "9JSnV81X",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"user-certifications-detail-competence\",null,[[\"competence\"],[[22,[\"competence\"]]]]],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+      });
+
+      // then
+      (0, _mocha.it)('should show the name of competence', function () {
+        // given
+        var divOfName = '.user-certifications-detail-competence__box-name';
+
+        // then
+        (0, _chai.expect)(this.$(divOfName).text()).to.include(competence.name);
+      });
+
+      (0, _mocha.it)('should show the level of competence', function () {
+        // given
+        var divOfLevel = '.user-certifications-detail-competence__box-level';
+
+        // then
+        (0, _chai.expect)(this.$(divOfLevel)).to.have.lengthOf(1);
+        (0, _chai.expect)(this.$(divOfLevel).text()).to.include(competence.level);
+      });
+
+      (0, _mocha.it)('should show 5 level bar in yellow and 3 in grey', function () {
+        // given
+        var divOfBarValidatedLevel = '.user-certifications-detail-competence__validate-level';
+        var divOfBarUnvalidatedLevel = '.user-certifications-detail-competence__not-validate-level';
+
+        // then
+        (0, _chai.expect)(this.$(divOfBarValidatedLevel)).to.have.lengthOf(5);
+        (0, _chai.expect)(this.$(divOfBarUnvalidatedLevel)).to.have.lengthOf(3);
+      });
+    });
+  });
+});
 define('pix-live/tests/integration/components/user-certifications-detail-header-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
   'use strict';
 
@@ -10839,6 +11096,71 @@ define('pix-live/tests/integration/components/user-certifications-detail-header-
 
       (0, _mocha.it)('should not show the certification center', function () {
         (0, _chai.expect)(this.$('.user-certifications-detail-header__data-box').text()).to.not.include('Centre de' + ' certification :');
+      });
+    });
+  });
+});
+define('pix-live/tests/integration/components/user-certifications-detail-profile-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+  'use strict';
+
+  (0, _mocha.describe)('Integration | Component | user certifications detail profile', function () {
+    (0, _emberMocha.setupComponentTest)('user-certifications-detail-profile', {
+      integration: true
+    });
+
+    var resultCompetenceTree = Ember.Object.create({
+      areas: Ember.A([Ember.Object.create({
+        code: 3,
+        id: 'recs7Gpf90ln8NCv7',
+        name: '3. Création de contenu',
+        title: 'Création de contenu',
+        competences: Ember.A([])
+      }), Ember.Object.create({
+        code: 1,
+        id: 'recvoGdo7z2z7pXWa',
+        name: '1. Information et données',
+        title: 'Information et données',
+        competences: Ember.A([])
+      }), Ember.Object.create({
+        code: 2,
+        id: 'recoB4JYOBS1PCxhh',
+        name: '2. Communication et collaboration',
+        title: 'Communication et collaboration',
+        competences: Ember.A([])
+      })])
+    });
+
+    (0, _mocha.it)('renders', function () {
+      this.set('resultCompetenceTree', resultCompetenceTree);
+
+      this.render(Ember.HTMLBars.template({
+        "id": "OgQtYEs7",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"user-certifications-detail-profile\",null,[[\"resultCompetenceTree\"],[[22,[\"resultCompetenceTree\"]]]]],false]],\"hasEval\":false}",
+        "meta": {}
+      }));
+      (0, _chai.expect)(this.$()).to.have.length(1);
+    });
+
+    context('when are has a list of competences', function () {
+
+      beforeEach(function () {
+        // given
+        this.set('resultCompetenceTree', resultCompetenceTree);
+
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "OgQtYEs7",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"user-certifications-detail-profile\",null,[[\"resultCompetenceTree\"],[[22,[\"resultCompetenceTree\"]]]]],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+      });
+
+      (0, _mocha.it)('should include one area detail per area', function () {
+        // given
+        var divOfArea = '.user-certifications-detail-area';
+
+        // then
+        (0, _chai.expect)(this.$(divOfArea)).to.have.lengthOf(resultCompetenceTree.areas.length);
       });
     });
   });
@@ -11640,7 +11962,19 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
+    it('integration/components/user-certifications-detail-area-test.js', function () {
+      // test passed
+    });
+
+    it('integration/components/user-certifications-detail-competence-test.js', function () {
+      // test passed
+    });
+
     it('integration/components/user-certifications-detail-header-test.js', function () {
+      // test passed
+    });
+
+    it('integration/components/user-certifications-detail-profile-test.js', function () {
       // test passed
     });
 
@@ -11873,6 +12207,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
     });
 
     it('unit/models/password-reset-demand-test.js', function () {
+      // test passed
+    });
+
+    it('unit/models/result-competence-tree-test.js', function () {
       // test passed
     });
 
@@ -16114,6 +16452,23 @@ define('pix-live/tests/unit/models/password-reset-demand-test', ['chai', 'mocha'
 
   (0, _mocha.describe)('Unit | Model | password reset demand', function () {
     (0, _emberMocha.setupModelTest)('password-reset-demand', {
+      // Specify the other units that are required for this test.
+      needs: []
+    });
+
+    // Replace this with your real tests.
+    (0, _mocha.it)('exists', function () {
+      var model = this.subject();
+      // var store = this.store();
+      (0, _chai.expect)(model).to.be.ok;
+    });
+  });
+});
+define('pix-live/tests/unit/models/result-competence-tree-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+  'use strict';
+
+  (0, _mocha.describe)('Unit | Model | result competence tree', function () {
+    (0, _emberMocha.setupModelTest)('result-competence-tree', {
       // Specify the other units that are required for this test.
       needs: []
     });
