@@ -227,7 +227,18 @@ define('pix-live/components/certification-results-page', ['exports'], function (
     value: true
   });
   exports.default = Ember.Component.extend({
-    classNames: ['certification-results-page']
+    classNames: ['certification-results-page'],
+
+    validSupervisor: false,
+    notFinishedYet: true,
+
+    actions: {
+      validateBySupervisor: function validateBySupervisor() {
+        if (this.get('validSupervisor')) {
+          this.set('notFinishedYet', false);
+        }
+      }
+    }
   });
 });
 define('pix-live/components/certifications-list-item', ['exports'], function (exports) {
@@ -8334,7 +8345,7 @@ define("pix-live/templates/components/certification-results-page", ["exports"], 
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "fWu+BYbC", "block": "{\"symbols\":[],\"statements\":[[6,\"div\"],[10,\"class\",\"certification-results__certification-banner\"],[8],[0,\"\\n  \"],[1,[26,\"certification-banner\",null,[[\"user\",\"certificationNumber\"],[[22,[\"user\"]],[22,[\"certificationNumber\"]]]]],false],[0,\"\\n\"],[9],[0,\"\\n\\n\"],[6,\"div\"],[10,\"class\",\"certification-results__content result-content\"],[8],[0,\"\\n\\n  \"],[6,\"div\"],[10,\"class\",\"result-content__panel\"],[8],[0,\"\\n    \"],[6,\"div\"],[10,\"class\",\"result-content__panel-picture\"],[8],[0,\"\\n      \"],[6,\"img\"],[11,\"src\",[27,[[20,\"rootURL\"],\"/images/flag.svg\"]]],[10,\"alt\",\"drapeau\"],[8],[9],[0,\"\\n    \"],[9],[0,\"\\n    \"],[6,\"div\"],[10,\"class\",\"result-content__panel-title\"],[8],[0,\"\\n      Vous avez terminé.\\n    \"],[9],[0,\"\\n    \"],[6,\"div\"],[10,\"class\",\"result-content__panel-description\"],[8],[0,\"\\n      Vos résultats vous seront communiqués dans les 10 jours suivant la fin de ce test par courrier électronique.\\n      Ils seront également transmis à votre établissement.\\n    \"],[9],[0,\"\\n  \"],[9],[0,\"\\n\\n  \"],[6,\"div\"],[10,\"class\",\"result-content__warning-container\"],[8],[0,\"\\n    \"],[6,\"div\"],[10,\"class\",\"result-content__warning-text\"],[8],[0,\"\\n      Si cet ordinateur n’est pas votre machine personnelle, pensez à vous déconnecter.\\n    \"],[9],[0,\"\\n\\n    \"],[6,\"div\"],[10,\"class\",\"result-content__warning-logout\"],[8],[0,\"\\n      \"],[4,\"link-to\",[\"logout\"],[[\"class\"],[\"warning-logout-button\"]],{\"statements\":[[0,\"Se déconnecter\"]],\"parameters\":[]},null],[0,\"\\n    \"],[9],[0,\"\\n  \"],[9],[0,\"\\n\"],[9]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/certification-results-page.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "Gc3OjcCU", "block": "{\"symbols\":[],\"statements\":[[6,\"div\"],[10,\"class\",\"certification-results__certification-banner\"],[8],[0,\"\\n  \"],[1,[26,\"certification-banner\",null,[[\"user\",\"certificationNumber\"],[[22,[\"user\"]],[22,[\"certificationNumber\"]]]]],false],[0,\"\\n\"],[9],[0,\"\\n\\n\"],[6,\"div\"],[10,\"class\",\"certification-results__content result-content\"],[8],[0,\"\\n\"],[4,\"if\",[[22,[\"notFinishedYet\"]]],null,{\"statements\":[[0,\"\\n    \"],[6,\"div\"],[10,\"class\",\"result-content__panel-picture\"],[8],[0,\"\\n      \"],[6,\"img\"],[11,\"src\",[27,[[20,\"rootURL\"],\"/images/flag.svg\"]]],[10,\"alt\",\"drapeau\"],[8],[9],[0,\"\\n    \"],[9],[0,\"\\n    \"],[6,\"div\"],[10,\"class\",\"result-content__panel-title\"],[8],[0,\"\\n      Vous avez presque terminé\\n    \"],[9],[0,\"\\n    \"],[6,\"div\"],[10,\"class\",\"result-content__panel-description-supervisor\"],[8],[0,\"\\n      Appelez le surveillant :\\n      \"],[6,\"br\"],[8],[9],[0,\"Il doit impérativement voir cet écran pour finaliser votre certification.\\n    \"],[9],[0,\"\\n\\n    \"],[6,\"div\"],[10,\"class\",\"result-content__warning-container\"],[8],[0,\"\\n      \"],[6,\"div\"],[10,\"class\",\"result-content__checked-supervisor\"],[8],[0,\"\\n        \"],[1,[26,\"input\",null,[[\"type\",\"id\",\"checked\",\"alt\"],[\"checkbox\",\"validSupervisor\",[22,[\"validSupervisor\"]],\"Le surveillant doit cliquer ici.\"]]],false],[0,\"\\n\\n        \"],[6,\"span\"],[10,\"class\",\"result-content__warning-text\"],[8],[0,\"\\n          Le surveillant a bien vu cet écran.\\n        \"],[9],[0,\"\\n      \"],[9],[0,\"\\n\\n\"],[4,\"if\",[[22,[\"validSupervisor\"]]],null,{\"statements\":[[0,\"        \"],[6,\"button\"],[10,\"class\",\"result-content__button result-content__validation-button\"],[3,\"action\",[[21,0,[]],\"validateBySupervisor\"]],[8],[0,\"Je confirme\"],[9],[0,\"\\n\"]],\"parameters\":[]},{\"statements\":[[0,\"        \"],[6,\"button\"],[10,\"class\",\"result-content__button result-content__button-blocked\"],[8],[0,\"Je confirme\"],[9],[0,\"\\n\"]],\"parameters\":[]}],[0,\"    \"],[9],[0,\"\\n\\n\"]],\"parameters\":[]},{\"statements\":[[0,\"    \"],[6,\"div\"],[10,\"class\",\"result-content__panel-title\"],[8],[0,\"\\n      Bravo, c'est fini !\\n    \"],[9],[0,\"\\n    \"],[6,\"div\"],[10,\"class\",\"result-content__panel-description\"],[8],[0,\"\\n      Vos résultats seront prochainement disponibles depuis votre compte.\\n\\n      \"],[6,\"br\"],[8],[9],[0,\"Vous serez averti par e-mail.\\n    \"],[9],[0,\"\\n    \"],[6,\"div\"],[10,\"class\",\"result-content__warning-container\"],[8],[0,\"\\n      \"],[6,\"div\"],[10,\"class\",\"result-content__warning-text\"],[8],[0,\"\\n        Si cet ordinateur n’est pas le vôtre, pensez à vous déconnecter.\\n      \"],[9],[0,\"\\n\\n      \"],[4,\"link-to\",[\"logout\"],[[\"class\"],[\"result-content__logout-button result-content__button\"]],{\"statements\":[[0,\"Se déconnecter\"]],\"parameters\":[]},null],[0,\"\\n\\n    \"],[9],[0,\"\\n\"]],\"parameters\":[]}],[0,\"\\n\"],[9]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/certification-results-page.hbs" } });
 });
 define("pix-live/templates/components/certifications-list-item", ["exports"], function (exports) {
   "use strict";
@@ -9851,6 +9862,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.51.1+590e8124"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.52.0+ea0b62a3"});
 }
 //# sourceMappingURL=pix-live.map
