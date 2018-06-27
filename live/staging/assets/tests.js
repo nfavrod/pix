@@ -16771,7 +16771,7 @@ define('pix-live/tests/unit/routes/assessments/challenge-test', ['chai', 'mocha'
         });
       });
 
-      (0, _mocha.it)('should not call findRecord for user if assessement is not a certification', function () {
+      (0, _mocha.it)('should not call findRecord for user if Assessment is not a certification', function () {
         // given
         model.assessment.get.withArgs('isCertification').returns(false);
         model.assessment.get.withArgs('course').returns({ getProgress: _sinon.default.stub().returns('course') });
