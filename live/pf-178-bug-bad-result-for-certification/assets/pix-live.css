@@ -4476,36 +4476,41 @@ p.share-profile__organization-name {
 .certification-course-page__order {
   color: #3e4149;
   font-family: "Raleway", Arial, sans-serif;
-  font-size: 22px;
+  font-size: 2rem;
   line-height: 28px;
   text-align: center;
-  margin-top: 15px;
-  margin-bottom: 20px; }
+  margin-top: 5px;
+  margin-bottom: 5px; }
 
 .certification-course-page__cgu {
   color: #3e4149;
   font-family: "Lato", Arial, sans-serif;
-  font-size: 12px;
+  font-size: 1.2rem;
   line-height: 18px;
-  text-align: justify; }
+  text-align: justify;
+  margin: 5px 30px 5px 30px; }
 
 .certification-course-page__session-code-input {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  margin-bottom: 20px;
+  margin-top: 20px;
+  margin-bottom: 15px;
   align-items: center; }
 
+#session-code {
+  padding-left: 5px;
+  height: 45px;
+  border-radius: 4px;
+  border: 1px solid #6A6D76;
+  width: 220px; }
+
 .certification-course-page__errors {
-  height: 1.7%;
   color: #f45c00;
   font-family: "Lato", Arial, sans-serif;
-  font-size: 14px;
-  line-height: 17px;
-  text-align: center; }
-
-#session-code {
-  padding: 0 5px; }
+  font-size: 1.4rem;
+  text-align: center;
+  margin: 5px 5px 5px 5px; }
 
 .certification-course-page__field-button {
   text-align: center; }
@@ -4513,32 +4518,30 @@ p.share-profile__organization-name {
 .certification-course-page__submit_button {
   align-items: center;
   color: #ffffff;
-  font-size: 13px;
+  font-size: 1.4rem;
   text-transform: uppercase;
-  width: 170px;
-  height: 46px;
-  border-radius: 23px;
+  width: 160px;
+  height: 36px;
+  border-radius: 4px;
   border: solid 1px #3d68ff;
   background-color: #3d68ff;
-  padding: 10px 30px; }
+  margin: 5px 5px 5px 5px; }
 
 .certification-course-page__field-button__action-validate {
-  width: 170px;
+  align-items: center;
+  width: 160px;
   height: 46px;
-  border-radius: 23px;
+  border-radius: 4px;
   background: #3d68ff;
   text-align: center;
-  margin: auto;
-  align-items: center;
-  padding: 10px 30px; }
+  margin: auto; }
 
 .certification-course-page__field-button__loader-bar {
   background: url("/images/loader-white.svg");
   background-size: 64px 55px;
   margin: auto;
   height: 50px;
-  width: 64px;
-  margin-top: -15px; }
+  width: 64px; }
 
 .side-menu {
   position: fixed;
@@ -5924,15 +5927,11 @@ hr.project-page__presentation-header-line {
       top: 140px; } }
 
 .certification-start-page__panel {
-  margin-left: 10px;
-  margin-right: 10px;
   display: flex;
   flex-direction: column;
-  margin-bottom: 50px;
-  padding: 20px;
-  margin-top: 50px;
   z-index: 1;
-  align-self: center; }
+  align-self: center;
+  margin: 50px 10px 50px 10px; }
   @media (min-width: 980px) {
     .certification-start-page__panel {
       width: 940px;
@@ -5941,10 +5940,10 @@ hr.project-page__presentation-header-line {
 .certification-start-page__title {
   color: #3e4149;
   font-family: "Raleway", Arial, sans-serif;
-  font-size: 36px;
+  font-size: 3.5rem;
+  font-weight: 600;
   text-align: center;
-  font-weight: bold;
-  line-height: 42px; }
+  margin-bottom: 45px; }
 
 .user-certifications-page__container {
   max-width: 1200px;
