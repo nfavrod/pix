@@ -3548,6 +3548,10 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
+    it('components/tutorial-item.js', function () {
+      // test passed
+    });
+
     it('components/tutorial-panel.js', function () {
       // test passed
     });
@@ -3701,6 +3705,10 @@ define('pix-live/tests/app.lint-test', [], function () {
     });
 
     it('models/snapshot.js', function () {
+      // test passed
+    });
+
+    it('models/tutorial.js', function () {
       // test passed
     });
 
@@ -10800,6 +10808,7 @@ define('pix-live/tests/integration/components/tutorial-panel-test', ['chai', 'mo
     (0, _mocha.it)('should render the default message when answer is not correct and hint is not defined', function () {
       // given
       this.set('hint', null);
+      this.set('tutorials', null);
       this.set('resultItemStatus', 'ko');
 
       // when
@@ -12191,6 +12200,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
     });
 
     it('unit/components/timeout-jauge-test.js', function () {
+      // test passed
+    });
+
+    it('unit/components/tutorial-item-test.js', function () {
       // test passed
     });
 
@@ -15258,6 +15271,72 @@ define('pix-live/tests/unit/components/timeout-jauge-test', ['chai', 'mocha', 'e
     });
   });
 });
+define('pix-live/tests/unit/components/tutorial-item-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+  'use strict';
+
+  (0, _mocha.describe)('Unit | Component | tutorial item', function () {
+    (0, _emberMocha.setupComponentTest)('tutorial-item', {
+      unit: true
+    });
+
+    var component = void 0;
+
+    beforeEach(function () {
+      component = this.subject();
+    });
+
+    (0, _mocha.describe)('#displayedDuration', function () {
+
+      (0, _mocha.it)('should return the time only in hours if the duration time contains hours', function () {
+        // given
+        var tutorial = {
+          id: 'recTuto1',
+          format: 'video',
+          duration: '08:23:32'
+        };
+        component.set('tutorial', tutorial);
+
+        // when
+        var result = component.get('displayedDuration');
+
+        // then
+        (0, _chai.expect)(result).to.equal('8 h');
+      });
+
+      (0, _mocha.it)('should return the time only in minutes if the duration time contains minutes but 0 hours', function () {
+        // given
+        var tutorial = {
+          id: 'recTuto1',
+          format: 'video',
+          duration: '00:04:32'
+        };
+        component.set('tutorial', tutorial);
+
+        // when
+        var result = component.get('displayedDuration');
+
+        // then
+        (0, _chai.expect)(result).to.equal('4 min');
+      });
+
+      (0, _mocha.it)('should return 1 min if the duration time contains 0 minutes or hours', function () {
+        // given
+        var tutorial = {
+          id: 'recTuto1',
+          format: 'video',
+          duration: '00:00:32'
+        };
+        component.set('tutorial', tutorial);
+
+        // when
+        var result = component.get('displayedDuration');
+
+        // then
+        (0, _chai.expect)(result).to.equal('1 min');
+      });
+    });
+  });
+});
 define('pix-live/tests/unit/components/tutorial-panel-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
   'use strict';
 
@@ -15272,86 +15351,92 @@ define('pix-live/tests/unit/components/tutorial-panel-test', ['chai', 'mocha', '
       component = this.subject();
     });
 
-    (0, _mocha.describe)('#shouldDisplayDefaultMessage', function () {
+    (0, _mocha.describe)('#shouldDisplayHintAndTuto', function () {
 
       ['ko', 'aband', 'partially', 'timedout', 'default'].forEach(function (status) {
-        (0, _mocha.it)('should return true when resultItemStatus is "' + status + '" and hint is not defined', function () {
+        (0, _mocha.it)('should return true when resultItemStatus is "' + status + '"', function () {
           // given
           component.set('resultItemStatus', status);
-          component.set('hint', null);
 
           // when
-          var result = component.get('shouldDisplayDefaultMessage');
+          var result = component.get('shouldDisplayHintAndTuto');
 
           // then
           (0, _chai.expect)(result).to.be.true;
-        });
-      });
-
-      (0, _mocha.it)('should return false when resultItemStatus is "ok" and hint is not defined', function () {
-        // given
-        component.set('resultItemStatus', 'ok');
-        component.set('hint', null);
-
-        // when
-        var result = component.get('shouldDisplayDefaultMessage');
-
-        // then
-        (0, _chai.expect)(result).to.be.false;
-      });
-
-      ['ko', 'aband', 'partially', 'timedout', 'default'].forEach(function (status) {
-        (0, _mocha.it)('should return false when resultItemStatus is "' + status + '" and hint is defined', function () {
-          // given
-          component.set('resultItemStatus', status);
-          component.set('hint', 'Un conseil...');
-
-          // when
-          var result = component.get('shouldDisplayDefaultMessage');
-
-          // then
-          (0, _chai.expect)(result).to.be.false;
-        });
-      });
-    });
-
-    (0, _mocha.describe)('#shouldDisplayHint', function () {
-
-      ['ko', 'aband', 'partially', 'timedout', 'default'].forEach(function (status) {
-        (0, _mocha.it)('should return true when resultItemStatus is "' + status + '" and hint is defined', function () {
-          // given
-          component.set('resultItemStatus', status);
-          component.set('hint', 'Un conseil...');
-
-          // when
-          var result = component.get('shouldDisplayHint');
-
-          // then
-          (0, _chai.expect)(result).to.be.true;
-        });
-      });
-
-      ['ko', 'aband', 'partially', 'timedout', 'default'].forEach(function (status) {
-        (0, _mocha.it)('should return false when resultItemStatus is "' + status + '" and hint is not defined', function () {
-          // given
-          component.set('resultItemStatus', status);
-          component.set('hint', null);
-
-          // when
-          var result = component.get('shouldDisplayHint');
-
-          // then
-          (0, _chai.expect)(result).to.be.false;
         });
       });
 
       (0, _mocha.it)('should return false when resultItemStatus is "ok"', function () {
         // given
         component.set('resultItemStatus', 'ok');
+
+        // when
+        var result = component.get('shouldDisplayHintAndTuto');
+
+        // then
+        (0, _chai.expect)(result).to.be.false;
+      });
+    });
+
+    (0, _mocha.describe)('#shouldDisplayHint', function () {
+
+      (0, _mocha.it)('should return true when hint is defined', function () {
+        // given
         component.set('hint', 'Un conseil...');
 
         // when
         var result = component.get('shouldDisplayHint');
+
+        // then
+        (0, _chai.expect)(result).to.be.true;
+      });
+
+      (0, _mocha.it)('should return false when hint is not defined', function () {
+        // given
+        component.set('hint', null);
+
+        // when
+        var result = component.get('shouldDisplayHint');
+
+        // then
+        (0, _chai.expect)(result).to.be.false;
+      });
+    });
+
+    (0, _mocha.describe)('#shouldDisplayTutorial', function () {
+
+      (0, _mocha.it)('should return true when has tutorial', function () {
+        // given
+        var tutorialsExpected = {
+          id: 'recTuto1',
+          format: 'video'
+        };
+        component.set('tutorials', [tutorialsExpected]);
+
+        // when
+        var result = component.get('shouldDisplayTutorial');
+
+        // then
+        (0, _chai.expect)(result).to.be.true;
+      });
+
+      (0, _mocha.it)('should return false when tutorials is empty', function () {
+        // given
+        component.set('tutorials', []);
+
+        // when
+        var result = component.get('shouldDisplayTutorial');
+
+        // then
+        (0, _chai.expect)(result).to.be.false;
+      });
+
+      (0, _mocha.it)('should return false when tutorials is null', function () {
+        // given
+        component.set('tutorials', null);
+
+        // when
+        var result = component.get('shouldDisplayTutorial');
 
         // then
         (0, _chai.expect)(result).to.be.false;
