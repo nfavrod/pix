@@ -4156,6 +4156,12 @@ p.share-profile__organization-name {
   text-transform: uppercase;
   border: none; }
 
+.tutorial-item {
+  margin: 5px; }
+
+.tutorial-item__tutorial-details {
+  display: flex; }
+
 .tutorial-panel {
   display: flex;
   flex-direction: column;
@@ -4195,6 +4201,12 @@ p.share-profile__organization-name {
   width: 100%;
   border-radius: 5px;
   padding: 36px 0 28px; }
+
+.tutorial-panel__tutorials-container {
+  display: flex;
+  flex-direction: column;
+  width: 95%;
+  margin: 20px 0; }
 
 .tutorial-panel__hint-title {
   font-family: "Raleway", Arial, sans-serif;
