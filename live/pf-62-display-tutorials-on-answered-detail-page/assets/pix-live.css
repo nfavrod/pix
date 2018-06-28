@@ -4158,9 +4158,36 @@ p.share-profile__organization-name {
 
 .tutorial-item {
   margin: 5px; }
+  .tutorial-item hr {
+    height: 1px;
+    border: none;
+    color: #D8D8D8;
+    background-color: #D8D8D8; }
 
 .tutorial-item__tutorial-details {
-  display: flex; }
+  display: flex;
+  color: #7d808a;
+  font-family: "Lato", Arial, sans-serif;
+  font-size: 1.3rem;
+  line-height: 1.2rem;
+  padding-top: 15px;
+  word-spacing: 0.3rem; }
+
+.tutorial-item__tutorial-details__format {
+  margin-right: 10px; }
+
+.tutorial-item__tutorial-title {
+  color: #3d68ff;
+  font-family: "Lato", Arial, sans-serif;
+  font-size: 1.7rem;
+  font-weight: bold;
+  line-height: 1.3rem; }
+
+.tutorial-item__tutorial-title-url,
+.tutorial-item__tutorial-title-url:hover,
+.tutorial-item__tutorial-title-url:visited {
+  color: #3d68ff;
+  text-decoration: none; }
 
 .tutorial-panel {
   display: flex;
