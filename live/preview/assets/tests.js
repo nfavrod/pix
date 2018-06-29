@@ -4240,6 +4240,78 @@ define('pix-live/tests/integration/components/certification-banner-test', ['chai
     });
   });
 });
+define('pix-live/tests/integration/components/certification-code-validation-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+  'use strict';
+
+  (0, _mocha.describe)('Integration | Component | certification-code-validation', function () {
+
+    (0, _emberMocha.setupComponentTest)('certification-code-validation', {
+      integration: true
+    });
+
+    (0, _mocha.describe)('Error management', function () {
+
+      (0, _mocha.it)('should not display an error message by default', function () {
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "MoKumuCt",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"certification-code-validation\"],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+
+        // then
+        (0, _chai.expect)(this.$('.certification-course-page__errors')).to.have.length(0);
+      });
+
+      (0, _mocha.it)('should display an error message when it exists', function () {
+        // given
+        this.set('_errorMessage', 'Un lapin ne peut pas s’enamourer d’une belette :(');
+
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "poxpfirV",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"certification-code-validation\",null,[[\"_errorMessage\"],[[22,[\"_errorMessage\"]]]]],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+
+        // then
+        (0, _chai.expect)(this.$('.certification-course-page__errors')).to.have.length(1);
+      });
+    });
+
+    (0, _mocha.describe)('Loading management', function () {
+
+      (0, _mocha.it)('should not display any loading spinner by default', function () {
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "MoKumuCt",
+          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"certification-code-validation\"],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+
+        // then
+        (0, _chai.expect)(this.$('.certification-course-page__field-button__loader-bar')).to.have.length(0);
+        (0, _chai.expect)(this.$('.certification-course-page__submit_button')).to.have.length(1);
+      });
+
+      (0, _mocha.it)('should display a loading spinner when loading certification', function () {
+        // given
+        this.set('_loadingCertification', true);
+
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "bkC1J/jq",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"certification-code-validation\",null,[[\"_loadingCertification\"],[[22,[\"_loadingCertification\"]]]]],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+
+        // then
+        (0, _chai.expect)(this.$('.certification-course-page__field-button__loader-bar')).to.have.length(1);
+        (0, _chai.expect)(this.$('.certification-course-page__submit_button')).to.have.length(0);
+      });
+    });
+  });
+});
 define('pix-live/tests/integration/components/certification-results-page-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
   'use strict';
 
@@ -4272,7 +4344,34 @@ define('pix-live/tests/integration/components/certification-results-page-test', 
         (0, _chai.expect)(this.$('.certification-banner__container .certification-banner__certification-number').text().trim()).to.equal('#' + certificationNumber);
       });
 
-      (0, _mocha.it)('should have a button to logout', function () {
+      (0, _mocha.it)('should not be able to click on validation button when the verification is unchecked ', function () {
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "xGrlHSN6",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"certification-results-page\",null,[[\"user\",\"certificationNumber\"],[[22,[\"user\"]],[22,[\"certificationNumber\"]]]]],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+
+        // then
+        (0, _chai.expect)(this.$('.result-content__validation-button')).to.have.lengthOf(0);
+        (0, _chai.expect)(this.$('.result-content__button-blocked')).to.have.lengthOf(1);
+      });
+
+      (0, _mocha.it)('should be able to click on validation when we check to show the last message', function () {
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "xGrlHSN6",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"certification-results-page\",null,[[\"user\",\"certificationNumber\"],[[22,[\"user\"]],[22,[\"certificationNumber\"]]]]],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+        this.$('#validSupervisor').click();
+        this.$('.result-content__validation-button').click();
+
+        // then
+        (0, _chai.expect)(this.$('.result-content__panel-description').text()).to.contains('Vos résultats seront prochainement disponibles depuis votre compte.');
+      });
+
+      (0, _mocha.it)('should have a button to logout at the end of certification', function () {
         // given
         Ember.LinkComponent.reopen({
           href: Ember.computed.alias('qualifiedRouteName')
@@ -4284,10 +4383,13 @@ define('pix-live/tests/integration/components/certification-results-page-test', 
           "block": "{\"symbols\":[],\"statements\":[[1,[26,\"certification-results-page\",null,[[\"user\",\"certificationNumber\"],[[22,[\"user\"]],[22,[\"certificationNumber\"]]]]],false]],\"hasEval\":false}",
           "meta": {}
         }));
+        this.$('#validSupervisor').click();
+        this.$('.result-content__validation-button').click();
 
         // then
-        (0, _chai.expect)(this.$('.warning-logout-button')).to.have.lengthOf(1);
-        (0, _chai.expect)(this.$('.warning-logout-button').attr('href')).to.equal('logout');
+        (0, _chai.expect)(this.$('.result-content__logout-button')).to.have.lengthOf(1);
+        (0, _chai.expect)(this.$('.result-content__logout-button').text()).to.equal('Se déconnecter');
+        (0, _chai.expect)(this.$('.result-content__logout-button').attr('href')).to.equal('logout');
       });
     });
   });
@@ -11720,6 +11822,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
+    it('integration/components/certification-code-validation-test.js', function () {
+      // test passed
+    });
+
     it('integration/components/certification-results-page-test.js', function () {
       // test passed
     });
@@ -12616,7 +12722,9 @@ define('pix-live/tests/unit/components/certification-code-validation-test', ['ch
   (0, _mocha.describe)('Unit | Component | certification-code-value', function () {
 
     (0, _emberMocha.setupTest)('component:certification-code-validation', {});
+
     var component = void 0;
+
     beforeEach(function () {
       component = this.subject();
     });
@@ -12641,7 +12749,7 @@ define('pix-live/tests/unit/components/certification-code-validation-test', ['ch
       (0, _mocha.it)('should create and save a new course', function () {
         // given
         component.set('store', storeStub);
-        component.set('accessCode', 'ABCD12');
+        component.set('_accessCode', 'ABCD12');
 
         // when
         component.send('submit');
@@ -12652,10 +12760,10 @@ define('pix-live/tests/unit/components/certification-code-validation-test', ['ch
         _sinon.default.assert.called(storeSaveStub);
       });
 
-      (0, _mocha.it)('should set loadingCertification at true', function () {
+      (0, _mocha.it)('should set _loadingCertification at true', function () {
         // given
         component.set('store', storeStub);
-        component.set('accessCode', 'ABCD12');
+        component.set('_accessCode', 'ABCD12');
 
         // when
         component.send('submit');
@@ -16019,7 +16127,7 @@ define('pix-live/tests/unit/models/certification-test', ['chai', 'mocha', 'ember
 
   (0, _mocha.describe)('Unit | Model | certification', function () {
     (0, _emberMocha.setupModelTest)('certification', {
-      needs: ['model:user']
+      needs: ['model:user', 'model:result-competence-tree']
     });
 
     // Replace this with your real tests.
@@ -16408,7 +16516,7 @@ define('pix-live/tests/unit/models/organization-test', ['chai', 'mocha', 'ember-
 
   (0, _mocha.describe)('Unit | Model | organization', function () {
     (0, _emberMocha.setupModelTest)('organization', {
-      needs: []
+      needs: ['model:user', 'model:snapshot']
     });
 
     (0, _mocha.it)('exists', function () {
@@ -16663,7 +16771,7 @@ define('pix-live/tests/unit/routes/assessments/challenge-test', ['chai', 'mocha'
         });
       });
 
-      (0, _mocha.it)('should not call findRecord for user if assessement is not a certification', function () {
+      (0, _mocha.it)('should not call findRecord for user if Assessment is not a certification', function () {
         // given
         model.assessment.get.withArgs('isCertification').returns(false);
         model.assessment.get.withArgs('course').returns({ getProgress: _sinon.default.stub().returns('course') });
