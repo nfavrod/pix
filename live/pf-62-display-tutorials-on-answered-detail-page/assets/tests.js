@@ -10789,7 +10789,7 @@ define('pix-live/tests/integration/components/tutorial-panel-test', ['chai', 'mo
       context('when there is nor a hint or a tutorial', function () {
         beforeEach(function () {
           this.set('hint', null);
-          this.set('tutorials', null);
+          this.set('tutorials', []);
         });
         (0, _mocha.it)('should render the default message', function () {
           // when
@@ -10823,7 +10823,7 @@ define('pix-live/tests/integration/components/tutorial-panel-test', ['chai', 'mo
       context('when a hint is present', function () {
         beforeEach(function () {
           this.set('hint', 'Ceci est un indice.');
-          this.set('tutorials', null);
+          this.set('tutorials', []);
         });
 
         (0, _mocha.it)('should render the hint', function () {
@@ -15505,7 +15505,7 @@ define('pix-live/tests/unit/components/tutorial-panel-test', ['chai', 'mocha', '
       (0, _mocha.it)('should return true when hint is defined and tuto is not', function () {
         // given
         component.set('hint', 'Un conseil...');
-        component.set('tutorials', null);
+        component.set('tutorials', []);
 
         // when
         var result = component.get('shouldDisplayHintOrTuto');
@@ -15529,7 +15529,7 @@ define('pix-live/tests/unit/components/tutorial-panel-test', ['chai', 'mocha', '
       (0, _mocha.it)('should return false when hint and tutorials are not defined', function () {
         // given
         component.set('hint', null);
-        component.set('tutorials', null);
+        component.set('tutorials', []);
 
         // when
         var result = component.get('shouldDisplayHintOrTuto');
@@ -15559,17 +15559,6 @@ define('pix-live/tests/unit/components/tutorial-panel-test', ['chai', 'mocha', '
       (0, _mocha.it)('should return false when tutorials is empty', function () {
         // given
         component.set('tutorials', []);
-
-        // when
-        var result = component.get('shouldDisplayTutorial');
-
-        // then
-        (0, _chai.expect)(result).to.be.false;
-      });
-
-      (0, _mocha.it)('should return false when tutorials is null', function () {
-        // given
-        component.set('tutorials', null);
 
         // when
         var result = component.get('shouldDisplayTutorial');

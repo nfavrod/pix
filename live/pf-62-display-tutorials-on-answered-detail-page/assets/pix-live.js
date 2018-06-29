@@ -2927,7 +2927,7 @@ define('pix-live/components/tutorial-item', ['exports'], function (exports) {
 
   });
 });
-define('pix-live/components/tutorial-panel', ['exports', 'lodash'], function (exports, _lodash) {
+define('pix-live/components/tutorial-panel', ['exports'], function (exports) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -2945,7 +2945,8 @@ define('pix-live/components/tutorial-panel', ['exports', 'lodash'], function (ex
     }),
 
     shouldDisplayHintOrTuto: Ember.computed('resultItemStatus', function () {
-      return Boolean(this.get('hint')) || !_lodash.default.isEmpty(this.get('tutorials'));
+      var tutorials = this.get('tutorials') || [];
+      return Boolean(this.get('hint')) || tutorials.length > 0;
     }),
 
     shouldDisplayHint: Ember.computed('resultItemStatus', 'hint', function () {
@@ -2953,7 +2954,8 @@ define('pix-live/components/tutorial-panel', ['exports', 'lodash'], function (ex
     }),
 
     shouldDisplayTutorial: Ember.computed('resultItemStatus', 'tutorials', function () {
-      return !_lodash.default.isEmpty(this.get('tutorials'));
+      var tutorials = this.get('tutorials') || [];
+      return tutorials.length > 0;
     }),
 
     limitedTutorials: Ember.computed('tutorials', function () {
@@ -8945,7 +8947,7 @@ define("pix-live/templates/components/tutorial-item", ["exports"], function (exp
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "ZMMg4Prt", "block": "{\"symbols\":[],\"statements\":[[6,\"div\"],[10,\"class\",\"tutorial-item__tutorial-title\"],[8],[0,\"\\n  \"],[6,\"a\"],[11,\"href\",[27,[[22,[\"tutorial\",\"link\"]]]]],[10,\"target\",\"_blank\"],[10,\"class\",\"tutorial-item__tutorial-title-url\"],[8],[1,[22,[\"tutorial\",\"title\"]],false],[9],[0,\"\\n\"],[9],[0,\"\\n\"],[6,\"div\"],[10,\"class\",\"tutorial-item__tutorial-details\"],[8],[0,\"\\n  \"],[6,\"div\"],[10,\"class\",\"tutorial-item__tutorial-details__format\"],[8],[0,\"\\n    \"],[6,\"img\"],[11,\"src\",[27,[\"/images/\",[20,\"formatImageName\"],\"-icon.svg\"]]],[11,\"alt\",[27,[[22,[\"tutorial\",\"format\"]]]]],[8],[9],[0,\"\\n  \"],[9],[0,\"\\n  \"],[6,\"div\"],[10,\"class\",\"tutorial-item__tutorial-details__informations\"],[8],[0,\"\\n    \"],[1,[20,\"displayedDuration\"],false],[0,\" | par \"],[1,[22,[\"tutorial\",\"source\"]],false],[0,\"\\n  \"],[9],[0,\"\\n\"],[9],[0,\"\\n\"],[6,\"hr\"],[8],[9]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/tutorial-item.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "RN8IeidR", "block": "{\"symbols\":[],\"statements\":[[6,\"div\"],[10,\"class\",\"tutorial-item__tutorial-title\"],[8],[0,\"\\n  \"],[6,\"a\"],[11,\"href\",[27,[[22,[\"tutorial\",\"link\"]]]]],[10,\"target\",\"_blank\"],[10,\"class\",\"tutorial-item__tutorial-title-url\"],[8],[1,[22,[\"tutorial\",\"title\"]],false],[9],[0,\"\\n\"],[9],[0,\"\\n\"],[6,\"div\"],[10,\"class\",\"tutorial-item__tutorial-details\"],[8],[0,\"\\n  \"],[6,\"div\"],[10,\"class\",\"tutorial-item__tutorial-details__format\"],[8],[0,\"\\n    \"],[6,\"img\"],[11,\"src\",[27,[\"/images/icons/\",[20,\"formatImageName\"],\"-icon.svg\"]]],[11,\"alt\",[27,[[22,[\"tutorial\",\"format\"]]]]],[8],[9],[0,\"\\n  \"],[9],[0,\"\\n  \"],[6,\"div\"],[10,\"class\",\"tutorial-item__tutorial-details__informations\"],[8],[0,\"\\n    \"],[1,[20,\"displayedDuration\"],false],[0,\" | par \"],[1,[22,[\"tutorial\",\"source\"]],false],[0,\"\\n  \"],[9],[0,\"\\n\"],[9],[0,\"\\n\"],[6,\"hr\"],[8],[9]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/tutorial-item.hbs" } });
 });
 define("pix-live/templates/components/tutorial-panel", ["exports"], function (exports) {
   "use strict";
@@ -9958,6 +9960,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.52.0+7dd1d2e2"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.53.0+21c28f83"});
 }
 //# sourceMappingURL=pix-live.map
