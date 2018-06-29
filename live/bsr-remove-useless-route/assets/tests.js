@@ -3568,10 +3568,6 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
-    it('helpers/eq.js', function () {
-      // test passed
-    });
-
     it('helpers/extract-extension.js', function () {
       // test passed
     });
@@ -3581,10 +3577,6 @@ define('pix-live/tests/app.lint-test', [], function () {
     });
 
     it('helpers/inc.js', function () {
-      // test passed
-    });
-
-    it('helpers/or.js', function () {
       // test passed
     });
 
@@ -12178,19 +12170,11 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
-    it('unit/helpers/eq-test.js', function () {
-      // test passed
-    });
-
     it('unit/helpers/extract-extension-test.js', function () {
       // test passed
     });
 
     it('unit/helpers/get-challenge-component-class-test.js', function () {
-      // test passed
-    });
-
-    it('unit/helpers/or-test.js', function () {
       // test passed
     });
 
@@ -15601,24 +15585,6 @@ define('pix-live/tests/unit/helpers/convert-to-html-test', ['chai', 'mocha', 'pi
     });
   });
 });
-define('pix-live/tests/unit/helpers/eq-test', ['chai', 'mocha', 'pix-live/helpers/eq'], function (_chai, _mocha, _eq) {
-  'use strict';
-
-  (0, _mocha.describe)('Unit | Helper | Eq', function () {
-    // Replace this with your real tests.
-    [{ input: '', output: false }, { input: null, output: false }, { input: NaN, output: false }, { input: 'Undefined', output: false }, { input: 0, output: false }, { input: 42, output: false }, { input: [42], output: false }, { input: [''], output: false }, { input: [null], output: false }, { input: [], output: false }, { input: ['', ''], output: true }, { input: [42, 43], output: false }, { input: [42, ''], output: false }, { input: [42, 0], output: false }, { input: [42, 'empty'], output: false }, { input: [42, null], output: false }, { input: [42, 'undefined'], output: false }, { input: [42, 42], output: true }].forEach(function (_ref) {
-      var input = _ref.input,
-          output = _ref.output;
-
-      (0, _mocha.it)('should render ' + output + ' when ' + JSON.stringify(input) + ' provided', function () {
-        //When
-        var result = (0, _eq.eq)(input);
-        //then
-        (0, _chai.expect)(result).to.be.equal(output);
-      });
-    });
-  });
-});
 define('pix-live/tests/unit/helpers/extract-extension-test', ['chai', 'mocha', 'pix-live/helpers/extract-extension'], function (_chai, _mocha, _extractExtension) {
   'use strict';
 
@@ -15647,24 +15613,6 @@ define('pix-live/tests/unit/helpers/get-challenge-component-class-test', ['chai'
 
         // then
         (0, _chai.expect)(componentClass).to.equal(useCase.expectedClass);
-      });
-    });
-  });
-});
-define('pix-live/tests/unit/helpers/or-test', ['chai', 'mocha', 'pix-live/helpers/or'], function (_chai, _mocha, _or) {
-  'use strict';
-
-  (0, _mocha.describe)('Unit | Helper | or', function () {
-    // Replace this with your real tests.
-    [{ input: '', output: false }, { input: null, output: false }, { input: NaN, output: false }, { input: 'Undefined', output: false }, { input: 0, output: false }, { input: true, output: false }, { input: [true], output: false }, { input: [''], output: false }, { input: [null], output: false }, { input: [], output: false }, { input: ['', ''], output: false }, { input: [true, false], output: true }, { input: [true, ''], output: true }, { input: [true, 0], output: true }, { input: [true, 'empty'], output: true }, { input: [true, null], output: true }, { input: [true, 'undefined'], output: true }, { input: [true, true], output: true }].forEach(function (_ref) {
-      var input = _ref.input,
-          output = _ref.output;
-
-      (0, _mocha.it)('should render ' + output + ' when ' + JSON.stringify(input) + ' provided', function () {
-        //When
-        var result = (0, _or.or)(input);
-        //then
-        (0, _chai.expect)(result).to.be.equal(output);
       });
     });
   });
