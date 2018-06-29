@@ -15335,6 +15335,39 @@ define('pix-live/tests/unit/components/tutorial-item-test', ['chai', 'mocha', 'e
         (0, _chai.expect)(result).to.equal('1 min');
       });
     });
+
+    (0, _mocha.describe)('#formatImageName', function () {
+
+      ['vidéo', 'son', 'page'].forEach(function (format) {
+        (0, _mocha.it)('should return the same name "' + format + '" to display the image', function () {
+          // given
+          var tutorial = {
+            format: format
+          };
+          component.set('tutorial', tutorial);
+
+          // when
+          var result = component.get('formatImageName');
+
+          // then
+          (0, _chai.expect)(result).to.equal(format);
+        });
+      });
+
+      (0, _mocha.it)('should return the default value "page" when is not precise format', function () {
+        // given
+        var tutorial = {
+          format: 'site'
+        };
+        component.set('tutorial', tutorial);
+
+        // when
+        var result = component.get('formatImageName');
+
+        // then
+        (0, _chai.expect)(result).to.equal('page');
+      });
+    });
   });
 });
 define('pix-live/tests/unit/components/tutorial-panel-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
@@ -15440,6 +15473,56 @@ define('pix-live/tests/unit/components/tutorial-panel-test', ['chai', 'mocha', '
 
         // then
         (0, _chai.expect)(result).to.be.false;
+      });
+    });
+
+    (0, _mocha.describe)('#limitedTutorial', function () {
+
+      (0, _mocha.it)('should return an array with the same tutorials', function () {
+        // given
+        var tutorialsExpected1 = {
+          id: 'recTuto1',
+          format: 'video'
+        };
+        var tutorialsExpected2 = {
+          id: 'recTuto2',
+          format: 'son'
+        };
+        var tutorials = [tutorialsExpected1, tutorialsExpected2];
+        component.set('tutorials', tutorials);
+
+        // when
+        var result = component.get('limitedTutorial');
+
+        // then
+        (0, _chai.expect)(result).to.deep.equal(tutorials);
+      });
+
+      (0, _mocha.it)('should return only 3 elements if the tutorials contains more', function () {
+        // given
+        var tutorialsExpected1 = {
+          id: 'recTuto1'
+        };
+        var tutorialsExpected2 = {
+          id: 'recTuto2'
+        };
+        var tutorialsExpected3 = {
+          id: 'recTuto3'
+        };
+        var tutorialsExpected4 = {
+          id: 'recTuto4'
+        };
+
+        var tutorials = [tutorialsExpected1, tutorialsExpected2, tutorialsExpected3, tutorialsExpected4];
+        var expectedTutorials = [tutorialsExpected1, tutorialsExpected2, tutorialsExpected3];
+        component.set('tutorials', tutorials);
+
+        // when
+        var result = component.get('limitedTutorial');
+
+        // then
+        (0, _chai.expect)(result.length).to.equal(3);
+        (0, _chai.expect)(result).to.deep.equal(expectedTutorials);
       });
     });
   });

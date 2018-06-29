@@ -4162,7 +4162,8 @@ p.share-profile__organization-name {
     height: 1px;
     border: none;
     color: #D8D8D8;
-    background-color: #D8D8D8; }
+    background-color: #D8D8D8;
+    margin: 15px 0; }
 
 .tutorial-item__tutorial-details {
   display: flex;
@@ -4170,8 +4171,9 @@ p.share-profile__organization-name {
   font-family: "Lato", Arial, sans-serif;
   font-size: 1.3rem;
   line-height: 1.2rem;
-  padding-top: 15px;
-  word-spacing: 0.3rem; }
+  word-spacing: 0.3rem;
+  margin-top: 10px;
+  align-items: center; }
 
 .tutorial-item__tutorial-details__format {
   margin-right: 10px; }

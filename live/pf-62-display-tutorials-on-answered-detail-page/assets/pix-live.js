@@ -2899,6 +2899,7 @@ define('pix-live/components/tutorial-item', ['exports'], function (exports) {
   exports.default = Ember.Component.extend({
     classNames: ['tutorial-item'],
 
+    formatWithImage: ['vidéo', 'son', 'page'],
     tutorial: null,
 
     displayedDuration: Ember.computed('tutorial', function () {
@@ -2913,6 +2914,15 @@ define('pix-live/components/tutorial-item', ['exports'], function (exports) {
         return durationByTime[1] + ' min';
       }
       return '1 min';
+    }),
+
+    formatImageName: Ember.computed('tutorial', function () {
+      var format = this.get('tutorial').format;
+      if (this.get('formatWithImage').includes(format)) {
+        return format;
+      } else {
+        return 'page';
+      }
     })
 
   });
@@ -2940,6 +2950,10 @@ define('pix-live/components/tutorial-panel', ['exports', 'lodash'], function (ex
 
     shouldDisplayTutorial: Ember.computed('resultItemStatus', 'tutorials', function () {
       return !_lodash.default.isEmpty(this.get('tutorials'));
+    }),
+
+    limitedTutorial: Ember.computed('tutorials', function () {
+      return this.get('tutorials').slice(0, 3);
     })
 
   });
@@ -8927,7 +8941,7 @@ define("pix-live/templates/components/tutorial-item", ["exports"], function (exp
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "lEJ5Ukfe", "block": "{\"symbols\":[],\"statements\":[[6,\"div\"],[10,\"class\",\"tutorial-item__tutorial-title\"],[8],[0,\"\\n  \"],[6,\"a\"],[11,\"href\",[27,[[22,[\"tutorial\",\"link\"]]]]],[10,\"target\",\"_blank\"],[10,\"class\",\"tutorial-item__tutorial-title-url\"],[8],[1,[22,[\"tutorial\",\"title\"]],false],[9],[0,\"\\n\"],[9],[0,\"\\n\"],[6,\"div\"],[10,\"class\",\"tutorial-item__tutorial-details\"],[8],[0,\"\\n  \"],[6,\"div\"],[10,\"class\",\"tutorial-item__tutorial-details__format\"],[8],[0,\"\\n    \"],[6,\"img\"],[11,\"src\",[27,[\"/images/\",[22,[\"tutorial\",\"format\"]],\"-icone.png\"]]],[11,\"alt\",[27,[[22,[\"tutorial\",\"format\"]]]]],[8],[9],[0,\"\\n  \"],[9],[0,\"\\n  \"],[6,\"div\"],[10,\"class\",\"tutorial-item__tutorial-details__informations\"],[8],[0,\"\\n    \"],[1,[20,\"displayedDuration\"],false],[0,\" | par \"],[1,[22,[\"tutorial\",\"source\"]],false],[0,\"\\n  \"],[9],[0,\"\\n\"],[9],[0,\"\\n\"],[6,\"hr\"],[8],[9]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/tutorial-item.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "ZMMg4Prt", "block": "{\"symbols\":[],\"statements\":[[6,\"div\"],[10,\"class\",\"tutorial-item__tutorial-title\"],[8],[0,\"\\n  \"],[6,\"a\"],[11,\"href\",[27,[[22,[\"tutorial\",\"link\"]]]]],[10,\"target\",\"_blank\"],[10,\"class\",\"tutorial-item__tutorial-title-url\"],[8],[1,[22,[\"tutorial\",\"title\"]],false],[9],[0,\"\\n\"],[9],[0,\"\\n\"],[6,\"div\"],[10,\"class\",\"tutorial-item__tutorial-details\"],[8],[0,\"\\n  \"],[6,\"div\"],[10,\"class\",\"tutorial-item__tutorial-details__format\"],[8],[0,\"\\n    \"],[6,\"img\"],[11,\"src\",[27,[\"/images/\",[20,\"formatImageName\"],\"-icon.svg\"]]],[11,\"alt\",[27,[[22,[\"tutorial\",\"format\"]]]]],[8],[9],[0,\"\\n  \"],[9],[0,\"\\n  \"],[6,\"div\"],[10,\"class\",\"tutorial-item__tutorial-details__informations\"],[8],[0,\"\\n    \"],[1,[20,\"displayedDuration\"],false],[0,\" | par \"],[1,[22,[\"tutorial\",\"source\"]],false],[0,\"\\n  \"],[9],[0,\"\\n\"],[9],[0,\"\\n\"],[6,\"hr\"],[8],[9]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/tutorial-item.hbs" } });
 });
 define("pix-live/templates/components/tutorial-panel", ["exports"], function (exports) {
   "use strict";
@@ -8935,7 +8949,7 @@ define("pix-live/templates/components/tutorial-panel", ["exports"], function (ex
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "BcrAsOWn", "block": "{\"symbols\":[\"tutorial\"],\"statements\":[[4,\"if\",[[22,[\"shouldDisplayHintAndTuto\"]]],null,{\"statements\":[[0,\"  \"],[6,\"div\"],[10,\"class\",\"tutorial-panel__hint-container\"],[8],[0,\"\\n    \"],[6,\"header\"],[10,\"class\",\"tutorial-panel__hint-container-header\"],[8],[0,\"\\n      \"],[6,\"h3\"],[10,\"class\",\"tutorial-panel__hint-title\"],[8],[6,\"span\"],[8],[0,\"Pour réussir la prochaine fois\"],[9],[9],[0,\"\\n    \"],[9],[0,\"\\n\\n\"],[4,\"if\",[[22,[\"shouldDisplayHint\"]]],null,{\"statements\":[[0,\"      \"],[6,\"div\"],[10,\"class\",\"tutorial-panel__hint-container-body\"],[8],[0,\"\\n        \"],[6,\"div\"],[10,\"class\",\"tutorial-panel__hint-picto-container\"],[8],[0,\"\\n          \"],[6,\"img\"],[11,\"src\",[27,[[20,\"rootURL\"],\"/images/comparison-window/icon-lampe.svg\"]]],[10,\"alt\",\"\"],[10,\"class\",\"tutorial-panel__hint-picto\"],[8],[9],[0,\"\\n        \"],[9],[0,\"\\n        \"],[1,[26,\"markdown-to-html\",null,[[\"class\",\"markdown\"],[\"tutorial-panel__hint-content\",[22,[\"hint\"]]]]],false],[0,\"\\n      \"],[9],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n  \"],[9],[0,\"\\n\\n\"],[4,\"if\",[[22,[\"shouldDisplayTutorial\"]]],null,{\"statements\":[[0,\"      \"],[6,\"div\"],[10,\"class\",\"tutorial-panel__tutorials-container\"],[8],[0,\"\\n\"],[4,\"each\",[[22,[\"tutorials\"]]],null,{\"statements\":[[0,\"          \"],[1,[26,\"tutorial-item\",null,[[\"tutorial\"],[[21,1,[]]]]],false],[0,\"\\n\"]],\"parameters\":[1]},null],[0,\"      \"],[9],[0,\"\\n\\n\"]],\"parameters\":[]},{\"statements\":[[0,\"    \"],[6,\"div\"],[10,\"class\",\"tutorial-panel__default-message-container\"],[8],[0,\"\\n      \"],[6,\"div\"],[10,\"class\",\"tutorial-panel__default-message-picto-container\"],[8],[0,\"\\n        \"],[6,\"img\"],[11,\"src\",[27,[[20,\"rootURL\"],\"/images/comparison-window/icon-tuto.svg\"]]],[10,\"alt\",\"\"],[10,\"class\",\"tutorial-panel__default-message-picto\"],[8],[9],[0,\"\\n      \"],[9],[0,\"\\n      \"],[6,\"div\"],[10,\"class\",\"tutorial-panel__default-message-title\"],[8],[0,\"Bientôt ici des tutoriaux pour vous aider à réussir ce type\\n        d'épreuves !!\\n      \"],[9],[0,\"\\n    \"],[9],[0,\"\\n\"]],\"parameters\":[]}],[0,\"\\n\"]],\"parameters\":[]},null]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/tutorial-panel.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "4ke3S7Ge", "block": "{\"symbols\":[\"tutorial\"],\"statements\":[[4,\"if\",[[22,[\"shouldDisplayHintAndTuto\"]]],null,{\"statements\":[[0,\"  \"],[6,\"div\"],[10,\"class\",\"tutorial-panel__hint-container\"],[8],[0,\"\\n    \"],[6,\"header\"],[10,\"class\",\"tutorial-panel__hint-container-header\"],[8],[0,\"\\n      \"],[6,\"h3\"],[10,\"class\",\"tutorial-panel__hint-title\"],[8],[6,\"span\"],[8],[0,\"Pour réussir la prochaine fois\"],[9],[9],[0,\"\\n    \"],[9],[0,\"\\n\\n\"],[4,\"if\",[[22,[\"shouldDisplayHint\"]]],null,{\"statements\":[[0,\"      \"],[6,\"div\"],[10,\"class\",\"tutorial-panel__hint-container-body\"],[8],[0,\"\\n        \"],[6,\"div\"],[10,\"class\",\"tutorial-panel__hint-picto-container\"],[8],[0,\"\\n          \"],[6,\"img\"],[11,\"src\",[27,[[20,\"rootURL\"],\"/images/comparison-window/icon-lampe.svg\"]]],[10,\"alt\",\"\"],[10,\"class\",\"tutorial-panel__hint-picto\"],[8],[9],[0,\"\\n        \"],[9],[0,\"\\n        \"],[1,[26,\"markdown-to-html\",null,[[\"class\",\"markdown\"],[\"tutorial-panel__hint-content\",[22,[\"hint\"]]]]],false],[0,\"\\n      \"],[9],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n  \"],[9],[0,\"\\n\\n\"],[4,\"if\",[[22,[\"shouldDisplayTutorial\"]]],null,{\"statements\":[[0,\"      \"],[6,\"div\"],[10,\"class\",\"tutorial-panel__tutorials-container\"],[8],[0,\"\\n\"],[4,\"each\",[[22,[\"tutorials\"]]],null,{\"statements\":[[0,\"          \"],[1,[26,\"tutorial-item\",null,[[\"tutorial\"],[[22,[\"limitedTutorial\"]]]]],false],[0,\"\\n\"]],\"parameters\":[1]},null],[0,\"      \"],[9],[0,\"\\n\\n\"]],\"parameters\":[]},{\"statements\":[[0,\"    \"],[6,\"div\"],[10,\"class\",\"tutorial-panel__default-message-container\"],[8],[0,\"\\n      \"],[6,\"div\"],[10,\"class\",\"tutorial-panel__default-message-picto-container\"],[8],[0,\"\\n        \"],[6,\"img\"],[11,\"src\",[27,[[20,\"rootURL\"],\"/images/comparison-window/icon-tuto.svg\"]]],[10,\"alt\",\"\"],[10,\"class\",\"tutorial-panel__default-message-picto\"],[8],[9],[0,\"\\n      \"],[9],[0,\"\\n      \"],[6,\"div\"],[10,\"class\",\"tutorial-panel__default-message-title\"],[8],[0,\"Bientôt ici des tutoriaux pour vous aider à réussir ce type\\n        d'épreuves !!\\n      \"],[9],[0,\"\\n    \"],[9],[0,\"\\n\"]],\"parameters\":[]}],[0,\"\\n\"]],\"parameters\":[]},null]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/tutorial-panel.hbs" } });
 });
 define("pix-live/templates/components/user-certifications-detail-area", ["exports"], function (exports) {
   "use strict";
@@ -9940,6 +9954,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.52.0+ed5064c1"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.52.0+10f712af"});
 }
 //# sourceMappingURL=pix-live.map
