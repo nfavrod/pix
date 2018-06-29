@@ -10770,8 +10770,8 @@ define('pix-live/tests/integration/components/tutorial-panel-test', ['chai', 'mo
 
       // when
       this.render(Ember.HTMLBars.template({
-        "id": "Pzg1dvfo",
-        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]]]]],false]],\"hasEval\":false}",
+        "id": "XxENc2GT",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\",\"tutorials\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]],[22,[\"tutorials\"]]]]],false]],\"hasEval\":false}",
         "meta": {}
       }));
 
@@ -10781,49 +10781,113 @@ define('pix-live/tests/integration/components/tutorial-panel-test', ['chai', 'mo
       (0, _chai.expect)(this.$('.tutorial-panel__default-message-container')).to.have.lengthOf(0);
     });
 
-    (0, _mocha.it)('should render the hint when answer is not correct and hint is present', function () {
-      // given
-      this.set('hint', 'Ceçi est une astuce.');
-      this.set('resultItemStatus', 'ko');
+    context('when the result is not ok', function () {
+      beforeEach(function () {
+        this.set('resultItemStatus', 'ko');
+      });
 
-      // when
-      this.render(Ember.HTMLBars.template({
-        "id": "Pzg1dvfo",
-        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]]]]],false]],\"hasEval\":false}",
-        "meta": {}
-      }));
+      context('when there is nor a hint or a tutorial', function () {
+        beforeEach(function () {
+          this.set('hint', null);
+          this.set('tutorials', null);
+        });
+        (0, _mocha.it)('should render the default message', function () {
+          // when
+          this.render(Ember.HTMLBars.template({
+            "id": "XxENc2GT",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\",\"tutorials\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]],[22,[\"tutorials\"]]]]],false]],\"hasEval\":false}",
+            "meta": {}
+          }));
 
-      // then
-      (0, _chai.expect)(this.$('.tutorial-panel')).to.have.lengthOf(1);
-      (0, _chai.expect)(this.$('.tutorial-panel__hint-container')).to.have.lengthOf(1);
-      (0, _chai.expect)(this.$('.tutorial-panel__hint-title')).to.have.lengthOf(1);
-      (0, _chai.expect)(this.$('.tutorial-panel__hint-picto-container')).to.have.lengthOf(1);
-      (0, _chai.expect)(this.$('.tutorial-panel__hint-picto')).to.have.lengthOf(1);
-      (0, _chai.expect)(this.$('.tutorial-panel__hint-content')).to.have.lengthOf(1);
+          // then
+          (0, _chai.expect)(this.$('.tutorial-panel')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-panel__default-message-container')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-panel__default-message-title')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-panel__default-message-picto-container')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-panel__default-message-picto')).to.have.lengthOf(1);
+        });
+        (0, _mocha.it)('should not render a hint or a tutorial', function () {
+          // when
+          this.render(Ember.HTMLBars.template({
+            "id": "XxENc2GT",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\",\"tutorials\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]],[22,[\"tutorials\"]]]]],false]],\"hasEval\":false}",
+            "meta": {}
+          }));
 
-      var $contentElement = this.$('.tutorial-panel__hint-content');
-      (0, _chai.expect)($contentElement.text().trim()).to.equal('Ceçi est une astuce.');
-    });
+          // then
+          (0, _chai.expect)(this.$('.tutorial-panel')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-panel__hint-container')).to.have.lengthOf(0);
+          (0, _chai.expect)(this.$('.tutorial-panel__tutorial-item')).to.have.lengthOf(0);
+        });
+      });
+      context('when a hint is present', function () {
+        beforeEach(function () {
+          this.set('hint', 'Ceci est un indice.');
+          this.set('tutorials', null);
+        });
 
-    (0, _mocha.it)('should render the default message when answer is not correct and hint is not defined', function () {
-      // given
-      this.set('hint', null);
-      this.set('tutorials', null);
-      this.set('resultItemStatus', 'ko');
+        (0, _mocha.it)('should render the hint', function () {
+          // when
+          this.render(Ember.HTMLBars.template({
+            "id": "XxENc2GT",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\",\"tutorials\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]],[22,[\"tutorials\"]]]]],false]],\"hasEval\":false}",
+            "meta": {}
+          }));
 
-      // when
-      this.render(Ember.HTMLBars.template({
-        "id": "Pzg1dvfo",
-        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]]]]],false]],\"hasEval\":false}",
-        "meta": {}
-      }));
+          // then
+          (0, _chai.expect)(this.$('.tutorial-panel')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-panel__hint-container')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-panel__hint-title')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-panel__hint-picto-container')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-panel__hint-picto')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-panel__hint-content')).to.have.lengthOf(1);
 
-      // then
-      (0, _chai.expect)(this.$('.tutorial-panel')).to.have.lengthOf(1);
-      (0, _chai.expect)(this.$('.tutorial-panel__default-message-container')).to.have.lengthOf(1);
-      (0, _chai.expect)(this.$('.tutorial-panel__default-message-title')).to.have.lengthOf(1);
-      (0, _chai.expect)(this.$('.tutorial-panel__default-message-picto-container')).to.have.lengthOf(1);
-      (0, _chai.expect)(this.$('.tutorial-panel__default-message-picto')).to.have.lengthOf(1);
+          var $contentElement = this.$('.tutorial-panel__hint-content');
+          (0, _chai.expect)($contentElement.text().trim()).to.equal('Ceci est un indice.');
+        });
+        (0, _mocha.it)('should not render the default message', function () {
+          // when
+          this.render(Ember.HTMLBars.template({
+            "id": "XxENc2GT",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\",\"tutorials\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]],[22,[\"tutorials\"]]]]],false]],\"hasEval\":false}",
+            "meta": {}
+          }));
+
+          // then
+          (0, _chai.expect)(this.$('.tutorial-panel__default-message-container')).to.have.lengthOf(0);
+        });
+      });
+      context('when a tutorial is present', function () {
+        beforeEach(function () {
+          this.set('hint', 'Ceci est un indice');
+          this.set('tutorials', [{ titre: 'Ceci est un tuto', duration: '20:00:00' }]);
+        });
+        (0, _mocha.it)('should render the tutorial', function () {
+          // when
+          this.render(Ember.HTMLBars.template({
+            "id": "XxENc2GT",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\",\"tutorials\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]],[22,[\"tutorials\"]]]]],false]],\"hasEval\":false}",
+            "meta": {}
+          }));
+
+          // then
+          (0, _chai.expect)(this.$('.tutorial-panel')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-panel__tutorials-container')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-item__tutorial-title')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-item__tutorial-details')).to.have.lengthOf(1);
+        });
+        (0, _mocha.it)('should not render the default message', function () {
+          // when
+          this.render(Ember.HTMLBars.template({
+            "id": "XxENc2GT",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\",\"tutorials\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]],[22,[\"tutorials\"]]]]],false]],\"hasEval\":false}",
+            "meta": {}
+          }));
+
+          // then
+          (0, _chai.expect)(this.$('.tutorial-panel__default-message-container')).to.have.lengthOf(0);
+        });
+      });
     });
   });
 });
@@ -15384,7 +15448,7 @@ define('pix-live/tests/unit/components/tutorial-panel-test', ['chai', 'mocha', '
       component = this.subject();
     });
 
-    (0, _mocha.describe)('#shouldDisplayHintAndTuto', function () {
+    (0, _mocha.describe)('#shouldDisplayTipsToSucceed', function () {
 
       ['ko', 'aband', 'partially', 'timedout', 'default'].forEach(function (status) {
         (0, _mocha.it)('should return true when resultItemStatus is "' + status + '"', function () {
@@ -15392,7 +15456,7 @@ define('pix-live/tests/unit/components/tutorial-panel-test', ['chai', 'mocha', '
           component.set('resultItemStatus', status);
 
           // when
-          var result = component.get('shouldDisplayHintAndTuto');
+          var result = component.get('shouldDisplayTipsToSucceed');
 
           // then
           (0, _chai.expect)(result).to.be.true;
@@ -15404,7 +15468,7 @@ define('pix-live/tests/unit/components/tutorial-panel-test', ['chai', 'mocha', '
         component.set('resultItemStatus', 'ok');
 
         // when
-        var result = component.get('shouldDisplayHintAndTuto');
+        var result = component.get('shouldDisplayTipsToSucceed');
 
         // then
         (0, _chai.expect)(result).to.be.false;
@@ -15430,6 +15494,45 @@ define('pix-live/tests/unit/components/tutorial-panel-test', ['chai', 'mocha', '
 
         // when
         var result = component.get('shouldDisplayHint');
+
+        // then
+        (0, _chai.expect)(result).to.be.false;
+      });
+    });
+
+    (0, _mocha.describe)('#shouldDisplayHintOrTuto', function () {
+
+      (0, _mocha.it)('should return true when hint is defined and tuto is not', function () {
+        // given
+        component.set('hint', 'Un conseil...');
+        component.set('tutorials', null);
+
+        // when
+        var result = component.get('shouldDisplayHintOrTuto');
+
+        // then
+        (0, _chai.expect)(result).to.be.true;
+      });
+
+      (0, _mocha.it)('should return true when hint is not defined and tuto is defined', function () {
+        // given
+        component.set('hint', null);
+        component.set('tutorials', [{ id: 'recTuto' }]);
+
+        // when
+        var result = component.get('shouldDisplayHintOrTuto');
+
+        // then
+        (0, _chai.expect)(result).to.be.true;
+      });
+
+      (0, _mocha.it)('should return false when hint and tutorials are not defined', function () {
+        // given
+        component.set('hint', null);
+        component.set('tutorials', null);
+
+        // when
+        var result = component.get('shouldDisplayHintOrTuto');
 
         // then
         (0, _chai.expect)(result).to.be.false;
@@ -15492,7 +15595,7 @@ define('pix-live/tests/unit/components/tutorial-panel-test', ['chai', 'mocha', '
         component.set('tutorials', tutorials);
 
         // when
-        var result = component.get('limitedTutorial');
+        var result = component.get('limitedTutorials');
 
         // then
         (0, _chai.expect)(result).to.deep.equal(tutorials);
@@ -15518,7 +15621,7 @@ define('pix-live/tests/unit/components/tutorial-panel-test', ['chai', 'mocha', '
         component.set('tutorials', tutorials);
 
         // when
-        var result = component.get('limitedTutorial');
+        var result = component.get('limitedTutorials');
 
         // then
         (0, _chai.expect)(result.length).to.equal(3);
