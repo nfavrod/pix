@@ -4234,8 +4234,7 @@ p.share-profile__organization-name {
 .tutorial-panel__tutorials-container {
   display: flex;
   flex-direction: column;
-  width: 95%;
-  margin: 20px 0; }
+  margin: 20px; }
 
 .tutorial-panel__hint-title {
   font-family: "Raleway", Arial, sans-serif;

@@ -15566,6 +15566,17 @@ define('pix-live/tests/unit/components/tutorial-panel-test', ['chai', 'mocha', '
         // then
         (0, _chai.expect)(result).to.be.false;
       });
+
+      (0, _mocha.it)('should return false when tutorials is null', function () {
+        // given
+        component.set('tutorials', null);
+
+        // when
+        var result = component.get('shouldDisplayTutorial');
+
+        // then
+        (0, _chai.expect)(result).to.be.false;
+      });
     });
 
     (0, _mocha.describe)('#limitedTutorial', function () {

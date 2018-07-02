@@ -2907,10 +2907,13 @@ define('pix-live/components/tutorial-item', ['exports'], function (exports) {
         return parseInt(duration);
       });
 
-      if (durationByTime[0] > 0) {
+      var HOURS_OF_DURATION = durationByTime[0];
+      var MINUTES_OF_DURATION = durationByTime[1];
+
+      if (HOURS_OF_DURATION > 0) {
         return durationByTime[0] + ' h';
       }
-      if (durationByTime[1] > 0) {
+      if (MINUTES_OF_DURATION > 0) {
         return durationByTime[1] + ' min';
       }
       return '1 min';
@@ -2920,9 +2923,8 @@ define('pix-live/components/tutorial-item', ['exports'], function (exports) {
       var format = this.get('tutorial').format;
       if (this.get('formatWithImage').includes(format)) {
         return format;
-      } else {
-        return 'page';
       }
+      return 'page';
     })
 
   });
@@ -9960,6 +9962,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.53.0+21c28f83"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.53.0+b9ff0ac8"});
 }
 //# sourceMappingURL=pix-live.map
