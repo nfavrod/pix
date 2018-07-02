@@ -3498,22 +3498,24 @@ define('pix-live/helpers/div', ['exports', 'ember-math-helpers/helpers/div'], fu
     }
   });
 });
-define('pix-live/helpers/eq', ['exports', 'pix-live/utils/lodash-custom'], function (exports, _lodashCustom) {
+define('pix-live/helpers/eq', ['exports', 'ember-truth-helpers/helpers/equal'], function (exports, _equal) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.eq = eq;
-  function eq(params) {
-    var isEqual = false;
-    if (_lodashCustom.default.isArray(params) && params.length > 0) {
-      isEqual = params[0] === params[1] ? true : false;
+  Object.defineProperty(exports, 'default', {
+    enumerable: true,
+    get: function () {
+      return _equal.default;
     }
-    return isEqual;
-  }
-
-  exports.default = Ember.Helper.helper(eq);
+  });
+  Object.defineProperty(exports, 'equal', {
+    enumerable: true,
+    get: function () {
+      return _equal.equal;
+    }
+  });
 });
 define('pix-live/helpers/exp', ['exports', 'ember-math-helpers/helpers/exp'], function (exports, _exp) {
   'use strict';
@@ -4269,28 +4271,24 @@ define('pix-live/helpers/now', ['exports', 'ember-moment/helpers/now'], function
     }
   });
 });
-define('pix-live/helpers/or', ['exports', 'pix-live/utils/lodash-custom'], function (exports, _lodashCustom) {
+define('pix-live/helpers/or', ['exports', 'ember-truth-helpers/helpers/or'], function (exports, _or) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.or = or;
-
-
-  function _isATruthyValue(value) {
-    return _lodashCustom.default.isTruthy(value) && value === true;
-  }
-
-  function or(params) {
-    var hasTruthyValue = false;
-    if (_lodashCustom.default.isArray(params) && params.length > 1) {
-      hasTruthyValue = _isATruthyValue(params[0]) || _isATruthyValue(params[1]) ? true : false;
+  Object.defineProperty(exports, 'default', {
+    enumerable: true,
+    get: function () {
+      return _or.default;
     }
-    return hasTruthyValue;
-  }
-
-  exports.default = Ember.Helper.helper(or);
+  });
+  Object.defineProperty(exports, 'or', {
+    enumerable: true,
+    get: function () {
+      return _or.or;
+    }
+  });
 });
 define('pix-live/helpers/pluralize', ['exports', 'ember-inflector/lib/helpers/pluralize'], function (exports, _pluralize) {
   'use strict';
@@ -6915,7 +6913,6 @@ define('pix-live/router', ['exports', 'pix-live/config/environment'], function (
   /* eslint-disable max-statements */
   Router.map(function () {
     this.route('index', { path: '/' });
-    this.route('placement-tests');
     this.route('project', { path: '/projet' });
     this.route('competences');
     this.route('inscription');
@@ -7761,29 +7758,6 @@ define('pix-live/routes/password-reset-demand', ['exports', 'pix-live/routes/bas
     value: true
   });
   exports.default = _baseRoute.default.extend({});
-});
-define('pix-live/routes/placement-tests', ['exports', 'pix-live/routes/base-route'], function (exports, _baseRoute) {
-  'use strict';
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.default = _baseRoute.default.extend({
-
-    delay: Ember.inject.service(),
-
-    model: function model() {
-      return this.store.query('course', { isAdaptive: true });
-    },
-
-
-    actions: {
-      startCourse: function startCourse(course) {
-        this.transitionTo('courses.create-assessment', course.get('id'));
-      }
-    }
-
-  });
 });
 define('pix-live/routes/project', ['exports', 'pix-live/routes/base-route'], function (exports, _baseRoute) {
   'use strict';
@@ -9034,14 +9008,6 @@ define("pix-live/templates/password-reset-demand", ["exports"], function (export
   });
   exports.default = Ember.HTMLBars.template({ "id": "+wlCuHrN", "block": "{\"symbols\":[],\"statements\":[[6,\"div\"],[10,\"class\",\"password-reset-page\"],[8],[0,\"\\n\\n  \"],[6,\"div\"],[10,\"class\",\"password-reset-page__inscription\"],[8],[0,\"\\n    \"],[6,\"p\"],[10,\"class\",\"password-reset-page__inscription-text\"],[10,\"title\",\"\"],[8],[0,\"Vous n'avez pas encore de compte Pix ?\"],[9],[0,\"\\n\"],[4,\"link-to\",[\"inscription\"],[[\"class\"],[\"password-reset-page__inscription-button\"]],{\"statements\":[[0,\"      S'inscrire \"],[6,\"span\"],[10,\"class\",\"sr-only\"],[8],[0,\" sur Pix\"],[9]],\"parameters\":[]},null],[0,\"\\n  \"],[9],[0,\"\\n\\n  \"],[6,\"div\"],[10,\"class\",\"password-reset-page__password-reset-form\"],[8],[0,\"\\n    \"],[1,[20,\"password-reset-form\"],false],[0,\"\\n  \"],[9],[0,\"\\n\"],[9],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/password-reset-demand.hbs" } });
 });
-define("pix-live/templates/placement-tests", ["exports"], function (exports) {
-  "use strict";
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.default = Ember.HTMLBars.template({ "id": "DvMwl1UC", "block": "{\"symbols\":[],\"statements\":[[6,\"div\"],[10,\"class\",\"placement-tests-page-courses__course-list\"],[8],[0,\"\\n  \"],[1,[26,\"course-list\",null,[[\"courses\",\"startCourse\"],[[22,[\"model\"]],\"startCourse\"]]],false],[0,\"\\n\"],[9],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/placement-tests.hbs" } });
-});
 define("pix-live/templates/project", ["exports"], function (exports) {
   "use strict";
 
@@ -9552,13 +9518,6 @@ define('pix-live/utils/lodash-custom', ['exports', 'lodash'], function (exports,
     isAmongst: function isAmongst(element, collection) {
       return _lodash.default.includes(collection, element);
     },
-    forceString: function forceString(x) {
-      if ((0, _lodash.default)(x).isNonEmptyString()) {
-        return x;
-      } else {
-        return '';
-      }
-    },
     // See http://stackoverflow.com/a/10834843
     /* istanbul ignore next */
     isStrictlyPositiveInteger: function isStrictlyPositiveInteger(str) {
@@ -9568,9 +9527,6 @@ define('pix-live/utils/lodash-custom', ['exports', 'lodash'], function (exports,
     // Just an alias, ignore test
     /* istanbul ignore next */
     checkPoint: _lodash.default.thru,
-    isTrue: function isTrue(x) {
-      return x === true;
-    },
     removeFirstElement: function removeFirstElement(x) {
       return _lodash.default.drop(x, 1);
     },
@@ -9877,6 +9833,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.53.0+f603903c"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.53.0+260c18ba"});
 }
 //# sourceMappingURL=pix-live.map
