@@ -2899,7 +2899,11 @@ define('pix-live/components/tutorial-item', ['exports'], function (exports) {
   exports.default = Ember.Component.extend({
     classNames: ['tutorial-item'],
 
-    formatWithImage: ['vidéo', 'son', 'page'],
+    imageForFormat: {
+      'vidéo': 'video',
+      'son': 'son',
+      'page': 'page'
+    },
     tutorial: null,
 
     displayedDuration: Ember.computed('tutorial', function () {
@@ -2921,8 +2925,8 @@ define('pix-live/components/tutorial-item', ['exports'], function (exports) {
 
     formatImageName: Ember.computed('tutorial', function () {
       var format = this.get('tutorial').format;
-      if (this.get('formatWithImage').includes(format)) {
-        return format;
+      if (this.get('imageForFormat')[format]) {
+        return this.get('imageForFormat')[format];
       }
       return 'page';
     })
@@ -9965,6 +9969,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.53.0+d2e0b3f5"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.53.0+2d6f4e76"});
 }
 //# sourceMappingURL=pix-live.map

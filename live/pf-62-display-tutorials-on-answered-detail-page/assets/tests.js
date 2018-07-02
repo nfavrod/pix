@@ -15402,7 +15402,7 @@ define('pix-live/tests/unit/components/tutorial-item-test', ['chai', 'mocha', 'e
 
     (0, _mocha.describe)('#formatImageName', function () {
 
-      ['vidéo', 'son', 'page'].forEach(function (format) {
+      ['son', 'page'].forEach(function (format) {
         (0, _mocha.it)('should return the same name "' + format + '" to display the image', function () {
           // given
           var tutorial = {
@@ -15416,6 +15416,20 @@ define('pix-live/tests/unit/components/tutorial-item-test', ['chai', 'mocha', 'e
           // then
           (0, _chai.expect)(result).to.equal(format);
         });
+      });
+
+      (0, _mocha.it)('should return "video" when format is "vidéo"', function () {
+        // given
+        var tutorial = {
+          format: 'vidéo'
+        };
+        component.set('tutorial', tutorial);
+
+        // when
+        var result = component.get('formatImageName');
+
+        // then
+        (0, _chai.expect)(result).to.equal('video');
       });
 
       (0, _mocha.it)('should return the default value "page" when is not precise format', function () {
