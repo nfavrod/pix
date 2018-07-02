@@ -87,34 +87,6 @@ define('pix-live/tests/acceptance/a4-demarrer-un-test-test', ['mocha', 'chai', '
     });
   });
 });
-define('pix-live/tests/acceptance/a5-voir-liste-tests-adaptatifs-test', ['mocha', 'chai', 'pix-live/tests/helpers/start-app', 'pix-live/tests/helpers/destroy-app'], function (_mocha, _chai, _startApp, _destroyApp) {
-  'use strict';
-
-  (0, _mocha.describe)('Acceptance | a5 - La page des tests adaptatifs', function () {
-
-    var application = void 0;
-
-    (0, _mocha.beforeEach)(function () {
-      application = (0, _startApp.default)();
-      visit('/placement-tests');
-    });
-
-    (0, _mocha.afterEach)(function () {
-      (0, _destroyApp.default)(application);
-    });
-
-    (0, _mocha.it)('a5.0 est accessible depuis "/placement-tests"', function () {
-      (0, _chai.expect)(currentURL()).to.equal('/placement-tests');
-    });
-
-    (0, _mocha.describe)('a5.1 contient une section', function () {
-
-      (0, _mocha.it)('a5.1.1 avec la liste des tests', function () {
-        findWithAssert('.placement-tests-page-courses__course-list');
-      });
-    });
-  });
-});
 define('pix-live/tests/acceptance/b1-epreuve-qcu-test', ['mocha', 'chai', 'pix-live/tests/helpers/start-app', 'pix-live/tests/helpers/destroy-app'], function (_mocha, _chai, _startApp, _destroyApp) {
   'use strict';
 
@@ -3600,10 +3572,6 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
-    it('helpers/eq.js', function () {
-      // test passed
-    });
-
     it('helpers/extract-extension.js', function () {
       // test passed
     });
@@ -3613,10 +3581,6 @@ define('pix-live/tests/app.lint-test', [], function () {
     });
 
     it('helpers/inc.js', function () {
-      // test passed
-    });
-
-    it('helpers/or.js', function () {
       // test passed
     });
 
@@ -3821,10 +3785,6 @@ define('pix-live/tests/app.lint-test', [], function () {
     });
 
     it('routes/password-reset-demand.js', function () {
-      // test passed
-    });
-
-    it('routes/placement-tests.js', function () {
       // test passed
     });
 
@@ -11755,10 +11715,6 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
-    it('acceptance/a5-voir-liste-tests-adaptatifs-test.js', function () {
-      // test passed
-    });
-
     it('acceptance/b1-epreuve-qcu-test.js', function () {
       // test passed
     });
@@ -12291,19 +12247,11 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
-    it('unit/helpers/eq-test.js', function () {
-      // test passed
-    });
-
     it('unit/helpers/extract-extension-test.js', function () {
       // test passed
     });
 
     it('unit/helpers/get-challenge-component-class-test.js', function () {
-      // test passed
-    });
-
-    it('unit/helpers/or-test.js', function () {
       // test passed
     });
 
@@ -12448,10 +12396,6 @@ define('pix-live/tests/tests.lint-test', [], function () {
     });
 
     it('unit/routes/password-reset-test.js', function () {
-      // test passed
-    });
-
-    it('unit/routes/placement-tests-test.js', function () {
       // test passed
     });
 
@@ -15949,24 +15893,6 @@ define('pix-live/tests/unit/helpers/convert-to-html-test', ['chai', 'mocha', 'pi
     });
   });
 });
-define('pix-live/tests/unit/helpers/eq-test', ['chai', 'mocha', 'pix-live/helpers/eq'], function (_chai, _mocha, _eq) {
-  'use strict';
-
-  (0, _mocha.describe)('Unit | Helper | Eq', function () {
-    // Replace this with your real tests.
-    [{ input: '', output: false }, { input: null, output: false }, { input: NaN, output: false }, { input: 'Undefined', output: false }, { input: 0, output: false }, { input: 42, output: false }, { input: [42], output: false }, { input: [''], output: false }, { input: [null], output: false }, { input: [], output: false }, { input: ['', ''], output: true }, { input: [42, 43], output: false }, { input: [42, ''], output: false }, { input: [42, 0], output: false }, { input: [42, 'empty'], output: false }, { input: [42, null], output: false }, { input: [42, 'undefined'], output: false }, { input: [42, 42], output: true }].forEach(function (_ref) {
-      var input = _ref.input,
-          output = _ref.output;
-
-      (0, _mocha.it)('should render ' + output + ' when ' + JSON.stringify(input) + ' provided', function () {
-        //When
-        var result = (0, _eq.eq)(input);
-        //then
-        (0, _chai.expect)(result).to.be.equal(output);
-      });
-    });
-  });
-});
 define('pix-live/tests/unit/helpers/extract-extension-test', ['chai', 'mocha', 'pix-live/helpers/extract-extension'], function (_chai, _mocha, _extractExtension) {
   'use strict';
 
@@ -15995,24 +15921,6 @@ define('pix-live/tests/unit/helpers/get-challenge-component-class-test', ['chai'
 
         // then
         (0, _chai.expect)(componentClass).to.equal(useCase.expectedClass);
-      });
-    });
-  });
-});
-define('pix-live/tests/unit/helpers/or-test', ['chai', 'mocha', 'pix-live/helpers/or'], function (_chai, _mocha, _or) {
-  'use strict';
-
-  (0, _mocha.describe)('Unit | Helper | or', function () {
-    // Replace this with your real tests.
-    [{ input: '', output: false }, { input: null, output: false }, { input: NaN, output: false }, { input: 'Undefined', output: false }, { input: 0, output: false }, { input: true, output: false }, { input: [true], output: false }, { input: [''], output: false }, { input: [null], output: false }, { input: [], output: false }, { input: ['', ''], output: false }, { input: [true, false], output: true }, { input: [true, ''], output: true }, { input: [true, 0], output: true }, { input: [true, 'empty'], output: true }, { input: [true, null], output: true }, { input: [true, 'undefined'], output: true }, { input: [true, true], output: true }].forEach(function (_ref) {
-      var input = _ref.input,
-          output = _ref.output;
-
-      (0, _mocha.it)('should render ' + output + ' when ' + JSON.stringify(input) + ' provided', function () {
-        //When
-        var result = (0, _or.or)(input);
-        //then
-        (0, _chai.expect)(result).to.be.equal(output);
       });
     });
   });
@@ -18567,21 +18475,6 @@ define('pix-live/tests/unit/routes/password-reset-test', ['chai', 'mocha', 'embe
     });
 
     (0, _mocha.it)('exists', function () {
-      (0, _chai.expect)(route).to.be.ok;
-    });
-  });
-});
-define('pix-live/tests/unit/routes/placement-tests-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
-  'use strict';
-
-  (0, _mocha.describe)('Unit | Route | placement-tests', function () {
-
-    (0, _emberMocha.setupTest)('route:placement-tests', {
-      needs: ['service:delay', 'service:current-routed-modal']
-    });
-
-    (0, _mocha.it)('exists', function () {
-      var route = this.subject();
       (0, _chai.expect)(route).to.be.ok;
     });
   });
