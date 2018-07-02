@@ -2946,19 +2946,19 @@ define('pix-live/components/tutorial-panel', ['exports'], function (exports) {
       return this.get('resultItemStatus') !== 'ok';
     }),
 
-    shouldDisplayHintOrTuto: Ember.computed('resultItemStatus', function () {
+    shouldDisplayHintOrTuto: Ember.computed('tutorials', 'hint', function () {
       var tutorials = this.get('tutorials') || [];
       var hint = this.get('hint') || [];
 
       return hint.length > 0 || tutorials.length > 0;
     }),
 
-    shouldDisplayHint: Ember.computed('resultItemStatus', 'hint', function () {
+    shouldDisplayHint: Ember.computed('hint', function () {
       var hint = this.get('hint') || [];
       return hint.length > 0;
     }),
 
-    shouldDisplayTutorial: Ember.computed('resultItemStatus', 'tutorials', function () {
+    shouldDisplayTutorial: Ember.computed('tutorials', function () {
       var tutorials = this.get('tutorials') || [];
       return tutorials.length > 0;
     }),
@@ -9965,6 +9965,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.53.0+fca32772"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.53.0+d2e0b3f5"});
 }
 //# sourceMappingURL=pix-live.map
