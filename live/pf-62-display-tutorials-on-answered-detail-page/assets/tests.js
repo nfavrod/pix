@@ -15498,6 +15498,17 @@ define('pix-live/tests/unit/components/tutorial-panel-test', ['chai', 'mocha', '
         // then
         (0, _chai.expect)(result).to.be.false;
       });
+
+      (0, _mocha.it)('should return false when hint is an empty array', function () {
+        // given
+        component.set('hint', []);
+
+        // when
+        var result = component.get('shouldDisplayHint');
+
+        // then
+        (0, _chai.expect)(result).to.be.false;
+      });
     });
 
     (0, _mocha.describe)('#shouldDisplayHintOrTuto', function () {
@@ -15529,6 +15540,18 @@ define('pix-live/tests/unit/components/tutorial-panel-test', ['chai', 'mocha', '
       (0, _mocha.it)('should return false when hint and tutorials are not defined', function () {
         // given
         component.set('hint', null);
+        component.set('tutorials', null);
+
+        // when
+        var result = component.get('shouldDisplayHintOrTuto');
+
+        // then
+        (0, _chai.expect)(result).to.be.false;
+      });
+
+      (0, _mocha.it)('should return false when hint and tutorials are empty array', function () {
+        // given
+        component.set('hint', []);
         component.set('tutorials', []);
 
         // when
