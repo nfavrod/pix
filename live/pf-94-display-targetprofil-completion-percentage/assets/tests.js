@@ -16488,9 +16488,9 @@ define('pix-live/tests/unit/models/skill-review-test', ['chai', 'mocha', 'ember-
       needs: []
     });
 
-    (0, _mocha.describe)('Computed property #profileMasteryInPourcent', function () {
+    (0, _mocha.describe)('Computed property #profileMasteryPercentage', function () {
 
-      (0, _mocha.it)('should compute a property in %', function () {
+      (0, _mocha.it)('should compute a property in  %', function () {
         var _this = this;
 
         Ember.run(function () {
@@ -16499,14 +16499,14 @@ define('pix-live/tests/unit/models/skill-review-test', ['chai', 'mocha', 'ember-
           var skillReview = store.createRecord('skill-review', { profileMasteryRate: 0.6815 });
 
           // when
-          var profileMasteryInPourcent = skillReview.get('profileMasteryInPourcent');
+          var profileMasteryInPourcent = skillReview.get('profileMasteryPercentage');
 
           // then
-          (0, _chai.expect)(profileMasteryInPourcent).to.equal(68.2);
+          (0, _chai.expect)(profileMasteryInPourcent).to.equal('68.2 %');
         });
       });
 
-      (0, _mocha.it)('should round the property%', function () {
+      (0, _mocha.it)('should round the property to one decimal %', function () {
         var _this2 = this;
 
         Ember.run(function () {
@@ -16515,10 +16515,10 @@ define('pix-live/tests/unit/models/skill-review-test', ['chai', 'mocha', 'ember-
           var skillReview = store.createRecord('skill-review', { profileMasteryRate: 0.651 });
 
           // when
-          var profileMasteryInPourcent = skillReview.get('profileMasteryInPourcent');
+          var profileMasteryInPourcent = skillReview.get('profileMasteryPercentage');
 
           // then
-          (0, _chai.expect)(profileMasteryInPourcent).to.equal(65.1);
+          (0, _chai.expect)(profileMasteryInPourcent).to.equal('65.1 %');
         });
       });
     });
@@ -16906,7 +16906,8 @@ define('pix-live/tests/unit/routes/assessments/challenge-test', ['chai', 'mocha'
           var challengeTwo = Ember.Object.create({ id: 'recChallengeTwo' });
           var listOfAnswers = [answerToChallengeOne, Ember.Object.create({ challenge: challengeTwo }), Ember.Object.create({ challenge: challengeTwo }), Ember.Object.create({ challenge: challengeTwo }), Ember.Object.create({ challenge: challengeTwo })];
 
-          var assessment = Ember.Object.create({ id: 154, type: 'SMART_PLACEMENT', answers: listOfAnswers, hasCheckpoints: true });
+          var assessmentId = 154;
+          var assessment = Ember.Object.create({ id: assessmentId, type: 'SMART_PLACEMENT', answers: listOfAnswers, hasCheckpoints: true });
           createRecordStub.returns(answerToChallengeOne);
           queryRecordStub.resolves(nextChallenge);
 
@@ -16917,7 +16918,7 @@ define('pix-live/tests/unit/routes/assessments/challenge-test', ['chai', 'mocha'
           return promise.then(function () {
             _sinon.default.assert.callOrder(answerToChallengeOne.save, route.transitionTo);
             _sinon.default.assert.calledOnce(route.transitionTo);
-            _sinon.default.assert.calledWith(route.transitionTo, 'assessments.checkpoint', 154);
+            _sinon.default.assert.calledWith(route.transitionTo, 'assessments.checkpoint', assessmentId);
           });
         });
 
@@ -16943,7 +16944,8 @@ define('pix-live/tests/unit/routes/assessments/challenge-test', ['chai', 'mocha'
 
         (0, _mocha.it)('should redirect to checkpoint before the rating on the last serie of 5', function () {
           // given
-          var assessment = Ember.Object.create({ id: 947, answers: [answerToChallengeOne], hasCheckpoints: true });
+          var assessmentId = 947;
+          var assessment = Ember.Object.create({ id: assessmentId, answers: [answerToChallengeOne], hasCheckpoints: true });
           createRecordStub.returns(answerToChallengeOne);
           queryRecordStub.rejects();
 
@@ -16954,7 +16956,7 @@ define('pix-live/tests/unit/routes/assessments/challenge-test', ['chai', 'mocha'
           return promise.then(function () {
             _sinon.default.assert.callOrder(answerToChallengeOne.save, route.transitionTo);
             _sinon.default.assert.calledOnce(route.transitionTo);
-            _sinon.default.assert.calledWith(route.transitionTo, 'assessments.checkpoint', assessment, {
+            _sinon.default.assert.calledWith(route.transitionTo, 'assessments.checkpoint', assessmentId, {
               queryParams: { finalCheckpoint: true }
             });
           });
@@ -16996,7 +16998,7 @@ define('pix-live/tests/unit/routes/assessments/rating-test', ['chai', 'mocha', '
 
       // instance route object
       route = this.subject();
-      route.transitionTo = _sinon.default.stub();
+      route.replaceWith = _sinon.default.stub();
     });
 
     (0, _mocha.describe)('#afterModel', function () {
@@ -17013,8 +17015,8 @@ define('pix-live/tests/unit/routes/assessments/rating-test', ['chai', 'mocha', '
           var promise = route.afterModel(assessment);
 
           // then
-          promise.then(function () {
-            return _sinon.default.assert.calledWith(route.transitionTo, 'certifications.results');
+          return promise.then(function () {
+            return _sinon.default.assert.calledWith(route.replaceWith, 'certifications.results');
           });
         });
       });
@@ -17022,14 +17024,15 @@ define('pix-live/tests/unit/routes/assessments/rating-test', ['chai', 'mocha', '
       context('when the assessment is a SMART_PLACEMENT', function () {
         (0, _mocha.it)('should redirect to the certification end page', function () {
           // given
-          var assessment = Ember.Object.create({ id: 12, type: 'SMART_PLACEMENT', answers: [answerToChallengeOne] });
+          var assessmentId = 12;
+          var assessment = Ember.Object.create({ id: assessmentId, type: 'SMART_PLACEMENT', answers: [answerToChallengeOne] });
 
           // when
           var promise = route.afterModel(assessment);
 
           // then
-          promise.then(function () {
-            return _sinon.default.assert.calledWith(route.transitionTo, 'campaigns.skill-review', { 'skill-review_id': assessment.get('id') });
+          return promise.then(function () {
+            return _sinon.default.assert.calledWith(route.replaceWith, 'campaigns.skill-review', assessmentId);
           });
         });
       });
@@ -17043,8 +17046,8 @@ define('pix-live/tests/unit/routes/assessments/rating-test', ['chai', 'mocha', '
           var promise = route.afterModel(assessment);
 
           // then
-          promise.then(function () {
-            return _sinon.default.assert.calledWith(route.transitionTo, 'assessments.results', assessment.get('id'));
+          return promise.then(function () {
+            return _sinon.default.assert.calledWith(route.replaceWith, 'assessments.results', assessment.get('id'));
           });
         });
       });
