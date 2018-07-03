@@ -87,34 +87,6 @@ define('pix-live/tests/acceptance/a4-demarrer-un-test-test', ['mocha', 'chai', '
     });
   });
 });
-define('pix-live/tests/acceptance/a5-voir-liste-tests-adaptatifs-test', ['mocha', 'chai', 'pix-live/tests/helpers/start-app', 'pix-live/tests/helpers/destroy-app'], function (_mocha, _chai, _startApp, _destroyApp) {
-  'use strict';
-
-  (0, _mocha.describe)('Acceptance | a5 - La page des tests adaptatifs', function () {
-
-    var application = void 0;
-
-    (0, _mocha.beforeEach)(function () {
-      application = (0, _startApp.default)();
-      visit('/placement-tests');
-    });
-
-    (0, _mocha.afterEach)(function () {
-      (0, _destroyApp.default)(application);
-    });
-
-    (0, _mocha.it)('a5.0 est accessible depuis "/placement-tests"', function () {
-      (0, _chai.expect)(currentURL()).to.equal('/placement-tests');
-    });
-
-    (0, _mocha.describe)('a5.1 contient une section', function () {
-
-      (0, _mocha.it)('a5.1.1 avec la liste des tests', function () {
-        findWithAssert('.placement-tests-page-courses__course-list');
-      });
-    });
-  });
-});
 define('pix-live/tests/acceptance/b1-epreuve-qcu-test', ['mocha', 'chai', 'pix-live/tests/helpers/start-app', 'pix-live/tests/helpers/destroy-app'], function (_mocha, _chai, _startApp, _destroyApp) {
   'use strict';
 
@@ -3548,6 +3520,10 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
+    it('components/tutorial-item.js', function () {
+      // test passed
+    });
+
     it('components/tutorial-panel.js', function () {
       // test passed
     });
@@ -3596,10 +3572,6 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
-    it('helpers/eq.js', function () {
-      // test passed
-    });
-
     it('helpers/extract-extension.js', function () {
       // test passed
     });
@@ -3609,10 +3581,6 @@ define('pix-live/tests/app.lint-test', [], function () {
     });
 
     it('helpers/inc.js', function () {
-      // test passed
-    });
-
-    it('helpers/or.js', function () {
       // test passed
     });
 
@@ -3701,6 +3669,10 @@ define('pix-live/tests/app.lint-test', [], function () {
     });
 
     it('models/snapshot.js', function () {
+      // test passed
+    });
+
+    it('models/tutorial.js', function () {
       // test passed
     });
 
@@ -3813,10 +3785,6 @@ define('pix-live/tests/app.lint-test', [], function () {
     });
 
     it('routes/password-reset-demand.js', function () {
-      // test passed
-    });
-
-    it('routes/placement-tests.js', function () {
       // test passed
     });
 
@@ -10762,8 +10730,8 @@ define('pix-live/tests/integration/components/tutorial-panel-test', ['chai', 'mo
 
       // when
       this.render(Ember.HTMLBars.template({
-        "id": "Pzg1dvfo",
-        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]]]]],false]],\"hasEval\":false}",
+        "id": "XxENc2GT",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\",\"tutorials\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]],[22,[\"tutorials\"]]]]],false]],\"hasEval\":false}",
         "meta": {}
       }));
 
@@ -10773,48 +10741,113 @@ define('pix-live/tests/integration/components/tutorial-panel-test', ['chai', 'mo
       (0, _chai.expect)(this.$('.tutorial-panel__default-message-container')).to.have.lengthOf(0);
     });
 
-    (0, _mocha.it)('should render the hint when answer is not correct and hint is present', function () {
-      // given
-      this.set('hint', 'Ceçi est une astuce.');
-      this.set('resultItemStatus', 'ko');
+    context('when the result is not ok', function () {
+      beforeEach(function () {
+        this.set('resultItemStatus', 'ko');
+      });
 
-      // when
-      this.render(Ember.HTMLBars.template({
-        "id": "Pzg1dvfo",
-        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]]]]],false]],\"hasEval\":false}",
-        "meta": {}
-      }));
+      context('when there is nor a hint or a tutorial', function () {
+        beforeEach(function () {
+          this.set('hint', null);
+          this.set('tutorials', []);
+        });
+        (0, _mocha.it)('should render the default message', function () {
+          // when
+          this.render(Ember.HTMLBars.template({
+            "id": "XxENc2GT",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\",\"tutorials\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]],[22,[\"tutorials\"]]]]],false]],\"hasEval\":false}",
+            "meta": {}
+          }));
 
-      // then
-      (0, _chai.expect)(this.$('.tutorial-panel')).to.have.lengthOf(1);
-      (0, _chai.expect)(this.$('.tutorial-panel__hint-container')).to.have.lengthOf(1);
-      (0, _chai.expect)(this.$('.tutorial-panel__hint-title')).to.have.lengthOf(1);
-      (0, _chai.expect)(this.$('.tutorial-panel__hint-picto-container')).to.have.lengthOf(1);
-      (0, _chai.expect)(this.$('.tutorial-panel__hint-picto')).to.have.lengthOf(1);
-      (0, _chai.expect)(this.$('.tutorial-panel__hint-content')).to.have.lengthOf(1);
+          // then
+          (0, _chai.expect)(this.$('.tutorial-panel')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-panel__default-message-container')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-panel__default-message-title')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-panel__default-message-picto-container')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-panel__default-message-picto')).to.have.lengthOf(1);
+        });
+        (0, _mocha.it)('should not render a hint or a tutorial', function () {
+          // when
+          this.render(Ember.HTMLBars.template({
+            "id": "XxENc2GT",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\",\"tutorials\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]],[22,[\"tutorials\"]]]]],false]],\"hasEval\":false}",
+            "meta": {}
+          }));
 
-      var $contentElement = this.$('.tutorial-panel__hint-content');
-      (0, _chai.expect)($contentElement.text().trim()).to.equal('Ceçi est une astuce.');
-    });
+          // then
+          (0, _chai.expect)(this.$('.tutorial-panel')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-panel__hint-container')).to.have.lengthOf(0);
+          (0, _chai.expect)(this.$('.tutorial-panel__tutorial-item')).to.have.lengthOf(0);
+        });
+      });
+      context('when a hint is present', function () {
+        beforeEach(function () {
+          this.set('hint', 'Ceci est un indice.');
+          this.set('tutorials', []);
+        });
 
-    (0, _mocha.it)('should render the default message when answer is not correct and hint is not defined', function () {
-      // given
-      this.set('hint', null);
-      this.set('resultItemStatus', 'ko');
+        (0, _mocha.it)('should render the hint', function () {
+          // when
+          this.render(Ember.HTMLBars.template({
+            "id": "XxENc2GT",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\",\"tutorials\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]],[22,[\"tutorials\"]]]]],false]],\"hasEval\":false}",
+            "meta": {}
+          }));
 
-      // when
-      this.render(Ember.HTMLBars.template({
-        "id": "Pzg1dvfo",
-        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]]]]],false]],\"hasEval\":false}",
-        "meta": {}
-      }));
+          // then
+          (0, _chai.expect)(this.$('.tutorial-panel')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-panel__hint-container')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-panel__hint-title')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-panel__hint-picto-container')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-panel__hint-picto')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-panel__hint-content')).to.have.lengthOf(1);
 
-      // then
-      (0, _chai.expect)(this.$('.tutorial-panel')).to.have.lengthOf(1);
-      (0, _chai.expect)(this.$('.tutorial-panel__default-message-container')).to.have.lengthOf(1);
-      (0, _chai.expect)(this.$('.tutorial-panel__default-message-title')).to.have.lengthOf(1);
-      (0, _chai.expect)(this.$('.tutorial-panel__default-message-picto-container')).to.have.lengthOf(1);
-      (0, _chai.expect)(this.$('.tutorial-panel__default-message-picto')).to.have.lengthOf(1);
+          var $contentElement = this.$('.tutorial-panel__hint-content');
+          (0, _chai.expect)($contentElement.text().trim()).to.equal('Ceci est un indice.');
+        });
+        (0, _mocha.it)('should not render the default message', function () {
+          // when
+          this.render(Ember.HTMLBars.template({
+            "id": "XxENc2GT",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\",\"tutorials\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]],[22,[\"tutorials\"]]]]],false]],\"hasEval\":false}",
+            "meta": {}
+          }));
+
+          // then
+          (0, _chai.expect)(this.$('.tutorial-panel__default-message-container')).to.have.lengthOf(0);
+        });
+      });
+      context('when a tutorial is present', function () {
+        beforeEach(function () {
+          this.set('hint', 'Ceci est un indice');
+          this.set('tutorials', [{ titre: 'Ceci est un tuto', duration: '20:00:00' }]);
+        });
+        (0, _mocha.it)('should render the tutorial', function () {
+          // when
+          this.render(Ember.HTMLBars.template({
+            "id": "XxENc2GT",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\",\"tutorials\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]],[22,[\"tutorials\"]]]]],false]],\"hasEval\":false}",
+            "meta": {}
+          }));
+
+          // then
+          (0, _chai.expect)(this.$('.tutorial-panel')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-panel__tutorials-container')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-item__tutorial-title')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-item__tutorial-details')).to.have.lengthOf(1);
+        });
+        (0, _mocha.it)('should not render the default message', function () {
+          // when
+          this.render(Ember.HTMLBars.template({
+            "id": "XxENc2GT",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\",\"tutorials\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]],[22,[\"tutorials\"]]]]],false]],\"hasEval\":false}",
+            "meta": {}
+          }));
+
+          // then
+          (0, _chai.expect)(this.$('.tutorial-panel__default-message-container')).to.have.lengthOf(0);
+        });
+      });
     });
   });
 });
@@ -11682,10 +11715,6 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
-    it('acceptance/a5-voir-liste-tests-adaptatifs-test.js', function () {
-      // test passed
-    });
-
     it('acceptance/b1-epreuve-qcu-test.js', function () {
       // test passed
     });
@@ -12194,6 +12223,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
+    it('unit/components/tutorial-item-test.js', function () {
+      // test passed
+    });
+
     it('unit/components/tutorial-panel-test.js', function () {
       // test passed
     });
@@ -12214,19 +12247,11 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
-    it('unit/helpers/eq-test.js', function () {
-      // test passed
-    });
-
     it('unit/helpers/extract-extension-test.js', function () {
       // test passed
     });
 
     it('unit/helpers/get-challenge-component-class-test.js', function () {
-      // test passed
-    });
-
-    it('unit/helpers/or-test.js', function () {
       // test passed
     });
 
@@ -12371,10 +12396,6 @@ define('pix-live/tests/tests.lint-test', [], function () {
     });
 
     it('unit/routes/password-reset-test.js', function () {
-      // test passed
-    });
-
-    it('unit/routes/placement-tests-test.js', function () {
       // test passed
     });
 
@@ -15258,6 +15279,119 @@ define('pix-live/tests/unit/components/timeout-jauge-test', ['chai', 'mocha', 'e
     });
   });
 });
+define('pix-live/tests/unit/components/tutorial-item-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+  'use strict';
+
+  (0, _mocha.describe)('Unit | Component | tutorial item', function () {
+    (0, _emberMocha.setupComponentTest)('tutorial-item', {
+      unit: true
+    });
+
+    var component = void 0;
+
+    beforeEach(function () {
+      component = this.subject();
+    });
+
+    (0, _mocha.describe)('#displayedDuration', function () {
+
+      (0, _mocha.it)('should return the time only in hours if the duration time contains hours', function () {
+        // given
+        var tutorial = {
+          id: 'recTuto1',
+          format: 'video',
+          duration: '08:23:32'
+        };
+        component.set('tutorial', tutorial);
+
+        // when
+        var result = component.get('displayedDuration');
+
+        // then
+        (0, _chai.expect)(result).to.equal('8 h');
+      });
+
+      (0, _mocha.it)('should return the time only in minutes if the duration time contains minutes but 0 hours', function () {
+        // given
+        var tutorial = {
+          id: 'recTuto1',
+          format: 'video',
+          duration: '00:04:32'
+        };
+        component.set('tutorial', tutorial);
+
+        // when
+        var result = component.get('displayedDuration');
+
+        // then
+        (0, _chai.expect)(result).to.equal('4 min');
+      });
+
+      (0, _mocha.it)('should return 1 min if the duration time contains 0 minutes or hours', function () {
+        // given
+        var tutorial = {
+          id: 'recTuto1',
+          format: 'video',
+          duration: '00:00:32'
+        };
+        component.set('tutorial', tutorial);
+
+        // when
+        var result = component.get('displayedDuration');
+
+        // then
+        (0, _chai.expect)(result).to.equal('1 min');
+      });
+    });
+
+    (0, _mocha.describe)('#formatImageName', function () {
+
+      ['son', 'page'].forEach(function (format) {
+        (0, _mocha.it)('should return the same name "' + format + '" to display the image', function () {
+          // given
+          var tutorial = {
+            format: format
+          };
+          component.set('tutorial', tutorial);
+
+          // when
+          var result = component.get('formatImageName');
+
+          // then
+          (0, _chai.expect)(result).to.equal(format);
+        });
+      });
+
+      (0, _mocha.it)('should return "video" when format is "vidéo"', function () {
+        // given
+        var tutorial = {
+          format: 'vidéo'
+        };
+        component.set('tutorial', tutorial);
+
+        // when
+        var result = component.get('formatImageName');
+
+        // then
+        (0, _chai.expect)(result).to.equal('video');
+      });
+
+      (0, _mocha.it)('should return the default value "page" when is not precise format', function () {
+        // given
+        var tutorial = {
+          format: 'site'
+        };
+        component.set('tutorial', tutorial);
+
+        // when
+        var result = component.get('formatImageName');
+
+        // then
+        (0, _chai.expect)(result).to.equal('page');
+      });
+    });
+  });
+});
 define('pix-live/tests/unit/components/tutorial-panel-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
   'use strict';
 
@@ -15272,89 +15406,207 @@ define('pix-live/tests/unit/components/tutorial-panel-test', ['chai', 'mocha', '
       component = this.subject();
     });
 
-    (0, _mocha.describe)('#shouldDisplayDefaultMessage', function () {
+    (0, _mocha.describe)('#shouldDisplayTipsToSucceed', function () {
 
       ['ko', 'aband', 'partially', 'timedout', 'default'].forEach(function (status) {
-        (0, _mocha.it)('should return true when resultItemStatus is "' + status + '" and hint is not defined', function () {
+        (0, _mocha.it)('should return true when resultItemStatus is "' + status + '"', function () {
           // given
           component.set('resultItemStatus', status);
-          component.set('hint', null);
 
           // when
-          var result = component.get('shouldDisplayDefaultMessage');
+          var result = component.get('shouldDisplayTipsToSucceed');
 
           // then
           (0, _chai.expect)(result).to.be.true;
-        });
-      });
-
-      (0, _mocha.it)('should return false when resultItemStatus is "ok" and hint is not defined', function () {
-        // given
-        component.set('resultItemStatus', 'ok');
-        component.set('hint', null);
-
-        // when
-        var result = component.get('shouldDisplayDefaultMessage');
-
-        // then
-        (0, _chai.expect)(result).to.be.false;
-      });
-
-      ['ko', 'aband', 'partially', 'timedout', 'default'].forEach(function (status) {
-        (0, _mocha.it)('should return false when resultItemStatus is "' + status + '" and hint is defined', function () {
-          // given
-          component.set('resultItemStatus', status);
-          component.set('hint', 'Un conseil...');
-
-          // when
-          var result = component.get('shouldDisplayDefaultMessage');
-
-          // then
-          (0, _chai.expect)(result).to.be.false;
-        });
-      });
-    });
-
-    (0, _mocha.describe)('#shouldDisplayHint', function () {
-
-      ['ko', 'aband', 'partially', 'timedout', 'default'].forEach(function (status) {
-        (0, _mocha.it)('should return true when resultItemStatus is "' + status + '" and hint is defined', function () {
-          // given
-          component.set('resultItemStatus', status);
-          component.set('hint', 'Un conseil...');
-
-          // when
-          var result = component.get('shouldDisplayHint');
-
-          // then
-          (0, _chai.expect)(result).to.be.true;
-        });
-      });
-
-      ['ko', 'aband', 'partially', 'timedout', 'default'].forEach(function (status) {
-        (0, _mocha.it)('should return false when resultItemStatus is "' + status + '" and hint is not defined', function () {
-          // given
-          component.set('resultItemStatus', status);
-          component.set('hint', null);
-
-          // when
-          var result = component.get('shouldDisplayHint');
-
-          // then
-          (0, _chai.expect)(result).to.be.false;
         });
       });
 
       (0, _mocha.it)('should return false when resultItemStatus is "ok"', function () {
         // given
         component.set('resultItemStatus', 'ok');
+
+        // when
+        var result = component.get('shouldDisplayTipsToSucceed');
+
+        // then
+        (0, _chai.expect)(result).to.be.false;
+      });
+    });
+
+    (0, _mocha.describe)('#shouldDisplayHint', function () {
+
+      (0, _mocha.it)('should return true when hint is defined', function () {
+        // given
         component.set('hint', 'Un conseil...');
 
         // when
         var result = component.get('shouldDisplayHint');
 
         // then
+        (0, _chai.expect)(result).to.be.true;
+      });
+
+      (0, _mocha.it)('should return false when hint is not defined', function () {
+        // given
+        component.set('hint', null);
+
+        // when
+        var result = component.get('shouldDisplayHint');
+
+        // then
         (0, _chai.expect)(result).to.be.false;
+      });
+
+      (0, _mocha.it)('should return false when hint is an empty array', function () {
+        // given
+        component.set('hint', []);
+
+        // when
+        var result = component.get('shouldDisplayHint');
+
+        // then
+        (0, _chai.expect)(result).to.be.false;
+      });
+    });
+
+    (0, _mocha.describe)('#shouldDisplayHintOrTuto', function () {
+
+      (0, _mocha.it)('should return true when hint is defined and tuto is not', function () {
+        // given
+        component.set('hint', 'Un conseil...');
+        component.set('tutorials', []);
+
+        // when
+        var result = component.get('shouldDisplayHintOrTuto');
+
+        // then
+        (0, _chai.expect)(result).to.be.true;
+      });
+
+      (0, _mocha.it)('should return true when hint is not defined and tuto is defined', function () {
+        // given
+        component.set('hint', null);
+        component.set('tutorials', [{ id: 'recTuto' }]);
+
+        // when
+        var result = component.get('shouldDisplayHintOrTuto');
+
+        // then
+        (0, _chai.expect)(result).to.be.true;
+      });
+
+      (0, _mocha.it)('should return false when hint and tutorials are not defined', function () {
+        // given
+        component.set('hint', null);
+        component.set('tutorials', null);
+
+        // when
+        var result = component.get('shouldDisplayHintOrTuto');
+
+        // then
+        (0, _chai.expect)(result).to.be.false;
+      });
+
+      (0, _mocha.it)('should return false when hint and tutorials are empty array', function () {
+        // given
+        component.set('hint', []);
+        component.set('tutorials', []);
+
+        // when
+        var result = component.get('shouldDisplayHintOrTuto');
+
+        // then
+        (0, _chai.expect)(result).to.be.false;
+      });
+    });
+
+    (0, _mocha.describe)('#shouldDisplayTutorial', function () {
+
+      (0, _mocha.it)('should return true when has tutorial', function () {
+        // given
+        var tutorialsExpected = {
+          id: 'recTuto1',
+          format: 'video'
+        };
+        component.set('tutorials', [tutorialsExpected]);
+
+        // when
+        var result = component.get('shouldDisplayTutorial');
+
+        // then
+        (0, _chai.expect)(result).to.be.true;
+      });
+
+      (0, _mocha.it)('should return false when tutorials is empty', function () {
+        // given
+        component.set('tutorials', []);
+
+        // when
+        var result = component.get('shouldDisplayTutorial');
+
+        // then
+        (0, _chai.expect)(result).to.be.false;
+      });
+
+      (0, _mocha.it)('should return false when tutorials is null', function () {
+        // given
+        component.set('tutorials', null);
+
+        // when
+        var result = component.get('shouldDisplayTutorial');
+
+        // then
+        (0, _chai.expect)(result).to.be.false;
+      });
+    });
+
+    (0, _mocha.describe)('#limitedTutorial', function () {
+
+      (0, _mocha.it)('should return an array with the same tutorials', function () {
+        // given
+        var tutorialsExpected1 = {
+          id: 'recTuto1',
+          format: 'video'
+        };
+        var tutorialsExpected2 = {
+          id: 'recTuto2',
+          format: 'son'
+        };
+        var tutorials = [tutorialsExpected1, tutorialsExpected2];
+        component.set('tutorials', tutorials);
+
+        // when
+        var result = component.get('limitedTutorials');
+
+        // then
+        (0, _chai.expect)(result).to.deep.equal(tutorials);
+      });
+
+      (0, _mocha.it)('should return only 3 elements if the tutorials contains more', function () {
+        // given
+        var tutorialsExpected1 = {
+          id: 'recTuto1'
+        };
+        var tutorialsExpected2 = {
+          id: 'recTuto2'
+        };
+        var tutorialsExpected3 = {
+          id: 'recTuto3'
+        };
+        var tutorialsExpected4 = {
+          id: 'recTuto4'
+        };
+
+        var tutorials = [tutorialsExpected1, tutorialsExpected2, tutorialsExpected3, tutorialsExpected4];
+        var expectedTutorials = [tutorialsExpected1, tutorialsExpected2, tutorialsExpected3];
+        component.set('tutorials', tutorials);
+
+        // when
+        var result = component.get('limitedTutorials');
+
+        // then
+        (0, _chai.expect)(result.length).to.equal(3);
+        (0, _chai.expect)(result).to.deep.equal(expectedTutorials);
       });
     });
   });
@@ -15641,24 +15893,6 @@ define('pix-live/tests/unit/helpers/convert-to-html-test', ['chai', 'mocha', 'pi
     });
   });
 });
-define('pix-live/tests/unit/helpers/eq-test', ['chai', 'mocha', 'pix-live/helpers/eq'], function (_chai, _mocha, _eq) {
-  'use strict';
-
-  (0, _mocha.describe)('Unit | Helper | Eq', function () {
-    // Replace this with your real tests.
-    [{ input: '', output: false }, { input: null, output: false }, { input: NaN, output: false }, { input: 'Undefined', output: false }, { input: 0, output: false }, { input: 42, output: false }, { input: [42], output: false }, { input: [''], output: false }, { input: [null], output: false }, { input: [], output: false }, { input: ['', ''], output: true }, { input: [42, 43], output: false }, { input: [42, ''], output: false }, { input: [42, 0], output: false }, { input: [42, 'empty'], output: false }, { input: [42, null], output: false }, { input: [42, 'undefined'], output: false }, { input: [42, 42], output: true }].forEach(function (_ref) {
-      var input = _ref.input,
-          output = _ref.output;
-
-      (0, _mocha.it)('should render ' + output + ' when ' + JSON.stringify(input) + ' provided', function () {
-        //When
-        var result = (0, _eq.eq)(input);
-        //then
-        (0, _chai.expect)(result).to.be.equal(output);
-      });
-    });
-  });
-});
 define('pix-live/tests/unit/helpers/extract-extension-test', ['chai', 'mocha', 'pix-live/helpers/extract-extension'], function (_chai, _mocha, _extractExtension) {
   'use strict';
 
@@ -15687,24 +15921,6 @@ define('pix-live/tests/unit/helpers/get-challenge-component-class-test', ['chai'
 
         // then
         (0, _chai.expect)(componentClass).to.equal(useCase.expectedClass);
-      });
-    });
-  });
-});
-define('pix-live/tests/unit/helpers/or-test', ['chai', 'mocha', 'pix-live/helpers/or'], function (_chai, _mocha, _or) {
-  'use strict';
-
-  (0, _mocha.describe)('Unit | Helper | or', function () {
-    // Replace this with your real tests.
-    [{ input: '', output: false }, { input: null, output: false }, { input: NaN, output: false }, { input: 'Undefined', output: false }, { input: 0, output: false }, { input: true, output: false }, { input: [true], output: false }, { input: [''], output: false }, { input: [null], output: false }, { input: [], output: false }, { input: ['', ''], output: false }, { input: [true, false], output: true }, { input: [true, ''], output: true }, { input: [true, 0], output: true }, { input: [true, 'empty'], output: true }, { input: [true, null], output: true }, { input: [true, 'undefined'], output: true }, { input: [true, true], output: true }].forEach(function (_ref) {
-      var input = _ref.input,
-          output = _ref.output;
-
-      (0, _mocha.it)('should render ' + output + ' when ' + JSON.stringify(input) + ' provided', function () {
-        //When
-        var result = (0, _or.or)(input);
-        //then
-        (0, _chai.expect)(result).to.be.equal(output);
       });
     });
   });
@@ -18259,21 +18475,6 @@ define('pix-live/tests/unit/routes/password-reset-test', ['chai', 'mocha', 'embe
     });
 
     (0, _mocha.it)('exists', function () {
-      (0, _chai.expect)(route).to.be.ok;
-    });
-  });
-});
-define('pix-live/tests/unit/routes/placement-tests-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
-  'use strict';
-
-  (0, _mocha.describe)('Unit | Route | placement-tests', function () {
-
-    (0, _emberMocha.setupTest)('route:placement-tests', {
-      needs: ['service:delay', 'service:current-routed-modal']
-    });
-
-    (0, _mocha.it)('exists', function () {
-      var route = this.subject();
       (0, _chai.expect)(route).to.be.ok;
     });
   });

@@ -4156,6 +4156,41 @@ p.share-profile__organization-name {
   text-transform: uppercase;
   border: none; }
 
+.tutorial-item {
+  margin: 5px; }
+  .tutorial-item hr {
+    height: 1px;
+    border: none;
+    color: #D8D8D8;
+    background-color: #D8D8D8;
+    margin: 15px 0; }
+
+.tutorial-item__tutorial-details {
+  display: flex;
+  color: #7d808a;
+  font-family: "Lato", Arial, sans-serif;
+  font-size: 1.3rem;
+  line-height: 1.2rem;
+  word-spacing: 0.3rem;
+  margin-top: 10px;
+  align-items: center; }
+
+.tutorial-item__tutorial-details__format {
+  margin-right: 10px; }
+
+.tutorial-item__tutorial-title {
+  color: #3d68ff;
+  font-family: "Lato", Arial, sans-serif;
+  font-size: 1.7rem;
+  font-weight: bold;
+  line-height: 1.3rem; }
+
+.tutorial-item__tutorial-title-url,
+.tutorial-item__tutorial-title-url:hover,
+.tutorial-item__tutorial-title-url:visited {
+  color: #3d68ff;
+  text-decoration: none; }
+
 .tutorial-panel {
   display: flex;
   flex-direction: column;
@@ -4196,13 +4231,18 @@ p.share-profile__organization-name {
   border-radius: 5px;
   padding: 36px 0 28px; }
 
+.tutorial-panel__tutorials-container {
+  display: flex;
+  flex-direction: column;
+  margin: 20px; }
+
 .tutorial-panel__hint-title {
   font-family: "Raleway", Arial, sans-serif;
   font-size: 24px;
   text-align: center;
   color: #3e4149;
   font-weight: 600;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
   position: relative;
   z-index: 1; }
   .tutorial-panel__hint-title:before {
