@@ -2890,6 +2890,49 @@ define('pix-live/components/trophy-item', ['exports'], function (exports) {
     level: null
   });
 });
+define('pix-live/components/tutorial-item', ['exports'], function (exports) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = Ember.Component.extend({
+    classNames: ['tutorial-item'],
+
+    imageForFormat: {
+      'vidéo': 'video',
+      'son': 'son',
+      'page': 'page'
+    },
+    tutorial: null,
+
+    displayedDuration: Ember.computed('tutorial', function () {
+      var durationByTime = this.get('tutorial').duration.split(':').map(function (duration) {
+        return parseInt(duration);
+      });
+
+      var HOURS_OF_DURATION = durationByTime[0];
+      var MINUTES_OF_DURATION = durationByTime[1];
+
+      if (HOURS_OF_DURATION > 0) {
+        return durationByTime[0] + ' h';
+      }
+      if (MINUTES_OF_DURATION > 0) {
+        return durationByTime[1] + ' min';
+      }
+      return '1 min';
+    }),
+
+    formatImageName: Ember.computed('tutorial', function () {
+      var format = this.get('tutorial').format;
+      if (this.get('imageForFormat')[format]) {
+        return this.get('imageForFormat')[format];
+      }
+      return 'page';
+    })
+
+  });
+});
 define('pix-live/components/tutorial-panel', ['exports'], function (exports) {
   'use strict';
 
@@ -2901,14 +2944,33 @@ define('pix-live/components/tutorial-panel', ['exports'], function (exports) {
 
     hint: null,
     resultItemStatus: null,
+    tutorials: null,
 
-    shouldDisplayDefaultMessage: Ember.computed('resultItemStatus', 'hint', function () {
-      return this.get('resultItemStatus') !== 'ok' && !this.get('hint');
+    shouldDisplayTipsToSucceed: Ember.computed('resultItemStatus', function () {
+      return this.get('resultItemStatus') !== 'ok';
     }),
 
-    shouldDisplayHint: Ember.computed('resultItemStatus', 'hint', function () {
-      return this.get('resultItemStatus') !== 'ok' && Boolean(this.get('hint'));
+    shouldDisplayHintOrTuto: Ember.computed('tutorials', 'hint', function () {
+      var tutorials = this.get('tutorials') || [];
+      var hint = this.get('hint') || [];
+
+      return hint.length > 0 || tutorials.length > 0;
+    }),
+
+    shouldDisplayHint: Ember.computed('hint', function () {
+      var hint = this.get('hint') || [];
+      return hint.length > 0;
+    }),
+
+    shouldDisplayTutorial: Ember.computed('tutorials', function () {
+      var tutorials = this.get('tutorials') || [];
+      return tutorials.length > 0;
+    }),
+
+    limitedTutorials: Ember.computed('tutorials', function () {
+      return this.get('tutorials').slice(0, 3);
     })
+
   });
 });
 define('pix-live/components/user-certifications-detail-area', ['exports'], function (exports) {
@@ -6724,11 +6786,13 @@ define('pix-live/models/correction', ['exports', 'ember-data'], function (export
     value: true
   });
   var Model = _emberData.default.Model,
-      attr = _emberData.default.attr;
+      attr = _emberData.default.attr,
+      hasMany = _emberData.default.hasMany;
   exports.default = Model.extend({
 
     solution: attr('string'),
-    hint: attr('string')
+    hint: attr('string'),
+    tutorials: hasMany('tutorial')
 
   });
 });
@@ -6854,6 +6918,26 @@ define('pix-live/models/snapshot', ['exports', 'ember-data'], function (exports,
     numberOfTestsFinished: Ember.computed('testsFinished', function () {
       return this.get('testsFinished') || 0;
     })
+  });
+});
+define('pix-live/models/tutorial', ['exports', 'ember-data'], function (exports, _emberData) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  var Model = _emberData.default.Model,
+      attr = _emberData.default.attr,
+      hasMany = _emberData.default.hasMany;
+  exports.default = Model.extend({
+
+    duration: attr('string'),
+    format: attr('string'),
+    link: attr('string'),
+    source: attr('string'),
+    title: attr('string'),
+    correction: hasMany('correction')
+
   });
 });
 define('pix-live/models/user', ['exports', 'ember-data'], function (exports, _emberData) {
@@ -8499,7 +8583,7 @@ define("pix-live/templates/components/comparison-window", ["exports"], function 
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "L7MbsAxG", "block": "{\"symbols\":[],\"statements\":[[6,\"div\"],[10,\"class\",\"routable-modal--dialog comparison-window--dialog\"],[8],[0,\"\\n\\n  \"],[6,\"div\"],[10,\"class\",\"routable-modal--content comparison-window--content\"],[8],[0,\"\\n\\n    \"],[6,\"div\"],[10,\"class\",\"routable-modal--header comparison-window__header\"],[8],[0,\"\\n\\n\\n\"],[4,\"routable-modal-close-button\",null,[[\"class\"],[\"routable-modal--close-button\"]],{\"statements\":[[0,\"        \"],[6,\"div\"],[10,\"class\",\"close-button-container\"],[8],[0,\"\\n          \"],[6,\"div\"],[8],[0,\"fermer\"],[9],[0,\"\\n          \"],[6,\"div\"],[8],[0,\"\\n            \"],[6,\"img\"],[10,\"src\",\"/images/comparison-window/icon-close-modal.svg\"],[10,\"alt\",\"Fermer la fenêtre modale\"],[10,\"width\",\"24\"],[10,\"height\",\"24\"],[8],[9],[0,\"\\n          \"],[9],[0,\"\\n        \"],[9],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n      \"],[6,\"div\"],[10,\"class\",\"comparison-window__result-item-index\"],[8],[0,\"\\n        \"],[1,[20,\"index\"],false],[0,\"\\n      \"],[9],[0,\"\\n\\n      \"],[6,\"div\"],[10,\"class\",\"comparison-window__result-item-line\"],[8],[0,\"\\n      \"],[9],[0,\"\\n\\n      \"],[6,\"div\"],[10,\"class\",\"comparison-window__title\"],[8],[0,\"\\n        \"],[6,\"div\"],[10,\"data-toggle\",\"tooltip\"],[10,\"data-placement\",\"top\"],[11,\"title\",[27,[[22,[\"resultItem\",\"tooltip\"]]]]],[8],[0,\"\\n          \"],[6,\"img\"],[11,\"class\",[27,[\"comparison-window__result-icon comparison-window__result-icon--\",[22,[\"resultItem\",\"status\"]]]]],[11,\"src\",[20,\"resultItemIcon\"]],[10,\"alt\",\"\"],[8],[9],[0,\"\\n        \"],[9],[0,\"\\n      \"],[9],[0,\"\\n      \"],[6,\"div\"],[10,\"class\",\"comparison-window__title-text\"],[8],[1,[22,[\"resultItem\",\"title\"]],false],[9],[0,\"\\n    \"],[9],[0,\"\\n\\n    \"],[6,\"div\"],[10,\"class\",\"routable-modal--body comparison-window--body\"],[8],[0,\"\\n\\n      \"],[6,\"div\"],[10,\"class\",\"rounded-panel comparison-window__instruction\"],[8],[0,\"\\n        \"],[6,\"div\"],[10,\"class\",\"rounded-panel__row \"],[8],[0,\"\\n          \"],[1,[26,\"markdown-to-html\",null,[[\"class\",\"markdown\"],[\"challenge-statement__instruction\",[22,[\"challenge\",\"instruction\"]]]]],false],[0,\"\\n        \"],[9],[0,\"\\n\\n\"],[4,\"if\",[[22,[\"challenge\",\"illustrationUrl\"]]],null,{\"statements\":[[0,\"          \"],[6,\"div\"],[10,\"class\",\"rounded-panel__row challenge-statement__illustration-section\"],[8],[0,\"\\n            \"],[6,\"img\"],[10,\"class\",\"challenge-statement__illustration\"],[11,\"src\",[27,[[22,[\"challenge\",\"illustrationUrl\"]]]]],[10,\"alt\",\"Illustration de l'épreuve\"],[8],[9],[0,\"\\n          \"],[9],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"      \"],[9],[0,\"\\n\\n\"],[4,\"if\",[[22,[\"isAssessmentChallengeTypeQcm\"]]],null,{\"statements\":[[0,\"        \"],[1,[26,\"qcm-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[22,[\"challenge\"]],[22,[\"answer\"]],[22,[\"correction\",\"solution\"]]]]],false],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\\n\"],[4,\"if\",[[22,[\"isAssessmentChallengeTypeQcu\"]]],null,{\"statements\":[[0,\"        \"],[1,[26,\"qcu-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[22,[\"challenge\"]],[22,[\"answer\"]],[22,[\"correction\",\"solution\"]]]]],false],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\"],[4,\"if\",[[22,[\"isAssessmentChallengeTypeQroc\"]]],null,{\"statements\":[[0,\"        \"],[6,\"div\"],[10,\"class\",\"comparison-window__corrected-answers comparison-window__corrected-answers--qroc\"],[8],[0,\"\\n          \"],[1,[26,\"qroc-solution-panel\",null,[[\"answer\",\"solution\"],[[22,[\"answer\"]],[22,[\"correction\",\"solution\"]]]]],false],[0,\"\\n        \"],[9],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\"],[4,\"if\",[[22,[\"isAssessmentChallengeTypeQrocmInd\"]]],null,{\"statements\":[[0,\"        \"],[6,\"div\"],[10,\"class\",\"comparison-window__corrected-answers comparison-window__corrected-answers--qrocm\"],[8],[0,\"\\n          \"],[1,[26,\"qrocm-ind-solution-panel\",null,[[\"answer\",\"solution\",\"challenge\"],[[22,[\"answer\"]],[22,[\"correction\",\"solution\"]],[22,[\"challenge\"]]]]],false],[0,\"\\n        \"],[9],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n      \"],[1,[26,\"tutorial-panel\",null,[[\"resultItemStatus\",\"hint\"],[[22,[\"resultItem\",\"status\"]],[22,[\"correction\",\"hint\"]]]]],false],[0,\"\\n    \"],[9],[0,\"\\n\\n    \"],[6,\"div\"],[10,\"class\",\"routable-modal--footer\"],[8],[0,\"\\n      \"],[6,\"div\"],[10,\"class\",\"comparison-window__feedback-panel\"],[8],[0,\"\\n        \"],[1,[26,\"feedback-panel\",null,[[\"assessment\",\"challenge\",\"collapsible\"],[[22,[\"answer\",\"assessment\"]],[22,[\"challenge\"]],false]]],false],[0,\"\\n      \"],[9],[0,\"\\n    \"],[9],[0,\"\\n  \"],[9],[0,\"\\n\"],[9],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/comparison-window.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "h8z7IhrS", "block": "{\"symbols\":[],\"statements\":[[6,\"div\"],[10,\"class\",\"routable-modal--dialog comparison-window--dialog\"],[8],[0,\"\\n\\n  \"],[6,\"div\"],[10,\"class\",\"routable-modal--content comparison-window--content\"],[8],[0,\"\\n\\n    \"],[6,\"div\"],[10,\"class\",\"routable-modal--header comparison-window__header\"],[8],[0,\"\\n\\n\\n\"],[4,\"routable-modal-close-button\",null,[[\"class\"],[\"routable-modal--close-button\"]],{\"statements\":[[0,\"        \"],[6,\"div\"],[10,\"class\",\"close-button-container\"],[8],[0,\"\\n          \"],[6,\"div\"],[8],[0,\"fermer\"],[9],[0,\"\\n          \"],[6,\"div\"],[8],[0,\"\\n            \"],[6,\"img\"],[10,\"src\",\"/images/comparison-window/icon-close-modal.svg\"],[10,\"alt\",\"Fermer la fenêtre modale\"],[10,\"width\",\"24\"],[10,\"height\",\"24\"],[8],[9],[0,\"\\n          \"],[9],[0,\"\\n        \"],[9],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n      \"],[6,\"div\"],[10,\"class\",\"comparison-window__result-item-index\"],[8],[0,\"\\n        \"],[1,[20,\"index\"],false],[0,\"\\n      \"],[9],[0,\"\\n\\n      \"],[6,\"div\"],[10,\"class\",\"comparison-window__result-item-line\"],[8],[0,\"\\n      \"],[9],[0,\"\\n\\n      \"],[6,\"div\"],[10,\"class\",\"comparison-window__title\"],[8],[0,\"\\n        \"],[6,\"div\"],[10,\"data-toggle\",\"tooltip\"],[10,\"data-placement\",\"top\"],[11,\"title\",[27,[[22,[\"resultItem\",\"tooltip\"]]]]],[8],[0,\"\\n          \"],[6,\"img\"],[11,\"class\",[27,[\"comparison-window__result-icon comparison-window__result-icon--\",[22,[\"resultItem\",\"status\"]]]]],[11,\"src\",[20,\"resultItemIcon\"]],[10,\"alt\",\"\"],[8],[9],[0,\"\\n        \"],[9],[0,\"\\n      \"],[9],[0,\"\\n      \"],[6,\"div\"],[10,\"class\",\"comparison-window__title-text\"],[8],[1,[22,[\"resultItem\",\"title\"]],false],[9],[0,\"\\n    \"],[9],[0,\"\\n\\n    \"],[6,\"div\"],[10,\"class\",\"routable-modal--body comparison-window--body\"],[8],[0,\"\\n\\n      \"],[6,\"div\"],[10,\"class\",\"rounded-panel comparison-window__instruction\"],[8],[0,\"\\n        \"],[6,\"div\"],[10,\"class\",\"rounded-panel__row \"],[8],[0,\"\\n          \"],[1,[26,\"markdown-to-html\",null,[[\"class\",\"markdown\"],[\"challenge-statement__instruction\",[22,[\"challenge\",\"instruction\"]]]]],false],[0,\"\\n        \"],[9],[0,\"\\n\\n\"],[4,\"if\",[[22,[\"challenge\",\"illustrationUrl\"]]],null,{\"statements\":[[0,\"          \"],[6,\"div\"],[10,\"class\",\"rounded-panel__row challenge-statement__illustration-section\"],[8],[0,\"\\n            \"],[6,\"img\"],[10,\"class\",\"challenge-statement__illustration\"],[11,\"src\",[27,[[22,[\"challenge\",\"illustrationUrl\"]]]]],[10,\"alt\",\"Illustration de l'épreuve\"],[8],[9],[0,\"\\n          \"],[9],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"      \"],[9],[0,\"\\n\\n\"],[4,\"if\",[[22,[\"isAssessmentChallengeTypeQcm\"]]],null,{\"statements\":[[0,\"        \"],[1,[26,\"qcm-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[22,[\"challenge\"]],[22,[\"answer\"]],[22,[\"correction\",\"solution\"]]]]],false],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\\n\"],[4,\"if\",[[22,[\"isAssessmentChallengeTypeQcu\"]]],null,{\"statements\":[[0,\"        \"],[1,[26,\"qcu-solution-panel\",null,[[\"challenge\",\"answer\",\"solution\"],[[22,[\"challenge\"]],[22,[\"answer\"]],[22,[\"correction\",\"solution\"]]]]],false],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\"],[4,\"if\",[[22,[\"isAssessmentChallengeTypeQroc\"]]],null,{\"statements\":[[0,\"        \"],[6,\"div\"],[10,\"class\",\"comparison-window__corrected-answers comparison-window__corrected-answers--qroc\"],[8],[0,\"\\n          \"],[1,[26,\"qroc-solution-panel\",null,[[\"answer\",\"solution\"],[[22,[\"answer\"]],[22,[\"correction\",\"solution\"]]]]],false],[0,\"\\n        \"],[9],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\"],[4,\"if\",[[22,[\"isAssessmentChallengeTypeQrocmInd\"]]],null,{\"statements\":[[0,\"        \"],[6,\"div\"],[10,\"class\",\"comparison-window__corrected-answers comparison-window__corrected-answers--qrocm\"],[8],[0,\"\\n          \"],[1,[26,\"qrocm-ind-solution-panel\",null,[[\"answer\",\"solution\",\"challenge\"],[[22,[\"answer\"]],[22,[\"correction\",\"solution\"]],[22,[\"challenge\"]]]]],false],[0,\"\\n        \"],[9],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n      \"],[1,[26,\"tutorial-panel\",null,[[\"resultItemStatus\",\"hint\",\"tutorials\"],[[22,[\"resultItem\",\"status\"]],[22,[\"correction\",\"hint\"]],[22,[\"correction\",\"tutorials\"]]]]],false],[0,\"\\n    \"],[9],[0,\"\\n\\n    \"],[6,\"div\"],[10,\"class\",\"routable-modal--footer\"],[8],[0,\"\\n      \"],[6,\"div\"],[10,\"class\",\"comparison-window__feedback-panel\"],[8],[0,\"\\n        \"],[1,[26,\"feedback-panel\",null,[[\"assessment\",\"challenge\",\"collapsible\"],[[22,[\"answer\",\"assessment\"]],[22,[\"challenge\"]],false]]],false],[0,\"\\n      \"],[9],[0,\"\\n    \"],[9],[0,\"\\n  \"],[9],[0,\"\\n\"],[9],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/comparison-window.hbs" } });
 });
 define("pix-live/templates/components/competence-area-list", ["exports"], function (exports) {
   "use strict";
@@ -8909,13 +8993,21 @@ define("pix-live/templates/components/trophy-item", ["exports"], function (expor
   });
   exports.default = Ember.HTMLBars.template({ "id": "gW/7Sy/j", "block": "{\"symbols\":[],\"statements\":[[6,\"div\"],[10,\"class\",\"trophy-item__div-img\"],[8],[0,\"\\n  \"],[6,\"img\"],[11,\"src\",[27,[[20,\"rootURL\"],\"/images/coupe.svg\"]]],[10,\"alt\",\"Coupe obtenue\"],[10,\"class\",\"trophy-item__img\"],[8],[9],[0,\"\\n\"],[9],[0,\"\\n\"],[6,\"div\"],[10,\"class\",\"trophy-item__level\"],[8],[0,\"NIVEAU \"],[1,[20,\"level\"],false],[9],[0,\"\\n\"],[6,\"div\"],[10,\"class\",\"trophy-item__bêta\"],[8],[0,\"BÊTA\"],[9]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/trophy-item.hbs" } });
 });
+define("pix-live/templates/components/tutorial-item", ["exports"], function (exports) {
+  "use strict";
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = Ember.HTMLBars.template({ "id": "RN8IeidR", "block": "{\"symbols\":[],\"statements\":[[6,\"div\"],[10,\"class\",\"tutorial-item__tutorial-title\"],[8],[0,\"\\n  \"],[6,\"a\"],[11,\"href\",[27,[[22,[\"tutorial\",\"link\"]]]]],[10,\"target\",\"_blank\"],[10,\"class\",\"tutorial-item__tutorial-title-url\"],[8],[1,[22,[\"tutorial\",\"title\"]],false],[9],[0,\"\\n\"],[9],[0,\"\\n\"],[6,\"div\"],[10,\"class\",\"tutorial-item__tutorial-details\"],[8],[0,\"\\n  \"],[6,\"div\"],[10,\"class\",\"tutorial-item__tutorial-details__format\"],[8],[0,\"\\n    \"],[6,\"img\"],[11,\"src\",[27,[\"/images/icons/\",[20,\"formatImageName\"],\"-icon.svg\"]]],[11,\"alt\",[27,[[22,[\"tutorial\",\"format\"]]]]],[8],[9],[0,\"\\n  \"],[9],[0,\"\\n  \"],[6,\"div\"],[10,\"class\",\"tutorial-item__tutorial-details__informations\"],[8],[0,\"\\n    \"],[1,[20,\"displayedDuration\"],false],[0,\" | par \"],[1,[22,[\"tutorial\",\"source\"]],false],[0,\"\\n  \"],[9],[0,\"\\n\"],[9],[0,\"\\n\"],[6,\"hr\"],[8],[9]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/tutorial-item.hbs" } });
+});
 define("pix-live/templates/components/tutorial-panel", ["exports"], function (exports) {
   "use strict";
 
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "hQbNIIYr", "block": "{\"symbols\":[],\"statements\":[[4,\"if\",[[22,[\"shouldDisplayDefaultMessage\"]]],null,{\"statements\":[[0,\"  \"],[6,\"div\"],[10,\"class\",\"tutorial-panel__default-message-container\"],[8],[0,\"\\n    \"],[6,\"div\"],[10,\"class\",\"tutorial-panel__default-message-picto-container\"],[8],[0,\"\\n      \"],[6,\"img\"],[11,\"src\",[27,[[20,\"rootURL\"],\"/images/comparison-window/icon-tuto.svg\"]]],[10,\"alt\",\"\"],[10,\"class\",\"tutorial-panel__default-message-picto\"],[8],[9],[9],[0,\"\\n    \"],[6,\"div\"],[10,\"class\",\"tutorial-panel__default-message-title\"],[8],[0,\"Bientôt ici des tutoriels pour vous aider à réussir ce type\\n      d'épreuves !!\\n    \"],[9],[0,\"\\n  \"],[9],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\"],[4,\"if\",[[22,[\"shouldDisplayHint\"]]],null,{\"statements\":[[0,\"  \"],[6,\"div\"],[10,\"class\",\"tutorial-panel__hint-container\"],[8],[0,\"\\n    \"],[6,\"header\"],[10,\"class\",\"tutorial-panel__hint-container-header\"],[8],[0,\"\\n      \"],[6,\"h3\"],[10,\"class\",\"tutorial-panel__hint-title\"],[8],[6,\"span\"],[8],[0,\"Pour réussir la prochaine fois\"],[9],[9],[0,\"\\n    \"],[9],[0,\"\\n    \"],[6,\"div\"],[10,\"class\",\"tutorial-panel__hint-container-body\"],[8],[0,\"\\n      \"],[6,\"div\"],[10,\"class\",\"tutorial-panel__hint-picto-container\"],[8],[0,\"\\n        \"],[6,\"img\"],[11,\"src\",[27,[[20,\"rootURL\"],\"/images/comparison-window/icon-lampe.svg\"]]],[10,\"alt\",\"\"],[10,\"class\",\"tutorial-panel__hint-picto\"],[8],[9],[0,\"\\n      \"],[9],[0,\"\\n      \"],[1,[26,\"markdown-to-html\",null,[[\"class\",\"markdown\"],[\"tutorial-panel__hint-content\",[22,[\"hint\"]]]]],false],[0,\"\\n    \"],[9],[0,\"\\n  \"],[9],[0,\"\\n\"]],\"parameters\":[]},null]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/tutorial-panel.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "fbAorgFF", "block": "{\"symbols\":[\"tutorial\"],\"statements\":[[4,\"if\",[[22,[\"shouldDisplayTipsToSucceed\"]]],null,{\"statements\":[[4,\"if\",[[22,[\"shouldDisplayHintOrTuto\"]]],null,{\"statements\":[[0,\"  \"],[6,\"div\"],[10,\"class\",\"tutorial-panel__hint-container\"],[8],[0,\"\\n    \"],[6,\"header\"],[10,\"class\",\"tutorial-panel__hint-container-header\"],[8],[0,\"\\n      \"],[6,\"h3\"],[10,\"class\",\"tutorial-panel__hint-title\"],[8],[6,\"span\"],[8],[0,\"Pour réussir la prochaine fois\"],[9],[9],[0,\"\\n    \"],[9],[0,\"\\n\"],[4,\"if\",[[22,[\"shouldDisplayHint\"]]],null,{\"statements\":[[0,\"        \"],[6,\"div\"],[10,\"class\",\"tutorial-panel__hint-container-body\"],[8],[0,\"\\n          \"],[6,\"div\"],[10,\"class\",\"tutorial-panel__hint-picto-container\"],[8],[0,\"\\n            \"],[6,\"img\"],[11,\"src\",[27,[[20,\"rootURL\"],\"/images/comparison-window/icon-lampe.svg\"]]],[10,\"alt\",\"\"],[10,\"class\",\"tutorial-panel__hint-picto\"],[8],[9],[0,\"\\n          \"],[9],[0,\"\\n          \"],[1,[26,\"markdown-to-html\",null,[[\"class\",\"markdown\"],[\"tutorial-panel__hint-content\",[22,[\"hint\"]]]]],false],[0,\"\\n        \"],[9],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"    \\n\"],[4,\"if\",[[22,[\"shouldDisplayTutorial\"]]],null,{\"statements\":[[0,\"      \"],[6,\"div\"],[10,\"class\",\"tutorial-panel__tutorials-container\"],[8],[0,\"\\n\"],[4,\"each\",[[22,[\"limitedTutorials\"]]],null,{\"statements\":[[0,\"          \"],[1,[26,\"tutorial-item\",null,[[\"tutorial\"],[[21,1,[]]]]],false],[0,\"\\n\"]],\"parameters\":[1]},null],[0,\"      \"],[9],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"  \"],[9],[0,\"\\n\\n\"]],\"parameters\":[]},{\"statements\":[[0,\"  \"],[6,\"div\"],[10,\"class\",\"tutorial-panel__default-message-container\"],[8],[0,\"\\n    \"],[6,\"div\"],[10,\"class\",\"tutorial-panel__default-message-picto-container\"],[8],[0,\"\\n      \"],[6,\"img\"],[11,\"src\",[27,[[20,\"rootURL\"],\"/images/comparison-window/icon-tuto.svg\"]]],[10,\"alt\",\"\"],[10,\"class\",\"tutorial-panel__default-message-picto\"],[8],[9],[0,\"\\n    \"],[9],[0,\"\\n    \"],[6,\"div\"],[10,\"class\",\"tutorial-panel__default-message-title\"],[8],[0,\"Bientôt ici des tutoriaux pour vous aider à réussir ce type\\n      d'épreuves !!\\n    \"],[9],[0,\"\\n  \"],[9],[0,\"\\n\"]],\"parameters\":[]}]],\"parameters\":[]},null]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/tutorial-panel.hbs" } });
 });
 define("pix-live/templates/components/user-certifications-detail-area", ["exports"], function (exports) {
   "use strict";
@@ -9906,6 +9998,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.53.0+1a9f7bd9"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.53.0+c932ef41"});
 }
 //# sourceMappingURL=pix-live.map
