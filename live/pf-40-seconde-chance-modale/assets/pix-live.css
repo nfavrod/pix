@@ -1382,7 +1382,9 @@ button.routable-modal--close:active {
   text-decoration: none;
   cursor: pointer; }
   .competence-level-progress-bar__link-start:hover, .competence-level-progress-bar__link-start:active, .competence-level-progress-bar__link-start:focus {
-    color: #3d68ff; }
+    color: #2861CF;
+    cursor: pointer;
+    text-decoration: underline; }
 
 .competence-level-progress-bar__link-resume {
   width: 81px;
