@@ -915,6 +915,8 @@ define('pix-live/components/competence-level-progress-bar', ['exports'], functio
     name: null,
     status: null,
 
+    _showSecondChanceModal: false,
+
     limitedLevel: Ember.computed('level', function () {
       var level = this.get('level');
       return Math.min(level, this.get('_MAX_REACHABLE_LEVEL'));
@@ -953,7 +955,16 @@ define('pix-live/components/competence-level-progress-bar', ['exports'], functio
 
     canUserReplayAssessment: Ember.computed('courseId', 'status', function () {
       return Boolean(this.get('status') === 'evaluated' && this.get('courseId'));
-    })
+    }),
+
+    actions: {
+      openModal: function openModal() {
+        this.set('_showSecondChanceModal', true);
+      },
+      closeModal: function closeModal() {
+        this.set('_showSecondChanceModal', false);
+      }
+    }
   });
 });
 define("pix-live/components/content-backdrop", ["exports", "ember-side-menu/components/content-backdrop"], function (exports, _contentBackdrop) {
@@ -1854,7 +1865,9 @@ define('pix-live/components/pix-modale', ['exports', 'ember-modal-dialog/compone
     var $tabbableElementInModal = Ember.$(modalId).find(':tabbable');
 
     var $firstElementToFocus = $tabbableElementInModal.get(0);
-    $firstElementToFocus.focus();
+    if ($firstElementToFocus != null) {
+      $firstElementToFocus.focus();
+    }
   }
 
   exports.default = _modalDialog.default.extend(_emberKeyboard.EKMixin, {
@@ -1869,11 +1882,15 @@ define('pix-live/components/pix-modale', ['exports', 'ember-modal-dialog/compone
 
       var modalId = '#' + Ember.$('.ember-modal-dialog').attr('id');
 
-      _setFocusOnFirstTabbableElement(modalId);
-
-      Ember.$(modalId).find(':tabbable').last().on('blur', function () {
+      try {
+        // XXX :tabbable is a jQuery plugin, not loaded in integration tests
         _setFocusOnFirstTabbableElement(modalId);
-      });
+        Ember.$(modalId).find(':tabbable').last().on('blur', function () {
+          _setFocusOnFirstTabbableElement(modalId);
+        });
+      } catch (e) {
+        // thow away the jQuery error
+      }
     },
 
 
@@ -8538,7 +8555,7 @@ define("pix-live/templates/components/competence-level-progress-bar", ["exports"
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "ZQZmcWlo", "block": "{\"symbols\":[],\"statements\":[[4,\"if\",[[22,[\"hasLevel\"]]],null,{\"statements\":[[0,\"  \"],[6,\"div\"],[10,\"class\",\"competence-level-progress-bar__background\"],[8],[0,\"\\n    \"],[6,\"div\"],[10,\"class\",\"competence-level-progress-bar__background-level-limit\"],[8],[0,\"\\n      \"],[6,\"div\"],[10,\"class\",\"competence-level-progress-bar__background-level-limit-indicator\"],[8],[0,\"\\n        \"],[1,[20,\"_MAX_REACHABLE_LEVEL\"],false],[0,\"\\n      \"],[9],[0,\"\\n    \"],[9],[0,\"\\n    \"],[6,\"div\"],[10,\"class\",\"competence-level-progress-bar__background-available-soon-text\"],[8],[0,\"Disponible Prochainement\"],[9],[0,\"\\n    \"],[6,\"div\"],[10,\"class\",\"competence-level-progress-bar__background-level-limit-max-indicator\"],[8],[0,\"\\n      \"],[1,[20,\"_MAX_LEVEL\"],false],[0,\"\\n    \"],[9],[0,\"\\n\"],[4,\"if\",[[22,[\"canUserReplayAssessment\"]]],null,{\"statements\":[[0,\"      \"],[6,\"div\"],[10,\"class\",\"competence-level-progress-bar__link\"],[8],[0,\"\\n\"],[4,\"link-to\",[\"courses.create-assessment\",[22,[\"courseId\"]]],[[\"class\"],[\"competence-level-progress-bar__link-replay\"]],{\"statements\":[[0,\"          Seconde chance \"],[6,\"div\"],[10,\"class\",\"sr-only\"],[8],[0,\"pour le test \\\"\"],[1,[20,\"name\"],false],[0,\"\\\"\"],[9],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"      \"],[9],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n  \"],[9],[0,\"\\n\\n  \"],[6,\"div\"],[10,\"class\",\"competence-level-progress-bar__level\"],[11,\"style\",[20,\"widthOfProgressBar\"]],[8],[0,\"\\n    \"],[6,\"div\"],[10,\"class\",\"competence-level-progress-bar__level-indicator\"],[8],[0,\"\\n      \"],[1,[20,\"limitedLevel\"],false],[0,\"\\n    \"],[9],[0,\"\\n  \"],[9],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\"],[4,\"if\",[[22,[\"canUserStartCourse\"]]],null,{\"statements\":[[0,\"  \"],[6,\"div\"],[10,\"class\",\"competence-level-progress-bar__link\"],[8],[0,\"\\n\"],[4,\"link-to\",[\"courses.create-assessment\",[22,[\"courseId\"]]],[[\"class\"],[\"competence-level-progress-bar__link-start\"]],{\"statements\":[[0,\"      Commencer \"],[6,\"div\"],[10,\"class\",\"sr-only\"],[8],[0,\"le test \\\"\"],[1,[20,\"name\"],false],[0,\"\\\"\"],[9],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"  \"],[9],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\"],[4,\"if\",[[22,[\"canUserResumeAssessment\"]]],null,{\"statements\":[[0,\"  \"],[6,\"div\"],[10,\"class\",\"competence-level-progress-bar__link\"],[8],[0,\"\\n\"],[4,\"link-to\",[\"assessments.resume\",[22,[\"assessmentId\"]]],[[\"class\"],[\"competence-level-progress-bar__link-resume\"]],{\"statements\":[[0,\"      Reprendre \"],[6,\"div\"],[10,\"class\",\"sr-only\"],[8],[0,\"le test \\\"\"],[1,[20,\"name\"],false],[0,\"\\\"\"],[9],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"  \"],[9],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\\n\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/competence-level-progress-bar.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "+iMgSfI2", "block": "{\"symbols\":[],\"statements\":[[4,\"if\",[[22,[\"hasLevel\"]]],null,{\"statements\":[[0,\"  \"],[6,\"div\"],[10,\"class\",\"competence-level-progress-bar__background\"],[8],[0,\"\\n    \"],[6,\"div\"],[10,\"class\",\"competence-level-progress-bar__background-level-limit\"],[8],[0,\"\\n      \"],[6,\"div\"],[10,\"class\",\"competence-level-progress-bar__background-level-limit-indicator\"],[8],[0,\"\\n        \"],[1,[20,\"_MAX_REACHABLE_LEVEL\"],false],[0,\"\\n      \"],[9],[0,\"\\n    \"],[9],[0,\"\\n    \"],[6,\"div\"],[10,\"class\",\"competence-level-progress-bar__background-available-soon-text\"],[8],[0,\"Disponible Prochainement\"],[9],[0,\"\\n    \"],[6,\"div\"],[10,\"class\",\"competence-level-progress-bar__background-level-limit-max-indicator\"],[8],[0,\"\\n      \"],[1,[20,\"_MAX_LEVEL\"],false],[0,\"\\n    \"],[9],[0,\"\\n\"],[4,\"if\",[[22,[\"canUserReplayAssessment\"]]],null,{\"statements\":[[0,\"      \"],[6,\"div\"],[10,\"class\",\"competence-level-progress-bar__link\"],[8],[0,\"\\n\"],[4,\"unless\",[[22,[\"_showSecondChanceModal\"]]],null,{\"statements\":[[0,\"          \"],[6,\"button\"],[10,\"class\",\"competence-level-progress-bar__link-replay\"],[3,\"action\",[[21,0,[]],\"openModal\"]],[8],[0,\"\\n            Seconde chance \"],[6,\"div\"],[10,\"class\",\"sr-only\"],[8],[0,\"pour le test \\\"\"],[1,[20,\"name\"],false],[0,\"\\\"\"],[9],[0,\"\\n          \"],[9],[0,\"\\n\"]],\"parameters\":[]},{\"statements\":[[4,\"pix-modale\",null,[[\"containerClass\",\"onClose\"],[\"competence-level-progress-bar__modal-text second-chance__modal\",[26,\"action\",[[21,0,[]],\"closeModal\"],null]]],{\"statements\":[[0,\"            \"],[6,\"div\"],[10,\"class\",\"pix-modal__container\"],[8],[0,\"\\n              \"],[6,\"a\"],[10,\"href\",\"#\"],[10,\"class\",\"pix-modal__close-link\"],[3,\"action\",[[21,0,[]],\"closeModal\"]],[8],[0,\"Fermer\\n                \"],[6,\"img\"],[10,\"src\",\"/images/comparison-window/icon-close-modal.svg\"],[10,\"alt\",\"Fermer la fenêtre modale\"],[10,\"width\",\"24\"],[10,\"height\",\"24\"],[8],[9],[0,\"\\n              \"],[9],[0,\"\\n\\n              \"],[6,\"h1\"],[8],[0,\"Seconde chance\"],[9],[0,\"\\n              \"],[6,\"div\"],[10,\"class\",\"competence-level-progress-bar__modal-body\"],[8],[0,\"\\n                \"],[6,\"p\"],[10,\"class\",\"competence-level-progress-bar__modal-text\"],[8],[0,\"\\n                  Votre niveau actuel sera remplacé par celui de ce nouveau test.\"],[6,\"br\"],[8],[9],[0,\"Les Pix associés à cette compétence seront de nouveau calculés.\\n                \"],[9],[0,\"\\n\\n                \"],[6,\"div\"],[10,\"class\",\"competence-level-progress-bar__modal-actions\"],[8],[0,\"\\n                  \"],[6,\"button\"],[10,\"class\",\"competence-level-progress-bar__modal-link-cancel pix-modal__action cancel\"],[3,\"action\",[[21,0,[]],\"closeModal\"]],[8],[0,\"Annuler\"],[9],[0,\"\\n\"],[4,\"link-to\",[\"courses.create-assessment\",[22,[\"courseId\"]]],[[\"class\"],[\"competence-level-progress-bar__modal-link-validate link-as-button pix-modal__action validate\"]],{\"statements\":[[0,\"                    J'ai compris\\n\"]],\"parameters\":[]},null],[0,\"                \"],[9],[0,\"\\n              \"],[9],[0,\"\\n            \"],[9],[0,\"\\n\"]],\"parameters\":[]},null]],\"parameters\":[]}],[0,\"      \"],[9],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n  \"],[9],[0,\"\\n\\n  \"],[6,\"div\"],[10,\"class\",\"competence-level-progress-bar__level\"],[11,\"style\",[20,\"widthOfProgressBar\"]],[8],[0,\"\\n    \"],[6,\"div\"],[10,\"class\",\"competence-level-progress-bar__level-indicator\"],[8],[0,\"\\n      \"],[1,[20,\"limitedLevel\"],false],[0,\"\\n    \"],[9],[0,\"\\n  \"],[9],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\"],[4,\"if\",[[22,[\"canUserStartCourse\"]]],null,{\"statements\":[[0,\"  \"],[6,\"div\"],[10,\"class\",\"competence-level-progress-bar__link\"],[8],[0,\"\\n\"],[4,\"link-to\",[\"courses.create-assessment\",[22,[\"courseId\"]]],[[\"class\"],[\"competence-level-progress-bar__link-start\"]],{\"statements\":[[0,\"      Commencer \"],[6,\"div\"],[10,\"class\",\"sr-only\"],[8],[0,\"le test \\\"\"],[1,[20,\"name\"],false],[0,\"\\\"\"],[9],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"  \"],[9],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"\\n\"],[4,\"if\",[[22,[\"canUserResumeAssessment\"]]],null,{\"statements\":[[0,\"  \"],[6,\"div\"],[10,\"class\",\"competence-level-progress-bar__link\"],[8],[0,\"\\n\"],[4,\"link-to\",[\"assessments.resume\",[22,[\"assessmentId\"]]],[[\"class\"],[\"competence-level-progress-bar__link-resume\"]],{\"statements\":[[0,\"      Reprendre \"],[6,\"div\"],[10,\"class\",\"sr-only\"],[8],[0,\"le test \\\"\"],[1,[20,\"name\"],false],[0,\"\\\"\"],[9],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"  \"],[9],[0,\"\\n\"]],\"parameters\":[]},null]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/components/competence-level-progress-bar.hbs" } });
 });
 define("pix-live/templates/components/corner-ribbon", ["exports"], function (exports) {
   "use strict";
@@ -9925,6 +9942,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.53.0+da314c11"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.53.0+2a2cbe9e"});
 }
 //# sourceMappingURL=pix-live.map
