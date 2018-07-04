@@ -3520,6 +3520,10 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
+    it('components/tutorial-item.js', function () {
+      // test passed
+    });
+
     it('components/tutorial-panel.js', function () {
       // test passed
     });
@@ -3656,7 +3660,15 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
+    it('models/skill-review.js', function () {
+      // test passed
+    });
+
     it('models/snapshot.js', function () {
+      // test passed
+    });
+
+    it('models/tutorial.js', function () {
       // test passed
     });
 
@@ -3705,6 +3717,10 @@ define('pix-live/tests/app.lint-test', [], function () {
     });
 
     it('routes/board.js', function () {
+      // test passed
+    });
+
+    it('routes/campaigns/skill-review.js', function () {
       // test passed
     });
 
@@ -5790,6 +5806,35 @@ define('pix-live/tests/integration/components/competence-by-area-item-test', ['c
 define('pix-live/tests/integration/components/competence-level-progress-bar-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
   'use strict';
 
+  function _asyncToGenerator(fn) {
+    return function () {
+      var gen = fn.apply(this, arguments);
+      return new Promise(function (resolve, reject) {
+        function step(key, arg) {
+          try {
+            var info = gen[key](arg);
+            var value = info.value;
+          } catch (error) {
+            reject(error);
+            return;
+          }
+
+          if (info.done) {
+            resolve(value);
+          } else {
+            return Promise.resolve(value).then(function (value) {
+              step("next", value);
+            }, function (err) {
+              step("throw", err);
+            });
+          }
+        }
+
+        return step("next");
+      });
+    };
+  }
+
   (0, _mocha.describe)('Integration | Component | competence level progress bar', function () {
     (0, _emberMocha.setupComponentTest)('competence-level-progress-bar', {
       integration: true
@@ -6011,8 +6056,54 @@ define('pix-live/tests/integration/components/competence-level-progress-bar-test
         // then
         (0, _chai.expect)(this.$('.competence-level-progress-bar__link')).to.have.lengthOf(1);
         (0, _chai.expect)(this.$('.competence-level-progress-bar__link-replay')).to.have.lengthOf(1);
-        (0, _chai.expect)(this.$('a.competence-level-progress-bar__link-replay').text().trim()).to.be.equal('Seconde chance pour le test "deuxième test"');
+        (0, _chai.expect)(this.$('.competence-level-progress-bar__link-replay').text().trim()).to.be.equal('Seconde chance pour le test "deuxième test"');
       });
+
+      (0, _mocha.it)('should display a modal when clicked', _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+        var status, name, courseId, level, $modal;
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                // given
+                status = 'evaluated';
+                name = 'deuxième test';
+                courseId = 'courseId';
+                level = 3;
+
+
+                this.set('status', status);
+                this.set('name', name);
+                this.set('courseId', courseId);
+                this.set('level', level);
+
+                // when
+                this.render(Ember.HTMLBars.template({
+                  "id": "tGTIXVXz",
+                  "block": "{\"symbols\":[],\"statements\":[[1,[26,\"competence-level-progress-bar\",null,[[\"status\",\"name\",\"courseId\",\"level\"],[[22,[\"status\"]],[22,[\"name\"]],[22,[\"courseId\"]],[22,[\"level\"]]]]],false]],\"hasEval\":false}",
+                  "meta": {}
+                }));
+                _context.next = 11;
+                return this.$('.competence-level-progress-bar__link-replay').click();
+
+              case 11:
+                $modal = document.querySelector('.pix-modal__container');
+
+                // then
+
+                (0, _chai.expect)($modal).to.be.ok;
+                (0, _chai.expect)($modal.querySelector('h1').textContent).to.contains('Seconde chance');
+                (0, _chai.expect)($modal.textContent).to.contains('Votre niveau actuel sera remplacé par celui de ce nouveau test');
+                (0, _chai.expect)($modal.querySelector('.pix-modal__action.cancel').textContent).to.contains('Annuler');
+                (0, _chai.expect)($modal.querySelector('.pix-modal__action.validate').textContent).to.contains('J\'ai compris');
+
+              case 17:
+              case 'end':
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      })));
     });
   });
 });
@@ -9335,15 +9426,7 @@ define('pix-live/tests/integration/components/share-profile-test', ['chai', 'moc
   (0, _mocha.describe)('Integration | Component | share profile', function () {
 
     (0, _emberMocha.setupComponentTest)('share-profile', {
-      integration: true,
-
-      beforeSetup: function beforeSetup() {
-        Ember.$.extend(Ember.$.expr[':'], {
-          tabbable: function tabbable() {
-            return true;
-          }
-        });
-      }
+      integration: true
     });
 
     function expectToBeOnOrganizationCodeEntryView() {
@@ -10714,8 +10797,8 @@ define('pix-live/tests/integration/components/tutorial-panel-test', ['chai', 'mo
 
       // when
       this.render(Ember.HTMLBars.template({
-        "id": "Pzg1dvfo",
-        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]]]]],false]],\"hasEval\":false}",
+        "id": "XxENc2GT",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\",\"tutorials\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]],[22,[\"tutorials\"]]]]],false]],\"hasEval\":false}",
         "meta": {}
       }));
 
@@ -10725,48 +10808,113 @@ define('pix-live/tests/integration/components/tutorial-panel-test', ['chai', 'mo
       (0, _chai.expect)(this.$('.tutorial-panel__default-message-container')).to.have.lengthOf(0);
     });
 
-    (0, _mocha.it)('should render the hint when answer is not correct and hint is present', function () {
-      // given
-      this.set('hint', 'Ceçi est une astuce.');
-      this.set('resultItemStatus', 'ko');
+    context('when the result is not ok', function () {
+      beforeEach(function () {
+        this.set('resultItemStatus', 'ko');
+      });
 
-      // when
-      this.render(Ember.HTMLBars.template({
-        "id": "Pzg1dvfo",
-        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]]]]],false]],\"hasEval\":false}",
-        "meta": {}
-      }));
+      context('when there is nor a hint or a tutorial', function () {
+        beforeEach(function () {
+          this.set('hint', null);
+          this.set('tutorials', []);
+        });
+        (0, _mocha.it)('should render the default message', function () {
+          // when
+          this.render(Ember.HTMLBars.template({
+            "id": "XxENc2GT",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\",\"tutorials\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]],[22,[\"tutorials\"]]]]],false]],\"hasEval\":false}",
+            "meta": {}
+          }));
 
-      // then
-      (0, _chai.expect)(this.$('.tutorial-panel')).to.have.lengthOf(1);
-      (0, _chai.expect)(this.$('.tutorial-panel__hint-container')).to.have.lengthOf(1);
-      (0, _chai.expect)(this.$('.tutorial-panel__hint-title')).to.have.lengthOf(1);
-      (0, _chai.expect)(this.$('.tutorial-panel__hint-picto-container')).to.have.lengthOf(1);
-      (0, _chai.expect)(this.$('.tutorial-panel__hint-picto')).to.have.lengthOf(1);
-      (0, _chai.expect)(this.$('.tutorial-panel__hint-content')).to.have.lengthOf(1);
+          // then
+          (0, _chai.expect)(this.$('.tutorial-panel')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-panel__default-message-container')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-panel__default-message-title')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-panel__default-message-picto-container')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-panel__default-message-picto')).to.have.lengthOf(1);
+        });
+        (0, _mocha.it)('should not render a hint or a tutorial', function () {
+          // when
+          this.render(Ember.HTMLBars.template({
+            "id": "XxENc2GT",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\",\"tutorials\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]],[22,[\"tutorials\"]]]]],false]],\"hasEval\":false}",
+            "meta": {}
+          }));
 
-      var $contentElement = this.$('.tutorial-panel__hint-content');
-      (0, _chai.expect)($contentElement.text().trim()).to.equal('Ceçi est une astuce.');
-    });
+          // then
+          (0, _chai.expect)(this.$('.tutorial-panel')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-panel__hint-container')).to.have.lengthOf(0);
+          (0, _chai.expect)(this.$('.tutorial-panel__tutorial-item')).to.have.lengthOf(0);
+        });
+      });
+      context('when a hint is present', function () {
+        beforeEach(function () {
+          this.set('hint', 'Ceci est un indice.');
+          this.set('tutorials', []);
+        });
 
-    (0, _mocha.it)('should render the default message when answer is not correct and hint is not defined', function () {
-      // given
-      this.set('hint', null);
-      this.set('resultItemStatus', 'ko');
+        (0, _mocha.it)('should render the hint', function () {
+          // when
+          this.render(Ember.HTMLBars.template({
+            "id": "XxENc2GT",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\",\"tutorials\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]],[22,[\"tutorials\"]]]]],false]],\"hasEval\":false}",
+            "meta": {}
+          }));
 
-      // when
-      this.render(Ember.HTMLBars.template({
-        "id": "Pzg1dvfo",
-        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]]]]],false]],\"hasEval\":false}",
-        "meta": {}
-      }));
+          // then
+          (0, _chai.expect)(this.$('.tutorial-panel')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-panel__hint-container')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-panel__hint-title')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-panel__hint-picto-container')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-panel__hint-picto')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-panel__hint-content')).to.have.lengthOf(1);
 
-      // then
-      (0, _chai.expect)(this.$('.tutorial-panel')).to.have.lengthOf(1);
-      (0, _chai.expect)(this.$('.tutorial-panel__default-message-container')).to.have.lengthOf(1);
-      (0, _chai.expect)(this.$('.tutorial-panel__default-message-title')).to.have.lengthOf(1);
-      (0, _chai.expect)(this.$('.tutorial-panel__default-message-picto-container')).to.have.lengthOf(1);
-      (0, _chai.expect)(this.$('.tutorial-panel__default-message-picto')).to.have.lengthOf(1);
+          var $contentElement = this.$('.tutorial-panel__hint-content');
+          (0, _chai.expect)($contentElement.text().trim()).to.equal('Ceci est un indice.');
+        });
+        (0, _mocha.it)('should not render the default message', function () {
+          // when
+          this.render(Ember.HTMLBars.template({
+            "id": "XxENc2GT",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\",\"tutorials\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]],[22,[\"tutorials\"]]]]],false]],\"hasEval\":false}",
+            "meta": {}
+          }));
+
+          // then
+          (0, _chai.expect)(this.$('.tutorial-panel__default-message-container')).to.have.lengthOf(0);
+        });
+      });
+      context('when a tutorial is present', function () {
+        beforeEach(function () {
+          this.set('hint', 'Ceci est un indice');
+          this.set('tutorials', [{ titre: 'Ceci est un tuto', duration: '20:00:00' }]);
+        });
+        (0, _mocha.it)('should render the tutorial', function () {
+          // when
+          this.render(Ember.HTMLBars.template({
+            "id": "XxENc2GT",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\",\"tutorials\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]],[22,[\"tutorials\"]]]]],false]],\"hasEval\":false}",
+            "meta": {}
+          }));
+
+          // then
+          (0, _chai.expect)(this.$('.tutorial-panel')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-panel__tutorials-container')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-item__tutorial-title')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-item__tutorial-details')).to.have.lengthOf(1);
+        });
+        (0, _mocha.it)('should not render the default message', function () {
+          // when
+          this.render(Ember.HTMLBars.template({
+            "id": "XxENc2GT",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\",\"tutorials\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]],[22,[\"tutorials\"]]]]],false]],\"hasEval\":false}",
+            "meta": {}
+          }));
+
+          // then
+          (0, _chai.expect)(this.$('.tutorial-panel__default-message-container')).to.have.lengthOf(0);
+        });
+      });
     });
   });
 });
@@ -12146,6 +12294,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
+    it('unit/components/tutorial-item-test.js', function () {
+      // test passed
+    });
+
     it('unit/components/tutorial-panel-test.js', function () {
       // test passed
     });
@@ -12230,6 +12382,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
+    it('unit/models/skill-review-test.js', function () {
+      // test passed
+    });
+
     it('unit/models/snapshot-test.js', function () {
       // test passed
     });
@@ -12259,6 +12415,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
     });
 
     it('unit/routes/board-test.js', function () {
+      // test passed
+    });
+
+    it('unit/routes/campaigns/start-or-resume-test.js', function () {
       // test passed
     });
 
@@ -15244,6 +15404,119 @@ define('pix-live/tests/unit/components/timeout-jauge-test', ['chai', 'mocha', 'e
     });
   });
 });
+define('pix-live/tests/unit/components/tutorial-item-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+  'use strict';
+
+  (0, _mocha.describe)('Unit | Component | tutorial item', function () {
+    (0, _emberMocha.setupComponentTest)('tutorial-item', {
+      unit: true
+    });
+
+    var component = void 0;
+
+    beforeEach(function () {
+      component = this.subject();
+    });
+
+    (0, _mocha.describe)('#displayedDuration', function () {
+
+      (0, _mocha.it)('should return the time only in hours if the duration time contains hours', function () {
+        // given
+        var tutorial = {
+          id: 'recTuto1',
+          format: 'video',
+          duration: '08:23:32'
+        };
+        component.set('tutorial', tutorial);
+
+        // when
+        var result = component.get('displayedDuration');
+
+        // then
+        (0, _chai.expect)(result).to.equal('8 h');
+      });
+
+      (0, _mocha.it)('should return the time only in minutes if the duration time contains minutes but 0 hours', function () {
+        // given
+        var tutorial = {
+          id: 'recTuto1',
+          format: 'video',
+          duration: '00:04:32'
+        };
+        component.set('tutorial', tutorial);
+
+        // when
+        var result = component.get('displayedDuration');
+
+        // then
+        (0, _chai.expect)(result).to.equal('4 min');
+      });
+
+      (0, _mocha.it)('should return 1 min if the duration time contains 0 minutes or hours', function () {
+        // given
+        var tutorial = {
+          id: 'recTuto1',
+          format: 'video',
+          duration: '00:00:32'
+        };
+        component.set('tutorial', tutorial);
+
+        // when
+        var result = component.get('displayedDuration');
+
+        // then
+        (0, _chai.expect)(result).to.equal('1 min');
+      });
+    });
+
+    (0, _mocha.describe)('#formatImageName', function () {
+
+      ['son', 'page'].forEach(function (format) {
+        (0, _mocha.it)('should return the same name "' + format + '" to display the image', function () {
+          // given
+          var tutorial = {
+            format: format
+          };
+          component.set('tutorial', tutorial);
+
+          // when
+          var result = component.get('formatImageName');
+
+          // then
+          (0, _chai.expect)(result).to.equal(format);
+        });
+      });
+
+      (0, _mocha.it)('should return "video" when format is "vidéo"', function () {
+        // given
+        var tutorial = {
+          format: 'vidéo'
+        };
+        component.set('tutorial', tutorial);
+
+        // when
+        var result = component.get('formatImageName');
+
+        // then
+        (0, _chai.expect)(result).to.equal('video');
+      });
+
+      (0, _mocha.it)('should return the default value "page" when is not precise format', function () {
+        // given
+        var tutorial = {
+          format: 'site'
+        };
+        component.set('tutorial', tutorial);
+
+        // when
+        var result = component.get('formatImageName');
+
+        // then
+        (0, _chai.expect)(result).to.equal('page');
+      });
+    });
+  });
+});
 define('pix-live/tests/unit/components/tutorial-panel-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
   'use strict';
 
@@ -15258,89 +15531,207 @@ define('pix-live/tests/unit/components/tutorial-panel-test', ['chai', 'mocha', '
       component = this.subject();
     });
 
-    (0, _mocha.describe)('#shouldDisplayDefaultMessage', function () {
+    (0, _mocha.describe)('#shouldDisplayTipsToSucceed', function () {
 
       ['ko', 'aband', 'partially', 'timedout', 'default'].forEach(function (status) {
-        (0, _mocha.it)('should return true when resultItemStatus is "' + status + '" and hint is not defined', function () {
+        (0, _mocha.it)('should return true when resultItemStatus is "' + status + '"', function () {
           // given
           component.set('resultItemStatus', status);
-          component.set('hint', null);
 
           // when
-          var result = component.get('shouldDisplayDefaultMessage');
+          var result = component.get('shouldDisplayTipsToSucceed');
 
           // then
           (0, _chai.expect)(result).to.be.true;
-        });
-      });
-
-      (0, _mocha.it)('should return false when resultItemStatus is "ok" and hint is not defined', function () {
-        // given
-        component.set('resultItemStatus', 'ok');
-        component.set('hint', null);
-
-        // when
-        var result = component.get('shouldDisplayDefaultMessage');
-
-        // then
-        (0, _chai.expect)(result).to.be.false;
-      });
-
-      ['ko', 'aband', 'partially', 'timedout', 'default'].forEach(function (status) {
-        (0, _mocha.it)('should return false when resultItemStatus is "' + status + '" and hint is defined', function () {
-          // given
-          component.set('resultItemStatus', status);
-          component.set('hint', 'Un conseil...');
-
-          // when
-          var result = component.get('shouldDisplayDefaultMessage');
-
-          // then
-          (0, _chai.expect)(result).to.be.false;
-        });
-      });
-    });
-
-    (0, _mocha.describe)('#shouldDisplayHint', function () {
-
-      ['ko', 'aband', 'partially', 'timedout', 'default'].forEach(function (status) {
-        (0, _mocha.it)('should return true when resultItemStatus is "' + status + '" and hint is defined', function () {
-          // given
-          component.set('resultItemStatus', status);
-          component.set('hint', 'Un conseil...');
-
-          // when
-          var result = component.get('shouldDisplayHint');
-
-          // then
-          (0, _chai.expect)(result).to.be.true;
-        });
-      });
-
-      ['ko', 'aband', 'partially', 'timedout', 'default'].forEach(function (status) {
-        (0, _mocha.it)('should return false when resultItemStatus is "' + status + '" and hint is not defined', function () {
-          // given
-          component.set('resultItemStatus', status);
-          component.set('hint', null);
-
-          // when
-          var result = component.get('shouldDisplayHint');
-
-          // then
-          (0, _chai.expect)(result).to.be.false;
         });
       });
 
       (0, _mocha.it)('should return false when resultItemStatus is "ok"', function () {
         // given
         component.set('resultItemStatus', 'ok');
+
+        // when
+        var result = component.get('shouldDisplayTipsToSucceed');
+
+        // then
+        (0, _chai.expect)(result).to.be.false;
+      });
+    });
+
+    (0, _mocha.describe)('#shouldDisplayHint', function () {
+
+      (0, _mocha.it)('should return true when hint is defined', function () {
+        // given
         component.set('hint', 'Un conseil...');
 
         // when
         var result = component.get('shouldDisplayHint');
 
         // then
+        (0, _chai.expect)(result).to.be.true;
+      });
+
+      (0, _mocha.it)('should return false when hint is not defined', function () {
+        // given
+        component.set('hint', null);
+
+        // when
+        var result = component.get('shouldDisplayHint');
+
+        // then
         (0, _chai.expect)(result).to.be.false;
+      });
+
+      (0, _mocha.it)('should return false when hint is an empty array', function () {
+        // given
+        component.set('hint', []);
+
+        // when
+        var result = component.get('shouldDisplayHint');
+
+        // then
+        (0, _chai.expect)(result).to.be.false;
+      });
+    });
+
+    (0, _mocha.describe)('#shouldDisplayHintOrTuto', function () {
+
+      (0, _mocha.it)('should return true when hint is defined and tuto is not', function () {
+        // given
+        component.set('hint', 'Un conseil...');
+        component.set('tutorials', []);
+
+        // when
+        var result = component.get('shouldDisplayHintOrTuto');
+
+        // then
+        (0, _chai.expect)(result).to.be.true;
+      });
+
+      (0, _mocha.it)('should return true when hint is not defined and tuto is defined', function () {
+        // given
+        component.set('hint', null);
+        component.set('tutorials', [{ id: 'recTuto' }]);
+
+        // when
+        var result = component.get('shouldDisplayHintOrTuto');
+
+        // then
+        (0, _chai.expect)(result).to.be.true;
+      });
+
+      (0, _mocha.it)('should return false when hint and tutorials are not defined', function () {
+        // given
+        component.set('hint', null);
+        component.set('tutorials', null);
+
+        // when
+        var result = component.get('shouldDisplayHintOrTuto');
+
+        // then
+        (0, _chai.expect)(result).to.be.false;
+      });
+
+      (0, _mocha.it)('should return false when hint and tutorials are empty array', function () {
+        // given
+        component.set('hint', []);
+        component.set('tutorials', []);
+
+        // when
+        var result = component.get('shouldDisplayHintOrTuto');
+
+        // then
+        (0, _chai.expect)(result).to.be.false;
+      });
+    });
+
+    (0, _mocha.describe)('#shouldDisplayTutorial', function () {
+
+      (0, _mocha.it)('should return true when has tutorial', function () {
+        // given
+        var tutorialsExpected = {
+          id: 'recTuto1',
+          format: 'video'
+        };
+        component.set('tutorials', [tutorialsExpected]);
+
+        // when
+        var result = component.get('shouldDisplayTutorial');
+
+        // then
+        (0, _chai.expect)(result).to.be.true;
+      });
+
+      (0, _mocha.it)('should return false when tutorials is empty', function () {
+        // given
+        component.set('tutorials', []);
+
+        // when
+        var result = component.get('shouldDisplayTutorial');
+
+        // then
+        (0, _chai.expect)(result).to.be.false;
+      });
+
+      (0, _mocha.it)('should return false when tutorials is null', function () {
+        // given
+        component.set('tutorials', null);
+
+        // when
+        var result = component.get('shouldDisplayTutorial');
+
+        // then
+        (0, _chai.expect)(result).to.be.false;
+      });
+    });
+
+    (0, _mocha.describe)('#limitedTutorial', function () {
+
+      (0, _mocha.it)('should return an array with the same tutorials', function () {
+        // given
+        var tutorialsExpected1 = {
+          id: 'recTuto1',
+          format: 'video'
+        };
+        var tutorialsExpected2 = {
+          id: 'recTuto2',
+          format: 'son'
+        };
+        var tutorials = [tutorialsExpected1, tutorialsExpected2];
+        component.set('tutorials', tutorials);
+
+        // when
+        var result = component.get('limitedTutorials');
+
+        // then
+        (0, _chai.expect)(result).to.deep.equal(tutorials);
+      });
+
+      (0, _mocha.it)('should return only 3 elements if the tutorials contains more', function () {
+        // given
+        var tutorialsExpected1 = {
+          id: 'recTuto1'
+        };
+        var tutorialsExpected2 = {
+          id: 'recTuto2'
+        };
+        var tutorialsExpected3 = {
+          id: 'recTuto3'
+        };
+        var tutorialsExpected4 = {
+          id: 'recTuto4'
+        };
+
+        var tutorials = [tutorialsExpected1, tutorialsExpected2, tutorialsExpected3, tutorialsExpected4];
+        var expectedTutorials = [tutorialsExpected1, tutorialsExpected2, tutorialsExpected3];
+        component.set('tutorials', tutorials);
+
+        // when
+        var result = component.get('limitedTutorials');
+
+        // then
+        (0, _chai.expect)(result.length).to.equal(3);
+        (0, _chai.expect)(result).to.deep.equal(expectedTutorials);
       });
     });
   });
@@ -15845,8 +16236,46 @@ define('pix-live/tests/unit/models/assessment-progress-test', ['chai', 'mocha', 
     });
   });
 });
-define('pix-live/tests/unit/models/assessment-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+define('pix-live/tests/unit/models/assessment-test', ['chai', 'mocha', 'ember-mocha', 'lodash'], function (_chai, _mocha, _emberMocha, _lodash) {
   'use strict';
+
+  var _slicedToArray = function () {
+    function sliceIterator(arr, i) {
+      var _arr = [];
+      var _n = true;
+      var _d = false;
+      var _e = undefined;
+
+      try {
+        for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+          _arr.push(_s.value);
+
+          if (i && _arr.length === i) break;
+        }
+      } catch (err) {
+        _d = true;
+        _e = err;
+      } finally {
+        try {
+          if (!_n && _i["return"]) _i["return"]();
+        } finally {
+          if (_d) throw _e;
+        }
+      }
+
+      return _arr;
+    }
+
+    return function (arr, i) {
+      if (Array.isArray(arr)) {
+        return arr;
+      } else if (Symbol.iterator in Object(arr)) {
+        return sliceIterator(arr, i);
+      } else {
+        throw new TypeError("Invalid attempt to destructure non-iterable instance");
+      }
+    };
+  }();
 
   var SMART_PLACEMENT_TYPE = 'SMART_PLACEMENT';
 
@@ -15896,56 +16325,109 @@ define('pix-live/tests/unit/models/assessment-test', ['chai', 'mocha', 'ember-mo
       });
     });
 
-    /*
-     describe('#answersSinceLastCheckpoints(answers)', function() {
-       function newAnswer() {
-        return EmberObject.create();
+    (0, _mocha.describe)('@answersSinceLastCheckpoints', function () {
+
+      function newAnswers(store, nbAnswers) {
+        return Ember.run(function () {
+          return _lodash.default.times(nbAnswers, function () {
+            return store.createRecord('answer');
+          });
+        });
       }
-       it('should return an empty array when no answers has been given', function() {
+
+      (0, _mocha.it)('should return an empty array when no answers has been given', function () {
         // given
-        const answers = [];
-         // when
-        const answersSinceLastCheckpoints = ProgressWithCheckpoints.answersSinceLastCheckpoints(answers);
-         // then
-        expect(answersSinceLastCheckpoints).to.deep.equal([]);
+        var assessment = this.subject();
+        assessment.set('answers', []);
+
+        // when
+        var answersSinceLastCheckpoints = assessment.get('answersSinceLastCheckpoints');
+
+        // then
+        (0, _chai.expect)(answersSinceLastCheckpoints).to.deep.equal([]);
       });
-       it('should return the one answer when only one answer has been given', function() {
+
+      (0, _mocha.it)('should return the one answer when only one answer has been given', function () {
+        var _this3 = this;
+
         // given
-        const answers = [newAnswer()];
-         // when
-        const answersSinceLastCheckpoints = ProgressWithCheckpoints.answersSinceLastCheckpoints(answers);
-         // then
-        expect(answersSinceLastCheckpoints).to.deep.equal(answers);
+        var answer = Ember.run(function () {
+          return _this3.store().createRecord('answer');
+        });
+        var assessment = this.subject();
+        var answers = [answer];
+        Ember.run(function () {
+          return assessment.set('answers', answers);
+        });
+
+        // when
+        var answersSinceLastCheckpoints = assessment.get('answersSinceLastCheckpoints');
+
+        // then
+        (0, _chai.expect)(answersSinceLastCheckpoints).to.deep.equal(answers);
       });
-       it('should return the last 2 answers when there is 7 answers', function() {
+
+      (0, _mocha.it)('should return the last 2 answers when there is 7 answers', function () {
         // given
-        const answers = _.times(7, newAnswer);
-        const [answer6, answer7] = answers.slice(5);
-         // when
-        const answersSinceLastCheckpoints = ProgressWithCheckpoints.answersSinceLastCheckpoints(answers);
-         // then
-        expect(answersSinceLastCheckpoints).to.deep.equal([answer6, answer7]);
+        var answers = newAnswers(this.store(), 7);
+
+        var _answers$slice = answers.slice(5),
+            _answers$slice2 = _slicedToArray(_answers$slice, 2),
+            answer6 = _answers$slice2[0],
+            answer7 = _answers$slice2[1];
+
+        var assessment = this.subject();
+        Ember.run(function () {
+          return assessment.set('answers', answers);
+        });
+
+        // when
+        var answersSinceLastCheckpoints = assessment.get('answersSinceLastCheckpoints');
+
+        // then
+        (0, _chai.expect)(answersSinceLastCheckpoints).to.deep.equal([answer6, answer7]);
       });
-       it('should return the last 5 answers when there is 10 answers', function() {
+
+      (0, _mocha.it)('should return the last 5 answers when there is 10 answers', function () {
         // given
-        const answers = _.times(10, newAnswer);
-        const [answer6, answer7, answer8, answer9, answer10] = answers.slice(5);
-         // when
-        const answersSinceLastCheckpoints = ProgressWithCheckpoints.answersSinceLastCheckpoints(answers);
-         // then
-        expect(answersSinceLastCheckpoints).to.deep.equal([answer6, answer7, answer8, answer9, answer10]);
+        var answers = newAnswers(this.store(), 10);
+
+        var _answers$slice3 = answers.slice(5),
+            _answers$slice4 = _slicedToArray(_answers$slice3, 5),
+            answer6 = _answers$slice4[0],
+            answer7 = _answers$slice4[1],
+            answer8 = _answers$slice4[2],
+            answer9 = _answers$slice4[3],
+            answer10 = _answers$slice4[4];
+
+        var assessment = this.subject();
+        Ember.run(function () {
+          return assessment.set('answers', answers);
+        });
+
+        // when
+        var answersSinceLastCheckpoints = assessment.get('answersSinceLastCheckpoints');
+
+        // then
+        (0, _chai.expect)(answersSinceLastCheckpoints).to.deep.equal([answer6, answer7, answer8, answer9, answer10]);
       });
-       it('should return the last 1 answer when there is 11 answers', function() {
+
+      (0, _mocha.it)('should return the last 1 answer when there is 11 answers', function () {
         // given
-        const answers = _.times(11, newAnswer);
-        const answer11 = answers[10];
-         // when
-        const answersSinceLastCheckpoints = ProgressWithCheckpoints.answersSinceLastCheckpoints(answers);
-         // then
-        expect(answersSinceLastCheckpoints).to.deep.equal([answer11]);
+        var answers = newAnswers(this.store(), 11);
+        var answer11 = answers[10];
+        var assessment = this.subject();
+        Ember.run(function () {
+          return assessment.set('answers', answers);
+        });
+
+        // when
+        var answersSinceLastCheckpoints = assessment.get('answersSinceLastCheckpoints');
+
+        // then
+        (0, _chai.expect)(answersSinceLastCheckpoints).to.deep.equal([answer11]);
       });
     });
-      */
   });
 });
 define('pix-live/tests/unit/models/certification-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
@@ -16385,6 +16867,51 @@ define('pix-live/tests/unit/models/result-competence-tree-test', ['chai', 'mocha
     });
   });
 });
+define('pix-live/tests/unit/models/skill-review-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+  'use strict';
+
+  (0, _mocha.describe)('Unit | Model | skill review', function () {
+    (0, _emberMocha.setupModelTest)('skill-review', {
+      // Specify the other units that are required for this test.
+      needs: []
+    });
+
+    (0, _mocha.describe)('Computed property #profileMasteryPercentage', function () {
+
+      (0, _mocha.it)('should compute a property in  %', function () {
+        var _this = this;
+
+        Ember.run(function () {
+          // given
+          var store = _this.store();
+          var skillReview = store.createRecord('skill-review', { profileMasteryRate: 0.6815 });
+
+          // when
+          var profileMasteryInPourcent = skillReview.get('profileMasteryPercentage');
+
+          // then
+          (0, _chai.expect)(profileMasteryInPourcent).to.equal('68.2 %');
+        });
+      });
+
+      (0, _mocha.it)('should round the property to one decimal %', function () {
+        var _this2 = this;
+
+        Ember.run(function () {
+          // given
+          var store = _this2.store();
+          var skillReview = store.createRecord('skill-review', { profileMasteryRate: 0.651 });
+
+          // when
+          var profileMasteryInPourcent = skillReview.get('profileMasteryPercentage');
+
+          // then
+          (0, _chai.expect)(profileMasteryInPourcent).to.equal('65.1 %');
+        });
+      });
+    });
+  });
+});
 define('pix-live/tests/unit/models/snapshot-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
   'use strict';
 
@@ -16767,7 +17294,8 @@ define('pix-live/tests/unit/routes/assessments/challenge-test', ['chai', 'mocha'
           var challengeTwo = Ember.Object.create({ id: 'recChallengeTwo' });
           var listOfAnswers = [answerToChallengeOne, Ember.Object.create({ challenge: challengeTwo }), Ember.Object.create({ challenge: challengeTwo }), Ember.Object.create({ challenge: challengeTwo }), Ember.Object.create({ challenge: challengeTwo })];
 
-          var assessment = Ember.Object.create({ id: 154, type: 'SMART_PLACEMENT', answers: listOfAnswers, hasCheckpoints: true });
+          var assessmentId = 154;
+          var assessment = Ember.Object.create({ id: assessmentId, type: 'SMART_PLACEMENT', answers: listOfAnswers, hasCheckpoints: true });
           createRecordStub.returns(answerToChallengeOne);
           queryRecordStub.resolves(nextChallenge);
 
@@ -16778,7 +17306,7 @@ define('pix-live/tests/unit/routes/assessments/challenge-test', ['chai', 'mocha'
           return promise.then(function () {
             _sinon.default.assert.callOrder(answerToChallengeOne.save, route.transitionTo);
             _sinon.default.assert.calledOnce(route.transitionTo);
-            _sinon.default.assert.calledWith(route.transitionTo, 'assessments.checkpoint', 154);
+            _sinon.default.assert.calledWith(route.transitionTo, 'assessments.checkpoint', assessmentId);
           });
         });
 
@@ -16804,7 +17332,8 @@ define('pix-live/tests/unit/routes/assessments/challenge-test', ['chai', 'mocha'
 
         (0, _mocha.it)('should redirect to checkpoint before the rating on the last serie of 5', function () {
           // given
-          var assessment = Ember.Object.create({ id: 947, answers: [answerToChallengeOne], hasCheckpoints: true });
+          var assessmentId = 947;
+          var assessment = Ember.Object.create({ id: assessmentId, answers: [answerToChallengeOne], hasCheckpoints: true });
           createRecordStub.returns(answerToChallengeOne);
           queryRecordStub.rejects();
 
@@ -16815,7 +17344,7 @@ define('pix-live/tests/unit/routes/assessments/challenge-test', ['chai', 'mocha'
           return promise.then(function () {
             _sinon.default.assert.callOrder(answerToChallengeOne.save, route.transitionTo);
             _sinon.default.assert.calledOnce(route.transitionTo);
-            _sinon.default.assert.calledWith(route.transitionTo, 'assessments.checkpoint', assessment, {
+            _sinon.default.assert.calledWith(route.transitionTo, 'assessments.checkpoint', assessmentId, {
               queryParams: { finalCheckpoint: true }
             });
           });
@@ -16857,7 +17386,7 @@ define('pix-live/tests/unit/routes/assessments/rating-test', ['chai', 'mocha', '
 
       // instance route object
       route = this.subject();
-      route.transitionTo = _sinon.default.stub();
+      route.replaceWith = _sinon.default.stub();
     });
 
     (0, _mocha.describe)('#afterModel', function () {
@@ -16868,13 +17397,31 @@ define('pix-live/tests/unit/routes/assessments/rating-test', ['chai', 'mocha', '
       context('when the assessment is a certification', function () {
         (0, _mocha.it)('should redirect to the certification end page', function () {
           // given
-          var assessment = Ember.Object.create({ type: 'CERTIFICATION', answers: [answerToChallengeOne] });
+          var assessment = Ember.Object.create({ id: 12, type: 'CERTIFICATION', answers: [answerToChallengeOne] });
 
           // when
-          route.afterModel(assessment);
+          var promise = route.afterModel(assessment);
 
           // then
-          _sinon.default.assert.calledWith(route.transitionTo, 'certifications.results');
+          return promise.then(function () {
+            return _sinon.default.assert.calledWith(route.replaceWith, 'certifications.results');
+          });
+        });
+      });
+
+      context('when the assessment is a SMART_PLACEMENT', function () {
+        (0, _mocha.it)('should redirect to the certification end page', function () {
+          // given
+          var assessmentId = 12;
+          var assessment = Ember.Object.create({ id: assessmentId, type: 'SMART_PLACEMENT', answers: [answerToChallengeOne] });
+
+          // when
+          var promise = route.afterModel(assessment);
+
+          // then
+          return promise.then(function () {
+            return _sinon.default.assert.calledWith(route.replaceWith, 'campaigns.skill-review', assessmentId);
+          });
         });
       });
 
@@ -16884,10 +17431,12 @@ define('pix-live/tests/unit/routes/assessments/rating-test', ['chai', 'mocha', '
           var assessment = Ember.Object.create({ answers: [answerToChallengeOne] });
 
           // when
-          route.afterModel(assessment);
+          var promise = route.afterModel(assessment);
 
           // then
-          _sinon.default.assert.calledWith(route.transitionTo, 'assessments.results', assessment.get('id'));
+          return promise.then(function () {
+            return _sinon.default.assert.calledWith(route.replaceWith, 'assessments.results', assessment.get('id'));
+          });
         });
       });
 
@@ -17188,6 +17737,149 @@ define('pix-live/tests/unit/routes/board-test', ['chai', 'mocha', 'ember-mocha',
       return result.then(function (_) {
         _sinon.default.assert.calledOnce(route.transitionTo);
         _sinon.default.assert.calledWith(route.transitionTo, 'compte');
+      });
+    });
+  });
+});
+define('pix-live/tests/unit/routes/campaigns/start-or-resume-test', ['chai', 'mocha', 'ember-mocha', 'sinon'], function (_chai, _mocha, _emberMocha, _sinon) {
+  'use strict';
+
+  (0, _mocha.describe)('Unit | Route | campaigns/start-or-resume', function () {
+
+    (0, _emberMocha.setupTest)('route:campaigns/start-or-resume', {
+      needs: ['service:session', 'service:current-routed-modal']
+    });
+
+    (0, _mocha.describe)('#model', function () {
+
+      var storeStub = void 0;
+      var queryStub = void 0;
+      var createRecordStub = void 0;
+
+      (0, _mocha.beforeEach)(function () {
+        queryStub = _sinon.default.stub();
+        createRecordStub = _sinon.default.stub();
+        storeStub = Ember.Service.extend({ query: queryStub, createRecord: createRecordStub });
+        this.register('service:store', storeStub);
+        this.inject.service('store', { as: 'store' });
+      });
+
+      (0, _mocha.it)('should fetch all user assessments with type "SMART_PLACEMENT"', function () {
+        // given
+        var assessments = Ember.A([]);
+        queryStub.resolves(assessments);
+        var assessment = Ember.Object.create({ save: function save() {
+            return true;
+          } });
+        createRecordStub.returns(assessment);
+        var route = this.subject();
+
+        // when
+        var promise = route.model();
+
+        // then
+        return promise.then(function () {
+          _sinon.default.assert.calledWith(queryStub, 'assessment', { filter: { type: 'SMART_PLACEMENT' } });
+        });
+      });
+
+      (0, _mocha.it)('should resolve with first assessment found if at least one has been found', function () {
+        // given
+        var assessments = Ember.A([Ember.Object.create({ id: 1234 })]);
+        queryStub.resolves(assessments);
+        var route = this.subject();
+
+        // when
+        var promise = route.model();
+
+        // then
+        return promise.then(function (model) {
+          (0, _chai.expect)(model.get('id')).to.equal(1234);
+        });
+      });
+
+      (0, _mocha.it)('should resolve with freshly created one if no one has been found', function () {
+        // given
+        var assessments = Ember.A([]);
+        queryStub.resolves(assessments);
+        createRecordStub.returns({
+          save: function save() {}
+        });
+        var route = this.subject();
+
+        // when
+        var promise = route.model();
+
+        // then
+        return promise.then(function () {
+          _sinon.default.assert.calledWith(createRecordStub, 'assessment', { type: 'SMART_PLACEMENT' });
+        });
+      });
+    });
+
+    (0, _mocha.describe)('#afterMoodel', function () {
+
+      var storeStub = void 0;
+      var queryRecordStub = void 0;
+
+      (0, _mocha.beforeEach)(function () {
+        queryRecordStub = _sinon.default.stub();
+        storeStub = Ember.Service.extend({ queryRecord: queryRecordStub });
+        this.register('service:store', storeStub);
+        this.inject.service('store', { as: 'store' });
+      });
+
+      (0, _mocha.it)('should force assessment reload in ortder to pre-fetch its answers', function () {
+        // given
+        var route = this.subject();
+        route.transitionTo = _sinon.default.stub();
+        var assessment = Ember.Object.create({
+          reload: _sinon.default.stub()
+        });
+
+        // when
+        var promise = route.afterModel(assessment);
+
+        // then
+        return promise.then(function () {
+          _sinon.default.assert.calledOnce(assessment.reload);
+        });
+      });
+
+      (0, _mocha.it)('should redirect to next challenge if one was found', function () {
+        // given
+        var route = this.subject();
+        route.transitionTo = _sinon.default.stub();
+        var assessment = Ember.Object.create({ reload: function reload() {
+            return true;
+          } });
+        queryRecordStub.resolves();
+
+        // when
+        var promise = route.afterModel(assessment);
+
+        // then
+        return promise.then(function () {
+          _sinon.default.assert.calledWith(route.transitionTo, 'assessments.challenge');
+        });
+      });
+
+      (0, _mocha.it)('should redirect to assessment rating if no next challenge was found', function () {
+        // given
+        var route = this.subject();
+        route.transitionTo = _sinon.default.stub();
+        var assessment = Ember.Object.create({ reload: function reload() {
+            return true;
+          } });
+        queryRecordStub.rejects();
+
+        // when
+        var promise = route.afterModel(assessment);
+
+        // then
+        return promise.then(function () {
+          _sinon.default.assert.calledWith(route.transitionTo, 'assessments.rating');
+        });
       });
     });
   });
