@@ -5814,6 +5814,35 @@ define('pix-live/tests/integration/components/competence-by-area-item-test', ['c
 define('pix-live/tests/integration/components/competence-level-progress-bar-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
   'use strict';
 
+  function _asyncToGenerator(fn) {
+    return function () {
+      var gen = fn.apply(this, arguments);
+      return new Promise(function (resolve, reject) {
+        function step(key, arg) {
+          try {
+            var info = gen[key](arg);
+            var value = info.value;
+          } catch (error) {
+            reject(error);
+            return;
+          }
+
+          if (info.done) {
+            resolve(value);
+          } else {
+            return Promise.resolve(value).then(function (value) {
+              step("next", value);
+            }, function (err) {
+              step("throw", err);
+            });
+          }
+        }
+
+        return step("next");
+      });
+    };
+  }
+
   (0, _mocha.describe)('Integration | Component | competence level progress bar', function () {
     (0, _emberMocha.setupComponentTest)('competence-level-progress-bar', {
       integration: true
@@ -6035,8 +6064,54 @@ define('pix-live/tests/integration/components/competence-level-progress-bar-test
         // then
         (0, _chai.expect)(this.$('.competence-level-progress-bar__link')).to.have.lengthOf(1);
         (0, _chai.expect)(this.$('.competence-level-progress-bar__link-replay')).to.have.lengthOf(1);
-        (0, _chai.expect)(this.$('a.competence-level-progress-bar__link-replay').text().trim()).to.be.equal('Seconde chance pour le test "deuxième test"');
+        (0, _chai.expect)(this.$('.competence-level-progress-bar__link-replay').text().trim()).to.be.equal('Seconde chance pour le test "deuxième test"');
       });
+
+      (0, _mocha.it)('should display a modal when clicked', _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+        var status, name, courseId, level, $modal;
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                // given
+                status = 'evaluated';
+                name = 'deuxième test';
+                courseId = 'courseId';
+                level = 3;
+
+
+                this.set('status', status);
+                this.set('name', name);
+                this.set('courseId', courseId);
+                this.set('level', level);
+
+                // when
+                this.render(Ember.HTMLBars.template({
+                  "id": "tGTIXVXz",
+                  "block": "{\"symbols\":[],\"statements\":[[1,[26,\"competence-level-progress-bar\",null,[[\"status\",\"name\",\"courseId\",\"level\"],[[22,[\"status\"]],[22,[\"name\"]],[22,[\"courseId\"]],[22,[\"level\"]]]]],false]],\"hasEval\":false}",
+                  "meta": {}
+                }));
+                _context.next = 11;
+                return this.$('.competence-level-progress-bar__link-replay').click();
+
+              case 11:
+                $modal = document.querySelector('.pix-modal__container');
+
+                // then
+
+                (0, _chai.expect)($modal).to.be.ok;
+                (0, _chai.expect)($modal.querySelector('h1').textContent).to.contains('Seconde chance');
+                (0, _chai.expect)($modal.textContent).to.contains('Votre niveau actuel sera remplacé par celui de ce nouveau test');
+                (0, _chai.expect)($modal.querySelector('.pix-modal__action.cancel').textContent).to.contains('Annuler');
+                (0, _chai.expect)($modal.querySelector('.pix-modal__action.validate').textContent).to.contains('J\'ai compris');
+
+              case 17:
+              case 'end':
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      })));
     });
   });
 });
@@ -9359,15 +9434,7 @@ define('pix-live/tests/integration/components/share-profile-test', ['chai', 'moc
   (0, _mocha.describe)('Integration | Component | share profile', function () {
 
     (0, _emberMocha.setupComponentTest)('share-profile', {
-      integration: true,
-
-      beforeSetup: function beforeSetup() {
-        Ember.$.extend(Ember.$.expr[':'], {
-          tabbable: function tabbable() {
-            return true;
-          }
-        });
-      }
+      integration: true
     });
 
     function expectToBeOnOrganizationCodeEntryView() {

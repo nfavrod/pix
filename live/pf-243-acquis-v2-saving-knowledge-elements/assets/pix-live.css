@@ -251,15 +251,6 @@ input[type=radio]:focus:before {
   left: 0;
   z-index: 50; }
 
-.ember-modal-dialog {
-  border-radius: 8px;
-  background-color: #fff;
-  box-shadow: 0 0 10px #222;
-  padding: 10px; }
-
-.ember-modal-overlay.translucent {
-  background-color: rgba(128, 128, 128, 0.77); }
-
 /* Structure & layout
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 .pix-modal-wrapper {
@@ -267,11 +258,11 @@ input[type=radio]:focus:before {
   padding: 10px; }
 
 .pix-modal {
-  width: 100%;
-  padding: 10px;
   background: transparent;
   color: #3e4149;
-  font-family: "Lato", Arial, sans-serif; }
+  font-family: "Lato", Arial, sans-serif;
+  padding: 10px;
+  width: 100%; }
 
 .pix-modal__container {
   border-radius: 5px;
@@ -320,7 +311,8 @@ input[type=radio]:focus:before {
       font-size: 26px; } }
 
 .pix-modal p {
-  margin-bottom: 5px; }
+  margin-bottom: 5px;
+  padding: 0 10px; }
 
 .pix-modal ul {
   margin-bottom: 15px;
@@ -1382,8 +1374,10 @@ button.routable-modal--close:active {
   color: #3d68ff;
   text-decoration: none;
   cursor: pointer; }
-  .competence-level-progress-bar__link-start:hover {
-    color: #3d68ff; }
+  .competence-level-progress-bar__link-start:hover, .competence-level-progress-bar__link-start:active, .competence-level-progress-bar__link-start:focus {
+    color: #2861CF;
+    cursor: pointer;
+    text-decoration: underline; }
 
 .competence-level-progress-bar__link-resume {
   width: 81px;
@@ -1394,21 +1388,70 @@ button.routable-modal--close:active {
   color: #3d68ff;
   text-decoration: none;
   cursor: pointer; }
-  .competence-level-progress-bar__link-resume:hover {
-    color: #3d68ff; }
+  .competence-level-progress-bar__link-resume:hover, .competence-level-progress-bar__link-resume:active, .competence-level-progress-bar__link-resume:focus {
+    color: #2861CF;
+    cursor: pointer;
+    text-decoration: underline; }
 
 .competence-level-progress-bar__link-replay {
-  margin-top: -30px;
-  width: 81px;
+  border: none;
+  background-color: inherit;
+  color: #3d68ff;
   font-family: "Lato", Arial, sans-serif;
   font-size: 14px;
   font-weight: 700;
   letter-spacing: 0.5px;
-  color: #3d68ff;
+  padding: 0;
   text-decoration: none;
-  cursor: pointer; }
-  .competence-level-progress-bar__link-replay:hover {
-    color: #3d68ff; }
+  width: 107px; }
+  .competence-level-progress-bar__link-replay:hover, .competence-level-progress-bar__link-replay:active, .competence-level-progress-bar__link-replay:focus {
+    color: #2861CF;
+    cursor: pointer;
+    text-decoration: underline; }
+
+.competence-level-progress-bar__modal-body {
+  padding: 4% 0; }
+
+.competence-level-progress-bar__modal-text {
+  padding: 2% 0;
+  font-size: 1.8rem; }
+
+.competence-level-progress-bar__modal-actions {
+  padding-top: 6%;
+  text-align: center; }
+
+.competence-level-progress-bar__modal-link-cancel {
+  display: inline-block;
+  background: #979797;
+  border: none;
+  border-radius: 5px;
+  color: #ffffff;
+  flex-grow: 0;
+  font-size: 1.4rem;
+  margin-top: 10px;
+  margin-right: 25px;
+  padding: 12px 30px;
+  text-transform: uppercase; }
+  .competence-level-progress-bar__modal-link-cancel:hover, .competence-level-progress-bar__modal-link-cancel:active, .competence-level-progress-bar__modal-link-cancel:focus {
+    background-color: #777777;
+    color: white;
+    text-decoration: none; }
+
+.competence-level-progress-bar__modal-link-validate {
+  display: inline-block;
+  background: #3d68ff;
+  border: none;
+  border-radius: 5px;
+  color: #ffffff;
+  flex-grow: 0;
+  font-size: 1.4rem;
+  margin-top: 10px;
+  padding: 12px 30px;
+  text-transform: uppercase; }
+  .competence-level-progress-bar__modal-link-validate:hover, .competence-level-progress-bar__modal-link-validate:active, .competence-level-progress-bar__modal-link-validate:focus {
+    background-color: #2861CF;
+    color: white;
+    text-decoration: none; }
 
 .course-banner {
   background-image: linear-gradient(to bottom, #446eff, #133dd2);
@@ -4234,8 +4277,13 @@ p.share-profile__organization-name {
 
 .tutorial-panel__tutorials-container {
   display: flex;
-  flex-direction: column;
-  margin: 20px; }
+  flex-direction: column; }
+
+.tutorial-panel__tutorial-info {
+  color: #7d808a;
+  font-family: "Lato", Arial, sans-serif;
+  font-size: 1.3rem;
+  line-height: 2rem; }
 
 .tutorial-panel__hint-title {
   font-family: "Raleway", Arial, sans-serif;
