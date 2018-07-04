@@ -1889,12 +1889,7 @@ define('pix-live/components/pix-modale', ['exports', 'ember-modal-dialog/compone
           _setFocusOnFirstTabbableElement(modalId);
         });
       } catch (e) {
-        if (e.message.includes('unsupported pseudo: tabbable')) {
-          // eslint-disable-next-line no-console
-          console.log('unable to use :tabbable attribute. Maybe the jQuery plugin is not loaded ?', e);
-        } else {
-          throw e;
-        }
+        // thow away the jQuery error
       }
     },
 
@@ -9899,6 +9894,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.52.0+8f1b747a"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.52.0+6d4b0a51"});
 }
 //# sourceMappingURL=pix-live.map
