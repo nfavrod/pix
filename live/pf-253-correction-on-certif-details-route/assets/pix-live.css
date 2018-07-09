@@ -4277,8 +4277,13 @@ p.share-profile__organization-name {
 
 .tutorial-panel__tutorials-container {
   display: flex;
-  flex-direction: column;
-  margin: 20px; }
+  flex-direction: column; }
+
+.tutorial-panel__tutorial-info {
+  color: #7d808a;
+  font-family: "Lato", Arial, sans-serif;
+  font-size: 1.3rem;
+  line-height: 2rem; }
 
 .tutorial-panel__hint-title {
   font-family: "Raleway", Arial, sans-serif;
