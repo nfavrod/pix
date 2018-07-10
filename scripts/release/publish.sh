@@ -7,26 +7,31 @@ source $(dirname $0)/common.sh
 PACKAGE_VERSION=$(get_package_version)
 
 function push_commit_to_remote_dev {
+    echo "* push commit to remote dev"
     git push origin dev
 }
 
 function checkout_master {
+    echo "* checkout master"
     git checkout master >> /dev/null 2>&1
 }
 
 function create_a_merge_commit_of_dev_into_master_and_tag_it {
+    echo "* create a merge commit of dev into master and tag it"
     git merge dev --no-edit
     git tag --annotate "v${PACKAGE_VERSION}" --message "v${PACKAGE_VERSION}"
 }
 
 function push_commit_and_tag_to_remote_master {
+    echo "* push commit and tag to remote master"
     git push origin master
     git push origin "v${PACKAGE_VERSION}"
 }
 
 function update_preview_and_maths {
+    echo "* update preview and maths"
     for environment in preview maths
-    do 
+    do
         echo -e "Updating ${GREEN}${environment}${RESET_COLOR} environment.\n"
         git checkout ${environment}
         git pull --rebase

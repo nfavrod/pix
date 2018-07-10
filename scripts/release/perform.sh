@@ -7,6 +7,7 @@ source $(dirname $0)/common.sh
 PACKAGE_VERSION=$(get_package_version)
 
 function persist_changelog_changes {
+    echo "* add changelog and commit --amend"
     git add CHANGELOG.md
     git commit --amend --no-edit
 }

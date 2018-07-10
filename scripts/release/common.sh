@@ -14,14 +14,17 @@ CYAN="\033[1;36m"
 
 # Common functions
 function get_package_version {
+    echo "* get package version"
     node -p -e "require('./package.json').version"
 }
 
 function checkout_dev {
+    echo "* checkout dev"
     git checkout dev >> /dev/null 2>&1
 }
 
 function fetch_and_rebase {
+    echo "* fetch and rebase"
     git fetch --tags
     git pull --rebase
 }
