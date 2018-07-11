@@ -2,7 +2,6 @@
 
 set -e
 set -u
-set -x
 
 function extract_issue_id_from_branch_name() {
     USER_STORY_BRANCH_NAME=$1
@@ -15,10 +14,7 @@ API_URL="https://1024pix.atlassian.net/rest/api/$API_VERSION"
 CREDENTIALS="$JIRA_API_KEY:$JIRA_API_SECRET"
 ISSUE_ID=$(extract_issue_id_from_branch_name $CIRCLE_BRANCH)
 
-RESPONSE=$(curl "$API_URL/issue/$ISSUE_ID/comment" --user $CREDENTIALS --fail)
-
-if [[ $? != 0 ]]
-then
+if ! RESPONSE=$(curl "$API_URL/issue/$ISSUE_ID/comment" --user $CREDENTIALS --silent --show-error --fail); then
     echo "The id of the Jira issue could not be found. Stopping here."
     exit 0
 fi
