@@ -4265,7 +4265,8 @@ p.share-profile__organization-name {
 
 .tutorial-panel__hint-container-body {
   display: flex;
-  align-items: center; }
+  align-items: center;
+  margin-bottom: 10px; }
 
 .tutorial-panel__hint-container {
   display: flex;
@@ -4277,8 +4278,14 @@ p.share-profile__organization-name {
 
 .tutorial-panel__tutorials-container {
   display: flex;
-  flex-direction: column;
-  margin: 20px; }
+  flex-direction: column; }
+
+.tutorial-panel__tutorial-info {
+  color: #7d808a;
+  font-family: "Lato", Arial, sans-serif;
+  font-size: 1.3rem;
+  line-height: 2rem;
+  margin: 5px; }
 
 .tutorial-panel__hint-title {
   font-family: "Raleway", Arial, sans-serif;
