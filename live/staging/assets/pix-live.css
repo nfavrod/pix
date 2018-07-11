@@ -1510,6 +1510,7 @@ h1.course-banner__name {
 .course-item__name {
   width: 100%;
   margin-bottom: auto;
+  height: 70px;
   font-family: "Raleway", Arial, sans-serif;
   font-size: 22px;
   font-weight: 600;
