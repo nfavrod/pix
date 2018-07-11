@@ -9,6 +9,24 @@ case $BUILD_ENV in
     if [ -n "$GIT_BRANCH" ]
     then
       cd ..
+
+      # Create Dokku app
+      ssh dokku@pix-app.ovh apps:report "$GIT_BRANCH" || ssh dokku@pix-app.ovh apps:create "$GIT_BRANCH"
+      ssh dokku@pix-app.ovh config:set --no-restart "$GIT_BRANCH" NODE_ENV=integration
+
+      # Destroy existing PG database
+      if ssh dokku@pix-app.ovh postgres:info "$GIT_BRANCH"; then
+        ssh dokku@pix-app.ovh ps:stop "$GIT_BRANCH" || true
+        ssh dokku@pix-app.ovh postgres:unlink "$GIT_BRANCH" "$GIT_BRANCH" || true
+        ssh dokku@pix-app.ovh postgres:destroy "$GIT_BRANCH" --force || true
+      fi
+
+      # Create PG database
+      ssh dokku@pix-app.ovh postgres:create "$GIT_BRANCH"
+
+      # Link PG database to our app
+      ssh dokku@pix-app.ovh postgres:link "$GIT_BRANCH" "$GIT_BRANCH"
+
       # Save HEAD commit SHA1
       current_sha1=$(git rev-parse HEAD)
 
