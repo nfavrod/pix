@@ -773,6 +773,12 @@ button.routable-modal--close:active {
 .challenge-statement__instruction strong {
   font-weight: 900; }
 
+.challenge-statement__instruction a {
+  text-decoration: underline;
+  color: #3d68ff; }
+  .challenge-statement__instruction a:active, .challenge-statement__instruction a:focus, .challenge-statement__instruction a:hover {
+    color: #133dd2; }
+
 .challenge-statement__instruction-section {
   font-size: 15px; }
   @media (min-width: 980px) {
@@ -1510,6 +1516,7 @@ h1.course-banner__name {
 .course-item__name {
   width: 100%;
   margin-bottom: auto;
+  height: 70px;
   font-family: "Raleway", Arial, sans-serif;
   font-size: 22px;
   font-weight: 600;
@@ -1754,155 +1761,6 @@ h1.course-banner__name {
   color: #3e4149;
   padding-top: 20px;
   padding-bottom: 10px; }
-
-/* Form
-–––––––––––––––––––––––––––––––––––––––––––––––––– */
-.follower__form {
-  position: relative; }
-
-.follower__form-input-container {
-  flex-grow: 1; }
-
-.follower__form-container {
-  display: flex;
-  margin: 0 auto;
-  align-items: center;
-  border-radius: 4px;
-  background: #ffffff;
-  padding: 2px;
-  max-width: 300px; }
-  @media (min-width: 980px) {
-    .follower__form-container {
-      flex-direction: row;
-      max-width: 400px; } }
-
-/* Input
-–––––––––––––––––––––––––––––––––––––––––––––––––– */
-.follower-email {
-  height: 46px;
-  width: 100%;
-  border: none;
-  border-radius: 5px;
-  outline: none;
-  font-size: 16px;
-  color: #7d808a;
-  font-family: "Lato", Arial, sans-serif; }
-  @media (min-width: 980px) {
-    .follower-email {
-      padding-left: 16px; } }
-
-/* Button
-–––––––––––––––––––––––––––––––––––––––––––––––––– */
-.follower-form__button {
-  position: relative;
-  border: 1px solid #c3d0ff;
-  border-radius: 4px;
-  min-width: 111px;
-  padding: 10px 19px;
-  font-size: 18px;
-  font-weight: 700;
-  text-align: center;
-  color: #ffffff;
-  outline: none; }
-
-.follower-form__button--default {
-  background: #3d68ff; }
-
-.follower-form__button--pending {
-  background: #0BA86D; }
-
-.follower-button:before {
-  content: '\00a0\00a0\00a0\00a0 Merci';
-  position: absolute;
-  z-index: 500;
-  transform: rotateX(180deg);
-  color: #ffffff;
-  letter-spacing: 1px;
-  opacity: 0;
-  transition: none; }
-
-.follower-button-is-error:before {
-  content: '\00a0\00a0\00a0\00a0 Erreur'; }
-
-.follower-button:after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 20%;
-  opacity: 0;
-  height: 100%;
-  overflow: hidden;
-  background-color: #0EBEFF;
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
-  transition: width 10ms 600ms ease-in-out, background-color 300ms ease-in, opacity 250ms 300ms ease-in; }
-
-.follower-button-is-active {
-  transform: rotateX(180deg);
-  background-color: #ffffff;
-  box-shadow: 1px 1px 4px 1px transparent !important;
-  transition: transform 300ms ease-in-out, background-color 300ms ease-in; }
-
-.follower-button-is-active:after {
-  opacity: 1;
-  background-color: green;
-  width: 100%;
-  transition: width 1s 0.5s ease-in-out, background-color 300ms 300ms ease-in, opacity 250ms 300ms ease-in; }
-
-.follower-button-is-active:before {
-  opacity: 1;
-  transition: opacity 250ms 1.5s ease-in; }
-
-.follower-button-is-error {
-  transform: rotateX(180deg);
-  background-color: #ffffff;
-  box-shadow: 1px 1px 4px 1px transparent !important;
-  transition: transform 300ms ease-in-out, background-color 300ms ease-in; }
-
-.follower-button-is-error:after {
-  opacity: 1;
-  background-color: red;
-  width: 100%;
-  transition: width 1s 0.5s ease-in-out, background-color 300ms 300ms ease-in, opacity 250ms 300ms ease-in; }
-
-.load-email-button-is-error:before {
-  opacity: 1;
-  transition: opacity 250ms 1.5s ease-in; }
-
-.follower-info-message {
-  width: 400px;
-  margin: 0 auto;
-  font-family: "Lato", Arial, sans-serif;
-  font-size: 15px;
-  font-weight: 400;
-  font-style: normal;
-  font-stretch: normal;
-  text-align: center;
-  position: absolute;
-  top: 0;
-  left: 50%;
-  -ms-transform: translateX(-50%);
-      transform: translateX(-50%); }
-
-.follower-info-message span,
-.follower-info-message svg {
-  display: inline-block;
-  vertical-align: middle; }
-
-.follower-info-message.has-error {
-  border-radius: 4px;
-  background-color: #ffffff;
-  border: solid 2px #f45c00;
-  padding: 14px 91px;
-  color: #f45c00; }
-
-.follower-info-message.has-success {
-  border-radius: 4px;
-  background-color: #ffffff;
-  border: solid 2px #0BA86D;
-  padding: 14px 91px;
-  color: #0BA86D; }
 
 .legal-notices-page {
   display: flex;
@@ -3849,57 +3707,6 @@ input.qcm-panel__proposal-checkbox {
 .user-certifications-detail-competence__not-validate-level {
   background: #D8D8D8; }
 
-.index-page-patners-enrollment {
-  background-image: linear-gradient(to bottom, #446eff, #133dd2); }
-
-.partners-enrollment-panel {
-  display: flex;
-  flex-direction: column;
-  align-items: center; }
-
-.partners-enrollment__title {
-  max-width: 1117.4px;
-  font-family: "Lato", Arial, sans-serif;
-  font-size: 25px;
-  font-weight: bold;
-  font-style: italic;
-  text-align: center;
-  color: #ffffff; }
-  @media (min-width: 768px) {
-    .partners-enrollment__title {
-      font-size: 42px; } }
-
-.partners-enrollment__description {
-  max-width: 777px;
-  font-family: "Lato", Arial, sans-serif;
-  font-size: 17px;
-  text-align: center;
-  margin-top: 12px;
-  color: #ffffff; }
-  @media (min-width: 768px) {
-    .partners-enrollment__description {
-      font-size: 24px; } }
-
-.partners-enrollment__link-container {
-  text-align: center;
-  margin-top: 38px; }
-
-.partners-enrollment__link {
-  max-width: 174.3px;
-  height: 40px;
-  border-radius: 20px;
-  background-color: #ffffff;
-  font-family: "Lato", Arial, sans-serif;
-  font-size: 13px;
-  letter-spacing: 1px;
-  text-align: center;
-  color: #2549FF;
-  padding: 12px 30px;
-  text-decoration: none;
-  text-transform: uppercase; }
-  .partners-enrollment__link:hover {
-    color: #2549FF; }
-
 /* Wrapper */
 @media (min-width: 768px) {
   .share-profile__section {
@@ -4265,7 +4072,8 @@ p.share-profile__organization-name {
 
 .tutorial-panel__hint-container-body {
   display: flex;
-  align-items: center; }
+  align-items: center;
+  margin-bottom: 10px; }
 
 .tutorial-panel__hint-container {
   display: flex;
@@ -4283,7 +4091,8 @@ p.share-profile__organization-name {
   color: #7d808a;
   font-family: "Lato", Arial, sans-serif;
   font-size: 1.3rem;
-  line-height: 2rem; }
+  line-height: 2rem;
+  margin: 5px; }
 
 .tutorial-panel__hint-title {
   font-family: "Raleway", Arial, sans-serif;
@@ -4710,9 +4519,7 @@ p.share-profile__organization-name {
  - General
  - Hero
  - Challenges
- - Community
  - Features
- - Partners
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 .index-page__background {
   position: absolute;
@@ -4900,43 +4707,6 @@ p.share-profile__organization-name {
   padding-top: 20px;
   max-width: 1200px; }
 
-/* Community
-–––––––––––––––––––––––––––––––––––––––––––––––––– */
-.index-page-community {
-  height: 500px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: #ffffff;
-  background: url("/images/index-community-bg-min.jpg");
-  background-size: cover; }
-
-.index-page-community__title {
-  font-size: 24px;
-  font-family: "Raleway", Arial, sans-serif;
-  font-weight: 700;
-  text-align: center;
-  color: white;
-  text-transform: uppercase;
-  margin: 0; }
-  @media (min-width: 980px) {
-    .index-page-community__title {
-      font-size: 36px;
-      font-weight: 800;
-      margin-top: 70px; } }
-
-.index-page-community__description {
-  margin-top: 10px;
-  margin-bottom: 0;
-  font-family: "Raleway", Arial, sans-serif;
-  font-size: 28px;
-  max-width: 600px;
-  text-align: center;
-  font-weight: 300; }
-
-.index-page-community__form {
-  margin-top: 70px; }
-
 /* Features
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 .index-page-features {
@@ -4963,11 +4733,6 @@ p.share-profile__organization-name {
   @media (min-width: 980px) {
     .index-page-features__project-button {
       font-size: 13px; } }
-
-/* Partners
-–––––––––––––––––––––––––––––––––––––––––––––––––– */
-.index-page-partners {
-  background: #FAFAFA; }
 
 .project-page {
   display: flex;
@@ -5354,332 +5119,6 @@ hr.project-page__presentation-header-line {
   background-color: #FAFAFA;
   color: #3e4149;
   text-rendering: optimizeLegibility; }
-
-/*-----------header------------------*/
-.enrollment-page__header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 40px;
-  color: #ffffff;
-  background-image: linear-gradient(to bottom, #446eff, #133dd2); }
-
-.enrollment-page__header-title {
-  margin-bottom: 20px;
-  max-width: 950px;
-  text-align: center;
-  font-family: "Lato", Arial, sans-serif;
-  font-size: 25px;
-  font-style: italic;
-  font-weight: 700; }
-  @media (min-width: 980px) {
-    .enrollment-page__header-title {
-      font-size: 35px; } }
-
-.enrollment-page__header-description {
-  margin-bottom: 20px;
-  text-align: center;
-  font-family: "Lato", Arial, sans-serif;
-  font-size: 16px; }
-  @media (min-width: 980px) {
-    .enrollment-page__header-description {
-      font-size: 18px; } }
-
-.enrollment-page__header-link {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  vertical-align: center;
-  width: 282px;
-  height: 40px;
-  border-radius: 20px;
-  background: #ffffff;
-  letter-spacing: 1.2px;
-  font-family: "Lato", Arial, sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  text-align: center;
-  color: #3d68ff;
-  text-transform: uppercase; }
-  .enrollment-page__header-link:hover, .enrollment-page__header-link:focus, .enrollment-page__header-link:active, .enrollment-page__header-link:visited {
-    color: #446eff;
-    text-decoration: none; }
-
-/*-----------body------------------*/
-/*-----------body-description-pix-----------*/
-.enrollment-page__pix-description {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin: 20px 10px 40px;
-  padding: 5px;
-  background: #ffffff; }
-  @media (min-width: 980px) {
-    .enrollment-page__pix-description {
-      margin: 30px auto 90px;
-      padding: 30px;
-      max-width: 940px; } }
-
-.enrollment-page__pix-description-image {
-  margin: 10px; }
-
-.enrollment-page__pix-description-title {
-  margin: 10px;
-  font-family: "Raleway", Arial, sans-serif;
-  font-size: 18px;
-  font-weight: 500;
-  text-align: center; }
-  @media (min-width: 768px) {
-    .enrollment-page__pix-description-title {
-      font-size: 24px; } }
-  @media (min-width: 980px) {
-    .enrollment-page__pix-description-title {
-      font-size: 28px; } }
-
-.enrollment-page__pix-description-line {
-  margin: 10px;
-  width: 50px;
-  height: 4px;
-  border: solid 2px #3d68ff;
-  border-radius: 2px; }
-
-.enrollment-page__pix-description-goals-list {
-  font-family: "Lato", Arial, sans-serif;
-  font-size: 14px;
-  color: #3d68ff;
-  list-style-type: none; }
-  @media (min-width: 768px) {
-    .enrollment-page__pix-description-goals-list {
-      font-size: 18px; } }
-  @media (min-width: 980px) {
-    .enrollment-page__pix-description-goals-list {
-      font-size: 20px; } }
-
-.enrollment-page__pix-description-goals-list_goal::before {
-  content: "•";
-  color: #3d68ff;
-  display: inline-block;
-  width: 1em;
-  margin-left: -1.1em; }
-
-.enrollment-page__pix-description-goals-list_goal {
-  color: black;
-  margin-bottom: 10px; }
-
-/*-------------Titre grandes etapes-----------------*/
-.enrollment-page__steps-title {
-  margin-bottom: 5px;
-  text-align: center;
-  font-family: "Raleway", Arial, sans-serif;
-  font-size: 18px;
-  font-weight: 800; }
-  @media (min-width: 768px) {
-    .enrollment-page__steps-title {
-      font-size: 30px; } }
-  @media (min-width: 980px) {
-    .enrollment-page__steps-title {
-      font-size: 50px; } }
-
-.enrollment-page__steps-title__principal {
-  margin-bottom: 5px; }
-
-.enrollment-page__steps-title__note {
-  font-weight: 400;
-  font-size: 15px; }
-  @media (min-width: 768px) {
-    .enrollment-page__steps-title__note {
-      font-size: 22px; } }
-
-/*-----------etablissement------------------------------*/
-.enrollment-page__steps-establishment {
-  align-items: center;
-  margin: 10px;
-  text-align: center;
-  background: #ffffff; }
-  @media (min-width: 980px) {
-    .enrollment-page__steps-establishment {
-      margin: 10px auto 50px;
-      max-width: 940px; } }
-
-.enrollment-page__steps-establishment__header:hover, .enrollment-page__steps-establishment__header:focus, .enrollment-page__steps-establishment__header:active {
-  text-decoration: none; }
-
-.enrollment-page__steps-establishment__title {
-  margin-bottom: 15px;
-  width: 100%;
-  padding: 20px 10px 20px;
-  color: #3d68ff;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-  display: flex;
-  flex-direction: column;
-  align-items: center; }
-  @media (min-width: 768px) {
-    .enrollment-page__steps-establishment__title {
-      flex-direction: row;
-      flex-wrap: wrap;
-      align-items: center;
-      font-size: 34px; } }
-
-.enrollment-page__steps-establishment__title-image img {
-  width: 80px; }
-
-.enrollment-page__steps-establishment__title-image {
-  margin-bottom: 15px;
-  flex-basis: 40px; }
-  @media (min-width: 768px) {
-    .enrollment-page__steps-establishment__title-image {
-      padding: 0 40px 0; } }
-
-@media (min-width: 768px) {
-  .enrollment-page__steps-establishment__title-text {
-    flex-grow: 5;
-    padding-left: 20px;
-    text-align: left; } }
-
-.enrollment-page__steps-establishment__title-icon-container {
-  flex-basis: 40px; }
-
-.enrollment-page__steps-establishment__title-icon {
-  width: 20px;
-  height: 20px;
-  -ms-transform: rotate(-315deg);
-      transform: rotate(-315deg);
-  border: solid 2px #3d68ff;
-  border-top: none;
-  border-left: none;
-  background: #ffffff; }
-
-.cp-is-open .enrollment-page__steps-establishment__title-icon {
-  position: relative;
-  top: 10px;
-  border: solid 2px #3d68ff;
-  border-bottom: none;
-  border-right: none; }
-
-.enrollment-page__steps-establishment__steps-list__step {
-  padding: 0px 7px 20px; }
-
-.enrollment-page__steps-establishment__steps-list__step-date {
-  text-align: center;
-  font-family: "Lato", Arial, sans-serif;
-  font-size: 15px;
-  font-weight: 800;
-  font-style: italic;
-  color: #3d68ff; }
-  @media (min-width: 768px) {
-    .enrollment-page__steps-establishment__steps-list__step-date {
-      font-size: 22px; } }
-
-.enrollment-page__steps-establishment__steps-list__step-description {
-  line-height: 23px;
-  font-size: 15px;
-  font-weight: 600; }
-  @media (min-width: 768px) {
-    .enrollment-page__steps-establishment__steps-list__step-description {
-      font-size: 19px; } }
-
-.enrollment-page__steps-establishment__steps-list__step-line {
-  margin: auto;
-  height: 2px;
-  width: 90%;
-  border: solid 1px #d7d7d7; }
-
-.enrollment-page__steps-establishment__steps-list__step-circle {
-  margin: auto;
-  width: 40px;
-  height: 30px;
-  border-radius: 20px;
-  background: #ffffff;
-  vertical-align: center;
-  position: relative;
-  bottom: 17px; }
-
-.enrollment-page__steps-establishment__steps-list__step-icon {
-  margin: auto;
-  width: 20px;
-  height: 20px;
-  -ms-transform: rotate(-315deg);
-      transform: rotate(-315deg);
-  border: solid 2px #3d68ff;
-  border-top: none;
-  border-left: none;
-  background: #ffffff; }
-
-.enrollment-page__steps-establishment__certification {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  padding: 10px;
-  font-family: "Lato", Arial, sans-serif;
-  font-size: 20px;
-  color: #3d68ff; }
-
-.enrollment-page__steps-establishment__certification-text {
-  max-width: 220px; }
-
-/*-----------------engagement Pix----------------*/
-.enrollment-page__description {
-  margin: 10px;
-  padding: 5px;
-  text-align: center;
-  background: #ffffff; }
-  @media (min-width: 768px) {
-    .enrollment-page__description {
-      padding: 20px; } }
-  @media (min-width: 980px) {
-    .enrollment-page__description {
-      margin: 20px auto;
-      max-width: 940px; } }
-
-.enrollment-page__description-title {
-  color: #3d68ff; }
-  @media (min-width: 768px) {
-    .enrollment-page__description-title {
-      margin-bottom: 30px;
-      font-size: 32px; } }
-  @media (min-width: 980px) {
-    .enrollment-page__description-title {
-      font-size: 40px; } }
-
-.enrollment-page__description-line {
-  margin: auto;
-  height: 2px;
-  width: 80%;
-  border: solid 1px #d7d7d7; }
-
-.enrollment-page__description-commitments-title {
-  margin-top: 25px;
-  font-family: "Raleway", Arial, sans-serif;
-  font-weight: 900; }
-  @media (min-width: 768px) {
-    .enrollment-page__description-commitments-title {
-      font-size: 32px; } }
-  @media (min-width: 980px) {
-    .enrollment-page__description-commitments-title {
-      font-size: 40px; } }
-
-@media (min-width: 980px) {
-  .enrollment-page__description-body {
-    display: flex;
-    justify-content: center; } }
-
-@media (min-width: 980px) {
-  .enrollment-page__description-commitments__commitment {
-    max-width: 400px; } }
-
-.enrollment-page__description-commitments__commitment-separator {
-  margin-top: 25px; }
-
-.enrollment-page__description-commitments__commitment-puce {
-  position: relative;
-  bottom: 13px;
-  background: #ffffff; }
-
-@media (min-width: 768px) {
-  .enrollment-page__description-commitments__commitment-text {
-    font-size: 18px; } }
 
 .board-page {
   background: #FAFAFA; }

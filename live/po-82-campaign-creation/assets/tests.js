@@ -2773,25 +2773,6 @@ define('pix-live/tests/acceptance/page-accueil-test', ['mocha', 'chai', 'pix-liv
       });
     });
 
-    (0, _mocha.describe)('contains a section with a button to save new partners', function () {
-
-      (0, _mocha.it)('a1.16 with a title', function () {
-        var $title = findWithAssert('.partners-enrollment__title');
-        (0, _chai.expect)($title.text().trim()).to.equal('Collèges, lycées, établissements d’enseignement supérieur : rejoignez l’aventure Pix dès l’année 2017-2018 !');
-      });
-
-      (0, _mocha.it)('a1.17 with a description', function () {
-        var $title = findWithAssert('.partners-enrollment__description');
-        (0, _chai.expect)($title.text().trim()).to.equal('Je veux que mon établissement propose la certification Pix dès cette année');
-      });
-
-      (0, _mocha.it)('a1.17 with a link to registering page', function () {
-        var $title = findWithAssert('.partners-enrollment__link');
-        findWithAssert('.partners-enrollment__link-container');
-        (0, _chai.expect)($title.attr('href').trim()).to.equal('/rejoindre');
-      });
-    });
-
     (0, _mocha.describe)('the "Courses" section', function () {
 
       (0, _mocha.it)('should have a title', function () {
@@ -2801,21 +2782,6 @@ define('pix-live/tests/acceptance/page-accueil-test', ['mocha', 'chai', 'pix-liv
 
       (0, _mocha.it)('should have a list of challenge', function () {
         findWithAssert('.index-page-courses__course-list');
-      });
-    });
-
-    (0, _mocha.describe)('The "Community" section', function () {
-
-      (0, _mocha.it)('should have a title', function () {
-        findWithAssert('.index-page-community__title');
-      });
-
-      (0, _mocha.it)('should have a description', function () {
-        findWithAssert('.index-page-community__description');
-      });
-
-      (0, _mocha.it)('should a "beta" user inscription form', function () {
-        findWithAssert('.index-page-community__form');
       });
     });
 
@@ -3376,10 +3342,6 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
-    it('components/follower-form.js', function () {
-      // test passed
-    });
-
     it('components/form-textfield.js', function () {
       // test passed
     });
@@ -3413,10 +3375,6 @@ define('pix-live/tests/app.lint-test', [], function () {
     });
 
     it('components/no-certification-panel.js', function () {
-      // test passed
-    });
-
-    it('components/partners-enrollment-panel.js', function () {
       // test passed
     });
 
@@ -3652,10 +3610,6 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
-    it('models/follower.js', function () {
-      // test passed
-    });
-
     it('models/organization.js', function () {
       // test passed
     });
@@ -3761,10 +3715,6 @@ define('pix-live/tests/app.lint-test', [], function () {
     });
 
     it('routes/courses/create-assessment.js', function () {
-      // test passed
-    });
-
-    it('routes/enrollment.js', function () {
       // test passed
     });
 
@@ -6853,164 +6803,6 @@ define('pix-live/tests/integration/components/feedback-panel-test', ['chai', 'mo
     });
   });
 });
-define('pix-live/tests/integration/components/follower-form-test', ['chai', 'mocha', 'ember-mocha', 'ember-test-helpers/wait'], function (_chai, _mocha, _emberMocha, _wait) {
-  'use strict';
-
-  var BUTTON_SEND = '.follower-form__button';
-  var INPUT_EMAIL = '.follower-email';
-
-  (0, _mocha.describe)('Integration | Component | follower form', function () {
-
-    (0, _emberMocha.setupComponentTest)('follower-form', {
-      integration: true
-    });
-
-    (0, _mocha.it)('renders', function () {
-      this.render(Ember.HTMLBars.template({
-        "id": "xg+aX64H",
-        "block": "{\"symbols\":[],\"statements\":[[1,[20,\"follower-form\"],false]],\"hasEval\":false}",
-        "meta": {}
-      }));
-      (0, _chai.expect)(this.$()).to.have.lengthOf(1);
-    });
-
-    (0, _mocha.describe)('Test Component form', function () {
-      (0, _mocha.it)('should render submit button', function () {
-        //When
-        this.render(Ember.HTMLBars.template({
-          "id": "xg+aX64H",
-          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"follower-form\"],false]],\"hasEval\":false}",
-          "meta": {}
-        }));
-        //then
-        (0, _chai.expect)(this.$('.follower-form__button').length).to.equal(1);
-      });
-
-      (0, _mocha.it)('should return true if input exist', function () {
-        //When
-        this.render(Ember.HTMLBars.template({
-          "id": "xg+aX64H",
-          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"follower-form\"],false]],\"hasEval\":false}",
-          "meta": {}
-        }));
-        //then
-        (0, _chai.expect)(this.$(INPUT_EMAIL).length).to.equal(1);
-      });
-    });
-
-    /*
-     FIXME: the tests below do not respect the Ember Way and will not be ok for Ember 2.12 (cf. commit #8d28dd) but we can not fix them now :-(
-    */
-
-    (0, _mocha.describe)('Form view', function () {
-
-      var isSaveMethodCalled = void 0;
-      var saveMethodBody = void 0;
-      var saveMethodUrl = void 0;
-
-      var storeStub = Ember.Service.extend({
-        createRecord: function createRecord() {
-          var createRecordArgs = arguments;
-          return Object.create({
-            save: function save() {
-              isSaveMethodCalled = true;
-              saveMethodUrl = createRecordArgs[0];
-              saveMethodBody = createRecordArgs[1];
-              return Ember.RSVP.resolve();
-            }
-          });
-        }
-      });
-
-      var errorObject = Ember.Object.create({
-        errors: [{
-          status: 409
-        }]
-      });
-
-      var storeStubRejection = Ember.Service.extend({
-        createRecord: function createRecord() {
-          var createRecordArgs = arguments;
-          return Object.create({
-            save: function save() {
-              isSaveMethodCalled = true;
-              saveMethodUrl = createRecordArgs[0];
-              saveMethodBody = createRecordArgs[1];
-              return Ember.RSVP.reject(errorObject);
-            }
-          });
-        }
-      });
-
-      beforeEach(function () {
-        isSaveMethodCalled = false;
-        saveMethodBody = null;
-        saveMethodUrl = null;
-      });
-
-      (0, _mocha.it)('clicking on "send" button should save the email of the follower', function () {
-        // given
-        // stub store service
-        this.register('service:store', storeStub);
-        this.inject.service('store', { as: 'store' });
-
-        this.render(Ember.HTMLBars.template({
-          "id": "xg+aX64H",
-          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"follower-form\"],false]],\"hasEval\":false}",
-          "meta": {}
-        }));
-
-        var EMAIL_VALUE = 'myemail@gemail.com';
-        var $email = this.$(INPUT_EMAIL);
-        $email.val(EMAIL_VALUE);
-        $email.change();
-
-        // when
-        (0, _chai.expect)(this.$(BUTTON_SEND).length).to.equal(1);
-        (0, _chai.expect)(this.$(INPUT_EMAIL).length).to.equal(1);
-        this.$(BUTTON_SEND).click();
-
-        // then
-        return (0, _wait.default)().then(function () {
-          (0, _chai.expect)(isSaveMethodCalled).to.be.true;
-          (0, _chai.expect)(saveMethodUrl).to.equal('follower');
-          (0, _chai.expect)(saveMethodBody).to.deep.equal({ email: 'myemail@gemail.com' });
-        });
-      });
-
-      (0, _mocha.it)('clicking on "send" button should not save the email of the follower cause its already saved', function () {
-        var _this = this;
-
-        // given
-        this.register('service:store', storeStubRejection);
-
-        this.render(Ember.HTMLBars.template({
-          "id": "xg+aX64H",
-          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"follower-form\"],false]],\"hasEval\":false}",
-          "meta": {}
-        }));
-
-        var EMAIL_VALUE = 'myemail@gemail.com';
-        var $email = this.$(INPUT_EMAIL);
-        $email.val(EMAIL_VALUE);
-        $email.change();
-
-        // when
-        (0, _chai.expect)(this.$(BUTTON_SEND).length).to.equal(1);
-        (0, _chai.expect)(this.$(INPUT_EMAIL).length).to.equal(1);
-        this.$(BUTTON_SEND).click();
-
-        // then
-        return (0, _wait.default)().then(function () {
-          (0, _chai.expect)(isSaveMethodCalled).to.be.true;
-          (0, _chai.expect)(saveMethodUrl).to.equal('follower');
-          (0, _chai.expect)(saveMethodBody).to.deep.equal({ email: 'myemail@gemail.com' });
-          (0, _chai.expect)(_this.$(INPUT_EMAIL).val()).to.equal('myemail@gemail.com');
-        });
-      });
-    });
-  });
-});
 define('pix-live/tests/integration/components/form-textfield-test', ['chai', 'mocha', 'ember-mocha', 'ember-test-helpers/wait'], function (_chai, _mocha, _emberMocha, _wait) {
   'use strict';
 
@@ -7709,62 +7501,6 @@ define('pix-live/tests/integration/components/no-certification-panel-test', ['ch
         "meta": {}
       }));
       (0, _chai.expect)(this.$()).to.have.length(1);
-    });
-  });
-});
-define('pix-live/tests/integration/components/partners-enrollment-panel-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
-  'use strict';
-
-  (0, _mocha.describe)('Integration | Component | partners enrollment panel', function () {
-    (0, _emberMocha.setupComponentTest)('partners-enrollment-panel', {
-      integration: true
-    });
-
-    (0, _mocha.describe)('Component rendering', function () {
-
-      (0, _mocha.it)('should render', function () {
-        // when
-        this.render(Ember.HTMLBars.template({
-          "id": "KwiLYs0g",
-          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"partners-enrollment-panel\"],false]],\"hasEval\":false}",
-          "meta": {}
-        }));
-
-        // then
-        (0, _chai.expect)(this.$()).to.have.lengthOf(1);
-        (0, _chai.expect)(this.$('.partners-enrollment-panel')).to.have.lengthOf(1);
-      });
-
-      [{ itemClass: '.partners-enrollment__title', type: 'title' }, { itemClass: '.partners-enrollment__description', type: 'description' }, { itemClass: '.partners-enrollment__link-container', type: 'link container' }].forEach(function (_ref2) {
-        var itemClass = _ref2.itemClass,
-            type = _ref2.type;
-
-        (0, _mocha.it)('should display a ' + type, function () {
-          // given
-          this.render(Ember.HTMLBars.template({
-            "id": "KwiLYs0g",
-            "block": "{\"symbols\":[],\"statements\":[[1,[20,\"partners-enrollment-panel\"],false]],\"hasEval\":false}",
-            "meta": {}
-          }));
-
-          // then
-          (0, _chai.expect)(this.$(itemClass)).to.have.lengthOf(1);
-        });
-      });
-
-      (0, _mocha.it)('should contain a link to enrollment', function () {
-        // given
-        this.set('_enrollment', { title: 'toto' });
-        this.render(Ember.HTMLBars.template({
-          "id": "KwiLYs0g",
-          "block": "{\"symbols\":[],\"statements\":[[1,[20,\"partners-enrollment-panel\"],false]],\"hasEval\":false}",
-          "meta": {}
-        }));
-
-        // then
-        (0, _chai.expect)(this.$('.partners-enrollment__link')).to.have.lengthOf(1);
-        (0, _chai.expect)(this.$('.partners-enrollment__link').text().trim()).to.equal('En savoir plus');
-      });
     });
   });
 });
@@ -11998,10 +11734,6 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
-    it('integration/components/follower-form-test.js', function () {
-      // test passed
-    });
-
     it('integration/components/form-textfield-test.js', function () {
       // test passed
     });
@@ -12039,10 +11771,6 @@ define('pix-live/tests/tests.lint-test', [], function () {
     });
 
     it('integration/components/no-certification-panel-test.js', function () {
-      // test passed
-    });
-
-    it('integration/components/partners-enrollment-panel-test.js', function () {
       // test passed
     });
 
@@ -12234,10 +11962,6 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
-    it('unit/components/follower-form-test.js', function () {
-      // test passed
-    });
-
     it('unit/components/form-textfield-test.js', function () {
       // test passed
     });
@@ -12374,10 +12098,6 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
-    it('unit/models/follower-test.js', function () {
-      // test passed
-    });
-
     it('unit/models/organization-test.js', function () {
       // test passed
     });
@@ -12447,10 +12167,6 @@ define('pix-live/tests/tests.lint-test', [], function () {
     });
 
     it('unit/routes/compte-test.js', function () {
-      // test passed
-    });
-
-    it('unit/routes/enrollment-test.js', function () {
       // test passed
     });
 
@@ -13833,58 +13549,6 @@ define('pix-live/tests/unit/components/feedback-panel-test', ['chai', 'mocha', '
 
         // then
         (0, _chai.expect)(defaultStatus).to.equal('FORM_OPENED');
-      });
-    });
-  });
-});
-define('pix-live/tests/unit/components/follower-form-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
-  'use strict';
-
-  var errorMessages = {
-    error: {
-      invalid: 'Votre adresse n\'est pas valide',
-      exist: 'L\'e-mail choisi est déjà utilisé'
-    },
-    success: 'Merci pour votre inscription'
-  };
-
-  (0, _mocha.describe)('Unit | Component | followerComponent', function () {
-
-    (0, _emberMocha.setupTest)('component:follower-form', {});
-
-    (0, _mocha.describe)('#Computed Properties behaviors: ', function () {
-      (0, _mocha.describe)('When status get <error>, computed :', function () {
-        [{ attribute: 'hasError', expected: true }, { attribute: 'isPending', expected: false }, { attribute: 'hasSuccess', expected: false }, { attribute: 'errorType', expected: 'invalid' }, { attribute: 'messageClassName', expected: 'has-error' }, { attribute: 'infoMessage', expected: errorMessages.error.invalid }, { attribute: 'submitButtonText', expected: 's\'inscrire' }, { attribute: 'hasMessage', expected: true }].forEach(function (_ref) {
-          var attribute = _ref.attribute,
-              expected = _ref.expected;
-
-          (0, _mocha.it)('should return ' + expected + ' when passing ' + attribute, function () {
-            // given
-            var component = this.subject();
-            // when
-            component.set('status', 'error');
-            component.set('follower', Ember.Object.create());
-            // then
-            (0, _chai.expect)(component.get(attribute)).to.equal(expected);
-          });
-        });
-      });
-
-      (0, _mocha.describe)('When status get <success>, computed :', function () {
-        [{ attribute: 'hasError', expected: false }, { attribute: 'isPending', expected: false }, { attribute: 'hasSuccess', expected: true }, { attribute: 'errorType', expected: 'invalid' }, { attribute: 'messageClassName', expected: 'has-success' }, { attribute: 'infoMessage', expected: errorMessages.success }, { attribute: 'submitButtonText', expected: 's\'inscrire' }, { attribute: 'hasMessage', expected: true }].forEach(function (_ref2) {
-          var attribute = _ref2.attribute,
-              expected = _ref2.expected;
-
-          (0, _mocha.it)('should return ' + expected + ' when passing ' + attribute, function () {
-            // given
-            var component = this.subject();
-            // when
-            component.set('status', 'success');
-            component.set('follower', Ember.Object.create());
-            // then
-            (0, _chai.expect)(component.get(attribute)).to.equal(expected);
-          });
-        });
       });
     });
   });
@@ -16789,23 +16453,6 @@ define('pix-live/tests/unit/models/feedback-test', ['chai', 'mocha', 'ember-moch
     });
   });
 });
-define('pix-live/tests/unit/models/follower-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
-  'use strict';
-
-  (0, _mocha.describe)('Follower', function () {
-    (0, _emberMocha.setupModelTest)('follower', {
-      // Specify the other units that are required for this test.
-      needs: []
-    });
-
-    // Replace this with your real tests.
-    (0, _mocha.it)('exists', function () {
-      var model = this.subject();
-      // var store = this.store();
-      (0, _chai.expect)(model).to.be.ok;
-    });
-  });
-});
 define('pix-live/tests/unit/models/organization-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
   'use strict';
 
@@ -18252,20 +17899,6 @@ define('pix-live/tests/unit/routes/compte-test', ['chai', 'mocha', 'ember-mocha'
           _sinon.default.assert.called(storeSaveStub);
         });
       });
-    });
-  });
-});
-define('pix-live/tests/unit/routes/enrollment-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
-  'use strict';
-
-  (0, _mocha.describe)('Unit | Route | enrollment', function () {
-    (0, _emberMocha.setupTest)('route:enrollment', {
-      needs: ['service:panelActions', 'service:current-routed-modal']
-    });
-
-    (0, _mocha.it)('exists', function () {
-      var route = this.subject();
-      (0, _chai.expect)(route).to.be.ok;
     });
   });
 });
