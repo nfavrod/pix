@@ -5582,10 +5582,10 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
         (0, _chai.expect)(this.$('.tutorial-panel').text()).to.contain('Conseil : mangez des épinards.');
       });
 
-      (0, _mocha.it)('should render a learningMore panel when correction has a list of LearningMore elements', function () {
+      (0, _mocha.it)('should render a learningMoreTutorials panel when correction has a list of LearningMoreTutorials elements', function () {
         // given
         this.set('correction', {
-          learningMoreList: [{}]
+          learningMoreTutorials: [{ titre: 'Ceci est un tuto', duration: '20:00:00', type: 'video' }]
         });
 
         // when
@@ -7076,35 +7076,36 @@ define('pix-live/tests/integration/components/g-recaptcha-test', ['chai', 'mocha
 define('pix-live/tests/integration/components/learning-more-panel-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
   'use strict';
 
-  _mocha.describe.only('Integration | Component | learning-more-panel', function () {
+  (0, _mocha.describe)('Integration | Component | learning-more-panel', function () {
     (0, _emberMocha.setupComponentTest)('learning-more-panel', {
       integration: true
     });
 
     (0, _mocha.it)('renders a list item when there is at least one learningMore item', function () {
       // given
-      this.set('learningMoreList', [{}]);
+      this.set('learningMoreTutorials', [{ titre: 'Ceci est un tuto', duration: '20:00:00', type: 'video' }]);
 
       // when
       this.render(Ember.HTMLBars.template({
-        "id": "+sncQ4vQ",
-        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"learning-more-panel\",null,[[\"learningMoreList\"],[[22,[\"learningMoreList\"]]]]],false]],\"hasEval\":false}",
+        "id": "Q886Uxvg",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"learning-more-panel\",null,[[\"learningMoreTutorials\"],[[22,[\"learningMoreTutorials\"]]]]],false]],\"hasEval\":false}",
         "meta": {}
       }));
 
       // then
       (0, _chai.expect)(this.$('.learning-more-panel__container')).to.have.length(1);
+      (0, _chai.expect)(this.$('.learning-more-panel__list-container')).to.have.length(1);
       (0, _chai.expect)(this.$('.learning-more-panel__container').text()).to.contains('Pour en apprendre davantage');
     });
 
     (0, _mocha.it)('should not render a list when there is no LearningMore elements', function () {
       // given
-      this.set('learningMoreList', null);
+      this.set('learningMoreTutorials', null);
 
       // when
       this.render(Ember.HTMLBars.template({
-        "id": "+sncQ4vQ",
-        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"learning-more-panel\",null,[[\"learningMoreList\"],[[22,[\"learningMoreList\"]]]]],false]],\"hasEval\":false}",
+        "id": "Q886Uxvg",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"learning-more-panel\",null,[[\"learningMoreTutorials\"],[[22,[\"learningMoreTutorials\"]]]]],false]],\"hasEval\":false}",
         "meta": {}
       }));
 
@@ -11804,10 +11805,7 @@ define('pix-live/tests/tests.lint-test', [], function () {
     });
 
     it('integration/components/learning-more-panel-test.js', function () {
-      // test failed
-      var error = new chai.AssertionError('integration/components/learning-more-panel-test.js should pass ESLint\n\n6:10 - Unexpected exclusive mocha test. (mocha/no-exclusive-tests)');
-      error.stack = undefined;
-      throw error;
+      // test passed
     });
 
     it('integration/components/logged-user-profile-banner-test.js', function () {
