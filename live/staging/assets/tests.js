@@ -12130,6 +12130,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
+    it('unit/routes/assessments/checkpoint-test.js', function () {
+      // test passed
+    });
+
     it('unit/routes/assessments/rating-test.js', function () {
       // test passed
     });
@@ -15599,12 +15603,12 @@ define('pix-live/tests/unit/controllers/assessments/checkpoint-test', ['chai', '
 
           // then
           _sinon.default.assert.calledOnce(controller.transitionToRoute);
-          _sinon.default.assert.calledWith(controller.transitionToRoute, 'assessments.resume', assessment);
+          _sinon.default.assert.calledWith(controller.transitionToRoute, 'assessments.resume', assessment.get('id'));
         });
       });
 
       context('when it is the final checkpoint', function () {
-        (0, _mocha.it)('should redirect to the rating phase', function () {
+        (0, _mocha.it)('should redirect to the campaign last screen with the skill review', function () {
           // given
           var assessment = Ember.Object.create({ id: 12, answers: [] });
           controller.set('finalCheckpoint', true);
@@ -15614,7 +15618,7 @@ define('pix-live/tests/unit/controllers/assessments/checkpoint-test', ['chai', '
 
           // then
           _sinon.default.assert.calledOnce(controller.transitionToRoute);
-          _sinon.default.assert.calledWith(controller.transitionToRoute, 'assessments.rating', assessment);
+          _sinon.default.assert.calledWith(controller.transitionToRoute, 'campaigns.skill-review', assessment.get('id'));
         });
       });
     });
@@ -16512,7 +16516,7 @@ define('pix-live/tests/unit/models/skill-review-test', ['chai', 'mocha', 'ember-
 
     (0, _mocha.describe)('Computed property #profileMasteryPercentage', function () {
 
-      (0, _mocha.it)('should compute a property in  %', function () {
+      (0, _mocha.it)('should compute a property in %', function () {
         var _this = this;
 
         Ember.run(function () {
@@ -16524,7 +16528,7 @@ define('pix-live/tests/unit/models/skill-review-test', ['chai', 'mocha', 'ember-
           var profileMasteryInPourcent = skillReview.get('profileMasteryPercentage');
 
           // then
-          (0, _chai.expect)(profileMasteryInPourcent).to.equal('68.2 %');
+          (0, _chai.expect)(profileMasteryInPourcent).to.equal('68.2%');
         });
       });
 
@@ -16540,7 +16544,26 @@ define('pix-live/tests/unit/models/skill-review-test', ['chai', 'mocha', 'ember-
           var profileMasteryInPourcent = skillReview.get('profileMasteryPercentage');
 
           // then
-          (0, _chai.expect)(profileMasteryInPourcent).to.equal('65.1 %');
+          (0, _chai.expect)(profileMasteryInPourcent).to.equal('65.1%');
+        });
+      });
+    });
+
+    (0, _mocha.describe)('Computed property #profileCompletionPercentage', function () {
+
+      (0, _mocha.it)('should compute a profileCompletionRate property in %', function () {
+        var _this3 = this;
+
+        Ember.run(function () {
+          // given
+          var store = _this3.store();
+          var skillReview = store.createRecord('skill-review', { profileCompletionRate: 0.06815 });
+
+          // when
+          var profileMasteryInPourcent = skillReview.get('profileCompletionPercentage');
+
+          // then
+          (0, _chai.expect)(profileMasteryInPourcent).to.equal('7%');
         });
       });
     });
@@ -16703,6 +16726,7 @@ define('pix-live/tests/unit/routes/assessments/challenge-test', ['chai', 'mocha'
       this.register('service:session', Ember.Service.extend({
         data: { authenticated: { userId: userId, token: 'VALID-TOKEN' } }
       }));
+
       // instance route object
       route = this.subject();
       route.transitionTo = _sinon.default.stub();
@@ -16964,7 +16988,7 @@ define('pix-live/tests/unit/routes/assessments/challenge-test', ['chai', 'mocha'
           });
         });
 
-        (0, _mocha.it)('should redirect to checkpoint before the rating on the last serie of 5', function () {
+        (0, _mocha.it)('should redirect to rating after the last serie of questions', function () {
           // given
           var assessmentId = 947;
           var assessment = Ember.Object.create({ id: assessmentId, answers: [answerToChallengeOne], hasCheckpoints: true });
@@ -16978,10 +17002,53 @@ define('pix-live/tests/unit/routes/assessments/challenge-test', ['chai', 'mocha'
           return promise.then(function () {
             _sinon.default.assert.callOrder(answerToChallengeOne.save, route.transitionTo);
             _sinon.default.assert.calledOnce(route.transitionTo);
-            _sinon.default.assert.calledWith(route.transitionTo, 'assessments.checkpoint', assessmentId, {
-              queryParams: { finalCheckpoint: true }
-            });
+            _sinon.default.assert.calledWith(route.transitionTo, 'assessments.rating', assessmentId);
           });
+        });
+      });
+    });
+  });
+});
+define('pix-live/tests/unit/routes/assessments/checkpoint-test', ['mocha', 'ember-mocha', 'sinon'], function (_mocha, _emberMocha, _sinon) {
+  'use strict';
+
+  (0, _mocha.describe)('Unit | Route | Assessments | Checkpoint', function () {
+    (0, _emberMocha.setupTest)('route:assessments/checkpoint', {
+      needs: ['service:current-routed-modal']
+    });
+
+    (0, _mocha.describe)('#afterModel', function () {
+
+      var route = void 0;
+      var findRecordStub = void 0;
+
+      beforeEach(function () {
+        // define stubs
+        findRecordStub = _sinon.default.stub();
+        var StoreStub = Ember.Service.extend({
+          findRecord: findRecordStub
+        });
+
+        // manage dependency injection context
+        this.register('service:store', StoreStub);
+        this.inject.service('store', { as: 'store' });
+
+        // instance route object
+        route = this.subject();
+      });
+
+      (0, _mocha.it)('should call findRecordStub to force the skillReview reload (that has certainly changed since last time)', function () {
+        // given
+        var skillReview = Ember.Object.create({ id: 'skill-review-29984' });
+        var assessment = Ember.Object.create({ id: 1452, skillReview: skillReview });
+
+        // when
+        var promise = route.afterModel(assessment);
+
+        // then
+        return promise.then(function () {
+          _sinon.default.assert.calledOnce(findRecordStub);
+          _sinon.default.assert.calledWith(findRecordStub, 'skillReview', skillReview.id);
         });
       });
     });
@@ -17054,7 +17121,9 @@ define('pix-live/tests/unit/routes/assessments/rating-test', ['chai', 'mocha', '
 
           // then
           return promise.then(function () {
-            return _sinon.default.assert.calledWith(route.replaceWith, 'campaigns.skill-review', assessmentId);
+            return _sinon.default.assert.calledWith(route.replaceWith, 'assessments.checkpoint', assessmentId, {
+              queryParams: { finalCheckpoint: true }
+            });
           });
         });
       });

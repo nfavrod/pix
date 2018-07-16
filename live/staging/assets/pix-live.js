@@ -3096,8 +3096,8 @@ define('pix-live/controllers/assessments/checkpoint', ['exports'], function (exp
 
     actions: {
       resumeAssessment: function resumeAssessment(assessment) {
-        var nextRoute = this.get('finalCheckpoint') ? 'assessments.rating' : 'assessments.resume';
-        return this.transitionToRoute(nextRoute, assessment);
+        var nextRoute = this.get('finalCheckpoint') ? 'campaigns.skill-review' : 'assessments.resume';
+        return this.transitionToRoute(nextRoute, assessment.get('id'));
       }
     }
 
@@ -6794,9 +6794,14 @@ define('pix-live/models/skill-review', ['exports', 'ember-data'], function (expo
   });
   exports.default = _emberData.default.Model.extend({
     profileMasteryRate: _emberData.default.attr('number'),
+    profileCompletionRate: _emberData.default.attr('number'),
 
     profileMasteryPercentage: Ember.computed('profileMasteryRate', function () {
-      return Number((this.get('profileMasteryRate') * 100).toFixed(1)) + ' %';
+      return Number((this.get('profileMasteryRate') * 100).toFixed(1)) + '%';
+    }),
+
+    profileCompletionPercentage: Ember.computed('profileCompletionRate', function () {
+      return Number((this.get('profileCompletionRate') * 100).toFixed(0)) + '%';
     })
   });
 });
@@ -7068,12 +7073,6 @@ define('pix-live/routes/assessments/challenge', ['exports', 'pix-live/routes/bas
 
           _this2.transitionTo('assessments.challenge', { assessment: assessment, challenge: nextChallenge });
         }).catch(function () {
-          if (assessment.get('hasCheckpoints')) {
-            return _this2.transitionTo('assessments.checkpoint', assessment.get('id'), {
-              queryParams: { finalCheckpoint: true }
-            });
-          }
-
           _this2.transitionTo('assessments.rating', assessment.get('id'));
         });
       }
@@ -7088,6 +7087,13 @@ define('pix-live/routes/assessments/checkpoint', ['exports'], function (exports)
     value: true
   });
   exports.default = Ember.Route.extend({
+    afterModel: function afterModel(assesssment) {
+      return Ember.RSVP.hash({
+        assesssment: assesssment,
+        skillReview: this.get('store').findRecord('skillReview', assesssment.get('skillReview.id'))
+      });
+    },
+
 
     actions: {
       openComparison: function openComparison(assessment_id, answer_id, index) {
@@ -7140,7 +7146,7 @@ define('pix-live/routes/assessments/rating', ['exports'], function (exports) {
             return _this.replaceWith('certifications.results', assessment.get('certificationNumber'));
 
           case 'SMART_PLACEMENT':
-            return _this.replaceWith('campaigns.skill-review', assessment.get('id'));
+            return _this.replaceWith('assessments.checkpoint', assessment.get('id'), { queryParams: { finalCheckpoint: true } });
 
           default:
             return _this.replaceWith('assessments.results', assessment.get('id'));
@@ -8153,7 +8159,7 @@ define("pix-live/templates/assessments/checkpoint", ["exports"], function (expor
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "mn2Aa1ea", "block": "{\"symbols\":[\"answer\",\"index\"],\"statements\":[[6,\"div\"],[10,\"class\",\"assessment-challenge\"],[8],[0,\"\\n\\n  \"],[6,\"div\"],[10,\"class\",\"assessment-challenge__course-banner\"],[8],[0,\"\\n      \"],[1,[26,\"course-banner\",null,[[\"course\",\"withHomeLink\"],[[22,[\"model\",\"course\"]],true]]],false],[0,\"\\n  \"],[9],[0,\"\\n\\n  \"],[6,\"div\"],[10,\"class\",\"assessment-challenge__content\"],[8],[0,\"\\n    \"],[6,\"h1\"],[8],[0,\"Vos réponses :\"],[9],[0,\"\\n    \"],[6,\"div\"],[10,\"class\",\"assessment-results__list\"],[8],[0,\"\\n\"],[4,\"each\",[[22,[\"model\",\"answersSinceLastCheckpoints\"]]],null,{\"statements\":[[0,\"        \"],[1,[26,\"result-item\",null,[[\"answer\",\"index\",\"openComparison\",\"a11y-focus-id\"],[[21,1,[]],[21,2,[]],\"openComparison\",[26,\"concat\",[\"open-comparison_\",[26,\"add\",[[21,2,[]],1],null]],null]]]],false],[0,\"\\n\"]],\"parameters\":[1,2]},null],[0,\"    \"],[9],[0,\"\\n\\n    \"],[6,\"div\"],[10,\"class\",\"assessment-challenge__continue-wrapper\"],[8],[0,\"\\n      \"],[6,\"button\"],[10,\"class\",\"assessment-checkpoint__continue-button\"],[3,\"action\",[[21,0,[]],\"resumeAssessment\",[22,[\"model\"]]]],[8],[0,\"\\n\\n        \"],[1,[20,\"buttonText\"],false],[0,\"\\n\\n        \"],[6,\"img\"],[11,\"src\",[27,[[20,\"rootURL\"],\"/images/button-continue/button-continue-next.png\"]]],[11,\"srcset\",[27,[\"\\n           \",[20,\"rootURL\"],\"/images/button-continue/button-continue-next@2x.png 2x,\\n\\t\\t\\t\\t\\t \",[20,\"rootURL\"],\"/images/button-continue/button-continue-next@3x.png 3x\"]]],[10,\"alt\",\"\"],[10,\"class\",\"assessment-checkpoint__continue-button__image\"],[8],[9],[0,\"\\n\\n      \"],[9],[0,\"\\n    \"],[9],[0,\"\\n  \"],[9],[0,\"\\n\"],[9],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/assessments/checkpoint.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "9IDnzpEd", "block": "{\"symbols\":[\"answer\",\"index\"],\"statements\":[[6,\"div\"],[10,\"class\",\"assessment-challenge\"],[8],[0,\"\\n\\n  \"],[6,\"div\"],[10,\"class\",\"assessment-challenge__course-banner\"],[8],[0,\"\\n      \"],[1,[26,\"course-banner\",null,[[\"course\",\"withHomeLink\"],[[22,[\"model\",\"course\"]],true]]],false],[0,\"\\n  \"],[9],[0,\"\\n\\n  \"],[6,\"div\"],[10,\"class\",\"assessment-challenge__content\"],[8],[0,\"\\n\\n    \"],[6,\"div\"],[10,\"class\",\"smart-random pix-progress-bar-wrapper\"],[8],[0,\"\\n      \"],[6,\"h2\"],[10,\"class\",\"checkpoint-title\"],[8],[0,\"Mon parcours effectué\"],[9],[0,\"\\n\\n      \"],[6,\"div\"],[10,\"class\",\"pix-progress-bar\"],[8],[0,\"\\n        \"],[6,\"div\"],[10,\"class\",\"pix-progress-bar__marker\"],[11,\"style\",[27,[\"width: \",[22,[\"model\",\"skillReview\",\"profileCompletionPercentage\"]]]]],[8],[9],[0,\"\\n      \"],[9],[0,\"\\n\\n\\n      \"],[6,\"div\"],[10,\"class\",\"pix-progress-bar__legend-wrapper\"],[11,\"style\",[27,[\"width: \",[22,[\"model\",\"skillReview\",\"profileCompletionPercentage\"]]]]],[8],[0,\"\\n        \"],[6,\"div\"],[10,\"class\",\"pix-progress-bar__legend-circle\"],[8],[9],[0,\"\\n        \"],[6,\"div\"],[10,\"class\",\"pix-progress-bar__legend\"],[8],[0,\"\\n          \"],[6,\"p\"],[10,\"class\",\"sr-only\"],[8],[0,\"Vous avez effectué\"],[9],[1,[22,[\"model\",\"skillReview\",\"profileCompletionPercentage\"]],false],[6,\"p\"],[10,\"class\",\"sr-only\"],[8],[0,\" de votre parcours.\"],[9],[0,\"\\n        \"],[9],[0,\"\\n      \"],[9],[0,\"\\n    \"],[9],[0,\"\\n\\n    \"],[6,\"h2\"],[8],[0,\"Vos réponses :\"],[9],[0,\"\\n    \"],[6,\"div\"],[10,\"class\",\"assessment-results__list\"],[8],[0,\"\\n\"],[4,\"each\",[[22,[\"model\",\"answersSinceLastCheckpoints\"]]],null,{\"statements\":[[0,\"        \"],[1,[26,\"result-item\",null,[[\"answer\",\"index\",\"openComparison\",\"a11y-focus-id\"],[[21,1,[]],[21,2,[]],\"openComparison\",[26,\"concat\",[\"open-comparison_\",[26,\"add\",[[21,2,[]],1],null]],null]]]],false],[0,\"\\n\"]],\"parameters\":[1,2]},null],[0,\"    \"],[9],[0,\"\\n\\n    \"],[6,\"div\"],[10,\"class\",\"assessment-challenge__continue-wrapper\"],[8],[0,\"\\n      \"],[6,\"button\"],[10,\"class\",\"assessment-checkpoint__continue-button\"],[3,\"action\",[[21,0,[]],\"resumeAssessment\",[22,[\"model\"]]]],[8],[0,\"\\n\\n        \"],[1,[20,\"buttonText\"],false],[0,\"\\n\\n        \"],[6,\"img\"],[11,\"src\",[27,[[20,\"rootURL\"],\"/images/button-continue/button-continue-next.png\"]]],[11,\"srcset\",[27,[\"\\n           \",[20,\"rootURL\"],\"/images/button-continue/button-continue-next@2x.png 2x,\\n\\t\\t\\t\\t\\t \",[20,\"rootURL\"],\"/images/button-continue/button-continue-next@3x.png 3x\"]]],[10,\"alt\",\"\"],[10,\"class\",\"assessment-checkpoint__continue-button__image\"],[8],[9],[0,\"\\n\\n      \"],[9],[0,\"\\n    \"],[9],[0,\"\\n  \"],[9],[0,\"\\n\"],[9],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/assessments/checkpoint.hbs" } });
 });
 define("pix-live/templates/assessments/comparison", ["exports"], function (exports) {
   "use strict";
@@ -9800,6 +9806,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.54.0+c0510524"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.54.0+e36dfcea"});
 }
 //# sourceMappingURL=pix-live.map
