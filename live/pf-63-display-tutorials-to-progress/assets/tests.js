@@ -5596,7 +5596,7 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
         }));
 
         // then
-        (0, _chai.expect)(this.$('.learning-more-panel')).to.have.lengthOf(1);
+        (0, _chai.expect)(this.$('.learning-more-panel__container')).to.have.lengthOf(1);
       });
     });
   });

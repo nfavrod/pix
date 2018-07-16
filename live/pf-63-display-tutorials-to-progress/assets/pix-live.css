@@ -1306,14 +1306,25 @@ button.routable-modal--close:active {
   background-color: #f2f3f4;
   display: flex;
   flex-direction: column;
-  padding: 15px 15px 0 15px; }
+  /*
+  padding: 15px 15px 0 15px;
+  */ }
   @media (min-width: 980px) {
     .comparison-window--body {
-      padding: 20px 40px 0 40px; } }
+      /*padding: 20px 40px 0 40px;*/ } }
 
 .comparison-window__instruction {
-  margin: 0 0 15px;
+  margin: 15px;
   font-size: 16px; }
+  @media (min-width: 980px) {
+    .comparison-window__instruction {
+      margin: 20px 40px 0 40px; } }
+
+.comparison-window__corrected-answers {
+  margin: 0 15px; }
+  @media (min-width: 980px) {
+    .comparison-window__corrected-answers {
+      margin: 0 40px; } }
 
 /*Modal Close button*/
 .routable-modal--close-button {
@@ -1409,14 +1420,25 @@ button.routable-modal--close:active {
   background-color: #f2f3f4;
   display: flex;
   flex-direction: column;
-  padding: 15px 15px 0 15px; }
+  /*
+  padding: 15px 15px 0 15px;
+  */ }
   @media (min-width: 980px) {
     .comparison-window--body {
-      padding: 20px 40px 0 40px; } }
+      /*padding: 20px 40px 0 40px;*/ } }
 
 .comparison-window__instruction {
-  margin: 0 0 15px;
+  margin: 15px;
   font-size: 16px; }
+  @media (min-width: 980px) {
+    .comparison-window__instruction {
+      margin: 20px 40px 0 40px; } }
+
+.comparison-window__corrected-answers {
+  margin: 0 15px; }
+  @media (min-width: 980px) {
+    .comparison-window__corrected-answers {
+      margin: 0 40px; } }
 
 /*Modal Close button*/
 .routable-modal--close-button {
@@ -2086,17 +2108,19 @@ h1.course-banner__name {
   margin: 6px 8px; }
 
 .learning-more-panel {
-  background-color: white;
-  margin: 0 -40px;
-  padding: 20px 40px; }
+  display: flex;
+  flex-direction: column;
+  background-color: white; }
+
+.learning-more-panel__container {
+  margin: 20px 0; }
 
 .learning-more-panel__hint-title {
   color: #3e4149;
   text-align: center;
   font-family: "Raleway", Arial, sans-serif;
-  font-size: 24px;
+  font-size: 2.2rem;
   font-weight: 600;
-  margin-bottom: 20px;
   position: relative;
   z-index: 1; }
   .learning-more-panel__hint-title:before {
@@ -2115,8 +2139,20 @@ h1.course-banner__name {
     padding: 0 15px; }
   @media (min-width: 980px) {
     .learning-more-panel__hint-title {
-      font-size: 22px;
+      font-size: 2.2rem;
       line-height: 26px; } }
+
+.learning-more-panel__hint-container-header {
+  margin: 25px 15px; }
+  @media (min-width: 980px) {
+    .learning-more-panel__hint-container-header {
+      margin: 25px 40px; } }
+
+.learning-more-panel__list-container {
+  margin: 0 15px; }
+  @media (min-width: 980px) {
+    .learning-more-panel__list-container {
+      margin: 0 40px; } }
 
 .legal-notices-page {
   display: flex;
@@ -4026,7 +4062,7 @@ p.share-profile__organization-name {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 23px; }
+  margin-bottom: 10px; }
 
 .tutorial-panel__default-message-container {
   display: flex;
@@ -4059,9 +4095,12 @@ p.share-profile__organization-name {
   display: flex;
   flex-direction: column;
   max-width: 991px;
-  width: 100%;
+  margin: 0 15px;
   border-radius: 5px;
-  padding: 36px 0 28px; }
+  /*padding: 36px 0 28px;*/ }
+  @media (min-width: 980px) {
+    .tutorial-panel__hint-container {
+      margin: 0 40px; } }
 
 .tutorial-panel__tutorials-container {
   display: flex;
@@ -4076,7 +4115,7 @@ p.share-profile__organization-name {
 
 .tutorial-panel__hint-title {
   font-family: "Raleway", Arial, sans-serif;
-  font-size: 24px;
+  font-size: 2.2rem;
   text-align: center;
   color: #3e4149;
   font-weight: 600;
@@ -4099,7 +4138,7 @@ p.share-profile__organization-name {
     padding: 0 15px; }
   @media (min-width: 980px) {
     .tutorial-panel__hint-title {
-      font-size: 22px;
+      font-size: 2.2rem;
       line-height: 26px; } }
 
 .tutorial-panel__hint-content {
