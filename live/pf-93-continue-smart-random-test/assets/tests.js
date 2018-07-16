@@ -17774,7 +17774,8 @@ define('pix-live/tests/unit/routes/certifications/resume-test', ['mocha', 'ember
         var params = { certification_course_id: certificationCourseId };
         var filters = {
           filter: {
-            courseId: certificationCourseId
+            courseId: certificationCourseId,
+            type: 'CERTIFICATION'
           }
         };
         var retrievedAssessments = [Ember.Object.create({ id: 1 })];
