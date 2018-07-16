@@ -7222,7 +7222,6 @@ define('pix-live/routes/board', ['exports', 'ember-simple-auth/mixins/authentica
     value: true
   });
   exports.default = _baseRoute.default.extend(_authenticatedRouteMixin.default, {
-    authenticationRoute: '/connexion',
 
     session: Ember.inject.service(),
 
@@ -7253,9 +7252,6 @@ define('pix-live/routes/campaigns/create-assessment', ['exports', 'pix-live/rout
     value: true
   });
   exports.default = _baseRoute.default.extend(_authenticatedRouteMixin.default, {
-    authenticationRoute: '/connexion',
-    session: Ember.inject.service(),
-
     redirect: function redirect() {
       var _this = this;
 
@@ -7294,7 +7290,7 @@ define('pix-live/routes/certifications/results', ['exports', 'ember-simple-auth/
     value: true
   });
   exports.default = _baseRoute.default.extend(_authenticatedRouteMixin.default, {
-    authenticationRoute: '/connexion',
+
     session: Ember.inject.service(),
 
     model: function model(params) {
@@ -7352,8 +7348,6 @@ define('pix-live/routes/certifications/start', ['exports', 'ember-simple-auth/mi
     value: true
   });
   exports.default = Ember.Route.extend(_authenticatedRouteMixin.default, {
-
-    authenticationRoute: '/connexion',
 
     actions: {
       error: function error(_error) {
@@ -7507,7 +7501,6 @@ define('pix-live/routes/compte', ['exports', 'ember-simple-auth/mixins/authentic
   });
   exports.default = _baseRoute.default.extend(_authenticatedRouteMixin.default, {
 
-    authenticationRoute: '/connexion',
     session: Ember.inject.service(),
 
     model: function model() {
@@ -9807,6 +9800,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.54.0+d5a16e91"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.54.0+c0510524"});
 }
 //# sourceMappingURL=pix-live.map
