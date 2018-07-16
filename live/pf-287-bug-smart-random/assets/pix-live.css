@@ -773,6 +773,12 @@ button.routable-modal--close:active {
 .challenge-statement__instruction strong {
   font-weight: 900; }
 
+.challenge-statement__instruction a {
+  text-decoration: underline;
+  color: #3d68ff; }
+  .challenge-statement__instruction a:active, .challenge-statement__instruction a:focus, .challenge-statement__instruction a:hover {
+    color: #133dd2; }
+
 .challenge-statement__instruction-section {
   font-size: 15px; }
   @media (min-width: 980px) {
