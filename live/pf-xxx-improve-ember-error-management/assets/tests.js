@@ -17643,14 +17643,6 @@ define('pix-live/tests/unit/routes/compte-test', ['chai', 'mocha', 'ember-mocha'
       needs: ['service:current-routed-modal', 'service:session']
     });
 
-    (0, _mocha.it)('should redirect to / (Home)', function () {
-      // Given
-      var route = this.subject();
-
-      // Then
-      (0, _chai.expect)(route.authenticationRoute).to.equal('/connexion');
-    });
-
     (0, _mocha.describe)('model', function () {
 
       var storyStub = void 0;

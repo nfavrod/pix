@@ -6967,7 +6967,7 @@ define('pix-live/router', ['exports', 'pix-live/config/environment'], function (
       this.route('skill-review', { path: '/codecampagnepix/resultats/:assessment_id' });
     });
 
-    // this route must always be the last one
+    // XXX: this route is used for any request that did not match any of the previous routes. SHOULD ALWAYS BE THE LAST ONE
     this.route('not-found', { path: '/*path' });
   });
 
@@ -7217,7 +7217,6 @@ define('pix-live/routes/board', ['exports', 'ember-simple-auth/mixins/authentica
     value: true
   });
   exports.default = _baseRoute.default.extend(_authenticatedRouteMixin.default, {
-    authenticationRoute: '/connexion',
 
     session: Ember.inject.service(),
 
@@ -7246,9 +7245,6 @@ define('pix-live/routes/campaigns/create-assessment', ['exports', 'pix-live/rout
     value: true
   });
   exports.default = _baseRoute.default.extend(_authenticatedRouteMixin.default, {
-    authenticationRoute: '/connexion',
-    session: Ember.inject.service(),
-
     redirect: function redirect() {
       var _this = this;
 
@@ -7285,7 +7281,7 @@ define('pix-live/routes/certifications/results', ['exports', 'ember-simple-auth/
     value: true
   });
   exports.default = _baseRoute.default.extend(_authenticatedRouteMixin.default, {
-    authenticationRoute: '/connexion',
+
     session: Ember.inject.service(),
 
     model: function model(params) {
@@ -7332,8 +7328,6 @@ define('pix-live/routes/certifications/start', ['exports', 'ember-simple-auth/mi
     value: true
   });
   exports.default = Ember.Route.extend(_authenticatedRouteMixin.default, {
-
-    authenticationRoute: '/connexion',
 
     actions: {
       error: function error(_error) {
@@ -7487,7 +7481,6 @@ define('pix-live/routes/compte', ['exports', 'ember-simple-auth/mixins/authentic
   });
   exports.default = _baseRoute.default.extend(_authenticatedRouteMixin.default, {
 
-    authenticationRoute: '/connexion',
     session: Ember.inject.service(),
 
     model: function model() {
@@ -8894,7 +8887,7 @@ define("pix-live/templates/error", ["exports"], function (exports) {
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "Rprj/++H", "block": "{\"symbols\":[],\"statements\":[[6,\"div\"],[10,\"class\",\"pix-page error-page\"],[8],[0,\"\\n\\n  \"],[6,\"div\"],[10,\"class\",\"pix-section\"],[8],[0,\"\\n    \"],[1,[26,\"navbar-header\",null,[[\"class\"],[\"navbar-header--white\"]]],false],[0,\"\\n  \"],[9],[0,\"\\n\\n  \"],[6,\"div\"],[10,\"class\",\"pix-section error-page__body-section\"],[8],[0,\"\\n    \"],[6,\"div\"],[10,\"class\",\"pix-row\"],[8],[0,\"\\n      \"],[6,\"div\"],[10,\"class\",\"pix-panel error-page__main-content\"],[8],[0,\"\\n        \"],[6,\"h1\"],[8],[0,\"Oups, une erreur est survenue !\"],[9],[0,\"\\n        \"],[6,\"p\"],[8],[0,\"Nous vous invitons à recharger cette page ou \"],[4,\"link-to\",[\"index\"],null,{\"statements\":[[0,\"revenir à la page d’accueil\"]],\"parameters\":[]},null],[0,\".\"],[9],[0,\"\\n        \"],[6,\"p\"],[8],[0,\"Vous pouvez aussi nous contacter par courriel à l’adresse \"],[6,\"a\"],[10,\"href\",\"mailto:contact@pix.fr\"],[8],[0,\"contact@pix.fr\"],[9],[0,\".\"],[9],[0,\"\\n        \"],[6,\"p\"],[8],[0,\"Nous vous prions de nous excuser pour la gêne occasionnée.\"],[9],[0,\"\\n        \"],[6,\"p\"],[8],[0,\"Cordialement, l'équipe Pix.\"],[9],[0,\"\\n        \"],[4,\"link-to\",[\"index\"],[[\"class\"],[\"pix-button error-page__index-link\"]],{\"statements\":[[0,\"Revenir à la page d'accueil\"]],\"parameters\":[]},null],[0,\"\\n      \"],[9],[0,\"\\n    \"],[9],[0,\"\\n  \"],[9],[0,\"\\n\\n\"],[9]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/error.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "2FzxIvrr", "block": "{\"symbols\":[],\"statements\":[[6,\"div\"],[10,\"class\",\"pix-page error-page\"],[8],[0,\"\\n\\n  \"],[6,\"div\"],[10,\"class\",\"pix-section\"],[8],[0,\"\\n    \"],[1,[26,\"navbar-header\",null,[[\"class\"],[\"navbar-header--white\"]]],false],[0,\"\\n  \"],[9],[0,\"\\n\\n  \"],[6,\"div\"],[10,\"class\",\"pix-section error-page__body-section\"],[8],[0,\"\\n    \"],[6,\"div\"],[10,\"class\",\"pix-row\"],[8],[0,\"\\n      \"],[6,\"div\"],[10,\"class\",\"pix-panel error-page__main-content\"],[8],[0,\"\\n        \"],[6,\"h1\"],[8],[0,\"Oups, une erreur est survenue !\"],[9],[0,\"\\n        \"],[6,\"p\"],[8],[0,\"Nous vous invitons à recharger cette page ou \"],[4,\"link-to\",[\"index\"],null,{\"statements\":[[0,\"revenir à la page d’accueil\"]],\"parameters\":[]},null],[0,\".\"],[9],[0,\"\\n        \"],[6,\"p\"],[8],[0,\"Vous pouvez aussi nous contacter par courriel à l’adresse \"],[6,\"a\"],[10,\"href\",\"mailto:support@pix.fr\"],[8],[0,\"support@pix.fr\"],[9],[0,\".\"],[9],[0,\"\\n        \"],[6,\"p\"],[8],[0,\"Nous vous prions de nous excuser pour la gêne occasionnée.\"],[9],[0,\"\\n        \"],[6,\"p\"],[8],[0,\"L'équipe Pix.\"],[9],[0,\"\\n        \"],[4,\"link-to\",[\"index\"],[[\"class\"],[\"pix-button error-page__index-link\"]],{\"statements\":[[0,\"Revenir à la page d'accueil\"]],\"parameters\":[]},null],[0,\"\\n      \"],[9],[0,\"\\n    \"],[9],[0,\"\\n  \"],[9],[0,\"\\n\\n\"],[9]],\"hasEval\":false}", "meta": { "moduleName": "pix-live/templates/error.hbs" } });
 });
 define("pix-live/templates/index", ["exports"], function (exports) {
   "use strict";
@@ -9773,6 +9766,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.54.0+fcfa1798"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.54.0+8e94c36f"});
 }
 //# sourceMappingURL=pix-live.map
