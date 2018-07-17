@@ -2274,8 +2274,8 @@ h1.course-banner__name {
     outline: none;
     box-shadow: none;
     border: solid 2px #446eff; }
-  .result-item:nth-last-child(1) {
-    margin-bottom: 20px; }
+  .result-item:last-child {
+    margin-bottom: 0; }
 
 .result-item {
   display: flex;
@@ -2636,8 +2636,8 @@ h1.course-banner__name {
     outline: none;
     box-shadow: none;
     border: solid 2px #446eff; }
-  .result-item:nth-last-child(1) {
-    margin-bottom: 20px; }
+  .result-item:last-child {
+    margin-bottom: 0; }
 
 .result-item {
   display: flex;
@@ -4988,9 +4988,8 @@ hr.project-page__presentation-header-line {
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 .assessment-results__list {
   display: flex;
-  flex-direction: column; }
-  .assessment-results__list:nth-last-child(1) {
-    margin-bottom: 20px; }
+  flex-direction: column;
+  margin-bottom: 20px; }
 
 /* Button 'go back'
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
@@ -5577,10 +5576,12 @@ hr.project-page__presentation-header-line {
   text-transform: uppercase;
   padding: 16px 70px;
   color: #ffffff;
-  box-shadow: 0 2px 6px 0 rgba(12, 22, 58, 0.11), 0 1px 3px 0 rgba(0, 0, 0, 0.08); }
-
-.assessment-checkpoint__continue-button:hover, .assessment-checkpoint__continue-button:focus {
-  background-color: #2861CF; }
+  box-shadow: 0 2px 6px 0 rgba(12, 22, 58, 0.11), 0 1px 3px 0 rgba(0, 0, 0, 0.08);
+  display: inline-block; }
+  .assessment-checkpoint__continue-button:hover, .assessment-checkpoint__continue-button:focus, .assessment-checkpoint__continue-button:active {
+    background-color: #2861CF;
+    color: #ffffff;
+    text-decoration: none; }
 
 .assessment-checkpoint__continue-button__image {
   vertical-align: sub;
