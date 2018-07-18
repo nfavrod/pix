@@ -398,6 +398,50 @@ input[type=radio]:focus:before {
 .ember-modal-overlay.translucent {
   background-color: rgba(62, 65, 73, 0.95); }
 
+.pix-page {
+  font-family: "Lato", Arial, sans-serif;
+  font-size: 1.6rem; }
+  @media (min-width: 980px) {
+    .pix-page {
+      font-size: 2rem; } }
+  .pix-page h1, .pix-page h2, .pix-page h3, .pix-page h4, .pix-page h5, .pix-page h6 {
+    margin: 0 0 20px; }
+  .pix-page h1 {
+    font-size: 2.8rem; }
+    @media (min-width: 980px) {
+      .pix-page h1 {
+        font-size: 3.6rem; } }
+  .pix-page .pix-section .pix-row {
+    margin: 0 auto; }
+    @media (min-width: 980px) {
+      .pix-page .pix-section .pix-row {
+        max-width: 1200px; } }
+  .pix-page .pix-section .pix-panel {
+    width: 100%;
+    background-color: #FFFFFF;
+    box-shadow: 0 7px 14px 0 rgba(12, 22, 58, 0.1), 0 3px 6px 0 rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    padding: 20px; }
+    @media (min-width: 980px) {
+      .pix-page .pix-section .pix-panel {
+        padding: 40px; } }
+
+.pix-button {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  height: 50px;
+  padding: 0 40px;
+  background-color: #3d68ff;
+  color: #ffffff !important;
+  font-family: "Lato", Arial, sans-serif;
+  font-size: 1.6rem;
+  text-decoration: none !important; }
+  .pix-button:active, .pix-button:focus, .pix-button:hover {
+    background-color: #133dd2; }
+
 .grey-hover-button {
   border-radius: 4px;
   border: none;
@@ -5112,6 +5156,28 @@ hr.project-page__presentation-header-line {
   font-size: 16px;
   font-weight: 300;
   color: #3e4149; }
+
+.error-page .error-page__body-section {
+  padding: 20px; }
+  @media (min-width: 980px) {
+    .error-page .error-page__body-section {
+      padding: 40px; } }
+  .error-page .error-page__body-section .error-page__main-content {
+    padding: 40px;
+    text-align: center; }
+    .error-page .error-page__body-section .error-page__main-content p {
+      text-align: left; }
+      @media (min-width: 980px) {
+        .error-page .error-page__body-section .error-page__main-content p {
+          text-align: center; } }
+    @media (min-width: 980px) {
+      .error-page .error-page__body-section .error-page__main-content {
+        padding: 80px 0; } }
+    .error-page .error-page__body-section .error-page__main-content .error-page__index-link {
+      margin-top: 20px; }
+      @media (min-width: 980px) {
+        .error-page .error-page__body-section .error-page__main-content .error-page__index-link {
+          margin-top: 40px; } }
 
 .signup-container {
   display: flex;
