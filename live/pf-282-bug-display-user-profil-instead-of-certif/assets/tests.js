@@ -12106,6 +12106,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
+    it('unit/models/result-competence-test.js', function () {
+      // test passed
+    });
+
     it('unit/models/result-competence-tree-test.js', function () {
       // test passed
     });
@@ -16540,6 +16544,35 @@ define('pix-live/tests/unit/models/password-reset-demand-test', ['chai', 'mocha'
       var model = this.subject();
       // var store = this.store();
       (0, _chai.expect)(model).to.be.ok;
+    });
+  });
+});
+define('pix-live/tests/unit/models/result-competence-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+  'use strict';
+
+  (0, _mocha.describe)('Unit | Model | result-competence model', function () {
+    (0, _emberMocha.setupModelTest)('result-competence', {
+      needs: ['model:area']
+    });
+
+    (0, _mocha.it)('exists', function () {
+      var model = this.subject();
+      (0, _chai.expect)(model).to.be.ok;
+    });
+
+    (0, _mocha.describe)('#area relationship', function () {
+
+      (0, _mocha.it)('should exist', function () {
+        // given
+        var Competence = this.store().modelFor('result-competence');
+
+        // when
+        var relationship = Ember.get(Competence, 'relationshipsByName').get('area');
+
+        // then
+        (0, _chai.expect)(relationship.key).to.equal('area');
+        (0, _chai.expect)(relationship.kind).to.equal('belongsTo');
+      });
     });
   });
 });
