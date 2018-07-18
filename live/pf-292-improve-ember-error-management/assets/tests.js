@@ -3566,23 +3566,15 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
+    it('models/assessment-progression.js', function () {
+      // test passed
+    });
+
     it('models/assessment-result.js', function () {
       // test passed
     });
 
     it('models/assessment.js', function () {
-      // test passed
-    });
-
-    it('models/behaviors/assessment-progression/ProgressWithCheckpoints.js', function () {
-      // test passed
-    });
-
-    it('models/behaviors/assessment-progression/ProgressWithoutCheckpoints.js', function () {
-      // test passed
-    });
-
-    it('models/behaviors/assessment-progression/index.js', function () {
       // test passed
     });
 
@@ -3682,11 +3674,11 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
-    it('routes/campaigns/create-assessment.js', function () {
+    it('routes/campaigns/skill-review.js', function () {
       // test passed
     });
 
-    it('routes/campaigns/skill-review.js', function () {
+    it('routes/campaigns/start-or-resume.js', function () {
       // test passed
     });
 
@@ -11950,6 +11942,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
+    it('unit/components/course-banner-test.js', function () {
+      // test passed
+    });
+
     it('unit/components/course-item-test.js', function () {
       // test passed
     });
@@ -11983,6 +11979,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
     });
 
     it('unit/components/pix-modal-test.js', function () {
+      // test passed
+    });
+
+    it('unit/components/progress-bar-test.js', function () {
       // test passed
     });
 
@@ -12066,15 +12066,11 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
+    it('unit/models/assessment-progress-test.js', function () {
+      // test passed
+    });
+
     it('unit/models/assessment-test.js', function () {
-      // test passed
-    });
-
-    it('unit/models/behaviors/assessment-progression/ProgressWithCheckpoints-test.js', function () {
-      // test passed
-    });
-
-    it('unit/models/behaviors/assessment-progression/ProgressWithoutCheckpoints-test.js', function () {
       // test passed
     });
 
@@ -12130,6 +12126,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
+    it('unit/routes/assessments/checkpoint-test.js', function () {
+      // test passed
+    });
+
     it('unit/routes/assessments/rating-test.js', function () {
       // test passed
     });
@@ -12143,6 +12143,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
     });
 
     it('unit/routes/board-test.js', function () {
+      // test passed
+    });
+
+    it('unit/routes/campaigns/start-or-resume-test.js', function () {
       // test passed
     });
 
@@ -13299,6 +13303,40 @@ define('pix-live/tests/unit/components/competence-level-progress-bar-test', ['ch
     });
   });
 });
+define('pix-live/tests/unit/components/course-banner-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+  'use strict';
+
+  (0, _mocha.describe)('Unit | Component | course-banner', function () {
+
+    (0, _emberMocha.setupComponentTest)('course-banner', { unit: true });
+
+    (0, _mocha.describe)('@courseName', function () {
+
+      (0, _mocha.it)('should return course name when it exists', function () {
+        // given
+        var component = this.subject();
+        var course = Ember.Object.create({ name: 'On est en finale !!!' });
+        component.set('course', course);
+
+        // when
+        var courseName = component.get('courseName');
+
+        // then
+        (0, _chai.expect)(courseName).to.equal('On est en finale !!!');
+      });
+      (0, _mocha.it)('should return "Parcours e-pro" when it does not exist', function () {
+        // given
+        var component = this.subject();
+
+        // when
+        var courseName = component.get('courseName');
+
+        // then
+        (0, _chai.expect)(courseName).to.equal('Parcours e-pro');
+      });
+    });
+  });
+});
 define('pix-live/tests/unit/components/course-item-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
   'use strict';
 
@@ -14036,6 +14074,56 @@ define('pix-live/tests/unit/components/pix-modal-test', ['chai', 'mocha', 'ember
 
         // then
         _sinon.default.assert.calledWith(sendActionStub, 'close');
+      });
+    });
+  });
+});
+define('pix-live/tests/unit/components/progress-bar-test', ['chai', 'mocha', 'pix-live/models/assessment-progression', 'ember-mocha'], function (_chai, _mocha, _assessmentProgression, _emberMocha) {
+  'use strict';
+
+  (0, _mocha.describe)('Unit | Component | progress-bar', function () {
+
+    (0, _emberMocha.setupTest)('component:progress-bar', {});
+
+    (0, _mocha.describe)('@progression', function () {
+
+      (0, _mocha.it)('should return a progression object', function () {
+        // given
+        var assessment = Ember.Object.create({
+          type: 'DEMO',
+          answers: [1, 2, 3],
+          course: {
+            nbChallenges: 10
+          }
+        });
+        var component = this.subject({ assessment: assessment });
+
+        // when
+        var progression = component.get('progression');
+
+        // then
+        (0, _chai.expect)(progression.get('assessmentType')).to.equal('DEMO');
+        (0, _chai.expect)(progression.get('nbAnswers')).to.equal(3);
+        (0, _chai.expect)(progression.get('nbChallenges')).to.equal(10);
+      });
+    });
+
+    (0, _mocha.describe)('@barStyle', function () {
+
+      (0, _mocha.it)('should return the good CSS style value according to progression', function () {
+        // given
+        var progression = new _assessmentProgression.default({
+          assessmentType: 'DEMO',
+          nbAnswers: 5,
+          nbChallenges: 10
+        });
+        var component = this.subject({ progression: progression });
+
+        // when
+        var barStyle = component.get('barStyle');
+
+        // then
+        (0, _chai.expect)(barStyle.toString()).to.equal('width: 60%');
       });
     });
   });
@@ -15599,12 +15687,12 @@ define('pix-live/tests/unit/controllers/assessments/checkpoint-test', ['chai', '
 
           // then
           _sinon.default.assert.calledOnce(controller.transitionToRoute);
-          _sinon.default.assert.calledWith(controller.transitionToRoute, 'assessments.resume', assessment);
+          _sinon.default.assert.calledWith(controller.transitionToRoute, 'assessments.resume', assessment.get('id'));
         });
       });
 
       context('when it is the final checkpoint', function () {
-        (0, _mocha.it)('should redirect to the rating phase', function () {
+        (0, _mocha.it)('should redirect to the campaign last screen with the skill review', function () {
           // given
           var assessment = Ember.Object.create({ id: 12, answers: [] });
           controller.set('finalCheckpoint', true);
@@ -15614,7 +15702,7 @@ define('pix-live/tests/unit/controllers/assessments/checkpoint-test', ['chai', '
 
           // then
           _sinon.default.assert.calledOnce(controller.transitionToRoute);
-          _sinon.default.assert.calledWith(controller.transitionToRoute, 'assessments.rating', assessment);
+          _sinon.default.assert.calledWith(controller.transitionToRoute, 'campaigns.skill-review', assessment.get('id'));
         });
       });
     });
@@ -15724,8 +15812,176 @@ define('pix-live/tests/unit/models/area-test', ['chai', 'mocha', 'ember-mocha'],
     });
   });
 });
-define('pix-live/tests/unit/models/assessment-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+define('pix-live/tests/unit/models/assessment-progress-test', ['chai', 'mocha', 'pix-live/models/assessment-progression'], function (_chai, _mocha, _assessmentProgression) {
   'use strict';
+
+  (0, _mocha.describe)('Unit | Model | assessment progress', function () {
+
+    (0, _mocha.describe)('@_currentStep', function () {
+
+      (0, _mocha.context)('when assessment type is not "SMART_PLACEMENT"', function () {
+
+        (0, _mocha.it)('should return the number of current challenges', function () {
+          // given
+          var model = new _assessmentProgression.default({
+            assessmentType: 'DEMO',
+            nbAnswers: 8
+          });
+
+          // when
+          var _currentStep = model.get('_currentStep');
+
+          // then
+          (0, _chai.expect)(_currentStep).to.equal(9);
+        });
+      });
+
+      (0, _mocha.context)('when assessment type is "SMART_PLACEMENT"', function () {
+
+        var model = void 0;
+
+        (0, _mocha.beforeEach)(function () {
+          // given
+          model = new _assessmentProgression.default({
+            assessmentType: 'SMART_PLACEMENT'
+          });
+        });
+
+        (0, _mocha.it)('should return 3 if number of answers is 2 (less than 5)', function () {
+          // given
+          model.set('nbAnswers', 2);
+
+          // when
+          var _currentStep = model.get('_currentStep');
+
+          // then
+          (0, _chai.expect)(_currentStep).to.equal(3);
+        });
+
+        (0, _mocha.it)('should return 4 (a modulo of 5) if number of answers is 8 (more than 5)', function () {
+          // given
+          model.set('nbAnswers', 8);
+
+          // when
+          var _currentStep = model.get('_currentStep');
+
+          // then
+          (0, _chai.expect)(_currentStep).to.equal(4);
+        });
+      });
+    });
+
+    (0, _mocha.describe)('@_maxSteps', function () {
+
+      (0, _mocha.context)('when assessment type is not "SMART_PLACEMENT"', function () {
+
+        (0, _mocha.it)('should return the number of answers linked to an assessment', function () {
+          // given
+          var model = new _assessmentProgression.default({
+            assessmentType: 'DEMO',
+            nbChallenges: 10
+          });
+
+          // when
+          var _maxSteps = model.get('_maxSteps');
+
+          // then
+          (0, _chai.expect)(_maxSteps).to.equal(10);
+        });
+      });
+
+      (0, _mocha.context)('when assessment type is "SMART_PLACEMENT"', function () {
+
+        (0, _mocha.it)('should return 5', function () {
+          // given
+          var model = new _assessmentProgression.default({
+            assessmentType: 'SMART_PLACEMENT'
+          });
+
+          // when
+          var _maxSteps = model.get('_maxSteps');
+
+          // then
+          (0, _chai.expect)(_maxSteps).to.equal(5);
+        });
+      });
+    });
+
+    (0, _mocha.describe)('@valueNow', function () {
+
+      (0, _mocha.it)('should return the percentage of completion', function () {
+        // given
+        var model = new _assessmentProgression.default({
+          _currentStep: 2,
+          _maxSteps: 10
+        });
+
+        // when
+        var valueNow = model.get('valueNow');
+
+        // then
+        (0, _chai.expect)(valueNow).to.equal(20);
+      });
+    });
+
+    (0, _mocha.describe)('@text', function () {
+
+      (0, _mocha.it)('should return the text display in progression bar', function () {
+        // given
+        var model = new _assessmentProgression.default({
+          _currentStep: 2,
+          _maxSteps: 10
+        });
+
+        // when
+        var text = model.get('text');
+
+        // then
+        (0, _chai.expect)(text).to.equal('2 / 10');
+      });
+    });
+  });
+});
+define('pix-live/tests/unit/models/assessment-test', ['chai', 'mocha', 'ember-mocha', 'lodash'], function (_chai, _mocha, _emberMocha, _lodash) {
+  'use strict';
+
+  var _slicedToArray = function () {
+    function sliceIterator(arr, i) {
+      var _arr = [];
+      var _n = true;
+      var _d = false;
+      var _e = undefined;
+
+      try {
+        for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+          _arr.push(_s.value);
+
+          if (i && _arr.length === i) break;
+        }
+      } catch (err) {
+        _d = true;
+        _e = err;
+      } finally {
+        try {
+          if (!_n && _i["return"]) _i["return"]();
+        } finally {
+          if (_d) throw _e;
+        }
+      }
+
+      return _arr;
+    }
+
+    return function (arr, i) {
+      if (Array.isArray(arr)) {
+        return arr;
+      } else if (Symbol.iterator in Object(arr)) {
+        return sliceIterator(arr, i);
+      } else {
+        throw new TypeError("Invalid attempt to destructure non-iterable instance");
+      }
+    };
+  }();
 
   var SMART_PLACEMENT_TYPE = 'SMART_PLACEMENT';
 
@@ -15775,86 +16031,43 @@ define('pix-live/tests/unit/models/assessment-test', ['chai', 'mocha', 'ember-mo
       });
     });
 
-    (0, _mocha.describe)('on ready event', function () {
-      (0, _mocha.it)('should instanciate an assessment progression behavior', function () {
-        var _this3 = this;
+    (0, _mocha.describe)('@answersSinceLastCheckpoints', function () {
 
-        Ember.run(function () {
-          var store = _this3.store();
-          // when
-          var assessment = store.createRecord('assessment');
-          // then
-          (0, _chai.expect)(assessment._progressionBehavior).to.be.ok;
+      function newAnswers(store, nbAnswers) {
+        return Ember.run(function () {
+          return _lodash.default.times(nbAnswers, function () {
+            return store.createRecord('answer');
+          });
         });
-      });
-    });
-  });
-});
-define('pix-live/tests/unit/models/behaviors/assessment-progression/ProgressWithCheckpoints-test', ['chai', 'mocha', 'lodash', 'pix-live/models/behaviors/assessment-progression/ProgressWithCheckpoints'], function (_chai, _mocha, _lodash, _ProgressWithCheckpoints) {
-  'use strict';
-
-  var _slicedToArray = function () {
-    function sliceIterator(arr, i) {
-      var _arr = [];
-      var _n = true;
-      var _d = false;
-      var _e = undefined;
-
-      try {
-        for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
-          _arr.push(_s.value);
-
-          if (i && _arr.length === i) break;
-        }
-      } catch (err) {
-        _d = true;
-        _e = err;
-      } finally {
-        try {
-          if (!_n && _i["return"]) _i["return"]();
-        } finally {
-          if (_d) throw _e;
-        }
-      }
-
-      return _arr;
-    }
-
-    return function (arr, i) {
-      if (Array.isArray(arr)) {
-        return arr;
-      } else if (Symbol.iterator in Object(arr)) {
-        return sliceIterator(arr, i);
-      } else {
-        throw new TypeError("Invalid attempt to destructure non-iterable instance");
-      }
-    };
-  }();
-
-  (0, _mocha.describe)('Unit | Model | Behavior | assessment-progression | ProgressWithCheckpoints', function () {
-    (0, _mocha.describe)('#answersSinceLastCheckpoints(answers)', function () {
-
-      function newAnswer() {
-        return Ember.Object.create();
       }
 
       (0, _mocha.it)('should return an empty array when no answers has been given', function () {
         // given
-        var answers = [];
+        var assessment = this.subject();
+        assessment.set('answers', []);
 
         // when
-        var answersSinceLastCheckpoints = _ProgressWithCheckpoints.default.answersSinceLastCheckpoints(answers);
+        var answersSinceLastCheckpoints = assessment.get('answersSinceLastCheckpoints');
 
         // then
         (0, _chai.expect)(answersSinceLastCheckpoints).to.deep.equal([]);
       });
 
       (0, _mocha.it)('should return the one answer when only one answer has been given', function () {
+        var _this3 = this;
+
         // given
-        var answers = [newAnswer()];
+        var answer = Ember.run(function () {
+          return _this3.store().createRecord('answer');
+        });
+        var assessment = this.subject();
+        var answers = [answer];
+        Ember.run(function () {
+          return assessment.set('answers', answers);
+        });
 
         // when
-        var answersSinceLastCheckpoints = _ProgressWithCheckpoints.default.answersSinceLastCheckpoints(answers);
+        var answersSinceLastCheckpoints = assessment.get('answersSinceLastCheckpoints');
 
         // then
         (0, _chai.expect)(answersSinceLastCheckpoints).to.deep.equal(answers);
@@ -15862,15 +16075,20 @@ define('pix-live/tests/unit/models/behaviors/assessment-progression/ProgressWith
 
       (0, _mocha.it)('should return the last 2 answers when there is 7 answers', function () {
         // given
-        var answers = _lodash.default.times(7, newAnswer);
+        var answers = newAnswers(this.store(), 7);
 
         var _answers$slice = answers.slice(5),
             _answers$slice2 = _slicedToArray(_answers$slice, 2),
             answer6 = _answers$slice2[0],
             answer7 = _answers$slice2[1];
 
+        var assessment = this.subject();
+        Ember.run(function () {
+          return assessment.set('answers', answers);
+        });
+
         // when
-        var answersSinceLastCheckpoints = _ProgressWithCheckpoints.default.answersSinceLastCheckpoints(answers);
+        var answersSinceLastCheckpoints = assessment.get('answersSinceLastCheckpoints');
 
         // then
         (0, _chai.expect)(answersSinceLastCheckpoints).to.deep.equal([answer6, answer7]);
@@ -15878,7 +16096,7 @@ define('pix-live/tests/unit/models/behaviors/assessment-progression/ProgressWith
 
       (0, _mocha.it)('should return the last 5 answers when there is 10 answers', function () {
         // given
-        var answers = _lodash.default.times(10, newAnswer);
+        var answers = newAnswers(this.store(), 10);
 
         var _answers$slice3 = answers.slice(5),
             _answers$slice4 = _slicedToArray(_answers$slice3, 5),
@@ -15888,8 +16106,13 @@ define('pix-live/tests/unit/models/behaviors/assessment-progression/ProgressWith
             answer9 = _answers$slice4[3],
             answer10 = _answers$slice4[4];
 
+        var assessment = this.subject();
+        Ember.run(function () {
+          return assessment.set('answers', answers);
+        });
+
         // when
-        var answersSinceLastCheckpoints = _ProgressWithCheckpoints.default.answersSinceLastCheckpoints(answers);
+        var answersSinceLastCheckpoints = assessment.get('answersSinceLastCheckpoints');
 
         // then
         (0, _chai.expect)(answersSinceLastCheckpoints).to.deep.equal([answer6, answer7, answer8, answer9, answer10]);
@@ -15897,186 +16120,18 @@ define('pix-live/tests/unit/models/behaviors/assessment-progression/ProgressWith
 
       (0, _mocha.it)('should return the last 1 answer when there is 11 answers', function () {
         // given
-        var answers = _lodash.default.times(11, newAnswer);
+        var answers = newAnswers(this.store(), 11);
         var answer11 = answers[10];
+        var assessment = this.subject();
+        Ember.run(function () {
+          return assessment.set('answers', answers);
+        });
 
         // when
-        var answersSinceLastCheckpoints = _ProgressWithCheckpoints.default.answersSinceLastCheckpoints(answers);
+        var answersSinceLastCheckpoints = assessment.get('answersSinceLastCheckpoints');
 
         // then
         (0, _chai.expect)(answersSinceLastCheckpoints).to.deep.equal([answer11]);
-      });
-    });
-
-    (0, _mocha.describe)('Computed property #progress', function () {
-
-      (0, _mocha.describe)('#currentStep property', function () {
-        (0, _mocha.it)('should start at 1', function () {
-          // given
-          var nbAnswers = 0;
-
-          // when
-          var result = _ProgressWithCheckpoints.default.progress(nbAnswers);
-
-          // then
-          (0, _chai.expect)(result).to.have.property('currentStep', 1);
-        });
-
-        (0, _mocha.it)('should be 2 if we answered once', function () {
-          // given
-          var nbAnswers = 1;
-
-          // when
-          var result = _ProgressWithCheckpoints.default.progress(nbAnswers);
-
-          // then
-          (0, _chai.expect)(result).to.have.property('currentStep', 2);
-        });
-
-        (0, _mocha.it)('should be 3 if we answered twice', function () {
-          // given
-          var nbAnswers = 2;
-
-          // when
-          var result = _ProgressWithCheckpoints.default.progress(nbAnswers);
-
-          // then
-          (0, _chai.expect)(result).to.have.property('currentStep', 3);
-        });
-
-        (0, _mocha.it)('should reset to 1 at the 5th answer', function () {
-          // given
-          var nbAnswers = 5;
-
-          // when
-          var result = _ProgressWithCheckpoints.default.progress(nbAnswers);
-
-          // then
-          (0, _chai.expect)(result).to.have.property('currentStep', 1);
-        });
-      });
-
-      (0, _mocha.describe)('#maxStep property', function () {
-        (0, _mocha.it)('should always equal 5', function () {
-          // given
-
-          // when
-          var result = _ProgressWithCheckpoints.default.progress(0);
-
-          // then
-          (0, _chai.expect)(result).to.have.property('maxStep', 5);
-        });
-      });
-
-      (0, _mocha.describe)('#stepPercentage property', function () {
-        (0, _mocha.it)('should be the completion percentage of the two other properties', function () {
-          // given
-          var nbAnswers = 0;
-          var nbChallenges = 5;
-          var expectedCompletionPercentage = (1 + nbAnswers) / nbChallenges * 100;
-
-          // when
-          var result = _ProgressWithCheckpoints.default.progress(nbAnswers);
-
-          // then
-          (0, _chai.expect)(result).to.have.property('stepPercentage', expectedCompletionPercentage);
-        });
-      });
-    });
-  });
-});
-define('pix-live/tests/unit/models/behaviors/assessment-progression/ProgressWithoutCheckpoints-test', ['chai', 'mocha', 'pix-live/models/behaviors/assessment-progression/ProgressWithoutCheckpoints'], function (_chai, _mocha, _ProgressWithoutCheckpoints) {
-  'use strict';
-
-  (0, _mocha.describe)('Unit | Model | Behavior | assessment-progression | ProgressWithoutCheckpoints', function () {
-
-    (0, _mocha.describe)('#answersSinceLastCheckpoints(answers)', function () {
-      (0, _mocha.it)('should always throw an error as there is no checkpoints', function () {
-        // given
-
-        (0, _chai.expect)(function () {
-          // when
-          _ProgressWithoutCheckpoints.default.answersSinceLastCheckpoints();
-          // then
-        }).to.throw;
-      });
-    });
-
-    (0, _mocha.describe)('Computed property #progress', function () {
-
-      (0, _mocha.describe)('#currentStep property', function () {
-        (0, _mocha.it)('should start at 1', function () {
-          // given
-          var nbAnswers = 0;
-
-          // when
-          var result = _ProgressWithoutCheckpoints.default.progress(nbAnswers);
-
-          // then
-          (0, _chai.expect)(result).to.have.property('currentStep', 1);
-        });
-
-        (0, _mocha.it)('should be 2 if we answered once', function () {
-          // given
-          var nbAnswers = 1;
-
-          // when
-          var result = _ProgressWithoutCheckpoints.default.progress(nbAnswers);
-
-          // then
-          (0, _chai.expect)(result).to.have.property('currentStep', 2);
-        });
-
-        (0, _mocha.it)('should be 3 if we answered twice', function () {
-          // given
-          var nbAnswers = 2;
-
-          // when
-          var result = _ProgressWithoutCheckpoints.default.progress(nbAnswers);
-
-          // then
-          (0, _chai.expect)(result).to.have.property('currentStep', 3);
-        });
-
-        (0, _mocha.it)('should continue to 6 at the 5th answer', function () {
-          // given
-          var nbAnswers = 5;
-
-          // when
-          var result = _ProgressWithoutCheckpoints.default.progress(nbAnswers);
-
-          // then
-          (0, _chai.expect)(result).to.have.property('currentStep', 6);
-        });
-      });
-
-      (0, _mocha.describe)('#maxStep property', function () {
-        (0, _mocha.it)('should equal the number of challenges of the course', function () {
-          // given
-          var nbAnswers = 0;
-          var nbChallenges = 12;
-
-          // when
-          var result = _ProgressWithoutCheckpoints.default.progress(nbAnswers, nbChallenges);
-
-          // then
-          (0, _chai.expect)(result).to.have.property('maxStep', 12);
-        });
-      });
-
-      (0, _mocha.describe)('#stepPercentage property', function () {
-        (0, _mocha.it)('should be the completion percentage of the two other properties', function () {
-          // given
-          var nbAnswers = 0;
-          var nbChallenges = 6;
-          var expectedCompletionPercentage = (1 + nbAnswers) / nbChallenges * 100;
-
-          // when
-          var result = _ProgressWithoutCheckpoints.default.progress(nbAnswers, nbChallenges);
-
-          // then
-          (0, _chai.expect)(result).to.have.property('stepPercentage', expectedCompletionPercentage);
-        });
       });
     });
   });
@@ -16512,7 +16567,7 @@ define('pix-live/tests/unit/models/skill-review-test', ['chai', 'mocha', 'ember-
 
     (0, _mocha.describe)('Computed property #profileMasteryPercentage', function () {
 
-      (0, _mocha.it)('should compute a property in  %', function () {
+      (0, _mocha.it)('should compute a property in %', function () {
         var _this = this;
 
         Ember.run(function () {
@@ -16524,7 +16579,7 @@ define('pix-live/tests/unit/models/skill-review-test', ['chai', 'mocha', 'ember-
           var profileMasteryInPourcent = skillReview.get('profileMasteryPercentage');
 
           // then
-          (0, _chai.expect)(profileMasteryInPourcent).to.equal('68.2 %');
+          (0, _chai.expect)(profileMasteryInPourcent).to.equal('68.2%');
         });
       });
 
@@ -16540,7 +16595,26 @@ define('pix-live/tests/unit/models/skill-review-test', ['chai', 'mocha', 'ember-
           var profileMasteryInPourcent = skillReview.get('profileMasteryPercentage');
 
           // then
-          (0, _chai.expect)(profileMasteryInPourcent).to.equal('65.1 %');
+          (0, _chai.expect)(profileMasteryInPourcent).to.equal('65.1%');
+        });
+      });
+    });
+
+    (0, _mocha.describe)('Computed property #profileCompletionPercentage', function () {
+
+      (0, _mocha.it)('should compute a profileCompletionRate property in %', function () {
+        var _this3 = this;
+
+        Ember.run(function () {
+          // given
+          var store = _this3.store();
+          var skillReview = store.createRecord('skill-review', { profileCompletionRate: 0.06815 });
+
+          // when
+          var profileMasteryInPourcent = skillReview.get('profileCompletionPercentage');
+
+          // then
+          (0, _chai.expect)(profileMasteryInPourcent).to.equal('7%');
         });
       });
     });
@@ -16703,6 +16777,7 @@ define('pix-live/tests/unit/routes/assessments/challenge-test', ['chai', 'mocha'
       this.register('service:session', Ember.Service.extend({
         data: { authenticated: { userId: userId, token: 'VALID-TOKEN' } }
       }));
+
       // instance route object
       route = this.subject();
       route.transitionTo = _sinon.default.stub();
@@ -16964,7 +17039,7 @@ define('pix-live/tests/unit/routes/assessments/challenge-test', ['chai', 'mocha'
           });
         });
 
-        (0, _mocha.it)('should redirect to checkpoint before the rating on the last serie of 5', function () {
+        (0, _mocha.it)('should redirect to rating after the last serie of questions', function () {
           // given
           var assessmentId = 947;
           var assessment = Ember.Object.create({ id: assessmentId, answers: [answerToChallengeOne], hasCheckpoints: true });
@@ -16978,10 +17053,53 @@ define('pix-live/tests/unit/routes/assessments/challenge-test', ['chai', 'mocha'
           return promise.then(function () {
             _sinon.default.assert.callOrder(answerToChallengeOne.save, route.transitionTo);
             _sinon.default.assert.calledOnce(route.transitionTo);
-            _sinon.default.assert.calledWith(route.transitionTo, 'assessments.checkpoint', assessmentId, {
-              queryParams: { finalCheckpoint: true }
-            });
+            _sinon.default.assert.calledWith(route.transitionTo, 'assessments.rating', assessmentId);
           });
+        });
+      });
+    });
+  });
+});
+define('pix-live/tests/unit/routes/assessments/checkpoint-test', ['mocha', 'ember-mocha', 'sinon'], function (_mocha, _emberMocha, _sinon) {
+  'use strict';
+
+  (0, _mocha.describe)('Unit | Route | Assessments | Checkpoint', function () {
+    (0, _emberMocha.setupTest)('route:assessments/checkpoint', {
+      needs: ['service:current-routed-modal']
+    });
+
+    (0, _mocha.describe)('#afterModel', function () {
+
+      var route = void 0;
+      var findRecordStub = void 0;
+
+      beforeEach(function () {
+        // define stubs
+        findRecordStub = _sinon.default.stub();
+        var StoreStub = Ember.Service.extend({
+          findRecord: findRecordStub
+        });
+
+        // manage dependency injection context
+        this.register('service:store', StoreStub);
+        this.inject.service('store', { as: 'store' });
+
+        // instance route object
+        route = this.subject();
+      });
+
+      (0, _mocha.it)('should call findRecordStub to force the skillReview reload (that has certainly changed since last time)', function () {
+        // given
+        var skillReview = Ember.Object.create({ id: 'skill-review-29984' });
+        var assessment = Ember.Object.create({ id: 1452, skillReview: skillReview });
+
+        // when
+        var promise = route.afterModel(assessment);
+
+        // then
+        return promise.then(function () {
+          _sinon.default.assert.calledOnce(findRecordStub);
+          _sinon.default.assert.calledWith(findRecordStub, 'skillReview', skillReview.id);
         });
       });
     });
@@ -17054,7 +17172,9 @@ define('pix-live/tests/unit/routes/assessments/rating-test', ['chai', 'mocha', '
 
           // then
           return promise.then(function () {
-            return _sinon.default.assert.calledWith(route.replaceWith, 'campaigns.skill-review', assessmentId);
+            return _sinon.default.assert.calledWith(route.replaceWith, 'assessments.checkpoint', assessmentId, {
+              queryParams: { finalCheckpoint: true }
+            });
           });
         });
       });
@@ -17346,6 +17466,149 @@ define('pix-live/tests/unit/routes/board-test', ['chai', 'mocha', 'ember-mocha',
     });
   });
 });
+define('pix-live/tests/unit/routes/campaigns/start-or-resume-test', ['chai', 'mocha', 'ember-mocha', 'sinon'], function (_chai, _mocha, _emberMocha, _sinon) {
+  'use strict';
+
+  (0, _mocha.describe)('Unit | Route | campaigns/start-or-resume', function () {
+
+    (0, _emberMocha.setupTest)('route:campaigns/start-or-resume', {
+      needs: ['service:session', 'service:current-routed-modal']
+    });
+
+    (0, _mocha.describe)('#model', function () {
+
+      var storeStub = void 0;
+      var queryStub = void 0;
+      var createRecordStub = void 0;
+
+      (0, _mocha.beforeEach)(function () {
+        queryStub = _sinon.default.stub();
+        createRecordStub = _sinon.default.stub();
+        storeStub = Ember.Service.extend({ query: queryStub, createRecord: createRecordStub });
+        this.register('service:store', storeStub);
+        this.inject.service('store', { as: 'store' });
+      });
+
+      (0, _mocha.it)('should fetch all user assessments with type "SMART_PLACEMENT"', function () {
+        // given
+        var assessments = Ember.A([]);
+        queryStub.resolves(assessments);
+        var assessment = Ember.Object.create({ save: function save() {
+            return true;
+          } });
+        createRecordStub.returns(assessment);
+        var route = this.subject();
+
+        // when
+        var promise = route.model();
+
+        // then
+        return promise.then(function () {
+          _sinon.default.assert.calledWith(queryStub, 'assessment', { filter: { type: 'SMART_PLACEMENT' } });
+        });
+      });
+
+      (0, _mocha.it)('should resolve with first assessment found if at least one has been found', function () {
+        // given
+        var assessments = Ember.A([Ember.Object.create({ id: 1234 })]);
+        queryStub.resolves(assessments);
+        var route = this.subject();
+
+        // when
+        var promise = route.model();
+
+        // then
+        return promise.then(function (model) {
+          (0, _chai.expect)(model.get('id')).to.equal(1234);
+        });
+      });
+
+      (0, _mocha.it)('should resolve with freshly created one if no one has been found', function () {
+        // given
+        var assessments = Ember.A([]);
+        queryStub.resolves(assessments);
+        createRecordStub.returns({
+          save: function save() {}
+        });
+        var route = this.subject();
+
+        // when
+        var promise = route.model();
+
+        // then
+        return promise.then(function () {
+          _sinon.default.assert.calledWith(createRecordStub, 'assessment', { type: 'SMART_PLACEMENT' });
+        });
+      });
+    });
+
+    (0, _mocha.describe)('#afterMoodel', function () {
+
+      var storeStub = void 0;
+      var queryRecordStub = void 0;
+
+      (0, _mocha.beforeEach)(function () {
+        queryRecordStub = _sinon.default.stub();
+        storeStub = Ember.Service.extend({ queryRecord: queryRecordStub });
+        this.register('service:store', storeStub);
+        this.inject.service('store', { as: 'store' });
+      });
+
+      (0, _mocha.it)('should force assessment reload in ortder to pre-fetch its answers', function () {
+        // given
+        var route = this.subject();
+        route.transitionTo = _sinon.default.stub();
+        var assessment = Ember.Object.create({
+          reload: _sinon.default.stub()
+        });
+
+        // when
+        var promise = route.afterModel(assessment);
+
+        // then
+        return promise.then(function () {
+          _sinon.default.assert.calledOnce(assessment.reload);
+        });
+      });
+
+      (0, _mocha.it)('should redirect to next challenge if one was found', function () {
+        // given
+        var route = this.subject();
+        route.transitionTo = _sinon.default.stub();
+        var assessment = Ember.Object.create({ reload: function reload() {
+            return true;
+          } });
+        queryRecordStub.resolves();
+
+        // when
+        var promise = route.afterModel(assessment);
+
+        // then
+        return promise.then(function () {
+          _sinon.default.assert.calledWith(route.transitionTo, 'assessments.challenge');
+        });
+      });
+
+      (0, _mocha.it)('should redirect to assessment rating if no next challenge was found', function () {
+        // given
+        var route = this.subject();
+        route.transitionTo = _sinon.default.stub();
+        var assessment = Ember.Object.create({ reload: function reload() {
+            return true;
+          } });
+        queryRecordStub.rejects();
+
+        // when
+        var promise = route.afterModel(assessment);
+
+        // then
+        return promise.then(function () {
+          _sinon.default.assert.calledWith(route.transitionTo, 'assessments.rating');
+        });
+      });
+    });
+  });
+});
 define('pix-live/tests/unit/routes/certifications/results-test', ['chai', 'mocha', 'ember-mocha', 'sinon'], function (_chai, _mocha, _emberMocha, _sinon) {
   'use strict';
 
@@ -17456,7 +17719,8 @@ define('pix-live/tests/unit/routes/certifications/resume-test', ['mocha', 'ember
         var params = { certification_course_id: certificationCourseId };
         var filters = {
           filter: {
-            courseId: certificationCourseId
+            courseId: certificationCourseId,
+            type: 'CERTIFICATION'
           }
         };
         var retrievedAssessments = [Ember.Object.create({ id: 1 })];
