@@ -398,6 +398,50 @@ input[type=radio]:focus:before {
 .ember-modal-overlay.translucent {
   background-color: rgba(62, 65, 73, 0.95); }
 
+.pix-page {
+  font-family: "Lato", Arial, sans-serif;
+  font-size: 1.6rem; }
+  @media (min-width: 980px) {
+    .pix-page {
+      font-size: 2rem; } }
+  .pix-page h1, .pix-page h2, .pix-page h3, .pix-page h4, .pix-page h5, .pix-page h6 {
+    margin: 0 0 20px; }
+  .pix-page h1 {
+    font-size: 2.8rem; }
+    @media (min-width: 980px) {
+      .pix-page h1 {
+        font-size: 3.6rem; } }
+  .pix-page .pix-section .pix-row {
+    margin: 0 auto; }
+    @media (min-width: 980px) {
+      .pix-page .pix-section .pix-row {
+        max-width: 1200px; } }
+  .pix-page .pix-section .pix-panel {
+    width: 100%;
+    background-color: #FFFFFF;
+    box-shadow: 0 7px 14px 0 rgba(12, 22, 58, 0.1), 0 3px 6px 0 rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    padding: 20px; }
+    @media (min-width: 980px) {
+      .pix-page .pix-section .pix-panel {
+        padding: 40px; } }
+
+.pix-button {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  height: 50px;
+  padding: 0 40px;
+  background-color: #3d68ff;
+  color: #ffffff !important;
+  font-family: "Lato", Arial, sans-serif;
+  font-size: 1.6rem;
+  text-decoration: none !important; }
+  .pix-button:active, .pix-button:focus, .pix-button:hover {
+    background-color: #133dd2; }
+
 .grey-hover-button {
   border-radius: 4px;
   border: none;
@@ -1358,13 +1402,7 @@ button.routable-modal--close:active {
 .comparison-window--body {
   background-color: #f2f3f4;
   display: flex;
-  flex-direction: column;
-  /*
-  padding: 15px 15px 0 15px;
-  */ }
-  @media (min-width: 980px) {
-    .comparison-window--body {
-      /*padding: 20px 40px 0 40px;*/ } }
+  flex-direction: column; }
 
 .comparison-window__instruction {
   margin: 15px;
@@ -1449,6 +1487,31 @@ button.routable-modal--close:active {
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
   padding: 20px 40px; }
+
+.comparison-windows__default-message-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1.3px dashed #7d808a;
+  max-width: 991px;
+  border-radius: 5px;
+  padding: 36px 0 28px;
+  margin: 0 15px 15px; }
+  @media (min-width: 980px) {
+    .comparison-windows__default-message-container {
+      margin: 0 40px 20px; } }
+
+.comparison-windows__default-message-title {
+  font-family: "Raleway", Arial, sans-serif;
+  font-size: 17px;
+  text-align: center;
+  color: #000000;
+  font-weight: 600;
+  margin-top: 10.2px; }
+  @media (min-width: 980px) {
+    .comparison-windows__default-message-title {
+      font-size: 22px;
+      line-height: 26px; } }
 
 .comparison-window {
   padding: 0 15px;
@@ -1472,13 +1535,7 @@ button.routable-modal--close:active {
 .comparison-window--body {
   background-color: #f2f3f4;
   display: flex;
-  flex-direction: column;
-  /*
-  padding: 15px 15px 0 15px;
-  */ }
-  @media (min-width: 980px) {
-    .comparison-window--body {
-      /*padding: 20px 40px 0 40px;*/ } }
+  flex-direction: column; }
 
 .comparison-window__instruction {
   margin: 15px;
@@ -1563,6 +1620,31 @@ button.routable-modal--close:active {
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
   padding: 20px 40px; }
+
+.comparison-windows__default-message-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1.3px dashed #7d808a;
+  max-width: 991px;
+  border-radius: 5px;
+  padding: 36px 0 28px;
+  margin: 0 15px 15px; }
+  @media (min-width: 980px) {
+    .comparison-windows__default-message-container {
+      margin: 0 40px 20px; } }
+
+.comparison-windows__default-message-title {
+  font-family: "Raleway", Arial, sans-serif;
+  font-size: 17px;
+  text-align: center;
+  color: #000000;
+  font-weight: 600;
+  margin-top: 10.2px; }
+  @media (min-width: 980px) {
+    .comparison-windows__default-message-title {
+      font-size: 22px;
+      line-height: 26px; } }
 
 .competence-area-item {
   display: flex;
@@ -2922,7 +3004,6 @@ input.qcm-panel__proposal-checkbox {
   text-decoration: line-through; }
 
 .qcu-panel__proposals {
-  margin: 0 0 15px;
   font-size: 16px; }
 
 .qcu-panel__proposal-item {
@@ -4114,30 +4195,7 @@ p.share-profile__organization-name {
 .tutorial-panel {
   display: flex;
   flex-direction: column;
-  align-items: center;
   margin-bottom: 10px; }
-
-.tutorial-panel__default-message-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border: 1.3px dashed #7d808a;
-  max-width: 991px;
-  width: 100%;
-  border-radius: 5px;
-  padding: 36px 0 28px; }
-
-.tutorial-panel__default-message-title {
-  font-family: "Raleway", Arial, sans-serif;
-  font-size: 17px;
-  text-align: center;
-  color: #000000;
-  font-weight: 600;
-  margin-top: 10.2px; }
-  @media (min-width: 980px) {
-    .tutorial-panel__default-message-title {
-      font-size: 22px;
-      line-height: 26px; } }
 
 .tutorial-panel__hint-container-body {
   display: flex;
@@ -4149,8 +4207,7 @@ p.share-profile__organization-name {
   flex-direction: column;
   max-width: 991px;
   margin: 0 15px;
-  border-radius: 5px;
-  /*padding: 36px 0 28px;*/ }
+  border-radius: 5px; }
   @media (min-width: 980px) {
     .tutorial-panel__hint-container {
       margin: 0 40px; } }
@@ -5141,6 +5198,28 @@ p.share-profile__organization-name {
 #course-preview strong {
   color: #3d68ff;
   font-weight: 600; }
+
+.error-page .error-page__body-section {
+  padding: 20px; }
+  @media (min-width: 980px) {
+    .error-page .error-page__body-section {
+      padding: 40px; } }
+  .error-page .error-page__body-section .error-page__main-content {
+    padding: 40px;
+    text-align: center; }
+    .error-page .error-page__body-section .error-page__main-content p {
+      text-align: left; }
+      @media (min-width: 980px) {
+        .error-page .error-page__body-section .error-page__main-content p {
+          text-align: center; } }
+    @media (min-width: 980px) {
+      .error-page .error-page__body-section .error-page__main-content {
+        padding: 80px 0; } }
+    .error-page .error-page__body-section .error-page__main-content .error-page__index-link {
+      margin-top: 20px; }
+      @media (min-width: 980px) {
+        .error-page .error-page__body-section .error-page__main-content .error-page__index-link {
+          margin-top: 40px; } }
 
 /* Sections:
 

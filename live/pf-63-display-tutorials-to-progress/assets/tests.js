@@ -3618,6 +3618,10 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
+    it('models/result-competence.js', function () {
+      // test passed
+    });
+
     it('models/skill-review.js', function () {
       // test passed
     });
@@ -5413,7 +5417,11 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
       var correction = void 0;
 
       (0, _mocha.beforeEach)(function () {
-        answer = Ember.Object.create({ value: '1,2', result: 'ko' });
+        answer = Ember.Object.create({
+          value: '1,2',
+          result: 'ko',
+          isResultNotOk: true
+        });
         challenge = Ember.Object.create({
           instruction: 'This is the instruction',
           proposals: '' + '- 1ere possibilite\n ' + '- 2eme possibilite\n ' + '- 3eme possibilite\n' + '- 4eme possibilite'
@@ -5467,7 +5475,7 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
           "meta": {}
         }));
         // then
-        (0, _chai.expect)(this.$('.comparison-window__corrected-answers')).to.have.lengthOf(0);
+        (0, _chai.expect)(this.$('.comparison-window__corrected-answers--qroc')).to.have.lengthOf(0);
       });
 
       (0, _mocha.it)('should render corrected answers when challenge type is QROC', function () {
@@ -5542,7 +5550,10 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
 
         (0, _mocha.it)('should display the good icon in title when answer\'s result is "' + data.status + '"', function () {
           // given
-          answer.set('result', data.status);
+          answer.setProperties({
+            result: data.status,
+            isResultNotOk: data.status !== 'ok'
+          });
 
           // when
           this.render(Ember.HTMLBars.template({
@@ -5560,8 +5571,8 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
 
       (0, _mocha.it)('should render a tutorial panel with a hint', function () {
         // given
-        this.set('answer', { result: { status: 'ko' } });
-        this.set('correction', { hint: 'Conseil : mangez des épinards.' });
+        answer.set('result', 'ko');
+        correction.set('hint', 'Conseil : mangez des épinards.');
 
         // when
         this.render(Ember.HTMLBars.template({
@@ -5576,7 +5587,7 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
 
       (0, _mocha.it)('should render a learningMoreTutorials panel when correction has a list of LearningMoreTutorials elements', function () {
         // given
-        this.set('correction', {
+        correction.setProperties({
           learningMoreTutorials: [{ titre: 'Ceci est un tuto', duration: '20:00:00', type: 'video' }]
         });
 
@@ -5589,6 +5600,72 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
 
         // then
         (0, _chai.expect)(this.$('.learning-more-panel__container')).to.have.lengthOf(1);
+      });
+
+      context('when the answer is OK', function () {
+        (0, _mocha.it)('should neither display “Bientot ici des tutos“ nor hints nor any tutorials', function () {
+          // given
+          answer.setProperties({
+            result: 'ok',
+            isResultNotOk: false
+          });
+
+          // when
+          this.render(Ember.HTMLBars.template({
+            "id": "GbeILlfh",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"comparison-window\",null,[[\"answer\",\"correction\"],[[22,[\"answer\"]],[22,[\"correction\"]]]]],false]],\"hasEval\":false}",
+            "meta": {}
+          }));
+
+          // then
+          (0, _chai.expect)(this.$('.tutorial-panel')).to.have.lengthOf(0);
+          (0, _chai.expect)(this.$('.learning-more-panel__container')).to.have.lengthOf(0);
+          (0, _chai.expect)(this.$('.comparison-window__default-message-container')).to.have.lengthOf(0);
+        });
+      });
+
+      context('the correction has no hints nor tutoriasl at all', function () {
+        (0, _mocha.it)('should render “Bientot des tutos”', function () {
+          // given
+          correction.setProperties({
+            solution: '2,3',
+            noHintsNorTutorialsAtAll: true
+          });
+
+          // when
+          this.render(Ember.HTMLBars.template({
+            "id": "GbeILlfh",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"comparison-window\",null,[[\"answer\",\"correction\"],[[22,[\"answer\"]],[22,[\"correction\"]]]]],false]],\"hasEval\":false}",
+            "meta": {}
+          }));
+
+          // then
+          (0, _chai.expect)(this.$('.comparison-windows__default-message-container')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.comparison-windows__default-message-title')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.comparison-windows__default-message-picto-container')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.comparison-windows__default-message-picto')).to.have.lengthOf(1);
+        });
+      });
+
+      context('when the correction has a hint or a tutorial or a learninMoreTutorial', function () {
+        (0, _mocha.it)('should not render a hint or a tutorial', function () {
+          // given
+          correction.setProperties({
+            learningMoreTutorials: [{ titre: 'Ceci est un tuto', duration: '20:00:00', type: 'video' }]
+          });
+
+          // when
+          this.render(Ember.HTMLBars.template({
+            "id": "GbeILlfh",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"comparison-window\",null,[[\"answer\",\"correction\"],[[22,[\"answer\"]],[22,[\"correction\"]]]]],false]],\"hasEval\":false}",
+            "meta": {}
+          }));
+
+          // then
+          (0, _chai.expect)(this.$('.tutorial-panel')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-panel__hint-container')).to.have.lengthOf(0);
+          (0, _chai.expect)(this.$('.tutorial-panel__tutorial-item')).to.have.lengthOf(0);
+        });
       });
     });
   });
@@ -10588,63 +10665,11 @@ define('pix-live/tests/integration/components/tutorial-panel-test', ['chai', 'mo
       integration: true
     });
 
-    (0, _mocha.it)('should not render default message nor hint when answer is correct', function () {
-      // given
-      this.set('hint', null);
-      this.set('resultItemStatus', 'ok');
-
-      // when
-      this.render(Ember.HTMLBars.template({
-        "id": "XxENc2GT",
-        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\",\"tutorials\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]],[22,[\"tutorials\"]]]]],false]],\"hasEval\":false}",
-        "meta": {}
-      }));
-
-      // then
-      (0, _chai.expect)(this.$('.tutorial-panel')).to.have.lengthOf(1);
-      (0, _chai.expect)(this.$('.tutorial-panel__hint-container')).to.have.lengthOf(0);
-      (0, _chai.expect)(this.$('.tutorial-panel__default-message-container')).to.have.lengthOf(0);
-    });
-
     context('when the result is not ok', function () {
       beforeEach(function () {
         this.set('resultItemStatus', 'ko');
       });
 
-      context('when there is nor a hint or a tutorial', function () {
-        beforeEach(function () {
-          this.set('hint', null);
-          this.set('tutorials', []);
-        });
-        (0, _mocha.it)('should render the default message', function () {
-          // when
-          this.render(Ember.HTMLBars.template({
-            "id": "XxENc2GT",
-            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\",\"tutorials\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]],[22,[\"tutorials\"]]]]],false]],\"hasEval\":false}",
-            "meta": {}
-          }));
-
-          // then
-          (0, _chai.expect)(this.$('.tutorial-panel')).to.have.lengthOf(1);
-          (0, _chai.expect)(this.$('.tutorial-panel__default-message-container')).to.have.lengthOf(1);
-          (0, _chai.expect)(this.$('.tutorial-panel__default-message-title')).to.have.lengthOf(1);
-          (0, _chai.expect)(this.$('.tutorial-panel__default-message-picto-container')).to.have.lengthOf(1);
-          (0, _chai.expect)(this.$('.tutorial-panel__default-message-picto')).to.have.lengthOf(1);
-        });
-        (0, _mocha.it)('should not render a hint or a tutorial', function () {
-          // when
-          this.render(Ember.HTMLBars.template({
-            "id": "XxENc2GT",
-            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\",\"tutorials\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]],[22,[\"tutorials\"]]]]],false]],\"hasEval\":false}",
-            "meta": {}
-          }));
-
-          // then
-          (0, _chai.expect)(this.$('.tutorial-panel')).to.have.lengthOf(1);
-          (0, _chai.expect)(this.$('.tutorial-panel__hint-container')).to.have.lengthOf(0);
-          (0, _chai.expect)(this.$('.tutorial-panel__tutorial-item')).to.have.lengthOf(0);
-        });
-      });
       context('when a hint is present', function () {
         beforeEach(function () {
           this.set('hint', 'Ceci est un indice.');
@@ -10670,17 +10695,6 @@ define('pix-live/tests/integration/components/tutorial-panel-test', ['chai', 'mo
           var $contentElement = this.$('.tutorial-panel__hint-content');
           (0, _chai.expect)($contentElement.text().trim()).to.equal('Ceci est un indice.');
         });
-        (0, _mocha.it)('should not render the default message', function () {
-          // when
-          this.render(Ember.HTMLBars.template({
-            "id": "XxENc2GT",
-            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\",\"tutorials\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]],[22,[\"tutorials\"]]]]],false]],\"hasEval\":false}",
-            "meta": {}
-          }));
-
-          // then
-          (0, _chai.expect)(this.$('.tutorial-panel__default-message-container')).to.have.lengthOf(0);
-        });
       });
       context('when a tutorial is present', function () {
         beforeEach(function () {
@@ -10700,17 +10714,6 @@ define('pix-live/tests/integration/components/tutorial-panel-test', ['chai', 'mo
           (0, _chai.expect)(this.$('.tutorial-panel__tutorials-container')).to.have.lengthOf(1);
           (0, _chai.expect)(this.$('.tutorial-item__tutorial-title')).to.have.lengthOf(1);
           (0, _chai.expect)(this.$('.tutorial-item__tutorial-details')).to.have.lengthOf(1);
-        });
-        (0, _mocha.it)('should not render the default message', function () {
-          // when
-          this.render(Ember.HTMLBars.template({
-            "id": "XxENc2GT",
-            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\",\"tutorials\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]],[22,[\"tutorials\"]]]]],false]],\"hasEval\":false}",
-            "meta": {}
-          }));
-
-          // then
-          (0, _chai.expect)(this.$('.tutorial-panel__default-message-container')).to.have.lengthOf(0);
         });
       });
     });
@@ -10732,7 +10735,7 @@ define('pix-live/tests/integration/components/user-certifications-detail-area-te
         id: 'recs7Gpf90ln8NCv7',
         name: '3. Création de contenu',
         title: 'Création de contenu',
-        competences: Ember.A([{
+        resultCompetences: Ember.A([{
           'index': 1.1,
           'level': 5,
           'name': 'Mener une recherche et une veille d’information',
@@ -10786,7 +10789,7 @@ define('pix-live/tests/integration/components/user-certifications-detail-area-te
         var divOfCompetence = '.user-certifications-detail-competence';
 
         // then
-        (0, _chai.expect)(this.$(divOfCompetence)).to.have.lengthOf(area.get('competences.length'));
+        (0, _chai.expect)(this.$(divOfCompetence)).to.have.lengthOf(area.get('resultCompetences.length'));
       });
     });
   });
@@ -11084,19 +11087,19 @@ define('pix-live/tests/integration/components/user-certifications-detail-profile
         id: 'recs7Gpf90ln8NCv7',
         name: '3. Création de contenu',
         title: 'Création de contenu',
-        competences: Ember.A([])
+        resultCompetences: Ember.A([])
       }), Ember.Object.create({
         code: 1,
         id: 'recvoGdo7z2z7pXWa',
         name: '1. Information et données',
         title: 'Information et données',
-        competences: Ember.A([])
+        resultCompetences: Ember.A([])
       }), Ember.Object.create({
         code: 2,
         id: 'recoB4JYOBS1PCxhh',
         name: '2. Communication et collaboration',
         title: 'Communication et collaboration',
-        competences: Ember.A([])
+        resultCompetences: Ember.A([])
       })])
     });
 
@@ -12152,6 +12155,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
+    it('unit/models/correction-test.js', function () {
+      // test passed
+    });
+
     it('unit/models/course-test.js', function () {
       // test passed
     });
@@ -12165,6 +12172,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
     });
 
     it('unit/models/password-reset-demand-test.js', function () {
+      // test passed
+    });
+
+    it('unit/models/result-competence-test.js', function () {
       // test passed
     });
 
@@ -15303,33 +15314,6 @@ define('pix-live/tests/unit/components/tutorial-panel-test', ['chai', 'mocha', '
       component = this.subject();
     });
 
-    (0, _mocha.describe)('#shouldDisplayTipsToSucceed', function () {
-
-      ['ko', 'aband', 'partially', 'timedout', 'default'].forEach(function (status) {
-        (0, _mocha.it)('should return true when resultItemStatus is "' + status + '"', function () {
-          // given
-          component.set('resultItemStatus', status);
-
-          // when
-          var result = component.get('shouldDisplayTipsToSucceed');
-
-          // then
-          (0, _chai.expect)(result).to.be.true;
-        });
-      });
-
-      (0, _mocha.it)('should return false when resultItemStatus is "ok"', function () {
-        // given
-        component.set('resultItemStatus', 'ok');
-
-        // when
-        var result = component.get('shouldDisplayTipsToSucceed');
-
-        // then
-        (0, _chai.expect)(result).to.be.false;
-      });
-    });
-
     (0, _mocha.describe)('#shouldDisplayHint', function () {
 
       (0, _mocha.it)('should return true when hint is defined', function () {
@@ -15850,16 +15834,58 @@ define('pix-live/tests/unit/models/answer-test', ['chai', 'mocha', 'ember-mocha'
 
     (0, _mocha.describe)('isResultOk', function () {
 
-      (0, _mocha.it)('should return bool', function () {
-        var _this = this;
-
-        Ember.run(function () {
-          // given
-          var store = _this.store();
-          var answer = store.createRecord('answer', { 'result': 'ok' });
-
-          (0, _chai.expect)(answer.get('result')).to.equal('ok');
+      (0, _mocha.it)('should return true when answser.result is ok', function () {
+        // given
+        var store = this.store();
+        var answer = Ember.run(function () {
+          return store.createRecord('answer', { 'result': 'ok' });
         });
+
+        // when
+        var result = answer.get('isResultOk');
+
+        (0, _chai.expect)(result).to.be.true;
+      });
+
+      (0, _mocha.it)('should return false when answser.result is ko', function () {
+        // given
+        var store = this.store();
+        var answer = Ember.run(function () {
+          return store.createRecord('answer', { 'result': 'ko' });
+        });
+
+        // when
+        var result = answer.get('isResultOk');
+
+        (0, _chai.expect)(result).to.be.false;
+      });
+    });
+    (0, _mocha.describe)('isResultNotOk', function () {
+
+      (0, _mocha.it)('should return true when answser.result is ok', function () {
+        // given
+        var store = this.store();
+        var answer = Ember.run(function () {
+          return store.createRecord('answer', { 'result': 'ok' });
+        });
+
+        // when
+        var result = answer.get('isResultNotOk');
+
+        (0, _chai.expect)(result).to.be.false;
+      });
+
+      (0, _mocha.it)('should return false when answser.result is ko', function () {
+        // given
+        var store = this.store();
+        var answer = Ember.run(function () {
+          return store.createRecord('answer', { 'result': 'ko' });
+        });
+
+        // when
+        var result = answer.get('isResultNotOk');
+
+        (0, _chai.expect)(result).to.be.true;
       });
     });
   });
@@ -16475,6 +16501,91 @@ define('pix-live/tests/unit/models/competence-test', ['chai', 'mocha', 'ember-mo
     });
   });
 });
+define('pix-live/tests/unit/models/correction-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+  'use strict';
+
+  (0, _mocha.describe)('Unit | Model | correction', function () {
+    (0, _emberMocha.setupModelTest)('correction', {
+      needs: ['model:tutorial']
+    });
+
+    (0, _mocha.it)('exists', function () {
+      var model = this.subject();
+      (0, _chai.expect)(model).to.be.ok;
+    });
+
+    (0, _mocha.describe)('#noHintsNorTutorialsAtAll', function () {
+
+      var model = void 0;
+      var defaultAttributes = {
+        solution: 'a fake solution',
+        hint: null,
+        tutorials: [],
+        learningMoreTutorials: []
+      };
+
+      (0, _mocha.it)('should be true when correction has only solution', function () {
+        // given
+        model = this.subject(defaultAttributes);
+
+        // when
+        var result = model.get('noHintsNorTutorialsAtAll');
+
+        // then
+        (0, _chai.expect)(result).to.be.true;
+      });
+
+      (0, _mocha.it)('should be false when correction has an hint', function () {
+        // given
+        model = this.subject(Object.assign({}, defaultAttributes, {
+          hint: 'a fake hint'
+        }));
+
+        // when
+        var result = model.get('noHintsNorTutorialsAtAll');
+
+        // then
+        (0, _chai.expect)(result).to.be.false;
+      });
+
+      (0, _mocha.it)('should be false when correction has a tutorial', function () {
+        var _this = this;
+
+        // given
+        var givenTutorial = Ember.run(function () {
+          return _this.store().createRecord('tutorial', { title: 'is a fake tutorial' });
+        });
+        model = this.subject(Object.assign({}, defaultAttributes, {
+          tutorials: [givenTutorial]
+        }));
+
+        // when
+        var result = model.get('noHintsNorTutorialsAtAll');
+
+        // then
+        (0, _chai.expect)(result).to.be.false;
+      });
+
+      (0, _mocha.it)('should be false when correction has a learningMoreTutorial', function () {
+        var _this2 = this;
+
+        // given
+        var givenTutorial = Ember.run(function () {
+          return _this2.store().createRecord('tutorial', { title: 'is a fake tutorial' });
+        });
+        model = this.subject(Object.assign({}, defaultAttributes, {
+          learningMoreTutorials: [givenTutorial]
+        }));
+
+        // when
+        var result = model.get('noHintsNorTutorialsAtAll');
+
+        // then
+        (0, _chai.expect)(result).to.be.false;
+      });
+    });
+  });
+});
 // FIXME wuth API resource GET /assessment/:id/progress
 
 /*
@@ -16602,6 +16713,35 @@ define('pix-live/tests/unit/models/password-reset-demand-test', ['chai', 'mocha'
       var model = this.subject();
       // var store = this.store();
       (0, _chai.expect)(model).to.be.ok;
+    });
+  });
+});
+define('pix-live/tests/unit/models/result-competence-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+  'use strict';
+
+  (0, _mocha.describe)('Unit | Model | result-competence model', function () {
+    (0, _emberMocha.setupModelTest)('result-competence', {
+      needs: ['model:area']
+    });
+
+    (0, _mocha.it)('exists', function () {
+      var model = this.subject();
+      (0, _chai.expect)(model).to.be.ok;
+    });
+
+    (0, _mocha.describe)('#area relationship', function () {
+
+      (0, _mocha.it)('should exist', function () {
+        // given
+        var Competence = this.store().modelFor('result-competence');
+
+        // when
+        var relationship = Ember.get(Competence, 'relationshipsByName').get('area');
+
+        // then
+        (0, _chai.expect)(relationship.key).to.equal('area');
+        (0, _chai.expect)(relationship.kind).to.equal('belongsTo');
+      });
     });
   });
 });
@@ -17409,21 +17549,6 @@ define('pix-live/tests/unit/routes/assessments/resume-test', ['chai', 'mocha', '
         });
       });
     });
-
-    (0, _mocha.describe)('#error', function () {
-
-      (0, _mocha.it)('should redirect to index page', function () {
-        // given
-        var route = this.subject();
-        route.transitionTo = _sinon.default.spy();
-
-        // when
-        route.send('error');
-
-        // then
-        _sinon.default.assert.calledWith(route.transitionTo, 'index');
-      });
-    });
   });
 });
 define('pix-live/tests/unit/routes/board-test', ['chai', 'mocha', 'ember-mocha', 'sinon'], function (_chai, _mocha, _emberMocha, _sinon) {
@@ -17528,20 +17653,6 @@ define('pix-live/tests/unit/routes/board-test', ['chai', 'mocha', 'ember-mocha',
       return result.then(function (model) {
         (0, _chai.expect)(model.organization.id).to.equal(1);
         (0, _chai.expect)(model.organizationSnapshotsExportUrl).to.be.equal('http://localhost:3000/api/organizations/2/snapshots/export?userToken=VALID-TOKEN');
-      });
-    });
-
-    (0, _mocha.it)('should return to home page if no user was found', function () {
-      // given
-      findRecord.rejects();
-
-      // when
-      var result = route.model();
-
-      // then
-      return result.then(function (_) {
-        _sinon.default.assert.calledOnce(route.transitionTo);
-        _sinon.default.assert.calledWith(route.transitionTo, 'index');
       });
     });
 
@@ -17736,32 +17847,6 @@ define('pix-live/tests/unit/routes/certifications/results-test', ['chai', 'mocha
         this.inject.service('store', { as: 'store' });
       });
 
-      context('When no user is logged', function () {
-
-        (0, _mocha.beforeEach)(function () {
-          this.register('service:session', Ember.Service.extend({
-            isAuthenticated: false
-          }));
-          this.inject.service('session', { as: 'session' });
-
-          route = this.subject();
-          route.transitionTo = _sinon.default.stub();
-        });
-
-        (0, _mocha.it)('should redirect to logout', function () {
-          // Given
-          findRecordStub.rejects();
-          // When
-          var promise = route.model(params);
-
-          // Then
-          return promise.then(function () {
-            _sinon.default.assert.calledWith(findRecordStub, 'user', undefined, { reload: true });
-            _sinon.default.assert.calledWith(route.transitionTo, 'logout');
-          });
-        });
-      });
-
       context('When user is logged', function () {
 
         (0, _mocha.beforeEach)(function () {
@@ -17928,21 +18013,6 @@ define('pix-live/tests/unit/routes/certifications/resume-test', ['mocha', 'ember
         });
       });
     });
-
-    (0, _mocha.describe)('#error', function () {
-
-      (0, _mocha.it)('should redirect to index page', function () {
-        // given
-        var route = this.subject();
-        route.transitionTo = _sinon.default.spy();
-
-        // when
-        route.send('error');
-
-        // then
-        _sinon.default.assert.calledWith(route.transitionTo, 'index');
-      });
-    });
   });
 });
 define('pix-live/tests/unit/routes/certifications/start-test', ['mocha', 'ember-mocha', 'sinon'], function (_mocha, _emberMocha, _sinon) {
@@ -18052,24 +18122,6 @@ define('pix-live/tests/unit/routes/compte-test', ['chai', 'mocha', 'ember-mocha'
         findRecordStub = _sinon.default.stub();
         storyStub = Ember.Service.extend({
           findRecord: findRecordStub
-        });
-      });
-
-      (0, _mocha.it)('should redirect to logout when unable to find user details', function () {
-        // Given
-        this.register('service:store', storyStub);
-        this.inject.service('store', { as: 'store' });
-
-        findRecordStub.rejects();
-        var route = this.subject();
-        route.transitionTo = _sinon.default.stub();
-
-        // When
-        var promise = route.model();
-
-        // Then
-        return promise.catch(function () {
-          _sinon.default.assert.calledWith(route.transitionTo, 'logout');
         });
       });
 
@@ -18338,22 +18390,6 @@ define('pix-live/tests/unit/routes/index-test', ['chai', 'mocha', 'ember-mocha',
           _sinon.default.assert.calledWith(route.transitionTo, 'board');
         });
       });
-
-      (0, _mocha.it)('should redirect to logout when we cannot retrieve user informations', function () {
-        // Given
-        storeServiceStub.findRecord.rejects();
-        var route = this.subject();
-        route.transitionTo = _sinon.default.stub();
-
-        // When
-        var promise = route.beforeModel();
-
-        // Then
-        return promise.then(function () {
-          _sinon.default.assert.calledOnce(route.transitionTo);
-          _sinon.default.assert.calledWith(route.transitionTo, 'logout');
-        });
-      });
     });
   });
 });
@@ -18611,7 +18647,6 @@ define('pix-live/tests/unit/routes/reset-password-demand-test', ['chai', 'mocha'
       var params = {
         temporaryKey: 'pwd-reset-demand-token'
       };
-      var transitionToStub = _sinon.default.stub();
 
       (0, _mocha.beforeEach)(function () {
         findRecordStub = _sinon.default.stub();
@@ -18676,25 +18711,6 @@ define('pix-live/tests/unit/routes/reset-password-demand-test', ['chai', 'mocha'
           // then
           return promise.then(function (user) {
             (0, _chai.expect)(user).to.eql(expectedUser);
-          });
-        });
-      });
-
-      (0, _mocha.describe)('When password reset demand is not valid', function () {
-
-        (0, _mocha.it)('should redirect to home', function () {
-          // given
-          findRecordStub.rejects();
-          var route = this.subject();
-          route.set('transitionTo', transitionToStub);
-
-          // when
-          var promise = route.model(params);
-
-          // then
-          return promise.then(function () {
-            _sinon.default.assert.calledOnce(transitionToStub);
-            _sinon.default.assert.calledWith(transitionToStub, 'index');
           });
         });
       });
