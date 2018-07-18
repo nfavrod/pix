@@ -2918,8 +2918,8 @@ define('pix-live/components/user-certifications-detail-area', ['exports'], funct
     classNames: ['user-certifications-detail-area'],
     area: null,
 
-    sortedCompetences: Ember.computed('area.competences.[]', function () {
-      return this.get('area.competences').sortBy('index');
+    sortedCompetences: Ember.computed('area.resultCompetences.[]', function () {
+      return this.get('area.resultCompetences').sortBy('index');
     })
   });
 });
@@ -6500,6 +6500,7 @@ define('pix-live/models/area', ['exports', 'ember-data'], function (exports, _em
     name: attr('string'),
     title: attr('string'),
     competences: hasMany('competence'),
+    resultCompetences: hasMany('resultCompetence'),
     code: attr('number')
   });
 });
@@ -6766,6 +6767,22 @@ define('pix-live/models/result-competence-tree', ['exports', 'ember-data'], func
       Model = _emberData.default.Model;
   exports.default = Model.extend({
     areas: hasMany('area', { inverse: null })
+  });
+});
+define('pix-live/models/result-competence', ['exports', 'ember-data'], function (exports, _emberData) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  var Model = _emberData.default.Model,
+      attr = _emberData.default.attr,
+      belongsTo = _emberData.default.belongsTo;
+  exports.default = Model.extend({
+    name: attr('string'),
+    area: belongsTo('area'),
+    index: attr('number'),
+    level: attr('number')
   });
 });
 define('pix-live/models/skill-review', ['exports', 'ember-data'], function (exports, _emberData) {
@@ -9841,6 +9858,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.54.0+11b48f5d"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.54.0+7a0887c2"});
 }
 //# sourceMappingURL=pix-live.map

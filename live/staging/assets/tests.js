@@ -3614,6 +3614,10 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
+    it('models/result-competence.js', function () {
+      // test passed
+    });
+
     it('models/skill-review.js', function () {
       // test passed
     });
@@ -10670,7 +10674,7 @@ define('pix-live/tests/integration/components/user-certifications-detail-area-te
         id: 'recs7Gpf90ln8NCv7',
         name: '3. Création de contenu',
         title: 'Création de contenu',
-        competences: Ember.A([{
+        resultCompetences: Ember.A([{
           'index': 1.1,
           'level': 5,
           'name': 'Mener une recherche et une veille d’information',
@@ -10724,7 +10728,7 @@ define('pix-live/tests/integration/components/user-certifications-detail-area-te
         var divOfCompetence = '.user-certifications-detail-competence';
 
         // then
-        (0, _chai.expect)(this.$(divOfCompetence)).to.have.lengthOf(area.get('competences.length'));
+        (0, _chai.expect)(this.$(divOfCompetence)).to.have.lengthOf(area.get('resultCompetences.length'));
       });
     });
   });
@@ -11022,19 +11026,19 @@ define('pix-live/tests/integration/components/user-certifications-detail-profile
         id: 'recs7Gpf90ln8NCv7',
         name: '3. Création de contenu',
         title: 'Création de contenu',
-        competences: Ember.A([])
+        resultCompetences: Ember.A([])
       }), Ember.Object.create({
         code: 1,
         id: 'recvoGdo7z2z7pXWa',
         name: '1. Information et données',
         title: 'Information et données',
-        competences: Ember.A([])
+        resultCompetences: Ember.A([])
       }), Ember.Object.create({
         code: 2,
         id: 'recoB4JYOBS1PCxhh',
         name: '2. Communication et collaboration',
         title: 'Communication et collaboration',
-        competences: Ember.A([])
+        resultCompetences: Ember.A([])
       })])
     });
 
@@ -12099,6 +12103,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
     });
 
     it('unit/models/password-reset-demand-test.js', function () {
+      // test passed
+    });
+
+    it('unit/models/result-competence-test.js', function () {
       // test passed
     });
 
@@ -16536,6 +16544,35 @@ define('pix-live/tests/unit/models/password-reset-demand-test', ['chai', 'mocha'
       var model = this.subject();
       // var store = this.store();
       (0, _chai.expect)(model).to.be.ok;
+    });
+  });
+});
+define('pix-live/tests/unit/models/result-competence-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+  'use strict';
+
+  (0, _mocha.describe)('Unit | Model | result-competence model', function () {
+    (0, _emberMocha.setupModelTest)('result-competence', {
+      needs: ['model:area']
+    });
+
+    (0, _mocha.it)('exists', function () {
+      var model = this.subject();
+      (0, _chai.expect)(model).to.be.ok;
+    });
+
+    (0, _mocha.describe)('#area relationship', function () {
+
+      (0, _mocha.it)('should exist', function () {
+        // given
+        var Competence = this.store().modelFor('result-competence');
+
+        // when
+        var relationship = Ember.get(Competence, 'relationshipsByName').get('area');
+
+        // then
+        (0, _chai.expect)(relationship.key).to.equal('area');
+        (0, _chai.expect)(relationship.kind).to.equal('belongsTo');
+      });
     });
   });
 });
