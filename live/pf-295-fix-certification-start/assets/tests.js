@@ -3614,6 +3614,10 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
+    it('models/result-competence.js', function () {
+      // test passed
+    });
+
     it('models/skill-review.js', function () {
       // test passed
     });
@@ -10670,7 +10674,7 @@ define('pix-live/tests/integration/components/user-certifications-detail-area-te
         id: 'recs7Gpf90ln8NCv7',
         name: '3. Création de contenu',
         title: 'Création de contenu',
-        competences: Ember.A([{
+        resultCompetences: Ember.A([{
           'index': 1.1,
           'level': 5,
           'name': 'Mener une recherche et une veille d’information',
@@ -10724,7 +10728,7 @@ define('pix-live/tests/integration/components/user-certifications-detail-area-te
         var divOfCompetence = '.user-certifications-detail-competence';
 
         // then
-        (0, _chai.expect)(this.$(divOfCompetence)).to.have.lengthOf(area.get('competences.length'));
+        (0, _chai.expect)(this.$(divOfCompetence)).to.have.lengthOf(area.get('resultCompetences.length'));
       });
     });
   });
@@ -11022,19 +11026,19 @@ define('pix-live/tests/integration/components/user-certifications-detail-profile
         id: 'recs7Gpf90ln8NCv7',
         name: '3. Création de contenu',
         title: 'Création de contenu',
-        competences: Ember.A([])
+        resultCompetences: Ember.A([])
       }), Ember.Object.create({
         code: 1,
         id: 'recvoGdo7z2z7pXWa',
         name: '1. Information et données',
         title: 'Information et données',
-        competences: Ember.A([])
+        resultCompetences: Ember.A([])
       }), Ember.Object.create({
         code: 2,
         id: 'recoB4JYOBS1PCxhh',
         name: '2. Communication et collaboration',
         title: 'Communication et collaboration',
-        competences: Ember.A([])
+        resultCompetences: Ember.A([])
       })])
     });
 
@@ -12099,6 +12103,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
     });
 
     it('unit/models/password-reset-demand-test.js', function () {
+      // test passed
+    });
+
+    it('unit/models/result-competence-test.js', function () {
       // test passed
     });
 
@@ -16539,6 +16547,35 @@ define('pix-live/tests/unit/models/password-reset-demand-test', ['chai', 'mocha'
     });
   });
 });
+define('pix-live/tests/unit/models/result-competence-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+  'use strict';
+
+  (0, _mocha.describe)('Unit | Model | result-competence model', function () {
+    (0, _emberMocha.setupModelTest)('result-competence', {
+      needs: ['model:area']
+    });
+
+    (0, _mocha.it)('exists', function () {
+      var model = this.subject();
+      (0, _chai.expect)(model).to.be.ok;
+    });
+
+    (0, _mocha.describe)('#area relationship', function () {
+
+      (0, _mocha.it)('should exist', function () {
+        // given
+        var Competence = this.store().modelFor('result-competence');
+
+        // when
+        var relationship = Ember.get(Competence, 'relationshipsByName').get('area');
+
+        // then
+        (0, _chai.expect)(relationship.key).to.equal('area');
+        (0, _chai.expect)(relationship.kind).to.equal('belongsTo');
+      });
+    });
+  });
+});
 define('pix-live/tests/unit/models/result-competence-tree-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
   'use strict';
 
@@ -17343,21 +17380,6 @@ define('pix-live/tests/unit/routes/assessments/resume-test', ['chai', 'mocha', '
         });
       });
     });
-
-    (0, _mocha.describe)('#error', function () {
-
-      (0, _mocha.it)('should redirect to index page', function () {
-        // given
-        var route = this.subject();
-        route.transitionTo = _sinon.default.spy();
-
-        // when
-        route.send('error');
-
-        // then
-        _sinon.default.assert.calledWith(route.transitionTo, 'index');
-      });
-    });
   });
 });
 define('pix-live/tests/unit/routes/board-test', ['chai', 'mocha', 'ember-mocha', 'sinon'], function (_chai, _mocha, _emberMocha, _sinon) {
@@ -17462,20 +17484,6 @@ define('pix-live/tests/unit/routes/board-test', ['chai', 'mocha', 'ember-mocha',
       return result.then(function (model) {
         (0, _chai.expect)(model.organization.id).to.equal(1);
         (0, _chai.expect)(model.organizationSnapshotsExportUrl).to.be.equal('http://localhost:3000/api/organizations/2/snapshots/export?userToken=VALID-TOKEN');
-      });
-    });
-
-    (0, _mocha.it)('should return to home page if no user was found', function () {
-      // given
-      findRecord.rejects();
-
-      // when
-      var result = route.model();
-
-      // then
-      return result.then(function (_) {
-        _sinon.default.assert.calledOnce(route.transitionTo);
-        _sinon.default.assert.calledWith(route.transitionTo, 'index');
       });
     });
 
@@ -17670,32 +17678,6 @@ define('pix-live/tests/unit/routes/certifications/results-test', ['chai', 'mocha
         this.inject.service('store', { as: 'store' });
       });
 
-      context('When no user is logged', function () {
-
-        (0, _mocha.beforeEach)(function () {
-          this.register('service:session', Ember.Service.extend({
-            isAuthenticated: false
-          }));
-          this.inject.service('session', { as: 'session' });
-
-          route = this.subject();
-          route.transitionTo = _sinon.default.stub();
-        });
-
-        (0, _mocha.it)('should redirect to logout', function () {
-          // Given
-          findRecordStub.rejects();
-          // When
-          var promise = route.model(params);
-
-          // Then
-          return promise.then(function () {
-            _sinon.default.assert.calledWith(findRecordStub, 'user', undefined, { reload: true });
-            _sinon.default.assert.calledWith(route.transitionTo, 'logout');
-          });
-        });
-      });
-
       context('When user is logged', function () {
 
         (0, _mocha.beforeEach)(function () {
@@ -17862,21 +17844,6 @@ define('pix-live/tests/unit/routes/certifications/resume-test', ['mocha', 'ember
         });
       });
     });
-
-    (0, _mocha.describe)('#error', function () {
-
-      (0, _mocha.it)('should redirect to index page', function () {
-        // given
-        var route = this.subject();
-        route.transitionTo = _sinon.default.spy();
-
-        // when
-        route.send('error');
-
-        // then
-        _sinon.default.assert.calledWith(route.transitionTo, 'index');
-      });
-    });
   });
 });
 define('pix-live/tests/unit/routes/certifications/start-test', ['mocha', 'ember-mocha', 'sinon'], function (_mocha, _emberMocha, _sinon) {
@@ -17986,24 +17953,6 @@ define('pix-live/tests/unit/routes/compte-test', ['chai', 'mocha', 'ember-mocha'
         findRecordStub = _sinon.default.stub();
         storyStub = Ember.Service.extend({
           findRecord: findRecordStub
-        });
-      });
-
-      (0, _mocha.it)('should redirect to logout when unable to find user details', function () {
-        // Given
-        this.register('service:store', storyStub);
-        this.inject.service('store', { as: 'store' });
-
-        findRecordStub.rejects();
-        var route = this.subject();
-        route.transitionTo = _sinon.default.stub();
-
-        // When
-        var promise = route.model();
-
-        // Then
-        return promise.catch(function () {
-          _sinon.default.assert.calledWith(route.transitionTo, 'logout');
         });
       });
 
@@ -18272,22 +18221,6 @@ define('pix-live/tests/unit/routes/index-test', ['chai', 'mocha', 'ember-mocha',
           _sinon.default.assert.calledWith(route.transitionTo, 'board');
         });
       });
-
-      (0, _mocha.it)('should redirect to logout when we cannot retrieve user informations', function () {
-        // Given
-        storeServiceStub.findRecord.rejects();
-        var route = this.subject();
-        route.transitionTo = _sinon.default.stub();
-
-        // When
-        var promise = route.beforeModel();
-
-        // Then
-        return promise.then(function () {
-          _sinon.default.assert.calledOnce(route.transitionTo);
-          _sinon.default.assert.calledWith(route.transitionTo, 'logout');
-        });
-      });
     });
   });
 });
@@ -18545,7 +18478,6 @@ define('pix-live/tests/unit/routes/reset-password-demand-test', ['chai', 'mocha'
       var params = {
         temporaryKey: 'pwd-reset-demand-token'
       };
-      var transitionToStub = _sinon.default.stub();
 
       (0, _mocha.beforeEach)(function () {
         findRecordStub = _sinon.default.stub();
@@ -18610,25 +18542,6 @@ define('pix-live/tests/unit/routes/reset-password-demand-test', ['chai', 'mocha'
           // then
           return promise.then(function (user) {
             (0, _chai.expect)(user).to.eql(expectedUser);
-          });
-        });
-      });
-
-      (0, _mocha.describe)('When password reset demand is not valid', function () {
-
-        (0, _mocha.it)('should redirect to home', function () {
-          // given
-          findRecordStub.rejects();
-          var route = this.subject();
-          route.set('transitionTo', transitionToStub);
-
-          // when
-          var promise = route.model(params);
-
-          // then
-          return promise.then(function () {
-            _sinon.default.assert.calledOnce(transitionToStub);
-            _sinon.default.assert.calledWith(transitionToStub, 'index');
           });
         });
       });
