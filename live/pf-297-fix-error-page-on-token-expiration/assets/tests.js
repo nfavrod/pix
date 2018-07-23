@@ -16780,10 +16780,10 @@ define('pix-live/tests/unit/routes/application-test', ['chai', 'mocha', 'ember-m
 
       (0, _mocha.it)('finds an unauthorized code in the first error object', function () {
         // Given
-        var errorPayload = { errors: [{ code: 401 }] };
+        var errorEvent = { errors: [{ code: 401 }] };
 
         // When
-        var result = route.hasUnauthorizedError(errorPayload);
+        var result = route.hasUnauthorizedError(errorEvent);
 
         // Then
         (0, _chai.expect)(result).to.be.true;
@@ -16791,10 +16791,10 @@ define('pix-live/tests/unit/routes/application-test', ['chai', 'mocha', 'ember-m
 
       (0, _mocha.it)('returns false if there is no "errors" key', function () {
         // Given
-        var errorPayload = {};
+        var errorEvent = {};
 
         // When
-        var result = route.hasUnauthorizedError(errorPayload);
+        var result = route.hasUnauthorizedError(errorEvent);
 
         // Then
         (0, _chai.expect)(result).to.be.false;
@@ -16802,10 +16802,10 @@ define('pix-live/tests/unit/routes/application-test', ['chai', 'mocha', 'ember-m
 
       (0, _mocha.it)('returns false if the "errors" key points to an empty array', function () {
         // Given
-        var errorPayload = { errors: [] };
+        var errorEvent = { errors: [] };
 
         // When
-        var result = route.hasUnauthorizedError(errorPayload);
+        var result = route.hasUnauthorizedError(errorEvent);
 
         // Then
         (0, _chai.expect)(result).to.be.false;
