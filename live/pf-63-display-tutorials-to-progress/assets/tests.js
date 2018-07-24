@@ -16920,7 +16920,7 @@ define('pix-live/tests/unit/routes/application-test', ['chai', 'mocha', 'ember-m
 
   (0, _mocha.describe)('Unit | Route | application splash', function () {
     (0, _emberMocha.setupTest)('route:application', {
-      needs: ['service:splash', 'service:current-routed-modal']
+      needs: ['service:current-routed-modal', 'service:session', 'service:splash']
     });
 
     (0, _mocha.it)('initializes correctly', function () {
@@ -16929,10 +16929,56 @@ define('pix-live/tests/unit/routes/application-test', ['chai', 'mocha', 'ember-m
     });
 
     (0, _mocha.it)('hides the splash when the route is activated', function () {
+      // Given
       var splashStub = SplashServiceStub.create();
       var route = this.subject({ splash: splashStub });
+
+      // When
       route.activate();
+
+      // Then
       (0, _chai.expect)(splashStub.hideCount).to.equal(1);
+    });
+
+    (0, _mocha.describe)('#hasUnauthorizedError', function () {
+      var route = void 0;
+
+      beforeEach(function () {
+        route = this.subject();
+      });
+
+      (0, _mocha.it)('finds an unauthorized code in the first error object', function () {
+        // Given
+        var errorEvent = { errors: [{ code: 401 }] };
+
+        // When
+        var result = route.hasUnauthorizedError(errorEvent);
+
+        // Then
+        (0, _chai.expect)(result).to.be.true;
+      });
+
+      (0, _mocha.it)('returns false if there is no "errors" key', function () {
+        // Given
+        var errorEvent = {};
+
+        // When
+        var result = route.hasUnauthorizedError(errorEvent);
+
+        // Then
+        (0, _chai.expect)(result).to.be.false;
+      });
+
+      (0, _mocha.it)('returns false if the "errors" key points to an empty array', function () {
+        // Given
+        var errorEvent = { errors: [] };
+
+        // When
+        var result = route.hasUnauthorizedError(errorEvent);
+
+        // Then
+        (0, _chai.expect)(result).to.be.false;
+      });
     });
   });
 });
