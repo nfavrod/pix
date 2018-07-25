@@ -2979,7 +2979,7 @@ define('pix-live/tests/acceptance/password-reset-test', ['mocha', 'chai', 'pix-l
     })));
   });
 });
-define('pix-live/tests/acceptance/start-campaigns', ['mocha', 'chai', 'pix-live/tests/helpers/start-app', 'pix-live/tests/helpers/destroy-app', 'pix-live/tests/helpers/testing', 'pix-live/mirage/scenarios/default'], function (_mocha, _chai, _startApp, _destroyApp, _testing, _default) {
+define('pix-live/tests/acceptance/start-campaigns-test', ['mocha', 'chai', 'pix-live/tests/helpers/start-app', 'pix-live/tests/helpers/destroy-app', 'pix-live/tests/helpers/testing', 'pix-live/mirage/scenarios/default'], function (_mocha, _chai, _startApp, _destroyApp, _testing, _default) {
   'use strict';
 
   function _asyncToGenerator(fn) {
@@ -11772,7 +11772,7 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
-    it('acceptance/start-campaigns.js', function () {
+    it('acceptance/start-campaigns-test.js', function () {
       // test passed
     });
 
@@ -18470,7 +18470,7 @@ define('pix-live/tests/unit/routes/legal-notices-test', ['chai', 'mocha', 'ember
     });
   });
 });
-define('pix-live/tests/unit/routes/login-test', ['mocha', 'ember-mocha', 'sinon'], function (_mocha, _emberMocha, _sinon) {
+define('pix-live/tests/unit/routes/login-test', ['chai', 'mocha', 'ember-mocha', 'sinon'], function (_chai, _mocha, _emberMocha, _sinon) {
   'use strict';
 
   (0, _mocha.describe)('Unit | Route | login page', function () {
@@ -18554,25 +18554,39 @@ define('pix-live/tests/unit/routes/login-test', ['mocha', 'ember-mocha', 'sinon'
         });
       });
 
-      (0, _mocha.it)('should redirect to url indicated in session.data.intentUrl', function () {
-        // given
-        var route = this.subject();
+      context('when an url is precise in data.intentUrl', function () {
+        var route = void 0;
         var intentUrl = '/jedoisallerici';
 
-        authenticatedStub.resolves();
+        (0, _mocha.beforeEach)(function () {
+          route = this.subject();
+          authenticatedStub.resolves();
 
-        var foundUser = Ember.Object.create({ id: 12 });
-        queryRecordStub.resolves(foundUser);
+          var foundUser = Ember.Object.create({ id: 12 });
+          queryRecordStub.resolves(foundUser);
 
-        route.transitionTo = _sinon.default.stub();
-        route.session.data = { intentUrl: intentUrl };
+          route.transitionTo = _sinon.default.stub();
+          route.session.data = { intentUrl: intentUrl };
+        });
 
-        // when
-        var promise = route.actions.signin.call(route, expectedEmail, expectedPassword);
+        (0, _mocha.it)('should redirect to the url indicated in session.data.intentUrl', function () {
+          // when
+          var promise = route.actions.signin.call(route, expectedEmail, expectedPassword);
 
-        return promise.then(function () {
-          // then
-          _sinon.default.assert.calledWith(route.transitionTo, intentUrl);
+          return promise.then(function () {
+            // then
+            _sinon.default.assert.calledWith(route.transitionTo, intentUrl);
+          });
+        });
+
+        (0, _mocha.it)('should set session.data.intentUrl at null', function () {
+          // when
+          var promise = route.actions.signin.call(route, expectedEmail, expectedPassword);
+
+          return promise.then(function () {
+            // then
+            (0, _chai.expect)(route.session.data.intentUrl).to.be.null;
+          });
         });
       });
     });

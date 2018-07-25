@@ -6235,7 +6235,7 @@ define('pix-live/mirage/routes/post-answers', ['exports', 'pix-live/utils/lodash
     }
   };
 });
-define('pix-live/mirage/routes/post-assessments', ['exports', 'pix-live/utils/lodash-custom', 'pix-live/mirage/data/assessments/ref-assessment', 'pix-live/mirage/data/assessments/ref-assessment-placement'], function (exports, _lodashCustom, _refAssessment, _refAssessmentPlacement) {
+define('pix-live/mirage/routes/post-assessments', ['exports', 'pix-live/utils/lodash-custom', 'pix-live/mirage/data/assessments/ref-assessment'], function (exports, _lodashCustom, _refAssessment) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -6244,32 +6244,35 @@ define('pix-live/mirage/routes/post-assessments', ['exports', 'pix-live/utils/lo
 
   exports.default = function (schema, request) {
 
-    var answer = JSON.parse(request.requestBody);
-    var courseId = answer.data.relationships.course.data.id;
-
-    var allAssessments = [_refAssessment.default, _refAssessmentPlacement.default];
-
-    // TODO: clean legacy
-    var assessments = _lodashCustom.default.map(allAssessments, function (oneAssessment) {
-      return { id: oneAssessment.data.relationships.course.data.id, obj: oneAssessment };
-    });
+    var requestedAssessment = JSON.parse(request.requestBody);
 
     var newAssessment = {
       'user-id': 'user_id',
       'user-name': 'Jane Doe',
-      'user-email': 'jane@acme.com',
-      'certification-number': 'certification-number'
+      'user-email': 'jane@acme.com'
     };
 
-    var assessment = _lodashCustom.default.find(assessments, { id: courseId });
+    if (requestedAssessment.data.attributes.type === 'SMART_PLACEMENT') {
+      newAssessment.type = 'SMART_PLACEMENT';
+      return schema.assessments.create(newAssessment);
+    }
+
+    var allAssessments = [_refAssessment.default];
+    var courseId = requestedAssessment.data.relationships.course.data.id;
+    var assessment = _lodashCustom.default.find(allAssessments, function (assessment) {
+      return assessment.data.relationships.course.data.id === courseId;
+    });
+
     if (assessment) {
-      return assessment.obj;
+      return assessment;
     } else if (_lodashCustom.default.startsWith(courseId, 'null')) {
       return _refAssessment.default;
     } else if (!_lodashCustom.default.startsWith(courseId, 'rec')) {
       newAssessment.type = 'CERTIFICATION';
       newAssessment.courseId = 'certification-number';
+      newAssessment['certification-number'] = 'certification-number';
     }
+
     return schema.assessments.create(newAssessment);
   };
 });
@@ -7718,7 +7721,7 @@ define('pix-live/routes/login', ['exports', 'ember-simple-auth/mixins/unauthenti
           var routeToRedirect = _isUserLinkedToOrganization(user) ? _this.routeForLoggedUserLinkedToOrganization : _this.routeIfAlreadyAuthenticated;
           if (_this.get('session.data.intentUrl')) {
             routeToRedirect = _this.get('session.data.intentUrl');
-            _this.get('session').set('data.intentUrl', null);
+            _this.set('session.data.intentUrl', null);
           }
           _this.transitionTo(routeToRedirect);
         });
@@ -9844,6 +9847,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.55.0+bdc9afdc"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.55.0+9d9ee896"});
 }
 //# sourceMappingURL=pix-live.map
