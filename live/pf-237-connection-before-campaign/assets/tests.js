@@ -18470,7 +18470,7 @@ define('pix-live/tests/unit/routes/legal-notices-test', ['chai', 'mocha', 'ember
     });
   });
 });
-define('pix-live/tests/unit/routes/login-test', ['chai', 'mocha', 'ember-mocha', 'sinon'], function (_chai, _mocha, _emberMocha, _sinon) {
+define('pix-live/tests/unit/routes/login-test', ['mocha', 'ember-mocha', 'sinon'], function (_mocha, _emberMocha, _sinon) {
   'use strict';
 
   (0, _mocha.describe)('Unit | Route | login page', function () {
@@ -18510,84 +18510,6 @@ define('pix-live/tests/unit/routes/login-test', ['chai', 'mocha', 'ember-mocha',
       // Then
       return promise.then(function () {
         _sinon.default.assert.calledWith(authenticatedStub, 'authenticator:simple', expectedEmail, expectedPassword);
-      });
-    });
-
-    (0, _mocha.describe)('Route behavior according to organization belong status (authenticated user)', function () {
-
-      (0, _mocha.it)('should redirect to /compte, when user is not linked to an Organization', function () {
-        //Given
-        var route = this.subject();
-        authenticatedStub.resolves();
-
-        var foundUser = Ember.Object.create({ id: 12 });
-        queryRecordStub.resolves(foundUser);
-
-        route.transitionTo = _sinon.default.stub();
-
-        //When
-        var promise = route.actions.signin.call(route, expectedEmail, expectedPassword);
-
-        return promise.then(function () {
-          //Then
-          _sinon.default.assert.calledWith(route.transitionTo, 'compte');
-        });
-      });
-
-      (0, _mocha.it)('should redirect to /board, when user is linked to an Organization', function () {
-        //Given
-        var route = this.subject();
-        authenticatedStub.resolves();
-
-        var linkedOrganization = Ember.Object.create({ id: 1 });
-        var foundUser = Ember.Object.create({ organizations: [linkedOrganization] });
-        queryRecordStub.resolves(foundUser);
-
-        route.transitionTo = _sinon.default.stub();
-
-        //When
-        var promise = route.actions.signin.call(route, expectedEmail, expectedPassword);
-
-        return promise.then(function () {
-          //Then
-          _sinon.default.assert.calledWith(route.transitionTo, 'board');
-        });
-      });
-
-      context('when an url is precise in data.intentUrl', function () {
-        var route = void 0;
-        var intentUrl = '/jedoisallerici';
-
-        (0, _mocha.beforeEach)(function () {
-          route = this.subject();
-          authenticatedStub.resolves();
-
-          var foundUser = Ember.Object.create({ id: 12 });
-          queryRecordStub.resolves(foundUser);
-
-          route.transitionTo = _sinon.default.stub();
-          route.session.data = { intentUrl: intentUrl };
-        });
-
-        (0, _mocha.it)('should redirect to the url indicated in session.data.intentUrl', function () {
-          // when
-          var promise = route.actions.signin.call(route, expectedEmail, expectedPassword);
-
-          return promise.then(function () {
-            // then
-            _sinon.default.assert.calledWith(route.transitionTo, intentUrl);
-          });
-        });
-
-        (0, _mocha.it)('should set session.data.intentUrl at null', function () {
-          // when
-          var promise = route.actions.signin.call(route, expectedEmail, expectedPassword);
-
-          return promise.then(function () {
-            // then
-            (0, _chai.expect)(route.session.data.intentUrl).to.be.null;
-          });
-        });
       });
     });
   });

@@ -7018,13 +7018,13 @@ define('pix-live/router', ['exports', 'pix-live/config/environment'], function (
 
   exports.default = Router;
 });
-define('pix-live/routes/application', ['exports', 'lodash', 'pix-live/routes/base-route'], function (exports, _lodash, _baseRoute) {
+define('pix-live/routes/application', ['exports', 'ember-simple-auth/mixins/application-route-mixin', 'lodash', 'pix-live/routes/base-route'], function (exports, _applicationRouteMixin, _lodash, _baseRoute) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = _baseRoute.default.extend({
+  exports.default = _baseRoute.default.extend(_applicationRouteMixin.default, {
     session: Ember.inject.service(),
     splash: Ember.inject.service(),
 
@@ -7313,10 +7313,6 @@ define('pix-live/routes/campaigns/start-or-resume', ['exports', 'pix-live/routes
     value: true
   });
   exports.default = _baseRoute.default.extend(_authenticatedRouteMixin.default, {
-    beforeModel: function beforeModel(transition) {
-      this.get('session').set('data.intentUrl', transition.intent.url);
-      this._super.apply(this, arguments);
-    },
     model: function model() {
       var store = this.get('store');
       return store.query('assessment', { filter: { type: 'SMART_PLACEMENT' } }).then(function (smartPlacementAssessments) {
@@ -7716,26 +7712,10 @@ define('pix-live/routes/login', ['exports', 'ember-simple-auth/mixins/unauthenti
 
         return this.get('session').authenticate('authenticator:simple', email, password).then(function (_) {
           return _this.get('store').queryRecord('user', {});
-        }).then(function (user) {
-
-          var routeToRedirect = _isUserLinkedToOrganization(user) ? _this.routeForLoggedUserLinkedToOrganization : _this.routeIfAlreadyAuthenticated;
-          if (_this.get('session.data.intentUrl')) {
-            routeToRedirect = _this.get('session.data.intentUrl');
-            _this.set('session.data.intentUrl', null);
-          }
-          _this.transitionTo(routeToRedirect);
         });
       }
     }
   });
-
-
-  function _isUserLinkedToOrganization(user) {
-    if (!user.get('organizations')) {
-      return false;
-    }
-    return user.get('organizations.length') > 0;
-  }
 });
 define('pix-live/routes/logout', ['exports', 'pix-live/routes/base-route'], function (exports, _baseRoute) {
   'use strict';
@@ -9847,6 +9827,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.55.0+9d9ee896"});
+  require("pix-live/app")["default"].create({"API_HOST":"","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"pix-live","version":"1.55.0+5b5f5561"});
 }
 //# sourceMappingURL=pix-live.map
