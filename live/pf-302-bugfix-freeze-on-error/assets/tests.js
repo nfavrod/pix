@@ -1629,7 +1629,7 @@ define('pix-live/tests/acceptance/error-redirection-test', ['mocha', 'chai', 'pi
     };
   }
 
-  (0, _mocha.describe)('Acceptance | User certifications page', function () {
+  (0, _mocha.describe)('Acceptance | error page', function () {
     var application = void 0;
 
     (0, _mocha.beforeEach)(function () {
