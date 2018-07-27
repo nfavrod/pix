@@ -1597,6 +1597,104 @@ describe('Acceptance | d1 - Valider une épreuve |', function() {
 define("pix-live/tests/acceptance/d1-epreuve-validation-test", [], function () {
   "use strict";
 });
+define('pix-live/tests/acceptance/error-redirection-test', ['mocha', 'chai', 'pix-live/tests/helpers/start-app', 'pix-live/tests/helpers/destroy-app', 'pix-live/mirage/scenarios/default', 'pix-live/tests/helpers/testing'], function (_mocha, _chai, _startApp, _destroyApp, _default, _testing) {
+  'use strict';
+
+  function _asyncToGenerator(fn) {
+    return function () {
+      var gen = fn.apply(this, arguments);
+      return new Promise(function (resolve, reject) {
+        function step(key, arg) {
+          try {
+            var info = gen[key](arg);
+            var value = info.value;
+          } catch (error) {
+            reject(error);
+            return;
+          }
+
+          if (info.done) {
+            resolve(value);
+          } else {
+            return Promise.resolve(value).then(function (value) {
+              step("next", value);
+            }, function (err) {
+              step("throw", err);
+            });
+          }
+        }
+
+        return step("next");
+      });
+    };
+  }
+
+  (0, _mocha.describe)('Acceptance | error page', function () {
+    var application = void 0;
+
+    (0, _mocha.beforeEach)(function () {
+      application = (0, _startApp.default)();
+      (0, _default.default)(server);
+    });
+
+    (0, _mocha.afterEach)(function () {
+      (0, _destroyApp.default)(application);
+    });
+
+    (0, _mocha.it)('should redirect to route /connexion when the api returned a 401 error', _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              // given
+              (0, _testing.authenticateAsSimpleUser)();
+              server.get('/certifications', { errors: [{ code: 401 }] }, 401);
+
+              // when
+              _context.next = 4;
+              return visit('/mes-certifications');
+
+            case 4:
+
+              // then
+              (0, _chai.expect)(currentURL()).to.equal('/connexion');
+
+            case 5:
+            case 'end':
+              return _context.stop();
+          }
+        }
+      }, _callee, this);
+    })));
+
+    (0, _mocha.it)('should display the error page when the api returned an error which is not 401', _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+      return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              // given
+              (0, _testing.authenticateAsSimpleUser)();
+              server.get('/certifications', { errors: [{ code: 500 }] }, 500);
+
+              // when
+              _context2.next = 4;
+              return visit('/mes-certifications');
+
+            case 4:
+
+              // then
+              (0, _chai.expect)(currentURL()).to.equal('/mes-certifications');
+              findWithAssert('.error-page');
+
+            case 6:
+            case 'end':
+              return _context2.stop();
+          }
+        }
+      }, _callee2, this);
+    })));
+  });
+});
 define('pix-live/tests/acceptance/h1-timeout-jauge-test', ['mocha', 'chai', 'pix-live/tests/helpers/start-app', 'pix-live/tests/helpers/destroy-app'], function (_mocha, _chai, _startApp, _destroyApp) {
   'use strict';
 
@@ -3715,6 +3813,10 @@ define('pix-live/tests/app.lint-test', [], function () {
     });
 
     it('routes/courses/create-assessment.js', function () {
+      // test passed
+    });
+
+    it('routes/error.js', function () {
       // test passed
     });
 
@@ -11631,6 +11733,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
+    it('acceptance/error-redirection-test.js', function () {
+      // test passed
+    });
+
     it('acceptance/h1-timeout-jauge-test.js', function () {
       // test passed
     });
@@ -12248,6 +12354,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
     });
 
     it('unit/routes/compte-test.js', function () {
+      // test passed
+    });
+
+    it('unit/routes/error-test.js', function () {
       // test passed
     });
 
@@ -16920,7 +17030,7 @@ define('pix-live/tests/unit/routes/application-test', ['chai', 'mocha', 'ember-m
 
   (0, _mocha.describe)('Unit | Route | application splash', function () {
     (0, _emberMocha.setupTest)('route:application', {
-      needs: ['service:current-routed-modal', 'service:session', 'service:splash']
+      needs: ['service:current-routed-modal', 'service:splash']
     });
 
     (0, _mocha.it)('initializes correctly', function () {
@@ -16938,47 +17048,6 @@ define('pix-live/tests/unit/routes/application-test', ['chai', 'mocha', 'ember-m
 
       // Then
       (0, _chai.expect)(splashStub.hideCount).to.equal(1);
-    });
-
-    (0, _mocha.describe)('#hasUnauthorizedError', function () {
-      var route = void 0;
-
-      beforeEach(function () {
-        route = this.subject();
-      });
-
-      (0, _mocha.it)('finds an unauthorized code in the first error object', function () {
-        // Given
-        var errorEvent = { errors: [{ code: 401 }] };
-
-        // When
-        var result = route.hasUnauthorizedError(errorEvent);
-
-        // Then
-        (0, _chai.expect)(result).to.be.true;
-      });
-
-      (0, _mocha.it)('returns false if there is no "errors" key', function () {
-        // Given
-        var errorEvent = {};
-
-        // When
-        var result = route.hasUnauthorizedError(errorEvent);
-
-        // Then
-        (0, _chai.expect)(result).to.be.false;
-      });
-
-      (0, _mocha.it)('returns false if the "errors" key points to an empty array', function () {
-        // Given
-        var errorEvent = { errors: [] };
-
-        // When
-        var result = route.hasUnauthorizedError(errorEvent);
-
-        // Then
-        (0, _chai.expect)(result).to.be.false;
-      });
     });
   });
 });
@@ -18318,6 +18387,62 @@ define('pix-live/tests/unit/routes/compte-test', ['chai', 'mocha', 'ember-mocha'
           _sinon.default.assert.called(storeCreateRecordStub);
           _sinon.default.assert.called(storeSaveStub);
         });
+      });
+    });
+  });
+});
+define('pix-live/tests/unit/routes/error-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+  'use strict';
+
+  (0, _mocha.describe)('Unit | Route | error', function () {
+    (0, _emberMocha.setupTest)('route:error', {
+      // Specify the other units that are required for this test.
+      needs: ['service:current-routed-modal', 'service:session']
+    });
+
+    (0, _mocha.it)('exists', function () {
+      var route = this.subject();
+      (0, _chai.expect)(route).to.be.ok;
+    });
+
+    (0, _mocha.describe)('#hasUnauthorizedError', function () {
+      var route = void 0;
+
+      beforeEach(function () {
+        route = this.subject();
+      });
+
+      (0, _mocha.it)('finds an unauthorized code in the first error object', function () {
+        // Given
+        var errorEvent = { errors: [{ code: 401 }] };
+
+        // When
+        var result = route.hasUnauthorizedError(errorEvent);
+
+        // Then
+        (0, _chai.expect)(result).to.be.true;
+      });
+
+      (0, _mocha.it)('returns false if there is no "errors" key', function () {
+        // Given
+        var errorEvent = {};
+
+        // When
+        var result = route.hasUnauthorizedError(errorEvent);
+
+        // Then
+        (0, _chai.expect)(result).to.be.false;
+      });
+
+      (0, _mocha.it)('returns false if the "errors" key points to an empty array', function () {
+        // Given
+        var errorEvent = { errors: [] };
+
+        // When
+        var result = route.hasUnauthorizedError(errorEvent);
+
+        // Then
+        (0, _chai.expect)(result).to.be.false;
       });
     });
   });
