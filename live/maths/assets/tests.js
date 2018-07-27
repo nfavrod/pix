@@ -1597,6 +1597,104 @@ describe('Acceptance | d1 - Valider une épreuve |', function() {
 define("pix-live/tests/acceptance/d1-epreuve-validation-test", [], function () {
   "use strict";
 });
+define('pix-live/tests/acceptance/error-redirection-test', ['mocha', 'chai', 'pix-live/tests/helpers/start-app', 'pix-live/tests/helpers/destroy-app', 'pix-live/mirage/scenarios/default', 'pix-live/tests/helpers/testing'], function (_mocha, _chai, _startApp, _destroyApp, _default, _testing) {
+  'use strict';
+
+  function _asyncToGenerator(fn) {
+    return function () {
+      var gen = fn.apply(this, arguments);
+      return new Promise(function (resolve, reject) {
+        function step(key, arg) {
+          try {
+            var info = gen[key](arg);
+            var value = info.value;
+          } catch (error) {
+            reject(error);
+            return;
+          }
+
+          if (info.done) {
+            resolve(value);
+          } else {
+            return Promise.resolve(value).then(function (value) {
+              step("next", value);
+            }, function (err) {
+              step("throw", err);
+            });
+          }
+        }
+
+        return step("next");
+      });
+    };
+  }
+
+  (0, _mocha.describe)('Acceptance | error page', function () {
+    var application = void 0;
+
+    (0, _mocha.beforeEach)(function () {
+      application = (0, _startApp.default)();
+      (0, _default.default)(server);
+    });
+
+    (0, _mocha.afterEach)(function () {
+      (0, _destroyApp.default)(application);
+    });
+
+    (0, _mocha.it)('should redirect to route /connexion when the api returned a 401 error', _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              // given
+              (0, _testing.authenticateAsSimpleUser)();
+              server.get('/certifications', { errors: [{ code: 401 }] }, 401);
+
+              // when
+              _context.next = 4;
+              return visit('/mes-certifications');
+
+            case 4:
+
+              // then
+              (0, _chai.expect)(currentURL()).to.equal('/connexion');
+
+            case 5:
+            case 'end':
+              return _context.stop();
+          }
+        }
+      }, _callee, this);
+    })));
+
+    (0, _mocha.it)('should display the error page when the api returned an error which is not 401', _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+      return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              // given
+              (0, _testing.authenticateAsSimpleUser)();
+              server.get('/certifications', { errors: [{ code: 500 }] }, 500);
+
+              // when
+              _context2.next = 4;
+              return visit('/mes-certifications');
+
+            case 4:
+
+              // then
+              (0, _chai.expect)(currentURL()).to.equal('/mes-certifications');
+              findWithAssert('.error-page');
+
+            case 6:
+            case 'end':
+              return _context2.stop();
+          }
+        }
+      }, _callee2, this);
+    })));
+  });
+});
 define('pix-live/tests/acceptance/h1-timeout-jauge-test', ['mocha', 'chai', 'pix-live/tests/helpers/start-app', 'pix-live/tests/helpers/destroy-app'], function (_mocha, _chai, _startApp, _destroyApp) {
   'use strict';
 
@@ -3350,6 +3448,10 @@ define('pix-live/tests/app.lint-test', [], function () {
       // test passed
     });
 
+    it('components/learning-more-panel.js', function () {
+      // test passed
+    });
+
     it('components/logged-user-profile-banner.js', function () {
       // test passed
     });
@@ -3711,6 +3813,10 @@ define('pix-live/tests/app.lint-test', [], function () {
     });
 
     it('routes/courses/create-assessment.js', function () {
+      // test passed
+    });
+
+    it('routes/error.js', function () {
       // test passed
     });
 
@@ -5413,7 +5519,11 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
       var correction = void 0;
 
       (0, _mocha.beforeEach)(function () {
-        answer = Ember.Object.create({ value: '1,2', result: 'ko' });
+        answer = Ember.Object.create({
+          value: '1,2',
+          result: 'ko',
+          isResultNotOk: true
+        });
         challenge = Ember.Object.create({
           instruction: 'This is the instruction',
           proposals: '' + '- 1ere possibilite\n ' + '- 2eme possibilite\n ' + '- 3eme possibilite\n' + '- 4eme possibilite'
@@ -5467,7 +5577,7 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
           "meta": {}
         }));
         // then
-        (0, _chai.expect)(this.$('.comparison-window__corrected-answers')).to.have.lengthOf(0);
+        (0, _chai.expect)(this.$('.comparison-window__corrected-answers--qroc')).to.have.lengthOf(0);
       });
 
       (0, _mocha.it)('should render corrected answers when challenge type is QROC', function () {
@@ -5542,7 +5652,10 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
 
         (0, _mocha.it)('should display the good icon in title when answer\'s result is "' + data.status + '"', function () {
           // given
-          answer.set('result', data.status);
+          answer.setProperties({
+            result: data.status,
+            isResultNotOk: data.status !== 'ok'
+          });
 
           // when
           this.render(Ember.HTMLBars.template({
@@ -5560,8 +5673,8 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
 
       (0, _mocha.it)('should render a tutorial panel with a hint', function () {
         // given
-        this.set('answer', { result: { status: 'ko' } });
-        this.set('correction', { hint: 'Conseil : mangez des épinards.' });
+        answer.set('result', 'ko');
+        correction.set('hint', 'Conseil : mangez des épinards.');
 
         // when
         this.render(Ember.HTMLBars.template({
@@ -5572,6 +5685,89 @@ define('pix-live/tests/integration/components/comparison-window-test', ['chai', 
 
         // then
         (0, _chai.expect)(this.$('.tutorial-panel').text()).to.contain('Conseil : mangez des épinards.');
+      });
+
+      (0, _mocha.it)('should render a learningMoreTutorials panel when correction has a list of LearningMoreTutorials elements', function () {
+        // given
+        correction.setProperties({
+          learningMoreTutorials: [{ titre: 'Ceci est un tuto', duration: '20:00:00', type: 'video' }]
+        });
+
+        // when
+        this.render(Ember.HTMLBars.template({
+          "id": "GbeILlfh",
+          "block": "{\"symbols\":[],\"statements\":[[1,[26,\"comparison-window\",null,[[\"answer\",\"correction\"],[[22,[\"answer\"]],[22,[\"correction\"]]]]],false]],\"hasEval\":false}",
+          "meta": {}
+        }));
+
+        // then
+        (0, _chai.expect)(this.$('.learning-more-panel__container')).to.have.lengthOf(1);
+      });
+
+      context('when the answer is OK', function () {
+        (0, _mocha.it)('should neither display “Bientot ici des tutos“ nor hints nor any tutorials', function () {
+          // given
+          answer.setProperties({
+            result: 'ok',
+            isResultNotOk: false
+          });
+
+          // when
+          this.render(Ember.HTMLBars.template({
+            "id": "GbeILlfh",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"comparison-window\",null,[[\"answer\",\"correction\"],[[22,[\"answer\"]],[22,[\"correction\"]]]]],false]],\"hasEval\":false}",
+            "meta": {}
+          }));
+
+          // then
+          (0, _chai.expect)(this.$('.tutorial-panel')).to.have.lengthOf(0);
+          (0, _chai.expect)(this.$('.learning-more-panel__container')).to.have.lengthOf(0);
+          (0, _chai.expect)(this.$('.comparison-window__default-message-container')).to.have.lengthOf(0);
+        });
+      });
+
+      context('the correction has no hints nor tutoriasl at all', function () {
+        (0, _mocha.it)('should render “Bientot des tutos”', function () {
+          // given
+          correction.setProperties({
+            solution: '2,3',
+            noHintsNorTutorialsAtAll: true
+          });
+
+          // when
+          this.render(Ember.HTMLBars.template({
+            "id": "GbeILlfh",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"comparison-window\",null,[[\"answer\",\"correction\"],[[22,[\"answer\"]],[22,[\"correction\"]]]]],false]],\"hasEval\":false}",
+            "meta": {}
+          }));
+
+          // then
+          (0, _chai.expect)(this.$('.comparison-windows__default-message-container')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.comparison-windows__default-message-title')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.comparison-windows__default-message-picto-container')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.comparison-windows__default-message-picto')).to.have.lengthOf(1);
+        });
+      });
+
+      context('when the correction has a hint or a tutorial or a learninMoreTutorial', function () {
+        (0, _mocha.it)('should not render a hint or a tutorial', function () {
+          // given
+          correction.setProperties({
+            learningMoreTutorials: [{ titre: 'Ceci est un tuto', duration: '20:00:00', type: 'video' }]
+          });
+
+          // when
+          this.render(Ember.HTMLBars.template({
+            "id": "GbeILlfh",
+            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"comparison-window\",null,[[\"answer\",\"correction\"],[[22,[\"answer\"]],[22,[\"correction\"]]]]],false]],\"hasEval\":false}",
+            "meta": {}
+          }));
+
+          // then
+          (0, _chai.expect)(this.$('.tutorial-panel')).to.have.lengthOf(1);
+          (0, _chai.expect)(this.$('.tutorial-panel__hint-container')).to.have.lengthOf(0);
+          (0, _chai.expect)(this.$('.tutorial-panel__tutorial-item')).to.have.lengthOf(0);
+        });
       });
     });
   });
@@ -7045,6 +7241,47 @@ define('pix-live/tests/integration/components/g-recaptcha-test', ['chai', 'mocha
       // then
       (0, _chai.expect)(this.$('#g-recaptcha-container').children()).to.have.lengthOf(1);
       (0, _chai.expect)(this.get('googleRecaptchaService.calledWithContainerId')).to.equal('g-recaptcha-container');
+    });
+  });
+});
+define('pix-live/tests/integration/components/learning-more-panel-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+  'use strict';
+
+  (0, _mocha.describe)('Integration | Component | learning-more-panel', function () {
+    (0, _emberMocha.setupComponentTest)('learning-more-panel', {
+      integration: true
+    });
+
+    (0, _mocha.it)('renders a list item when there is at least one learningMore item', function () {
+      // given
+      this.set('learningMoreTutorials', [{ titre: 'Ceci est un tuto', duration: '20:00:00', type: 'video' }]);
+
+      // when
+      this.render(Ember.HTMLBars.template({
+        "id": "Q886Uxvg",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"learning-more-panel\",null,[[\"learningMoreTutorials\"],[[22,[\"learningMoreTutorials\"]]]]],false]],\"hasEval\":false}",
+        "meta": {}
+      }));
+
+      // then
+      (0, _chai.expect)(this.$('.learning-more-panel__container')).to.have.length(1);
+      (0, _chai.expect)(this.$('.learning-more-panel__list-container')).to.have.length(1);
+      (0, _chai.expect)(this.$('.learning-more-panel__container').text()).to.contains('Pour en apprendre davantage');
+    });
+
+    (0, _mocha.it)('should not render a list when there is no LearningMore elements', function () {
+      // given
+      this.set('learningMoreTutorials', null);
+
+      // when
+      this.render(Ember.HTMLBars.template({
+        "id": "Q886Uxvg",
+        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"learning-more-panel\",null,[[\"learningMoreTutorials\"],[[22,[\"learningMoreTutorials\"]]]]],false]],\"hasEval\":false}",
+        "meta": {}
+      }));
+
+      // then
+      (0, _chai.expect)(this.$('.learning-more-panel__container')).to.have.lengthOf(0);
     });
   });
 });
@@ -10530,63 +10767,11 @@ define('pix-live/tests/integration/components/tutorial-panel-test', ['chai', 'mo
       integration: true
     });
 
-    (0, _mocha.it)('should not render default message nor hint when answer is correct', function () {
-      // given
-      this.set('hint', null);
-      this.set('resultItemStatus', 'ok');
-
-      // when
-      this.render(Ember.HTMLBars.template({
-        "id": "XxENc2GT",
-        "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\",\"tutorials\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]],[22,[\"tutorials\"]]]]],false]],\"hasEval\":false}",
-        "meta": {}
-      }));
-
-      // then
-      (0, _chai.expect)(this.$('.tutorial-panel')).to.have.lengthOf(1);
-      (0, _chai.expect)(this.$('.tutorial-panel__hint-container')).to.have.lengthOf(0);
-      (0, _chai.expect)(this.$('.tutorial-panel__default-message-container')).to.have.lengthOf(0);
-    });
-
     context('when the result is not ok', function () {
       beforeEach(function () {
         this.set('resultItemStatus', 'ko');
       });
 
-      context('when there is nor a hint or a tutorial', function () {
-        beforeEach(function () {
-          this.set('hint', null);
-          this.set('tutorials', []);
-        });
-        (0, _mocha.it)('should render the default message', function () {
-          // when
-          this.render(Ember.HTMLBars.template({
-            "id": "XxENc2GT",
-            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\",\"tutorials\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]],[22,[\"tutorials\"]]]]],false]],\"hasEval\":false}",
-            "meta": {}
-          }));
-
-          // then
-          (0, _chai.expect)(this.$('.tutorial-panel')).to.have.lengthOf(1);
-          (0, _chai.expect)(this.$('.tutorial-panel__default-message-container')).to.have.lengthOf(1);
-          (0, _chai.expect)(this.$('.tutorial-panel__default-message-title')).to.have.lengthOf(1);
-          (0, _chai.expect)(this.$('.tutorial-panel__default-message-picto-container')).to.have.lengthOf(1);
-          (0, _chai.expect)(this.$('.tutorial-panel__default-message-picto')).to.have.lengthOf(1);
-        });
-        (0, _mocha.it)('should not render a hint or a tutorial', function () {
-          // when
-          this.render(Ember.HTMLBars.template({
-            "id": "XxENc2GT",
-            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\",\"tutorials\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]],[22,[\"tutorials\"]]]]],false]],\"hasEval\":false}",
-            "meta": {}
-          }));
-
-          // then
-          (0, _chai.expect)(this.$('.tutorial-panel')).to.have.lengthOf(1);
-          (0, _chai.expect)(this.$('.tutorial-panel__hint-container')).to.have.lengthOf(0);
-          (0, _chai.expect)(this.$('.tutorial-panel__tutorial-item')).to.have.lengthOf(0);
-        });
-      });
       context('when a hint is present', function () {
         beforeEach(function () {
           this.set('hint', 'Ceci est un indice.');
@@ -10612,17 +10797,6 @@ define('pix-live/tests/integration/components/tutorial-panel-test', ['chai', 'mo
           var $contentElement = this.$('.tutorial-panel__hint-content');
           (0, _chai.expect)($contentElement.text().trim()).to.equal('Ceci est un indice.');
         });
-        (0, _mocha.it)('should not render the default message', function () {
-          // when
-          this.render(Ember.HTMLBars.template({
-            "id": "XxENc2GT",
-            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\",\"tutorials\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]],[22,[\"tutorials\"]]]]],false]],\"hasEval\":false}",
-            "meta": {}
-          }));
-
-          // then
-          (0, _chai.expect)(this.$('.tutorial-panel__default-message-container')).to.have.lengthOf(0);
-        });
       });
       context('when a tutorial is present', function () {
         beforeEach(function () {
@@ -10642,17 +10816,6 @@ define('pix-live/tests/integration/components/tutorial-panel-test', ['chai', 'mo
           (0, _chai.expect)(this.$('.tutorial-panel__tutorials-container')).to.have.lengthOf(1);
           (0, _chai.expect)(this.$('.tutorial-item__tutorial-title')).to.have.lengthOf(1);
           (0, _chai.expect)(this.$('.tutorial-item__tutorial-details')).to.have.lengthOf(1);
-        });
-        (0, _mocha.it)('should not render the default message', function () {
-          // when
-          this.render(Ember.HTMLBars.template({
-            "id": "XxENc2GT",
-            "block": "{\"symbols\":[],\"statements\":[[1,[26,\"tutorial-panel\",null,[[\"hint\",\"resultItemStatus\",\"tutorials\"],[[22,[\"hint\"]],[22,[\"resultItemStatus\"]],[22,[\"tutorials\"]]]]],false]],\"hasEval\":false}",
-            "meta": {}
-          }));
-
-          // then
-          (0, _chai.expect)(this.$('.tutorial-panel__default-message-container')).to.have.lengthOf(0);
         });
       });
     });
@@ -11570,6 +11733,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
+    it('acceptance/error-redirection-test.js', function () {
+      // test passed
+    });
+
     it('acceptance/h1-timeout-jauge-test.js', function () {
       // test passed
     });
@@ -11735,6 +11902,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
     });
 
     it('integration/components/g-recaptcha-test.js', function () {
+      // test passed
+    });
+
+    it('integration/components/learning-more-panel-test.js', function () {
       // test passed
     });
 
@@ -12090,6 +12261,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
       // test passed
     });
 
+    it('unit/models/correction-test.js', function () {
+      // test passed
+    });
+
     it('unit/models/course-test.js', function () {
       // test passed
     });
@@ -12179,6 +12354,10 @@ define('pix-live/tests/tests.lint-test', [], function () {
     });
 
     it('unit/routes/compte-test.js', function () {
+      // test passed
+    });
+
+    it('unit/routes/error-test.js', function () {
       // test passed
     });
 
@@ -15245,33 +15424,6 @@ define('pix-live/tests/unit/components/tutorial-panel-test', ['chai', 'mocha', '
       component = this.subject();
     });
 
-    (0, _mocha.describe)('#shouldDisplayTipsToSucceed', function () {
-
-      ['ko', 'aband', 'partially', 'timedout', 'default'].forEach(function (status) {
-        (0, _mocha.it)('should return true when resultItemStatus is "' + status + '"', function () {
-          // given
-          component.set('resultItemStatus', status);
-
-          // when
-          var result = component.get('shouldDisplayTipsToSucceed');
-
-          // then
-          (0, _chai.expect)(result).to.be.true;
-        });
-      });
-
-      (0, _mocha.it)('should return false when resultItemStatus is "ok"', function () {
-        // given
-        component.set('resultItemStatus', 'ok');
-
-        // when
-        var result = component.get('shouldDisplayTipsToSucceed');
-
-        // then
-        (0, _chai.expect)(result).to.be.false;
-      });
-    });
-
     (0, _mocha.describe)('#shouldDisplayHint', function () {
 
       (0, _mocha.it)('should return true when hint is defined', function () {
@@ -15792,16 +15944,58 @@ define('pix-live/tests/unit/models/answer-test', ['chai', 'mocha', 'ember-mocha'
 
     (0, _mocha.describe)('isResultOk', function () {
 
-      (0, _mocha.it)('should return bool', function () {
-        var _this = this;
-
-        Ember.run(function () {
-          // given
-          var store = _this.store();
-          var answer = store.createRecord('answer', { 'result': 'ok' });
-
-          (0, _chai.expect)(answer.get('result')).to.equal('ok');
+      (0, _mocha.it)('should return true when answser.result is ok', function () {
+        // given
+        var store = this.store();
+        var answer = Ember.run(function () {
+          return store.createRecord('answer', { 'result': 'ok' });
         });
+
+        // when
+        var result = answer.get('isResultOk');
+
+        (0, _chai.expect)(result).to.be.true;
+      });
+
+      (0, _mocha.it)('should return false when answser.result is ko', function () {
+        // given
+        var store = this.store();
+        var answer = Ember.run(function () {
+          return store.createRecord('answer', { 'result': 'ko' });
+        });
+
+        // when
+        var result = answer.get('isResultOk');
+
+        (0, _chai.expect)(result).to.be.false;
+      });
+    });
+    (0, _mocha.describe)('isResultNotOk', function () {
+
+      (0, _mocha.it)('should return true when answser.result is ok', function () {
+        // given
+        var store = this.store();
+        var answer = Ember.run(function () {
+          return store.createRecord('answer', { 'result': 'ok' });
+        });
+
+        // when
+        var result = answer.get('isResultNotOk');
+
+        (0, _chai.expect)(result).to.be.false;
+      });
+
+      (0, _mocha.it)('should return false when answser.result is ko', function () {
+        // given
+        var store = this.store();
+        var answer = Ember.run(function () {
+          return store.createRecord('answer', { 'result': 'ko' });
+        });
+
+        // when
+        var result = answer.get('isResultNotOk');
+
+        (0, _chai.expect)(result).to.be.true;
       });
     });
   });
@@ -16417,6 +16611,91 @@ define('pix-live/tests/unit/models/competence-test', ['chai', 'mocha', 'ember-mo
     });
   });
 });
+define('pix-live/tests/unit/models/correction-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+  'use strict';
+
+  (0, _mocha.describe)('Unit | Model | correction', function () {
+    (0, _emberMocha.setupModelTest)('correction', {
+      needs: ['model:tutorial']
+    });
+
+    (0, _mocha.it)('exists', function () {
+      var model = this.subject();
+      (0, _chai.expect)(model).to.be.ok;
+    });
+
+    (0, _mocha.describe)('#noHintsNorTutorialsAtAll', function () {
+
+      var model = void 0;
+      var defaultAttributes = {
+        solution: 'a fake solution',
+        hint: null,
+        tutorials: [],
+        learningMoreTutorials: []
+      };
+
+      (0, _mocha.it)('should be true when correction has only solution', function () {
+        // given
+        model = this.subject(defaultAttributes);
+
+        // when
+        var result = model.get('noHintsNorTutorialsAtAll');
+
+        // then
+        (0, _chai.expect)(result).to.be.true;
+      });
+
+      (0, _mocha.it)('should be false when correction has an hint', function () {
+        // given
+        model = this.subject(Object.assign({}, defaultAttributes, {
+          hint: 'a fake hint'
+        }));
+
+        // when
+        var result = model.get('noHintsNorTutorialsAtAll');
+
+        // then
+        (0, _chai.expect)(result).to.be.false;
+      });
+
+      (0, _mocha.it)('should be false when correction has a tutorial', function () {
+        var _this = this;
+
+        // given
+        var givenTutorial = Ember.run(function () {
+          return _this.store().createRecord('tutorial', { title: 'is a fake tutorial' });
+        });
+        model = this.subject(Object.assign({}, defaultAttributes, {
+          tutorials: [givenTutorial]
+        }));
+
+        // when
+        var result = model.get('noHintsNorTutorialsAtAll');
+
+        // then
+        (0, _chai.expect)(result).to.be.false;
+      });
+
+      (0, _mocha.it)('should be false when correction has a learningMoreTutorial', function () {
+        var _this2 = this;
+
+        // given
+        var givenTutorial = Ember.run(function () {
+          return _this2.store().createRecord('tutorial', { title: 'is a fake tutorial' });
+        });
+        model = this.subject(Object.assign({}, defaultAttributes, {
+          learningMoreTutorials: [givenTutorial]
+        }));
+
+        // when
+        var result = model.get('noHintsNorTutorialsAtAll');
+
+        // then
+        (0, _chai.expect)(result).to.be.false;
+      });
+    });
+  });
+});
 // FIXME wuth API resource GET /assessment/:id/progress
 
 /*
@@ -16751,7 +17030,7 @@ define('pix-live/tests/unit/routes/application-test', ['chai', 'mocha', 'ember-m
 
   (0, _mocha.describe)('Unit | Route | application splash', function () {
     (0, _emberMocha.setupTest)('route:application', {
-      needs: ['service:current-routed-modal', 'service:session', 'service:splash']
+      needs: ['service:current-routed-modal', 'service:splash']
     });
 
     (0, _mocha.it)('initializes correctly', function () {
@@ -16769,47 +17048,6 @@ define('pix-live/tests/unit/routes/application-test', ['chai', 'mocha', 'ember-m
 
       // Then
       (0, _chai.expect)(splashStub.hideCount).to.equal(1);
-    });
-
-    (0, _mocha.describe)('#hasUnauthorizedError', function () {
-      var route = void 0;
-
-      beforeEach(function () {
-        route = this.subject();
-      });
-
-      (0, _mocha.it)('finds an unauthorized code in the first error object', function () {
-        // Given
-        var errorEvent = { errors: [{ code: 401 }] };
-
-        // When
-        var result = route.hasUnauthorizedError(errorEvent);
-
-        // Then
-        (0, _chai.expect)(result).to.be.true;
-      });
-
-      (0, _mocha.it)('returns false if there is no "errors" key', function () {
-        // Given
-        var errorEvent = {};
-
-        // When
-        var result = route.hasUnauthorizedError(errorEvent);
-
-        // Then
-        (0, _chai.expect)(result).to.be.false;
-      });
-
-      (0, _mocha.it)('returns false if the "errors" key points to an empty array', function () {
-        // Given
-        var errorEvent = { errors: [] };
-
-        // When
-        var result = route.hasUnauthorizedError(errorEvent);
-
-        // Then
-        (0, _chai.expect)(result).to.be.false;
-      });
     });
   });
 });
@@ -18149,6 +18387,62 @@ define('pix-live/tests/unit/routes/compte-test', ['chai', 'mocha', 'ember-mocha'
           _sinon.default.assert.called(storeCreateRecordStub);
           _sinon.default.assert.called(storeSaveStub);
         });
+      });
+    });
+  });
+});
+define('pix-live/tests/unit/routes/error-test', ['chai', 'mocha', 'ember-mocha'], function (_chai, _mocha, _emberMocha) {
+  'use strict';
+
+  (0, _mocha.describe)('Unit | Route | error', function () {
+    (0, _emberMocha.setupTest)('route:error', {
+      // Specify the other units that are required for this test.
+      needs: ['service:current-routed-modal', 'service:session']
+    });
+
+    (0, _mocha.it)('exists', function () {
+      var route = this.subject();
+      (0, _chai.expect)(route).to.be.ok;
+    });
+
+    (0, _mocha.describe)('#hasUnauthorizedError', function () {
+      var route = void 0;
+
+      beforeEach(function () {
+        route = this.subject();
+      });
+
+      (0, _mocha.it)('finds an unauthorized code in the first error object', function () {
+        // Given
+        var errorEvent = { errors: [{ code: 401 }] };
+
+        // When
+        var result = route.hasUnauthorizedError(errorEvent);
+
+        // Then
+        (0, _chai.expect)(result).to.be.true;
+      });
+
+      (0, _mocha.it)('returns false if there is no "errors" key', function () {
+        // Given
+        var errorEvent = {};
+
+        // When
+        var result = route.hasUnauthorizedError(errorEvent);
+
+        // Then
+        (0, _chai.expect)(result).to.be.false;
+      });
+
+      (0, _mocha.it)('returns false if the "errors" key points to an empty array', function () {
+        // Given
+        var errorEvent = { errors: [] };
+
+        // When
+        var result = route.hasUnauthorizedError(errorEvent);
+
+        // Then
+        (0, _chai.expect)(result).to.be.false;
       });
     });
   });
