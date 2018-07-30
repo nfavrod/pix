@@ -3145,7 +3145,7 @@ define('mon-pix/tests/acceptance/start-campaigns-test', ['mocha', 'chai', 'mon-p
         (0, _mocha.it)('should redirect to login page', function () {
           // then
           return andThen(function () {
-            (0, _chai.expect)(currentURL()).to.match(/connexion/);
+            (0, _chai.expect)(currentURL()).to.equal('/connexion');
           });
         });
 
@@ -3155,7 +3155,7 @@ define('mon-pix/tests/acceptance/start-campaigns-test', ['mocha', 'chai', 'mon-p
               switch (_context2.prev = _context2.next) {
                 case 0:
                   // when
-                  (0, _chai.expect)(currentURL()).to.match(/connexion/);
+                  (0, _chai.expect)(currentURL()).to.equal('/connexion');
                   fillIn('#pix-email', 'jane@acme.com');
                   fillIn('#pix-password', 'Jane1234');
                   _context2.next = 5;
