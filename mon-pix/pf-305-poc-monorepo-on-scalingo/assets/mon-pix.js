@@ -6996,35 +6996,17 @@ define('mon-pix/router', ['exports', 'mon-pix/config/environment'], function (ex
 
   exports.default = Router;
 });
-define('mon-pix/routes/application', ['exports', 'lodash', 'mon-pix/routes/base-route'], function (exports, _lodash, _baseRoute) {
+define('mon-pix/routes/application', ['exports', 'mon-pix/routes/base-route'], function (exports, _baseRoute) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
   exports.default = _baseRoute.default.extend({
-    session: Ember.inject.service(),
     splash: Ember.inject.service(),
 
     activate: function activate() {
       this.get('splash').hide();
-    },
-    hasUnauthorizedError: function hasUnauthorizedError(errorEvent) {
-      var statusCode = _lodash.default.get(errorEvent, 'errors[0].code');
-      return statusCode === 401;
-    },
-
-
-    actions: {
-      error: function error(_error) {
-        var _this = this;
-
-        if (this.hasUnauthorizedError(_error)) {
-          return this.get('session').invalidate().then(function () {
-            return _this.transitionTo('login');
-          });
-        }
-      }
     }
   });
 });
@@ -9903,6 +9885,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("mon-pix/app")["default"].create({"API_HOST":"http://localhost:3000","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"mon-pix","version":"1.56.0+4762c6ad"});
+  require("mon-pix/app")["default"].create({"API_HOST":"http://localhost:3000","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"mon-pix","version":"1.57.0+019bb3d8"});
 }
 //# sourceMappingURL=mon-pix.map
