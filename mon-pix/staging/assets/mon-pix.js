@@ -5215,6 +5215,30 @@ define('mon-pix/mirage/data/answers/ref-timed-answer', ['exports', 'mon-pix/mira
     }
   };
 });
+define('mon-pix/mirage/data/assessments/ref-assessment-placement', ['exports'], function (exports) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = {
+    data: {
+      type: 'assessments',
+      id: 'ref_assessment_campaign_id',
+      attributes: {
+        'type': 'SMART_PLACEMENT'
+      },
+      relationships: {
+        course: {
+          data: {
+            type: 'courses',
+            id: 'campaign-course'
+          }
+        }
+      }
+    }
+  };
+});
 define('mon-pix/mirage/data/assessments/ref-assessment-timed-challenges', ['exports', 'mon-pix/mirage/data/courses/ref-course-timed-challenges', 'mon-pix/mirage/data/answers/ref-timed-answer', 'mon-pix/mirage/data/answers/ref-timed-answer-bis'], function (exports, _refCourseTimedChallenges, _refTimedAnswer, _refTimedAnswerBis) {
   'use strict';
 
@@ -5410,6 +5434,20 @@ define('mon-pix/mirage/data/challenges/ref-timed-challenge', ['exports'], functi
         instruction: 'Une question timée contient un décompte en bas a droite qui se decremente à chaque seconde ',
         proposals: '' + '- Une seule possibilite '
       }
+    }
+  };
+});
+define('mon-pix/mirage/data/courses/campaign-course', ['exports'], function (exports) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = {
+    data: {
+      type: 'courses',
+      id: 'campaign-course',
+      attributes: {}
     }
   };
 });
@@ -5915,7 +5953,7 @@ define('mon-pix/mirage/routes/get-answer', ['exports', 'mon-pix/utils/lodash-cus
     }
   };
 });
-define('mon-pix/mirage/routes/get-assessment', ['exports', 'mon-pix/utils/lodash-custom', 'mon-pix/mirage/data/assessments/ref-assessment', 'mon-pix/mirage/data/assessments/ref-assessment-timed-challenges'], function (exports, _lodashCustom, _refAssessment, _refAssessmentTimedChallenges) {
+define('mon-pix/mirage/routes/get-assessment', ['exports', 'mon-pix/utils/lodash-custom', 'mon-pix/mirage/data/assessments/ref-assessment', 'mon-pix/mirage/data/assessments/ref-assessment-placement', 'mon-pix/mirage/data/assessments/ref-assessment-timed-challenges'], function (exports, _lodashCustom, _refAssessment, _refAssessmentPlacement, _refAssessmentTimedChallenges) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -5926,7 +5964,7 @@ define('mon-pix/mirage/routes/get-assessment', ['exports', 'mon-pix/utils/lodash
 
     var assessmentId = request.params.id;
 
-    var allAssessments = [_refAssessment.default, _refAssessmentTimedChallenges.default];
+    var allAssessments = [_refAssessment.default, _refAssessmentPlacement.default, _refAssessmentTimedChallenges.default];
 
     var assessments = _lodashCustom.default.map(allAssessments, function (oneAssessment) {
       return { id: oneAssessment.data.id, obj: oneAssessment };
@@ -5990,7 +6028,7 @@ define("mon-pix/mirage/routes/get-corrections", ["exports"], function (exports) 
     return schema.corrections.all();
   };
 });
-define('mon-pix/mirage/routes/get-course', ['exports', 'mon-pix/utils/lodash-custom', 'mon-pix/mirage/data/courses/ref-course', 'mon-pix/mirage/data/courses/highlighted-course', 'mon-pix/mirage/data/courses/ref-course-timed-challenges'], function (exports, _lodashCustom, _refCourse, _highlightedCourse, _refCourseTimedChallenges) {
+define('mon-pix/mirage/routes/get-course', ['exports', 'mon-pix/utils/lodash-custom', 'mon-pix/mirage/data/courses/ref-course', 'mon-pix/mirage/data/courses/highlighted-course', 'mon-pix/mirage/data/courses/ref-course-timed-challenges', 'mon-pix/mirage/data/courses/campaign-course'], function (exports, _lodashCustom, _refCourse, _highlightedCourse, _refCourseTimedChallenges, _campaignCourse) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -6001,7 +6039,7 @@ define('mon-pix/mirage/routes/get-course', ['exports', 'mon-pix/utils/lodash-cus
 
     var id = request.params.id;
 
-    var allCourses = [_refCourse.default, _highlightedCourse.default, _refCourseTimedChallenges.default];
+    var allCourses = [_refCourse.default, _highlightedCourse.default, _refCourseTimedChallenges.default, _campaignCourse.default];
 
     if (allCourses.map(function (course) {
       return course.data.id;
@@ -6217,32 +6255,39 @@ define('mon-pix/mirage/routes/post-assessments', ['exports', 'mon-pix/utils/loda
 
   exports.default = function (schema, request) {
 
-    var answer = JSON.parse(request.requestBody);
-    var courseId = answer.data.relationships.course.data.id;
-
-    var allAssessments = [_refAssessment.default];
-
-    // TODO: clean legacy
-    var assessments = _lodashCustom.default.map(allAssessments, function (oneAssessment) {
-      return { id: oneAssessment.data.relationships.course.data.id, obj: oneAssessment };
-    });
-
+    var requestedAssessment = JSON.parse(request.requestBody);
     var newAssessment = {
       'user-id': 'user_id',
       'user-name': 'Jane Doe',
-      'user-email': 'jane@acme.com',
-      'certification-number': 'certification-number'
+      'user-email': 'jane@acme.com'
     };
 
-    var assessment = _lodashCustom.default.find(assessments, { id: courseId });
+    var allAssessments = [_refAssessment.default];
+    var assessment = void 0;
+    var courseId = void 0;
+    if (requestedAssessment.data.relationships) {
+      courseId = requestedAssessment.data.relationships.course.data.id;
+      assessment = _lodashCustom.default.find(allAssessments, function (assessment) {
+        return assessment.data.relationships.course.data.id === courseId;
+      });
+    }
+
     if (assessment) {
-      return assessment.obj;
+      // PLACEMENT ASSESSMENT
+      return assessment;
     } else if (_lodashCustom.default.startsWith(courseId, 'null')) {
+      // PREVIEW ASSESSMENT
       return _refAssessment.default;
+    } else if (requestedAssessment.data.attributes.type === 'SMART_PLACEMENT') {
+      // SMART ASSESSMENT
+      newAssessment.type = 'SMART_PLACEMENT';
     } else if (!_lodashCustom.default.startsWith(courseId, 'rec')) {
+      // CERTIFICATION ASSESSMENT
       newAssessment.type = 'CERTIFICATION';
       newAssessment.courseId = 'certification-number';
+      newAssessment['certification-number'] = 'certification-number';
     }
+
     return schema.assessments.create(newAssessment);
   };
 });
@@ -6261,7 +6306,7 @@ define('mon-pix/mirage/routes/post-authentications', ['exports'], function (expo
 
     if (email === 'john@acme.com') return prescriberAuthentication;
 
-    return otherUserAuthentication;
+    return badUser;
   };
 
   var simpleUserAuthentication = {
@@ -6286,15 +6331,11 @@ define('mon-pix/mirage/routes/post-authentications', ['exports'], function (expo
     }
   };
 
-  var otherUserAuthentication = {
-    data: {
-      type: 'authentication',
-      attributes: {
-        'user-id': 3,
-        token: 'other-user-token'
-      },
-      id: 3
-    }
+  var badUser = {
+    errors: [{ status: '400',
+      title: 'Invalid Payload',
+      detail: 'L\'adresse e-mail et/ou le mot de passe saisi(s) sont incorrects.'
+    }]
   };
 });
 define("mon-pix/mirage/routes/post-certification-course", ["exports"], function (exports) {
@@ -6996,13 +7037,13 @@ define('mon-pix/router', ['exports', 'mon-pix/config/environment'], function (ex
 
   exports.default = Router;
 });
-define('mon-pix/routes/application', ['exports', 'mon-pix/routes/base-route'], function (exports, _baseRoute) {
+define('mon-pix/routes/application', ['exports', 'ember-simple-auth/mixins/application-route-mixin', 'mon-pix/routes/base-route'], function (exports, _applicationRouteMixin, _baseRoute) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = _baseRoute.default.extend({
+  exports.default = _baseRoute.default.extend(_applicationRouteMixin.default, {
     splash: Ember.inject.service(),
 
     activate: function activate() {
@@ -7272,116 +7313,29 @@ define('mon-pix/routes/campaigns/start-or-resume', ['exports', 'mon-pix/routes/b
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-
-  function _asyncToGenerator(fn) {
-    return function () {
-      var gen = fn.apply(this, arguments);
-      return new Promise(function (resolve, reject) {
-        function step(key, arg) {
-          try {
-            var info = gen[key](arg);
-            var value = info.value;
-          } catch (error) {
-            reject(error);
-            return;
-          }
-
-          if (info.done) {
-            resolve(value);
-          } else {
-            return Promise.resolve(value).then(function (value) {
-              step("next", value);
-            }, function (err) {
-              step("throw", err);
-            });
-          }
-        }
-
-        return step("next");
-      });
-    };
-  }
-
   exports.default = _baseRoute.default.extend(_authenticatedRouteMixin.default, {
-    model: function () {
-      var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-        var store, smartPlacementAssessments;
-        return regeneratorRuntime.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                store = this.get('store');
-                _context.next = 3;
-                return store.query('assessment', { filter: { type: 'SMART_PLACEMENT' } });
+    model: function model() {
+      var store = this.get('store');
+      return store.query('assessment', { filter: { type: 'SMART_PLACEMENT' } }).then(function (smartPlacementAssessments) {
+        if (!Ember.isEmpty(smartPlacementAssessments)) {
+          return smartPlacementAssessments.get('firstObject');
+        }
+        return store.createRecord('assessment', { type: 'SMART_PLACEMENT' }).save();
+      });
+    },
+    afterModel: function afterModel(assessment) {
+      var _this = this;
 
-              case 3:
-                smartPlacementAssessments = _context.sent;
-
-                if (Ember.isEmpty(smartPlacementAssessments)) {
-                  _context.next = 6;
-                  break;
-                }
-
-                return _context.abrupt('return', smartPlacementAssessments.get('firstObject'));
-
-              case 6:
-                return _context.abrupt('return', store.createRecord('assessment', { type: 'SMART_PLACEMENT' }).save());
-
-              case 7:
-              case 'end':
-                return _context.stop();
-            }
-          }
-        }, _callee, this);
-      }));
-
-      function model() {
-        return _ref.apply(this, arguments);
-      }
-
-      return model;
-    }(),
-    afterModel: function () {
-      var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(assessment) {
-        var store, challenge;
-        return regeneratorRuntime.wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                store = this.get('store');
-                _context2.prev = 1;
-                _context2.next = 4;
-                return assessment.reload();
-
-              case 4:
-                _context2.next = 6;
-                return store.queryRecord('challenge', { assessmentId: assessment.get('id') });
-
-              case 6:
-                challenge = _context2.sent;
-                return _context2.abrupt('return', this.transitionTo('assessments.challenge', { assessment: assessment, challenge: challenge }));
-
-              case 10:
-                _context2.prev = 10;
-                _context2.t0 = _context2['catch'](1);
-
-                // FIXME: do not manage error when there is no more challenge anymore
-                this.transitionTo('assessments.rating', assessment.get('id'));
-
-              case 13:
-              case 'end':
-                return _context2.stop();
-            }
-          }
-        }, _callee2, this, [[1, 10]]);
-      }));
-
-      function afterModel(_x) {
-        return _ref2.apply(this, arguments);
-      }
-
-      return afterModel;
-    }()
+      var store = this.get('store');
+      return assessment.reload().then(function () {
+        return store.queryRecord('challenge', { assessmentId: assessment.get('id') });
+      }).then(function (challenge) {
+        return _this.transitionTo('assessments.challenge', { assessment: assessment, challenge: challenge });
+      }).catch(function () {
+        // FIXME: do not manage error when there is no more challenge anymore
+        _this.transitionTo('assessments.rating', assessment.get('id'));
+      });
+    }
   });
 });
 define('mon-pix/routes/certifications/results', ['exports', 'ember-simple-auth/mixins/authenticated-route-mixin', 'mon-pix/routes/base-route'], function (exports, _authenticatedRouteMixin, _baseRoute) {
@@ -7786,21 +7740,10 @@ define('mon-pix/routes/login', ['exports', 'ember-simple-auth/mixins/unauthentic
 
         return this.get('session').authenticate('authenticator:simple', email, password).then(function (_) {
           return _this.get('store').queryRecord('user', {});
-        }).then(function (user) {
-          var routeToRedirect = _isUserLinkedToOrganization(user) ? _this.routeForLoggedUserLinkedToOrganization : _this.routeIfAlreadyAuthenticated;
-          _this.transitionTo(routeToRedirect);
         });
       }
     }
   });
-
-
-  function _isUserLinkedToOrganization(user) {
-    if (!user.get('organizations')) {
-      return false;
-    }
-    return user.get('organizations.length') > 0;
-  }
 });
 define('mon-pix/routes/logout', ['exports', 'mon-pix/routes/base-route'], function (exports, _baseRoute) {
   'use strict';
@@ -9164,6 +9107,10 @@ define('mon-pix/tests/mirage/mirage.lint-test', [], function () {
       // test passed
     });
 
+    it('mirage/data/assessments/ref-assessment-placement.js', function () {
+      // test passed
+    });
+
     it('mirage/data/assessments/ref-assessment-timed-challenges.js', function () {
       // test passed
     });
@@ -9193,6 +9140,10 @@ define('mon-pix/tests/mirage/mirage.lint-test', [], function () {
     });
 
     it('mirage/data/challenges/ref-timed-challenge.js', function () {
+      // test passed
+    });
+
+    it('mirage/data/courses/campaign-course.js', function () {
       // test passed
     });
 
@@ -9912,6 +9863,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("mon-pix/app")["default"].create({"API_HOST":"http://localhost:3000","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"mon-pix","version":"1.57.0+904f8bac"});
+  require("mon-pix/app")["default"].create({"API_HOST":"http://localhost:3000","isChallengeTimerEnable":true,"MESSAGE_DISPLAY_DURATION":1500,"isMobileSimulationEnabled":false,"isTimerCountdownEnabled":true,"isMessageStatusTogglingEnabled":true,"LOAD_EXTERNAL_SCRIPT":true,"GOOGLE_RECAPTCHA_KEY":"6LdPdiIUAAAAADhuSc8524XPDWVynfmcmHjaoSRO","SCROLL_DURATION":800,"useDelay":true,"NUMBER_OF_CHALLENGE_BETWEEN_TWO_CHECKPOINTS_IN_SMART_PLACEMENT":5,"name":"mon-pix","version":"1.57.0+7cbbb8ca"});
 }
 //# sourceMappingURL=mon-pix.map

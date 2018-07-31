@@ -3077,6 +3077,156 @@ define('mon-pix/tests/acceptance/password-reset-test', ['mocha', 'chai', 'mon-pi
     })));
   });
 });
+define('mon-pix/tests/acceptance/start-campaigns-test', ['mocha', 'chai', 'mon-pix/tests/helpers/start-app', 'mon-pix/tests/helpers/destroy-app', 'mon-pix/tests/helpers/testing', 'mon-pix/mirage/scenarios/default'], function (_mocha, _chai, _startApp, _destroyApp, _testing, _default) {
+  'use strict';
+
+  function _asyncToGenerator(fn) {
+    return function () {
+      var gen = fn.apply(this, arguments);
+      return new Promise(function (resolve, reject) {
+        function step(key, arg) {
+          try {
+            var info = gen[key](arg);
+            var value = info.value;
+          } catch (error) {
+            reject(error);
+            return;
+          }
+
+          if (info.done) {
+            resolve(value);
+          } else {
+            return Promise.resolve(value).then(function (value) {
+              step("next", value);
+            }, function (err) {
+              step("throw", err);
+            });
+          }
+        }
+
+        return step("next");
+      });
+    };
+  }
+
+  (0, _mocha.describe)('Acceptance | Campaigns | Start Campaigns', function () {
+
+    var application = void 0;
+
+    (0, _mocha.beforeEach)(function () {
+      application = (0, _startApp.default)();
+      (0, _default.default)(server);
+    });
+
+    (0, _mocha.afterEach)(function () {
+      (0, _destroyApp.default)(application);
+    });
+
+    (0, _mocha.describe)('Start a campaigns course', function () {
+
+      context('When user is not logged in', function () {
+
+        (0, _mocha.beforeEach)(_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+          return regeneratorRuntime.wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  _context.next = 2;
+                  return visit('/campagnes/codecampagnepix');
+
+                case 2:
+                case 'end':
+                  return _context.stop();
+              }
+            }
+          }, _callee, this);
+        })));
+
+        (0, _mocha.it)('should redirect to login page', function () {
+          // then
+          return andThen(function () {
+            (0, _chai.expect)(currentURL()).to.equal('/connexion');
+          });
+        });
+
+        (0, _mocha.it)('should redirect to campaigns after connexion', _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+          return regeneratorRuntime.wrap(function _callee2$(_context2) {
+            while (1) {
+              switch (_context2.prev = _context2.next) {
+                case 0:
+                  // when
+                  (0, _chai.expect)(currentURL()).to.equal('/connexion');
+                  fillIn('#pix-email', 'jane@acme.com');
+                  fillIn('#pix-password', 'Jane1234');
+                  _context2.next = 5;
+                  return click('.signin-form__submit_button');
+
+                case 5:
+                  return _context2.abrupt('return', andThen(function () {
+                    (0, _chai.expect)(currentURL()).to.contains(/assessments/);
+                    (0, _chai.expect)(find('.course-banner__name').text()).to.equal('Parcours e-pro');
+                  }));
+
+                case 6:
+                case 'end':
+                  return _context2.stop();
+              }
+            }
+          }, _callee2, this);
+        })));
+      });
+
+      context('When user is logged in', _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+        return regeneratorRuntime.wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+
+                (0, _mocha.beforeEach)(_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+                  return regeneratorRuntime.wrap(function _callee3$(_context3) {
+                    while (1) {
+                      switch (_context3.prev = _context3.next) {
+                        case 0:
+                          (0, _testing.authenticateAsSimpleUser)();
+                          _context3.next = 3;
+                          return visit('/campagnes/codecampagnepix');
+
+                        case 3:
+                        case 'end':
+                          return _context3.stop();
+                      }
+                    }
+                  }, _callee3, this);
+                })));
+
+                (0, _mocha.it)('should redirect directly in campaigns', _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+                  return regeneratorRuntime.wrap(function _callee4$(_context4) {
+                    while (1) {
+                      switch (_context4.prev = _context4.next) {
+                        case 0:
+                          return _context4.abrupt('return', andThen(function () {
+                            (0, _chai.expect)(currentURL()).to.contains(/assessments/);
+                            (0, _chai.expect)(find('.course-banner__name').text()).to.equal('Parcours e-pro');
+                          }));
+
+                        case 1:
+                        case 'end':
+                          return _context4.stop();
+                      }
+                    }
+                  }, _callee4, this);
+                })));
+
+              case 2:
+              case 'end':
+                return _context5.stop();
+            }
+          }
+        }, _callee5, this);
+      })));
+    });
+  });
+});
 define('mon-pix/tests/acceptance/terms-of-service-page-test', ['mocha', 'mon-pix/tests/helpers/start-app', 'mon-pix/tests/helpers/destroy-app'], function (_mocha, _startApp, _destroyApp) {
   'use strict';
 
@@ -11789,6 +11939,10 @@ define('mon-pix/tests/tests.lint-test', [], function () {
       // test passed
     });
 
+    it('acceptance/start-campaigns-test.js', function () {
+      // test passed
+    });
+
     it('acceptance/terms-of-service-page-test.js', function () {
       // test passed
     });
@@ -17030,7 +17184,7 @@ define('mon-pix/tests/unit/routes/application-test', ['chai', 'mocha', 'ember-mo
 
   (0, _mocha.describe)('Unit | Route | application splash', function () {
     (0, _emberMocha.setupTest)('route:application', {
-      needs: ['service:current-routed-modal', 'service:splash']
+      needs: ['service:current-routed-modal', 'service:splash', 'service:session']
     });
 
     (0, _mocha.it)('initializes correctly', function () {
@@ -17863,26 +18017,24 @@ define('mon-pix/tests/unit/routes/campaigns/start-or-resume-test', ['chai', 'moc
       });
     });
 
-    (0, _mocha.describe)('#afterMoodel', function () {
+    (0, _mocha.describe)('#afterModel', function () {
 
       var storeStub = void 0;
       var queryRecordStub = void 0;
+      var route = void 0;
+      var assessment = void 0;
 
       (0, _mocha.beforeEach)(function () {
         queryRecordStub = _sinon.default.stub();
         storeStub = Ember.Service.extend({ queryRecord: queryRecordStub });
         this.register('service:store', storeStub);
         this.inject.service('store', { as: 'store' });
+        route = this.subject();
+        route.transitionTo = _sinon.default.stub();
+        assessment = Ember.Object.create({ reload: _sinon.default.stub().resolves() });
       });
 
-      (0, _mocha.it)('should force assessment reload in ortder to pre-fetch its answers', function () {
-        // given
-        var route = this.subject();
-        route.transitionTo = _sinon.default.stub();
-        var assessment = Ember.Object.create({
-          reload: _sinon.default.stub()
-        });
-
+      (0, _mocha.it)('should force assessment reload in order to pre-fetch its answers', function () {
         // when
         var promise = route.afterModel(assessment);
 
@@ -17894,11 +18046,6 @@ define('mon-pix/tests/unit/routes/campaigns/start-or-resume-test', ['chai', 'moc
 
       (0, _mocha.it)('should redirect to next challenge if one was found', function () {
         // given
-        var route = this.subject();
-        route.transitionTo = _sinon.default.stub();
-        var assessment = Ember.Object.create({ reload: function reload() {
-            return true;
-          } });
         queryRecordStub.resolves();
 
         // when
@@ -17912,11 +18059,6 @@ define('mon-pix/tests/unit/routes/campaigns/start-or-resume-test', ['chai', 'moc
 
       (0, _mocha.it)('should redirect to assessment rating if no next challenge was found', function () {
         // given
-        var route = this.subject();
-        route.transitionTo = _sinon.default.stub();
-        var assessment = Ember.Object.create({ reload: function reload() {
-            return true;
-          } });
         queryRecordStub.rejects();
 
         // when
@@ -18662,48 +18804,6 @@ define('mon-pix/tests/unit/routes/login-test', ['mocha', 'ember-mocha', 'sinon']
       // Then
       return promise.then(function () {
         _sinon.default.assert.calledWith(authenticatedStub, 'authenticator:simple', expectedEmail, expectedPassword);
-      });
-    });
-
-    (0, _mocha.describe)('Route behavior according to organization belong status (authenticated user)', function () {
-
-      (0, _mocha.it)('should redirect to /compte, when user is not linked to an Organization', function () {
-        //Given
-        var route = this.subject();
-        authenticatedStub.resolves();
-
-        var foundUser = Ember.Object.create({ id: 12 });
-        queryRecordStub.resolves(foundUser);
-
-        route.transitionTo = _sinon.default.stub();
-
-        //When
-        var promise = route.actions.signin.call(route, expectedEmail, expectedPassword);
-
-        return promise.then(function () {
-          //Then
-          _sinon.default.assert.calledWith(route.transitionTo, 'compte');
-        });
-      });
-
-      (0, _mocha.it)('should redirect to /board, when user is linked to an Organization', function () {
-        //Given
-        var route = this.subject();
-        authenticatedStub.resolves();
-
-        var linkedOrganization = Ember.Object.create({ id: 1 });
-        var foundUser = Ember.Object.create({ organizations: [linkedOrganization] });
-        queryRecordStub.resolves(foundUser);
-
-        route.transitionTo = _sinon.default.stub();
-
-        //When
-        var promise = route.actions.signin.call(route, expectedEmail, expectedPassword);
-
-        return promise.then(function () {
-          //Then
-          _sinon.default.assert.calledWith(route.transitionTo, 'board');
-        });
       });
     });
   });
