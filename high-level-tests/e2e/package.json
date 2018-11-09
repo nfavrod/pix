@@ -5,11 +5,13 @@
   "main": "index.js",
   "scripts": {
     "cy:test": "./node_modules/.bin/cypress run && exit",
-    "cy:open": "./node_modules/.bin/cypress open"
+    "cy:open": "./node_modules/.bin/cypress open",
+    "db:reloadDB": "cd ../../api && npm run db:reset"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "cypress": "^3.1.0"
+    "cypress": "^3.1.0",
+    "eslint-plugin-cypress": "^2.1.2"
   }
 }
