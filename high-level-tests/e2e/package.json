@@ -4,14 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "cy:test": "./node_modules/.bin/cypress run && exit",
-    "cy:open": "./node_modules/.bin/cypress open",
+    "cy:test": "npm run db:reloadDB && cd ../high-level-tests/e2e && ./node_modules/.bin/cypress run && exit",
+    "cy:open": "npm run db:reloadDB && ./node_modules/.bin/cypress open",
     "db:reloadDB": "cd ../../api && npm run db:reset"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "cypress": "^3.1.0",
+    "cypress-cucumber-preprocessor": "^1.6.0",
     "eslint-plugin-cypress": "^2.1.2"
   }
 }

@@ -8,6 +8,7 @@ export default BaseRoute.extend(UnauthenticatedRouteMixin, {
   store: service(),
 
   beforeModel() {
+    debugger;
     if(this.get('session.isAuthenticated')) {
       return this.get('store')
         .findRecord('user', this.get('session.data.authenticated.userId'))

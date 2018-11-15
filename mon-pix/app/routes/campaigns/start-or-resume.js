@@ -13,6 +13,7 @@ export default BaseRoute.extend(AuthenticatedRouteMixin, {
   userHasJustConsultedTutorial: false,
 
   beforeModel(transition) {
+    debugger;
     this.set('campaignCode', transition.params['campaigns.start-or-resume'].campaign_code);
     this.set('userHasSeenLanding', transition.queryParams.hasSeenLanding);
     this.set('userHasJustConsultedTutorial', transition.queryParams.hasJustConsultedTutorial);
