@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "cy:test": "npm run db:reloadDB && cd ../high-level-tests/e2e && ./node_modules/.bin/cypress run && exit",
+    "cy:test": "npm run db:reloadDB && ./node_modules/.bin/cypress run && exit",
     "cy:open": "npm run db:reloadDB && ./node_modules/.bin/cypress open",
     "db:reloadDB": "cd ../../api && npm run db:reset"
   },
