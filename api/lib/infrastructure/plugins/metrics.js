@@ -9,10 +9,10 @@ client.collectDefaultMetrics();
 const metrics = {
   request: {
     total: new client.Counter({ name: 'api_request_total', help: 'The total number of all API responses' }),
-    success: new client.Counter({ name: 'api_request_success', help: 'The number of successful API responses' }),
-    server_error: new client.Counter({ name: 'api_request_server_error', help: 'The number of 50x API responses' }),
-    client_error: new client.Counter({ name: 'api_request_client_error', help: 'The number of 40x API responses' }),
-    api_request_duration: new client.Summary({ name: 'api_request_duration', help: 'Summary of request duration per API endpoint' })
+    success: new client.Counter({ name: 'api_request_success', help: 'The number of successful API responses', labelNames: [ 'path' ] }),
+    server_error: new client.Counter({ name: 'api_request_server_error', help: 'The number of 50x API responses', labelNames: [ 'path' ] }),
+    client_error: new client.Counter({ name: 'api_request_client_error', help: 'The number of 40x API responses', labelNames: [ 'path' ] }),
+    api_request_duration: new client.Summary({ name: 'api_request_duration', help: 'Summary of request duration per API endpoint', labelNames: [ 'path' ] })
   }
 };
 
