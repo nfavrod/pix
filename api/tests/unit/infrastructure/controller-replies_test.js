@@ -9,8 +9,8 @@ describe('Unit | Infrastructure | ControllerReplies', () => {
   describe('#controllerReplies', () => {
 
     let sandbox;
-    let replyStub;
     let codeStub;
+    let hStub;
 
     beforeEach(() => {
       sandbox = sinon.sandbox.create();
@@ -18,9 +18,7 @@ describe('Unit | Infrastructure | ControllerReplies', () => {
       sandbox.stub(logger, 'error');
 
       codeStub = sinon.stub();
-      replyStub = sinon.stub().returns({
-        code: codeStub,
-      });
+      hStub = { response: sinon.stub().returns({ code: codeStub }) };
       codeStub.resolves();
     });
 
@@ -38,7 +36,7 @@ describe('Unit | Infrastructure | ControllerReplies', () => {
         payload = { data: 'stuff' };
 
         // when
-        promise = controllerReplies(replyStub).ok(payload);
+        promise = controllerReplies(hStub).ok(payload);
       });
 
       it('should succeed', () => {
@@ -48,7 +46,7 @@ describe('Unit | Infrastructure | ControllerReplies', () => {
       it('should return reply with payload and 200', () => {
         // then
         promise.then(() => {
-          expect(replyStub).to.have.been.calledWith(payload);
+          expect(hStub.response).to.have.been.calledWith(payload);
           expect(codeStub).to.have.been.calledWith(200);
         });
       });
@@ -64,7 +62,7 @@ describe('Unit | Infrastructure | ControllerReplies', () => {
         payload = { data: 'stuff' };
 
         // when
-        promise = controllerReplies(replyStub).created(payload);
+        promise = controllerReplies(hStub).created(payload);
       });
 
       it('should succeed', () => {
@@ -74,7 +72,7 @@ describe('Unit | Infrastructure | ControllerReplies', () => {
       it('should return reply with payload and 201', () => {
         // then
         return promise.then(() => {
-          expect(replyStub).to.have.been.calledWith(payload);
+          expect(hStub.response).to.have.been.calledWith(payload);
           expect(codeStub).to.have.been.calledWith(201);
         });
       });
@@ -86,7 +84,7 @@ describe('Unit | Infrastructure | ControllerReplies', () => {
 
       beforeEach(() => {
         // when
-        promise = controllerReplies(replyStub).noContent();
+        promise = controllerReplies(hStub).noContent();
       });
 
       it('should succeed', () => {
@@ -96,7 +94,7 @@ describe('Unit | Infrastructure | ControllerReplies', () => {
       it('should return reply with payload and 201', () => {
         // then
         return promise.then(() => {
-          expect(replyStub).to.have.been.calledWith();
+          expect(hStub.response).to.have.been.calledWith();
           expect(codeStub).to.have.been.calledWith(204);
         });
       });
@@ -121,7 +119,7 @@ describe('Unit | Infrastructure | ControllerReplies', () => {
           errorSerializer.serialize.returns(serializedError);
 
           // when
-          promise = controllerReplies(replyStub).error(error);
+          promise = controllerReplies(hStub).error(error);
         });
 
         it('should succeed', () => {
@@ -137,7 +135,7 @@ describe('Unit | Infrastructure | ControllerReplies', () => {
         it('should return reply with serialized error and status code from error', () => {
           // then
           return promise.then(() => {
-            expect(replyStub).to.have.been.calledWith(serializedError);
+            expect(hStub.response).to.have.been.calledWith(serializedError);
             expect(codeStub).to.have.been.calledWith(409);
           });
         });
@@ -158,7 +156,7 @@ describe('Unit | Infrastructure | ControllerReplies', () => {
           errorSerializer.serialize.returns(serializedError);
 
           // when
-          promise = controllerReplies(replyStub).error(error);
+          promise = controllerReplies(hStub).error(error);
         });
 
         it('should succeed', () => {
@@ -181,7 +179,7 @@ describe('Unit | Infrastructure | ControllerReplies', () => {
         it('should return reply with serialized error and status code from error', () => {
           // then
           return promise.then(() => {
-            expect(replyStub).to.have.been.calledWith(serializedError);
+            expect(hStub.response).to.have.been.calledWith(serializedError);
             expect(codeStub).to.have.been.calledWith(500);
           });
         });
