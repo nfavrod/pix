@@ -238,11 +238,11 @@ describe('Unit | Application | Controller | Campaign-Participation', () => {
       return promise.then(() => {
         expect(usecases.startCampaignParticipation).to.have.been.calledOnce;
 
-        const arguments = usecases.startCampaignParticipation.firstCall.args[0];
+        const args = usecases.startCampaignParticipation.firstCall.args[0];
 
-        expect(arguments.userId).to.equal(userId);
+        expect(args.userId).to.equal(userId);
 
-        const campaignParticipation = arguments.campaignParticipation;
+        const campaignParticipation = args.campaignParticipation;
         expect(campaignParticipation).to.have.property('campaignId', campaignId);
         expect(campaignParticipation).to.have.property('participantExternalId', participantExternalId);
       });
