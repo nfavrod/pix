@@ -24,9 +24,7 @@ describe('Unit | Router | Password router', () => {
 
     it('should exist', () => {
       // given
-      passwordController.createResetDemand.callsFake((request, reply) => {
-        reply('ok');
-      });
+      passwordController.createResetDemand.callsFake((request, reply) => reply('ok'));
 
       const options = {
         method: 'POST',
