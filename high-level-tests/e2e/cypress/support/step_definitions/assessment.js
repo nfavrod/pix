@@ -7,5 +7,5 @@ then(`je suis redirigé vers une page d'épreuve`, () => {
 });
 
 then(`le titre sur l'épreuve est {string}`, (titre) => {
-  cy.get('h1.course-banner__name').should('text', titre)
+  cy.get('.course-banner__name').should('contain', titre);
 });
