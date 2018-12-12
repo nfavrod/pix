@@ -7,7 +7,6 @@ export default Base.extend({
   ajax: service(),
 
   restore(data) {
-    debugger;
     return RSVP.resolve(data);
   },
 
