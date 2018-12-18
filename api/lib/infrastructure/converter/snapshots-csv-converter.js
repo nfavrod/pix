@@ -1,5 +1,5 @@
 const moment = require('moment');
-const { sortBy } = require('lodash');
+const { toPairs, sortBy } = require('lodash');
 
 function _getHeaderForIdentificationCode(organization) {
   switch (organization.type) {
@@ -31,23 +31,8 @@ function _createHeadersLine(organization, competences) {
   return headers.join(';') + '\n';
 }
 
-function _fromStringOrJsonToJson(data) {
-  if (typeof data === 'string') {
-    return JSON.parse(data);
-  } else {
-    return data;
-  }
-}
-
 function _getSnapshotCompetenceLevelsSortedByCompetenceIndex(snapshot) {
-  const jsonapiProfile = _fromStringOrJsonToJson(snapshot.profile);
-  const competences = jsonapiProfile.included.filter((item) => item.type === 'competences');
-  const competenceLevels = competences.map((competence) => {
-    return {
-      index: competence.attributes.index,
-      level: competence.attributes.level
-    };
-  });
+  const competenceLevels = toPairs(snapshot.competenceLevels).map(([index, level]) => ({ index, level }));
   return sortBy(competenceLevels, ['index']);
 }
 
@@ -57,8 +42,8 @@ function _createProfileLine(snapshot) {
   let snapshotCsvLine = '';
 
   snapshotCsvLine += [
-    `"${snapshot.user.lastName}"`,
-    `"${snapshot.user.firstName}"`,
+    `"${snapshot.userLastName}"`,
+    `"${snapshot.userFirstName}"`,
     `"${snapshot.studentCode || ''}"`,
     `"${snapshot.campaignCode || ''}"`,
     moment(snapshot.createdAt).format('DD/MM/YYYY'),
