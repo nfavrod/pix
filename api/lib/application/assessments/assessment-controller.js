@@ -6,7 +6,7 @@ const logger = require('../../infrastructure/logger');
 const assessmentRepository = require('../../infrastructure/repositories/assessment-repository');
 const assessmentSerializer = require('../../infrastructure/serializers/jsonapi/assessment-serializer');
 const challengeSerializer = require('../../infrastructure/serializers/jsonapi/challenge-serializer');
-const queryParamsUtils = require('../../infrastructure/utils/query-params-utils');
+const { extractParameters } = require('../../infrastructure/utils/query-params-utils');
 const infraErrors = require('../../infrastructure/errors');
 
 const { NotFoundError, AssessmentEndedError, AssessmentStartError,
@@ -88,7 +88,7 @@ module.exports = {
     const userId = _extractUserIdFromRequest(request);
 
     if (userId) {
-      const filters = queryParamsUtils.extractFilters(request);
+      const filters = extractParameters(request.query).filter;
 
       if (filters.codeCampaign) {
         assessmentsPromise = useCases.findSmartPlacementAssessments({ userId, filters });

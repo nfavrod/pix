@@ -14,7 +14,7 @@ const usecases = require('../../domain/usecases');
 const controllerReplies = require('../../infrastructure/controller-replies');
 
 const logger = require('../../infrastructure/logger');
-const { extractFilters } = require('../../infrastructure/utils/query-params-utils');
+const { extractParameters } = require('../../infrastructure/utils/query-params-utils');
 const JSONAPI = require('../../interfaces/jsonapi');
 const { EntityValidationError, NotFoundError } = require('../../domain/errors');
 const { NotFoundError : InfrastructureNotFoundError } = require('../../infrastructure/errors');
@@ -64,7 +64,7 @@ module.exports = {
 
   search: (request) => {
     const userId = request.auth.credentials.userId;
-    const filters = extractFilters(request);
+    const filters = extractParameters(request.query).filter;
 
     return organizationService.search(userId, filters)
       .then((organizations) => organizationSerializer.serialize(organizations))

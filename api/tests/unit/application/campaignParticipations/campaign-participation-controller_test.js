@@ -5,19 +5,14 @@ const { NotFoundError } = require('../../../../lib/domain/errors');
 const serializer = require('../../../../lib/infrastructure/serializers/jsonapi/campaign-participation-serializer');
 const tokenService = require('../../../../lib/domain/services/token-service');
 const usecases = require('../../../../lib/domain/usecases');
-const queryParamsUtils = require('../../../../lib/infrastructure/utils/query-params-utils');
 
 describe('Unit | Application | Controller | Campaign-Participation', () => {
 
   describe('#getCampaignParticipationByAssessment', () => {
     let sandbox;
-    const resultFilter = {
-      assessmentId: 4,
-    };
 
     beforeEach(() => {
       sandbox = sinon.sandbox.create();
-      sandbox.stub(queryParamsUtils, 'extractFilters').resolves(resultFilter);
       sandbox.stub(usecases, 'findCampaignParticipationsByAssessmentId');
     });
 
@@ -30,6 +25,9 @@ describe('Unit | Application | Controller | Campaign-Participation', () => {
         headers: {
           authorization: 'token'
         },
+        query: {
+          'filter[assessmentId]': 4,
+        }
       };
       usecases.findCampaignParticipationsByAssessmentId.resolves();
 
